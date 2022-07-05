@@ -83,7 +83,7 @@ class ProductCard extends StatelessWidget {
                   child: Container(
                     margin: EdgeInsets.only(top: 9, right: 5),
                     child: CircleAvatar(
-                      radius: 13,
+                      radius: 15,
                       backgroundColor: cc.pureWhite,
                       child: IconButton(
                         onPressed: (() {}),
@@ -93,7 +93,7 @@ class ProductCard extends StatelessWidget {
                   ))
             ],
           ),
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
           Container(
             padding: const EdgeInsets.all(4),
             child: Column(
@@ -104,7 +104,7 @@ class ProductCard extends StatelessWidget {
                   style: const TextStyle(
                       fontSize: 14, fontWeight: FontWeight.w600),
                 ),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 Row(
                   children: [
                     Text(
@@ -114,9 +114,7 @@ class ProductCard extends StatelessWidget {
                           fontWeight: FontWeight.w600,
                           fontSize: 13),
                     ),
-                    SizedBox(
-                      width: 4,
-                    ),
+                    const SizedBox(width: 4),
                     Text(
                       '\$${_amount.toStringAsFixed(2)}',
                       style: TextStyle(
@@ -127,7 +125,7 @@ class ProductCard extends StatelessWidget {
                     ),
                   ],
                 ),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 GestureDetector(
                   onTap: () {
                     // Navigator.of(context).pushReplacementNamed(Auth.routeName);

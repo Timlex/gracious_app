@@ -88,7 +88,7 @@ Widget customIconButton(
       padding: EdgeInsets.all(padding),
       child: SvgPicture.asset(
         'assets/images/icons/$iconName',
-        height: 30,
+        height: 27,
         color: Colors.black54,
       ),
     ),
@@ -110,14 +110,14 @@ PreferredSizeWidget helloAppBar() {
           children: [
             Text(
               'Hello,',
-              style: TextStyle(
-                  color: ConstantColors().greyParagraph, fontSize: 16),
+              style: TextStyle(color: ConstantColors().greyHint, fontSize: 12),
             ),
             Text(
               'Robert',
               style: TextStyle(
                   color: ConstantColors().titleTexts,
-                  fontWeight: FontWeight.w600),
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold),
             ),
           ],
         ),
@@ -127,7 +127,7 @@ PreferredSizeWidget helloAppBar() {
       customIconButton('notificationIcon', 'notification_bing.svg',
           padding: 10),
       const SizedBox(
-        width: 20,
+        width: 17,
       )
     ],
   );

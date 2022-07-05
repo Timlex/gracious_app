@@ -17,6 +17,8 @@ class HomeFront extends StatefulWidget {
 class _HomeFrontState extends State<HomeFront> {
   final ConstantColors cc = ConstantColors();
 
+  List views = [Home()];
+
   int _navigationIndex = 0;
 
   @override
@@ -24,10 +26,7 @@ class _HomeFrontState extends State<HomeFront> {
     return Scaffold(
       appBar: helloAppBar(),
       body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 25),
-          child: Home(),
-        ),
+        child: views[_navigationIndex],
       ),
       bottomNavigationBar: BottomNavigationBar(
           onTap: (v) {
@@ -40,8 +39,20 @@ class _HomeFrontState extends State<HomeFront> {
           unselectedItemColor: cc.greyHint,
           currentIndex: _navigationIndex,
           elevation: 0,
-          items: const [
-            BottomNavigationBarItem(icon: Icon(Icons.home), label: ''),
+          items: [
+            BottomNavigationBarItem(
+                icon: _navigationIndex == 0
+                    ? SvgPicture.asset(
+                        'assets/images/icons/home_selected.svg',
+                        height: 27,
+                        color: cc.primaryColor,
+                      )
+                    : SvgPicture.asset(
+                        'assets/images/icons/home.svg',
+                        height: 27,
+                        color: cc.greyHint,
+                      ),
+                label: ''),
             BottomNavigationBarItem(icon: Icon(Icons.home), label: '')
           ]
           //
