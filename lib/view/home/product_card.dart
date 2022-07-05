@@ -1,5 +1,8 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gren_mart/view/utils/constant_colors.dart';
+import 'package:gren_mart/view/utils/constant_styles.dart';
 
 class ProductCard extends StatelessWidget {
   final String _title;
@@ -15,7 +18,7 @@ class ProductCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 180,
+      width: 160,
       margin: const EdgeInsets.only(right: 18),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),
@@ -39,15 +42,52 @@ class ProductCard extends StatelessWidget {
                   fit: BoxFit.cover,
                 ),
               ),
+              Container(
+                margin: const EdgeInsets.symmetric(vertical: 13),
+                padding: const EdgeInsets.symmetric(vertical: 3, horizontal: 6),
+                decoration: BoxDecoration(
+                  borderRadius: const BorderRadius.only(
+                    topRight: Radius.circular(5),
+                    bottomRight: Radius.circular(5),
+                  ),
+                  color: cc.pureWhite,
+                ),
+                child: Text(
+                  'New',
+                  style: TextStyle(
+                      color: cc.blackColor,
+                      fontSize: 11,
+                      fontWeight: FontWeight.w600),
+                ),
+              ),
+              Container(
+                margin: const EdgeInsets.only(top: 35),
+                padding: const EdgeInsets.symmetric(vertical: 3, horizontal: 6),
+                decoration: BoxDecoration(
+                  borderRadius: const BorderRadius.only(
+                    topRight: Radius.circular(5),
+                    bottomRight: Radius.circular(5),
+                  ),
+                  color: cc.orange,
+                ),
+                child: Text(
+                  '09.75%',
+                  style: TextStyle(
+                      color: cc.pureWhite,
+                      fontSize: 10,
+                      fontWeight: FontWeight.w600),
+                ),
+              ),
               Positioned(
-                  top: 0,
-                  left: 6,
+                  right: 0,
                   child: Container(
-                    color: cc.primaryColor,
-                    child: Text(
-                      'New',
-                      style: TextStyle(
-                        color: cc.blackColor,
+                    margin: EdgeInsets.only(top: 9, right: 5),
+                    child: CircleAvatar(
+                      radius: 13,
+                      backgroundColor: cc.pureWhite,
+                      child: IconButton(
+                        onPressed: (() {}),
+                        icon: Image.asset('assets/images/heart2.png'),
                       ),
                     ),
                   ))
@@ -67,9 +107,24 @@ class ProductCard extends StatelessWidget {
                 SizedBox(height: 10),
                 Row(
                   children: [
-                    Text(discountAmount <= 0
-                        ? _amount.toString()
-                        : discountAmount.toString())
+                    Text(
+                      '\$${discountAmount <= 0 ? _amount.toString() : discountAmount.toString()}',
+                      style: TextStyle(
+                          color: cc.primaryColor,
+                          fontWeight: FontWeight.w600,
+                          fontSize: 13),
+                    ),
+                    SizedBox(
+                      width: 4,
+                    ),
+                    Text(
+                      '\$${_amount.toStringAsFixed(2)}',
+                      style: TextStyle(
+                          color: cc.cardGreyHint,
+                          decoration: TextDecoration.lineThrough,
+                          decorationColor: cc.cardGreyHint,
+                          fontSize: 11),
+                    ),
                   ],
                 ),
                 SizedBox(height: 10),

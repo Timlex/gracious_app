@@ -14,7 +14,10 @@ class ConstantColors {
   final Color dividerColor = const Color(0xffF0F0F0);
 
   final Color greyHint = const Color(0xff818181);
+  final Color cardGreyHint = const Color(0xff9F9F9F);
+  final Color orange = const Color(0xffFF7325);
   final Color lightPrimery = const Color(0xffE3FFE5);
+  final Color lightPrimery2 = const Color(0xffBAEDBF);
   final Color pureGrey = Colors.grey;
   final Color pureWhite = const Color(0xffFFFFFF);
   final Color primaryColor = const Color(0xff00B106);
