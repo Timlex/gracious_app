@@ -21,12 +21,8 @@ class Login extends StatelessWidget {
         ),
         textFieldTitle('Password'),
         // const SizedBox(height: 3),
-        CustomTextField(
-          'Password',
-          emailController,
-          leadingImage: 'assets/images/icons/password.png',
-          trailing: false,
-        ),
+        CustomTextField('Password', emailController,
+            leadingImage: 'assets/images/icons/password.png', trailing: true),
       ]),
     );
   }
