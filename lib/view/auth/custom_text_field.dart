@@ -44,9 +44,7 @@ class CustomTextField extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       GestureDetector(
-                        onTap: () {
-                          print('testng');
-                        },
+                        onTap: () {},
                         child: SizedBox(
                           height: 23,
                           child: Image.asset(
