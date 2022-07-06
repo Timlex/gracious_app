@@ -6,6 +6,7 @@ import 'custom_text_field.dart';
 
 class SignUp extends StatelessWidget {
   final TextEditingController emailController = TextEditingController();
+  String city = 'Bangladesh';
 
   SignUp({Key? key}) : super(key: key);
 
@@ -53,12 +54,19 @@ class SignUp extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  'Bangladesh',
-                  style: TextStyle(
-                    color: ConstantColors().greyTextFieldLebel,
-                    fontSize: 13,
-                  ),
+                PopupMenuButton(
+                  icon: Icon(Icons.more_vert),
+                  onSelected: (v) {},
+                  itemBuilder: (ctx) => [
+                    PopupMenuItem(
+                      child: Text('All Products'),
+                      value: 'FilterOptions.AllProducts',
+                    ),
+                    PopupMenuItem(
+                      child: Text('Faovrites'),
+                      value: ' FilterOptions.ShowOnlyFavorites',
+                    )
+                  ],
                 ),
                 IconButton(
                     onPressed: () {},

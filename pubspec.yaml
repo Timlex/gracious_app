@@ -33,6 +33,8 @@ dependencies:
   flutter_svg:
   # carousel_slider: 
   card_swiper:
+  flutter_rating_bar:
+  # provider: 
 
 
   # The following adds the Cupertino Icons font to your application.

@@ -133,6 +133,20 @@ PreferredSizeWidget helloAppBar() {
   );
 }
 
+Widget favoriteIcon({double size = 15}) {
+  return Container(
+    margin: EdgeInsets.only(top: 9, right: 5),
+    child: CircleAvatar(
+      radius: size,
+      backgroundColor: cc.pureWhite,
+      child: IconButton(
+        onPressed: (() {}),
+        icon: Image.asset('assets/images/heart2.png'),
+      ),
+    ),
+  );
+}
+
 Widget seeAllTitle(String title) {
   return Container(
     margin: const EdgeInsets.only(left: 5),
@@ -158,5 +172,26 @@ Widget seeAllTitle(String title) {
         ]))
       ],
     ),
+  );
+}
+
+Widget discAmountRow(double discountAmount, double amount) {
+  return Row(
+    children: [
+      Text(
+        '\$${discountAmount <= 0 ? amount.toString() : discountAmount.toString()}',
+        style: TextStyle(
+            color: cc.primaryColor, fontWeight: FontWeight.w600, fontSize: 13),
+      ),
+      const SizedBox(width: 4),
+      Text(
+        '\$${amount.toStringAsFixed(2)}',
+        style: TextStyle(
+            color: cc.cardGreyHint,
+            decoration: TextDecoration.lineThrough,
+            decorationColor: cc.cardGreyHint,
+            fontSize: 11),
+      ),
+    ],
   );
 }

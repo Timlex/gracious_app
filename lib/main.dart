@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:gren_mart/model/products.dart';
 import 'package:gren_mart/view/auth/auth.dart';
+import 'package:gren_mart/view/details/product_details.dart';
 import 'package:gren_mart/view/home/home_front.dart';
 import 'package:gren_mart/view/intro/intro.dart';
 import 'package:gren_mart/view/intro/splash.dart';
@@ -20,7 +22,17 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return
+        // MultiProvider(
+        //   providers: [
+        //     ChangeNotifierProvider<Products>(
+        //       create: (context) => Products(),
+        //     )
+        //   ],
+        //   child:
+        //  Consumer<Products>(
+        //   builder: (context, value, child) =>
+        MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'GrenMart',
       theme: ThemeData(
@@ -37,7 +49,10 @@ class MyApp extends StatelessWidget {
         Intro.routeName: (context) => Intro(),
         Auth.routeName: (context) => Auth(),
         HomeFront.routeName: (context) => HomeFront(),
+        ProductDetails.routeName: (context) => ProductDetails()
       },
+      // ),
+      // ),
     );
   }
 }

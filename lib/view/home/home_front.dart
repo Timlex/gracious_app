@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gren_mart/view/home/home.dart';
-import 'package:gren_mart/view/home/navigation_helper.dart';
+import 'package:gren_mart/view/home/home_helper.dart';
 import 'package:gren_mart/view/utils/constant_colors.dart';
 import 'package:gren_mart/view/utils/constant_styles.dart';
 

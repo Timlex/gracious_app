@@ -1,5 +1,6 @@
 import 'package:card_swiper/card_swiper.dart';
 import 'package:flutter/material.dart';
+import 'package:gren_mart/model/products.dart';
 import 'package:gren_mart/view/auth/custom_text_field.dart';
 import 'package:gren_mart/model/poster_data.dart';
 import 'package:gren_mart/view/home/deal_timer.dart';
@@ -7,6 +8,7 @@ import 'package:gren_mart/view/home/dow_card.dart';
 import 'package:gren_mart/view/home/product_card.dart';
 import 'package:gren_mart/view/utils/constant_styles.dart';
 import 'poster_card.dart';
+import '';
 
 class Home extends StatelessWidget {
   Home({Key? key}) : super(key: key);
@@ -15,6 +17,7 @@ class Home extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // final productData = Provider.of<Products>(context, listen: false).products;
     return Column(
       children: [
         const SizedBox(
@@ -61,12 +64,12 @@ class Home extends StatelessWidget {
               const SizedBox(
                 width: 18,
               ),
-              ProductCard('Fresh Fruits', 240, 'assets/images/product1.png',
-                  discountAmount: 220),
-              ProductCard('Fresh Fruits', 240, 'assets/images/product1.png',
-                  discountAmount: 220),
-              ProductCard('Fresh Fruits', 240, 'assets/images/product1.png',
-                  discountAmount: 220)
+              ...Products()
+                  .products
+                  .map((e) => ProductCard(
+                      e.title, e.amount, 'assets/images/product1.png',
+                      discountAmount: 220))
+                  .toList()
             ],
           ),
         ),
@@ -98,9 +101,9 @@ class Home extends StatelessWidget {
                 style: TextStyle(fontSize: 19, fontWeight: FontWeight.w600),
               ),
               const Spacer(),
-              DealTimer(DateTime.now().add(Duration(minutes: 2)), 'h'),
-              DealTimer(DateTime.now().add(Duration(minutes: 2)), 'm'),
-              DealTimer(DateTime.now().add(Duration(minutes: 2)), 's'),
+              DealTimer(DateTime.now().add(const Duration(minutes: 2)), 'h'),
+              DealTimer(DateTime.now().add(const Duration(minutes: 2)), 'm'),
+              DealTimer(DateTime.now().add(const Duration(minutes: 2)), 's'),
             ],
           ),
         ),
