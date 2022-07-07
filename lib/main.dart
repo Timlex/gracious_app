@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:gren_mart/model/products.dart';
 import 'package:gren_mart/view/auth/auth.dart';
+import 'package:gren_mart/view/cart/cart_view.dart';
+import 'package:gren_mart/view/cart/checkout.dart';
 import 'package:gren_mart/view/details/product_details.dart';
 import 'package:gren_mart/view/home/home_front.dart';
 import 'package:gren_mart/view/intro/intro.dart';
@@ -49,7 +51,9 @@ class MyApp extends StatelessWidget {
         Intro.routeName: (context) => Intro(),
         Auth.routeName: (context) => Auth(),
         HomeFront.routeName: (context) => HomeFront(),
-        ProductDetails.routeName: (context) => ProductDetails()
+        ProductDetails.routeName: (context) => ProductDetails(),
+        Cart.routeName: (context) => Cart(),
+        Checkout.routeName: (context) => Checkout()
       },
       // ),
       // ),

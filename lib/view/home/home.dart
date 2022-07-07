@@ -8,7 +8,6 @@ import 'package:gren_mart/view/home/dow_card.dart';
 import 'package:gren_mart/view/home/product_card.dart';
 import 'package:gren_mart/view/utils/constant_styles.dart';
 import 'poster_card.dart';
-import '';
 
 class Home extends StatelessWidget {
   Home({Key? key}) : super(key: key);
@@ -18,114 +17,116 @@ class Home extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // final productData = Provider.of<Products>(context, listen: false).products;
-    return Column(
-      children: [
-        const SizedBox(
-          height: 20,
-        ),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 18),
-          child: CustomTextField(
-            'Search your  need here',
-            _searchController,
-            leadingImage: 'assets/images/icons/search_normal.png',
+    return SingleChildScrollView(
+      child: Column(
+        children: [
+          const SizedBox(
+            height: 20,
           ),
-        ),
-        const SizedBox(height: 20),
-        SizedBox(
-          height: 170,
-          width: double.infinity,
-          child: Swiper(
-            itemBuilder: (BuildContext context, int index) {
-              return PosterCard(
-                PosterData().posterData[index].title,
-                'Shop now',
-                PosterData().posterData[index].description,
-                () {},
-                PosterData().posterData[index].image,
-              );
-            },
-            itemCount: PosterData().posterData.length,
-            viewportFraction: 0.8,
-            scale: 0.9,
-            autoplay: true,
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 18),
+            child: CustomTextField(
+              'Search your  need here',
+              _searchController,
+              leadingImage: 'assets/images/icons/search_normal.png',
+            ),
           ),
-        ),
-        const SizedBox(height: 10),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 18),
-          child: seeAllTitle('Fetured products'),
-        ),
-        const SizedBox(height: 10),
-        SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: Row(
-            children: [
-              const SizedBox(
-                width: 18,
-              ),
-              ...Products()
-                  .products
-                  .map((e) => ProductCard(
-                      e.title, e.amount, 'assets/images/product1.png',
-                      discountAmount: 220))
-                  .toList()
-            ],
+          const SizedBox(height: 20),
+          SizedBox(
+            height: 170,
+            width: double.infinity,
+            child: Swiper(
+              itemBuilder: (BuildContext context, int index) {
+                return PosterCard(
+                  PosterData().posterData[index].title,
+                  'Shop now',
+                  PosterData().posterData[index].description,
+                  () {},
+                  PosterData().posterData[index].image,
+                );
+              },
+              itemCount: PosterData().posterData.length,
+              viewportFraction: 0.8,
+              scale: 0.9,
+              autoplay: true,
+            ),
           ),
-        ),
-        const SizedBox(height: 20),
-        SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: Row(
-            children: [
-              const SizedBox(
-                width: 18,
-              ),
-              DODCard('Fresh Products', 'Shop now', () {},
-                  'assets/images/basket.png'),
-              DODCard('Vegetable Collection', 'Shop now', () {},
-                  'assets/images/basket.png'),
-              DODCard('One Month Whole', 'Shop now', () {},
-                  'assets/images/basket.png'),
-            ],
+          const SizedBox(height: 10),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 18),
+            child: seeAllTitle('Fetured products'),
           ),
-        ),
-        const SizedBox(height: 20),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 18),
-          child: Row(
-            children: [
-              const SizedBox(width: 18),
-              const Text(
-                'Deal of the week',
-                style: TextStyle(fontSize: 19, fontWeight: FontWeight.w600),
-              ),
-              const Spacer(),
-              DealTimer(DateTime.now().add(const Duration(minutes: 2)), 'h'),
-              DealTimer(DateTime.now().add(const Duration(minutes: 2)), 'm'),
-              DealTimer(DateTime.now().add(const Duration(minutes: 2)), 's'),
-            ],
+          const SizedBox(height: 10),
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              children: [
+                const SizedBox(
+                  width: 18,
+                ),
+                ...Products()
+                    .products
+                    .map((e) => ProductCard(
+                        e.title, e.amount, 'assets/images/product1.png',
+                        discountAmount: 220))
+                    .toList()
+              ],
+            ),
           ),
-        ),
-        const SizedBox(height: 20),
-        SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: Row(
-            children: [
-              const SizedBox(
-                width: 18,
-              ),
-              ProductCard('Fresh Fruits', 240, 'assets/images/product1.png',
-                  discountAmount: 220),
-              ProductCard('Fresh Fruits', 240, 'assets/images/product1.png',
-                  discountAmount: 220),
-              ProductCard('Fresh Fruits', 240, 'assets/images/product1.png',
-                  discountAmount: 220)
-            ],
+          const SizedBox(height: 20),
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              children: [
+                const SizedBox(
+                  width: 18,
+                ),
+                DODCard('Fresh Products', 'Shop now', () {},
+                    'assets/images/basket.png'),
+                DODCard('Vegetable Collection', 'Shop now', () {},
+                    'assets/images/basket.png'),
+                DODCard('One Month Whole', 'Shop now', () {},
+                    'assets/images/basket.png'),
+              ],
+            ),
           ),
-        ),
-        const SizedBox(height: 40),
-      ],
+          const SizedBox(height: 20),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 18),
+            child: Row(
+              children: [
+                const SizedBox(width: 18),
+                const Text(
+                  'Deal of the week',
+                  style: TextStyle(fontSize: 19, fontWeight: FontWeight.w600),
+                ),
+                const Spacer(),
+                DealTimer(DateTime.now().add(const Duration(minutes: 2)), 'h'),
+                DealTimer(DateTime.now().add(const Duration(minutes: 2)), 'm'),
+                DealTimer(DateTime.now().add(const Duration(minutes: 2)), 's'),
+              ],
+            ),
+          ),
+          const SizedBox(height: 20),
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              children: [
+                const SizedBox(
+                  width: 18,
+                ),
+                ProductCard('Fresh Fruits', 240, 'assets/images/product1.png',
+                    discountAmount: 220),
+                ProductCard('Fresh Fruits', 240, 'assets/images/product1.png',
+                    discountAmount: 220),
+                ProductCard('Fresh Fruits', 240, 'assets/images/product1.png',
+                    discountAmount: 220)
+              ],
+            ),
+          ),
+          const SizedBox(height: 40),
+        ],
+      ),
     );
   }
 }

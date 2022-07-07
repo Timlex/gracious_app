@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gren_mart/view/intro/custom_dropdown.dart';
 
 import '../utils/constant_colors.dart';
 import '../utils/constant_styles.dart';
@@ -7,6 +8,12 @@ import 'custom_text_field.dart';
 class SignUp extends StatelessWidget {
   final TextEditingController emailController = TextEditingController();
   String city = 'Bangladesh';
+  List citys = [
+    'Bangladesh',
+    'Japan',
+    'Korea',
+    'Africa',
+  ];
 
   SignUp({Key? key}) : super(key: key);
 
@@ -37,47 +44,7 @@ class SignUp extends StatelessWidget {
         ),
         textFieldTitle('City'),
         // const SizedBox(height: 8),
-        Container(
-          height: 56,
-          width: double.infinity,
-          // margin: const EdgeInsets.symmetric(vertical: 10),
-          alignment: Alignment.center,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10),
-            border: Border.all(
-              color: ConstantColors().greyBorder,
-              width: 1,
-            ),
-          ),
-          child: Container(
-            margin: const EdgeInsets.only(left: 13),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                PopupMenuButton(
-                  icon: Icon(Icons.more_vert),
-                  onSelected: (v) {},
-                  itemBuilder: (ctx) => [
-                    PopupMenuItem(
-                      child: Text('All Products'),
-                      value: 'FilterOptions.AllProducts',
-                    ),
-                    PopupMenuItem(
-                      child: Text('Faovrites'),
-                      value: ' FilterOptions.ShowOnlyFavorites',
-                    )
-                  ],
-                ),
-                IconButton(
-                    onPressed: () {},
-                    icon: Icon(
-                      Icons.keyboard_arrow_down_sharp,
-                      color: ConstantColors().greyFour,
-                    ))
-              ],
-            ),
-          ),
-        ),
+        CustomDropdown(city),
         textFieldTitle('Password'),
         // const SizedBox(height: 8),
         CustomTextField(

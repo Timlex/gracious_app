@@ -12,6 +12,7 @@ class ConstantColors {
   final Color greyFive = const Color(0xffD0D5DD);
   final Color dividerColor = const Color(0xffF0F0F0);
 
+  final Color whiteGrey = const Color(0xffF9F9F9);
   final Color blackColor = const Color(0xff333333);
   final Color greyHint = const Color(0xff818181);
   final Color cardGreyHint = const Color(0xff9F9F9F);
