@@ -1,13 +1,40 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter_svg/svg.dart';
+
 import 'package:gren_mart/view/auth/custom_text_field.dart';
+import 'package:gren_mart/view/cart/cart_grid_tile.dart';
+import 'package:gren_mart/view/cart/payment_status.dart';
+import 'package:gren_mart/view/utils/app_bars.dart';
 import 'package:gren_mart/view/utils/constant_colors.dart';
 import 'package:gren_mart/view/utils/constant_styles.dart';
 
-class Checkout extends StatelessWidget {
+class Checkout extends StatefulWidget {
   static const routeName = 'checkout';
+
+  @override
+  State<Checkout> createState() => _CheckoutState();
+}
+
+class _CheckoutState extends State<Checkout> {
   ConstantColors cc = ConstantColors();
+
+  String selectedName = 'payp';
+
+  bool error = false;
+  String selectedId = '01';
+
+  List addresses = [
+    {
+      'id': '01',
+      'title': 'Home',
+      'address': '6391 Elgin St. Celina, Delaware 10299'
+    },
+    {
+      'id': '02',
+      'title': 'Home',
+      'address': '6391 Elgin St. Celina, Delaware 10299'
+    },
+  ];
 
   List gridImages = [
     'cod',
@@ -24,23 +51,17 @@ class Checkout extends StatelessWidget {
     'insta',
     'cash',
   ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-          elevation: 1.5,
-          foregroundColor: cc.blackColor,
-          title: Center(
-            child: Text(
-              'Checkout',
-              style:
-                  TextStyle(color: cc.blackColor, fontWeight: FontWeight.w600),
-            ),
-          )),
+      appBar: AppBars().appBarTitled('Checkout', () {
+        Navigator.of(context).pop();
+      }, hasButton: true, hasElevation: true),
       body: Padding(
         padding: const EdgeInsets.all(20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        child: ListView(
+          physics: const NeverScrollableScrollPhysics(),
           children: [
             CustomTextField(
               'enter new address',
@@ -48,10 +69,17 @@ class Checkout extends StatelessWidget {
               leadingImage: 'assets/images/icons/location.png',
             ),
             const SizedBox(height: 10),
-            addressBox(true),
-            const SizedBox(height: 10),
-            addressBox(false),
-            const SizedBox(height: 25),
+            ...addresses.map(((e) => GestureDetector(
+                  onTap: () {
+                    if (selectedId == e['id']) {
+                      return;
+                    }
+                    setState(() {
+                      selectedId = e['id'];
+                    });
+                  },
+                  child: addressBox(selectedId == e['id']),
+                ))),
             Text(
               'Chose a payment method',
               style: TextStyle(
@@ -62,17 +90,37 @@ class Checkout extends StatelessWidget {
             ),
             const SizedBox(height: 10),
             SizedBox(
-                height: 250,
+                height: 260,
                 child: GridView(
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 3,
-                    childAspectRatio: 3 / 2,
-                    crossAxisSpacing: 10,
-                    mainAxisSpacing: 10,
-                  ),
-                  children: gridImages.map((e) => gridTiles(e)).toList(),
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 3,
+                      childAspectRatio: 3 / 1.2,
+                      crossAxisSpacing: 8,
+                      mainAxisSpacing: 12),
+                  children: gridImages
+                      .map((e) => GestureDetector(
+                          onTap: () => selectedName = e,
+                          child: GestureDetector(
+                              onTap: () {
+                                if (selectedName == e) {
+                                  return;
+                                }
+                                setState(() {
+                                  selectedName = e;
+                                });
+                              },
+                              child: CartGridTile(e, e == selectedName))))
+                      .toList(),
                 )),
-            customContainerButton('Pay & Confirm', double.maxFinite, () {})
+            const SizedBox(height: 20),
+            customContainerButton('Pay & Confirm', double.maxFinite, () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => PaymentStatusView(error)),
+              );
+              error = true;
+            })
           ],
         ),
       ),
@@ -81,10 +129,11 @@ class Checkout extends StatelessWidget {
 
   Widget addressBox(bool selected) {
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: 15),
+      margin: const EdgeInsets.only(bottom: 15),
+      padding: const EdgeInsets.symmetric(vertical: 12),
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
-          color: selected ? cc.lightPrimery : cc.whiteGrey,
+          color: selected ? cc.lightPrimery3 : cc.whiteGrey,
           border: Border.all(
               color: selected ? cc.primaryColor : cc.greyHint, width: .5)),
       child: Stack(children: [
@@ -108,21 +157,5 @@ class Checkout extends StatelessWidget {
               ))
       ]),
     );
-  }
-
-  Widget gridTiles(String imageName) {
-    return Container(
-        height: 15,
-        width: 100,
-        margin: const EdgeInsets.symmetric(vertical: 10),
-        alignment: Alignment.center,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10),
-          border: Border.all(
-            color: ConstantColors().greyBorder,
-            width: 1,
-          ),
-        ),
-        child: Image.asset('assets/images/$imageName.png'));
   }
 }

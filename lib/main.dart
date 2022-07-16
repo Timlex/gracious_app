@@ -4,6 +4,7 @@ import 'package:gren_mart/model/products.dart';
 import 'package:gren_mart/view/auth/auth.dart';
 import 'package:gren_mart/view/cart/cart_view.dart';
 import 'package:gren_mart/view/cart/checkout.dart';
+import 'package:gren_mart/view/cart/payment_status.dart';
 import 'package:gren_mart/view/details/product_details.dart';
 import 'package:gren_mart/view/home/home_front.dart';
 import 'package:gren_mart/view/intro/intro.dart';
@@ -53,7 +54,7 @@ class MyApp extends StatelessWidget {
         HomeFront.routeName: (context) => HomeFront(),
         ProductDetails.routeName: (context) => ProductDetails(),
         Cart.routeName: (context) => Cart(),
-        Checkout.routeName: (context) => Checkout()
+        Checkout.routeName: (context) => Checkout(),
       },
       // ),
       // ),

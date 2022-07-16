@@ -134,6 +134,7 @@ class _AuthState extends State<Auth> {
                   Navigator.of(context)
                       .pushReplacementNamed(HomeFront.routeName);
                 }),
+                const SizedBox(height: 20),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [

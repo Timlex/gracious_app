@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gren_mart/view/auth/auth.dart';
 import 'package:gren_mart/view/intro/dot_indicator.dart';
 import 'package:gren_mart/view/utils/constant_colors.dart';
+import 'package:gren_mart/view/utils/constant_styles.dart';
 
 import './intro_helper.dart';
 
@@ -85,68 +86,30 @@ class _IntroState extends State<Intro> {
                       .toList()),
             ),
             Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 //skip Button
 
-                GestureDetector(
-                  onTap: () {
-                    Navigator.of(context).pushReplacementNamed(Auth.routeName);
-                  },
-                  child: Container(
-                      margin: const EdgeInsets.all(8),
-                      height: 50,
-                      width: 180,
-                      alignment: Alignment.center,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        border: Border.all(
-                          width: 1,
-                          color: ConstantColors().primaryColor,
-                        ),
-                      ),
-                      child: Text(
-                        'Skip',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                            color: ConstantColors().primaryColor,
-                            fontWeight: FontWeight.w700),
-                      )),
-                ),
+                customBorderButton('Skip', () {
+                  Navigator.of(context).pushReplacementNamed(Auth.routeName);
+                }),
 
                 //continue button
 
-                GestureDetector(
-                    onTap: () {
-                      if (selectedindex < 2) {
-                        setState(() {
-                          _controller.nextPage(
-                              duration: const Duration(milliseconds: 500),
-                              curve: Curves.easeIn);
-                        });
-                        selectedindex++;
-                        return;
-                      }
-                      if (selectedindex == 2) {
-                        Navigator.of(context)
-                            .pushReplacementNamed(Auth.routeName);
-                      }
-                    },
-                    child: Container(
-                      margin: const EdgeInsets.all(8),
-                      height: 50,
-                      width: 180,
-                      alignment: Alignment.center,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        color: ConstantColors().primaryColor,
-                      ),
-                      child: const Text(
-                        'Continue',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                            color: Colors.white, fontWeight: FontWeight.bold),
-                      ),
-                    )),
+                customContainerButton('Continue', 180, () {
+                  if (selectedindex < 2) {
+                    setState(() {
+                      _controller.nextPage(
+                          duration: const Duration(milliseconds: 500),
+                          curve: Curves.easeIn);
+                    });
+                    selectedindex++;
+                    return;
+                  }
+                  if (selectedindex == 2) {
+                    Navigator.of(context).pushReplacementNamed(Auth.routeName);
+                  }
+                })
               ],
             ),
             const SizedBox(height: 10),

@@ -70,6 +70,18 @@ class ProductDetails extends StatelessWidget {
                       ),
                     ),
                   ),
+                  leading: GestureDetector(
+                    onTap: (() => Navigator.of(context).pop()),
+                    child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          SvgPicture.asset(
+                            'assets/images/icons/back_button.svg',
+                            color: cc.blackColor,
+                            height: 30,
+                          ),
+                        ]),
+                  ),
                   actions: [
                     Container(
                         margin: const EdgeInsets.only(right: 10),

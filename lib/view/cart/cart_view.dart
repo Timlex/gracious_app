@@ -16,7 +16,7 @@ class Cart extends StatelessWidget {
     return Column(
       children: [
         const SizedBox(height: 10),
-        CartCard(),
+        Expanded(child: CartCard()),
         Container(
           // height: 300,
           padding: const EdgeInsets.all(20),
@@ -39,7 +39,7 @@ class Cart extends StatelessWidget {
             rows('Total', trailing: '-\$438'),
             const SizedBox(height: 25),
             rows('Promo code'),
-            const SizedBox(height: 25),
+            const SizedBox(height: 15),
             Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
               SizedBox(
                   width: 225,
@@ -52,7 +52,10 @@ class Cart extends StatelessWidget {
                       decoration: InputDecoration(
                           label: Text(
                             'Enter promo code',
-                            style: TextStyle(color: cc.greyHint),
+                            style: TextStyle(
+                              color: cc.greyHint,
+                              fontSize: 13,
+                            ),
                           ),
                           enabledBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(10),
@@ -81,7 +84,7 @@ class Cart extends StatelessWidget {
                       ],
                       decoration: TextDecoration.underline,
                       decorationColor: cc.primaryColor,
-                      decorationThickness: 2,
+                      decorationThickness: 1.5,
                       // fontWeight: FontWeight.w600,
                     ),
                   ),
@@ -106,7 +109,7 @@ class Cart extends StatelessWidget {
           leading,
           style: TextStyle(
             color: cc.greyParagraph,
-            fontSize: 15,
+            fontSize: 13,
           ),
         ),
         if (trailing != null)

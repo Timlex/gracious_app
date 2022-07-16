@@ -26,9 +26,10 @@ Widget customContainerButton(
         ontapFunction();
       },
       child: Container(
-        height: 57,
-        width: buttonWidth,
-        margin: const EdgeInsets.symmetric(vertical: 15),
+        height: 50,
+        width: buttonWidth ?? double.infinity,
+        // margin: const EdgeInsets.symmetric(vertical: 15),
+        // margin: EdgeInsets.all(8),
         alignment: Alignment.center,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
@@ -43,7 +44,36 @@ Widget customContainerButton(
       ));
 }
 
-Widget containerBorder(String imagePath, String text) {
+Widget customBorderButton(String buttonText, Function ontap,
+    {double width = 180}) {
+  return GestureDetector(
+    onTap: () {
+      ontap();
+    },
+    child: Container(
+        // margin: const EdgeInsets.all(8),
+        height: 50,
+        width: width,
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(
+            width: 1,
+            color: ConstantColors().primaryColor,
+          ),
+        ),
+        child: Text(
+          buttonText,
+          textAlign: TextAlign.center,
+          style: TextStyle(
+              color: ConstantColors().primaryColor,
+              fontWeight: FontWeight.w700),
+        )),
+  );
+}
+
+Widget containerBorder(String imagePath, String text,
+    {double widht = double.infinity}) {
   return Container(
     height: 44,
     width: double.infinity,

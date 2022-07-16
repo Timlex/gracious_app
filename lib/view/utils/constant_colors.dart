@@ -20,6 +20,7 @@ class ConstantColors {
   final Color orangeRating = const Color(0xffF8B400);
   final Color lightPrimery = const Color(0xffE3FFE5);
   final Color lightPrimery2 = const Color(0xffBAEDBF);
+  final Color lightPrimery3 = const Color(0xffDDEFDE);
   final Color pureGrey = Colors.grey;
   final Color pureWhite = const Color(0xffFFFFFF);
   final Color primaryColor = const Color(0xff00B106);
@@ -27,6 +28,9 @@ class ConstantColors {
   final Color greyParagraph = const Color(0xff666666);
   final Color greyTextFieldLebel = const Color.fromARGB(255, 169, 168, 168);
   final Color greyBorder = const Color.fromARGB(255, 215, 215, 215);
+  final Color greyBorder2 = const Color(0xffEAECF0);
+  final Color pink = const Color(0xffFF4065);
+  final Color lightpink = Color.fromARGB(14, 255, 98, 127);
   final Color greyDots = const Color(0xffD8D8D8);
   final Color greytitle = const Color(0xff818181);
 }
