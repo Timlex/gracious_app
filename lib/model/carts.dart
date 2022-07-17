@@ -13,6 +13,9 @@ class CartData {
     Cart('01', 2),
     Cart('03', 6),
     Cart('02', 1),
+    Cart('04', 1),
+    Cart('05', 1),
+    // Cart('06', 1),
   ];
 
   List<Cart> get cartList {

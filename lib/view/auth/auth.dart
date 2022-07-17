@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gren_mart/view/auth/horizontal_devider.dart';
 import 'package:gren_mart/view/auth/login.dart';
 import 'package:gren_mart/view/auth/remember.dart';
+import 'package:gren_mart/view/auth/reset_password.dart';
 import 'package:gren_mart/view/auth/signup.dart';
 import 'package:gren_mart/view/home/home_front.dart';
 import 'package:gren_mart/view/utils/constant_colors.dart';
@@ -69,9 +70,13 @@ class _AuthState extends State<Auth> {
                 //           icon: Image.asset(
                 //               'assets/images/icons/back_button_auth.png'))),
                 Center(
-              child: SizedBox(
-                height: 230,
-                child: Image.asset('assets/images/auth_image.png'),
+              child: Padding(
+                padding:
+                    EdgeInsets.only(top: MediaQuery.of(context).padding.top),
+                child: SizedBox(
+                  height: 230,
+                  child: Image.asset('assets/images/auth_image.png'),
+                ),
               ),
             )
             // ]),
@@ -110,6 +115,8 @@ class _AuthState extends State<Auth> {
                           ),
                           GestureDetector(
                             onTap: () {
+                              Navigator.of(context)
+                                  .pushNamed(ResetPassEmail.routeName);
                               print('something!');
                             },
                             child: RichText(

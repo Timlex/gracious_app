@@ -4,7 +4,7 @@ import 'package:gren_mart/view/utils/constant_colors.dart';
 
 ConstantColors cc = ConstantColors();
 
-Widget textFieldTitle(String title) {
+Widget textFieldTitle(String title, {double fontSize = 15}) {
   return Container(
     padding: const EdgeInsets.symmetric(vertical: 8),
     margin: const EdgeInsets.only(top: 17),
@@ -12,7 +12,7 @@ Widget textFieldTitle(String title) {
       title,
       style: TextStyle(
         color: ConstantColors().greytitle,
-        fontSize: 15,
+        fontSize: fontSize,
         fontWeight: FontWeight.w500,
       ),
     ),

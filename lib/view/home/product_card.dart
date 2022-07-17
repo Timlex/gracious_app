@@ -9,9 +9,12 @@ class ProductCard extends StatelessWidget {
   double discountAmount;
   final double _amount;
   final String _image;
+  EdgeInsetsGeometry? margin;
 
   ProductCard(this._title, this._amount, this._image,
-      {Key? key, this.discountAmount = 0})
+      {Key? key,
+      this.discountAmount = 0,
+      this.margin = const EdgeInsets.only(right: 18)})
       : super(key: key);
 
   ConstantColors cc = ConstantColors();
@@ -26,7 +29,7 @@ class ProductCard extends StatelessWidget {
       },
       child: Container(
         width: 160,
-        margin: const EdgeInsets.only(right: 18),
+        margin: margin,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
           color: cc.pureWhite,

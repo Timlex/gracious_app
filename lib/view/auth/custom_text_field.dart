@@ -7,13 +7,12 @@ class CustomTextField extends StatefulWidget {
   bool trailing;
   bool obscureText;
   final TextEditingController controller;
-  CustomTextField(
-    this.levelText,
-    this.controller, {
-    this.leadingImage,
-    this.trailing = false,
-    this.obscureText = false,
-  });
+  void Function(String)? onFieldSubmitted;
+  CustomTextField(this.levelText, this.controller,
+      {this.leadingImage,
+      this.trailing = false,
+      this.obscureText = false,
+      this.onFieldSubmitted});
 
   @override
   State<CustomTextField> createState() => _CustomTextFieldState();
@@ -83,6 +82,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
 
           //  if (leadingImage != null)?
         ),
+        onFieldSubmitted: widget.onFieldSubmitted,
       ),
     );
   }

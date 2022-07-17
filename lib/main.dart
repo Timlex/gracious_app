@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:gren_mart/model/products.dart';
 import 'package:gren_mart/view/auth/auth.dart';
+import 'package:gren_mart/view/auth/reset_password.dart';
 import 'package:gren_mart/view/cart/cart_view.dart';
 import 'package:gren_mart/view/cart/checkout.dart';
 import 'package:gren_mart/view/cart/payment_status.dart';
@@ -9,6 +10,9 @@ import 'package:gren_mart/view/details/product_details.dart';
 import 'package:gren_mart/view/home/home_front.dart';
 import 'package:gren_mart/view/intro/intro.dart';
 import 'package:gren_mart/view/intro/splash.dart';
+import 'package:gren_mart/view/search/search.dart';
+import 'package:gren_mart/view/settings/change_password.dart';
+import 'package:gren_mart/view/settings/manage_account.dart';
 import 'package:gren_mart/view/utils/constant_colors.dart';
 
 void main() {
@@ -55,6 +59,10 @@ class MyApp extends StatelessWidget {
         ProductDetails.routeName: (context) => ProductDetails(),
         Cart.routeName: (context) => Cart(),
         Checkout.routeName: (context) => Checkout(),
+        SearchView.routeName: (context) => SearchView(),
+        ManageAccount.routeName: (context) => ManageAccount(),
+        ChangePassword.routeName: (context) => ChangePassword(),
+        ResetPassEmail.routeName: (context) => ResetPassEmail()
       },
       // ),
       // ),

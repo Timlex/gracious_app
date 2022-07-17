@@ -53,7 +53,7 @@ class PosterCard extends StatelessWidget {
             ),
             const SizedBox(height: 15),
             SizedBox(
-                width: 170,
+                width: MediaQuery.of(context).size.width / 2.7,
                 child: Text(
                   description,
                   style: TextStyle(
@@ -76,10 +76,10 @@ class PosterCard extends StatelessWidget {
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12))),
             ),
-            const Spacer()
+            // const Spacer()
           ],
         ),
-        Container(height: 150, child: Image.asset(image)),
+        SizedBox(height: 150, child: Image.asset(image)),
       ]),
     );
   }

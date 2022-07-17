@@ -6,6 +6,7 @@ import 'package:gren_mart/model/poster_data.dart';
 import 'package:gren_mart/view/home/deal_timer.dart';
 import 'package:gren_mart/view/home/dow_card.dart';
 import 'package:gren_mart/view/home/product_card.dart';
+import 'package:gren_mart/view/search/search.dart';
 import 'package:gren_mart/view/utils/constant_styles.dart';
 import 'poster_card.dart';
 
@@ -26,10 +27,53 @@ class Home extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 18),
             child: CustomTextField(
-              'Search your  need here',
+              'Search your need here',
               _searchController,
               leadingImage: 'assets/images/icons/search_normal.png',
+              onFieldSubmitted: (value) {
+                Navigator.of(context).pushNamed(SearchView.routeName,
+                    arguments: [_searchController]);
+              },
             ),
+
+            // child: GestureDetector(
+            //   onTap: () {
+            //     Navigator.of(context).pushNamed(SearchView.routeName);
+            //   },
+            //   child: Container(
+            //     height: 44,
+            //     width: double.infinity,
+            //     margin: const EdgeInsets.symmetric(vertical: 7),
+            //     alignment: Alignment.center,
+            //     decoration: BoxDecoration(
+            //       borderRadius: BorderRadius.circular(10),
+            //       border: Border.all(
+            //         color: cc.greyBorder,
+            //         width: 1,
+            //       ),
+            //     ),
+            //     child: Row(
+            //       mainAxisAlignment: MainAxisAlignment.start,
+            //       children: [
+            //         const SizedBox(
+            //           width: 10,
+            //         ),
+            //         SizedBox(
+            //           height: 25,
+            //           child:
+            //               Image.asset('assets/images/icons/search_normal.png'),
+            //         ),
+            //         const SizedBox(
+            //           width: 10,
+            //         ),
+            //         Text(
+            //           'Search your needs here',
+            //           style: TextStyle(color: cc.greyHint),
+            //         )
+            //       ],
+            //     ),
+            //   ),
+            // ),
           ),
           const SizedBox(height: 20),
           SizedBox(

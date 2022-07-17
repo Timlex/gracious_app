@@ -32,6 +32,7 @@ class _CustomDropdownState extends State<CustomDropdown> {
         ),
       ),
       child: DropdownButton(
+        underline: Container(),
         elevation: 0,
         value: widget.city,
         style: TextStyle(color: cc.greyHint),

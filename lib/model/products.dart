@@ -50,6 +50,42 @@ class Products {
         'assets/images/product1.png',
       ],
     ),
+    Product(
+      id: '04',
+      title: 'Fresh Fruits',
+      amount: 250,
+      discountPecentage: 9.66,
+      image: [
+        'assets/images/product1.png',
+        'assets/images/product1.png',
+        'assets/images/product1.png',
+        'assets/images/product1.png',
+      ],
+    ),
+    Product(
+      id: '05',
+      title: 'Fresh Fruits',
+      amount: 250,
+      discountPecentage: 9.66,
+      image: [
+        'assets/images/product1.png',
+        'assets/images/product1.png',
+        'assets/images/product1.png',
+        'assets/images/product1.png',
+      ],
+    ),
+    Product(
+      id: '06',
+      title: 'Fresh Fruits',
+      amount: 250,
+      discountPecentage: 9.66,
+      image: [
+        'assets/images/product1.png',
+        'assets/images/product1.png',
+        'assets/images/product1.png',
+        'assets/images/product1.png',
+      ],
+    ),
   ];
 
   List<Product> get products {

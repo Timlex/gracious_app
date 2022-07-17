@@ -42,7 +42,7 @@ class Cart extends StatelessWidget {
             const SizedBox(height: 15),
             Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
               SizedBox(
-                  width: 225,
+                  width: MediaQuery.of(context).size.width / 2,
                   child: Container(
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(10),

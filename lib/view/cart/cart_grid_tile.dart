@@ -10,20 +10,22 @@ class CartGridTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-        // height: 1,
-        width: 100,
-        padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 12),
-        alignment: Alignment.center,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10),
-          border: Border.all(
-            color: isSelected
-                ? ConstantColors().pink
-                : ConstantColors().greyBorder2,
-            width: 1,
-          ),
-          color: isSelected ? ConstantColors().lightpink : null,
+      // height: 1,
+      width: 100,
+      padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 12),
+      alignment: Alignment.center,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(
+          color:
+              isSelected ? ConstantColors().pink : ConstantColors().greyBorder2,
+          width: 1,
         ),
-        child: Image.asset('assets/images/$imageName.png'));
+        color: isSelected ? ConstantColors().lightpink : null,
+      ),
+      child: Image.asset(
+        'assets/images/$imageName.png',
+      ),
+    );
   }
 }

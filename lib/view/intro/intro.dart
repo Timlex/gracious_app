@@ -28,7 +28,7 @@ class _IntroState extends State<Intro> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Padding(
-        padding: const EdgeInsets.all(8.0),
+        padding: const EdgeInsets.all(15),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
@@ -92,11 +92,13 @@ class _IntroState extends State<Intro> {
 
                 customBorderButton('Skip', () {
                   Navigator.of(context).pushReplacementNamed(Auth.routeName);
-                }),
+                }, width: (MediaQuery.of(context).size.width - 45) / 2),
 
                 //continue button
 
-                customContainerButton('Continue', 180, () {
+                customContainerButton(
+                    'Continue', (MediaQuery.of(context).size.width - 45) / 2,
+                    () {
                   if (selectedindex < 2) {
                     setState(() {
                       _controller.nextPage(

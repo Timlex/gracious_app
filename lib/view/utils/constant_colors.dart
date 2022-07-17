@@ -33,4 +33,5 @@ class ConstantColors {
   final Color lightpink = Color.fromARGB(14, 255, 98, 127);
   final Color greyDots = const Color(0xffD8D8D8);
   final Color greytitle = const Color(0xff818181);
+  final Color greyYellow = const Color(0xffFFE38F);
 }

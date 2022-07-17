@@ -35,6 +35,8 @@ dependencies:
   card_swiper:
   flutter_rating_bar:
   flutter_staggered_grid_view:
+  modal_bottom_sheet:
+  money_formatter:
   # provider: 
 
 

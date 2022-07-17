@@ -2,13 +2,27 @@ import 'package:flutter/material.dart';
 import 'package:gren_mart/view/intro/intro.dart';
 import 'package:gren_mart/view/utils/constant_colors.dart';
 
-class SplashScreen extends StatelessWidget {
+import '../utils/constant_name.dart';
+
+class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);
+
+  @override
+  State<SplashScreen> createState() => _SplashScreenState();
+}
+
+class _SplashScreenState extends State<SplashScreen> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    initiateDeviceSize;
+  }
 
   @override
   Widget build(BuildContext context) {
     Future.delayed(
-      Duration(seconds: 2),
+      const Duration(seconds: 2),
       () => Navigator.of(context).pushReplacementNamed(Intro.routeName),
     );
     return Scaffold(

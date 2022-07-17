@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:gren_mart/view/utils/constant_colors.dart';
+import 'package:gren_mart/view/utils/constant_name.dart';
 
 class PlusMinusCart extends StatefulWidget {
   int count = 0;
@@ -95,7 +96,7 @@ class _PlusMinusCartState extends State<PlusMinusCart> {
               color: cc.primaryColor,
             ),
             height: 48,
-            width: 210,
+            width: MediaQuery.of(context).size.width / 2.1,
             child: Row(
               children: [
                 SvgPicture.asset('assets/images/icons/bag.svg'),
