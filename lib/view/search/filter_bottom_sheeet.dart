@@ -37,17 +37,22 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
     MoneyFormatter startRange =
         MoneyFormatter(amount: _currentRangeValues.start);
     MoneyFormatter endRange = MoneyFormatter(amount: _currentRangeValues.end);
-    return Container(
-      // height: MediaQuery.of(context).size.height / 2,
-      padding: const EdgeInsets.all(15),
-      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        const Text(
+    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      const Padding(
+        padding: EdgeInsets.only(left: 25.0, top: 15),
+        child: Text(
           'Filter by:',
           style: TextStyle(fontSize: 19, fontWeight: FontWeight.w600),
         ),
-        textFieldTitle('All categories', fontSize: 13),
-        SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
+      ),
+      Padding(
+        padding: const EdgeInsets.only(left: 25.0),
+        child: textFieldTitle('All categories', fontSize: 13),
+      ),
+      SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: Padding(
+          padding: const EdgeInsets.only(left: 25.0),
           child: Row(
             children: categories
                 .map((e) => GestureDetector(
@@ -63,9 +68,15 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                 .toList(),
           ),
         ),
-        textFieldTitle('All Units', fontSize: 13),
-        SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
+      ),
+      Padding(
+        padding: const EdgeInsets.only(left: 25.0),
+        child: textFieldTitle('All Units', fontSize: 13),
+      ),
+      SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: Padding(
+          padding: const EdgeInsets.only(left: 25.0),
           child: Row(
             children: units
                 .map((e) => GestureDetector(
@@ -81,7 +92,10 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                 .toList(),
           ),
         ),
-        Row(
+      ),
+      Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 25),
+        child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             textFieldTitle('Filter Price', fontSize: 13),
@@ -95,26 +109,33 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
             )
           ],
         ),
-        RangeSlider(
-          values: _currentRangeValues,
-          max: 3500,
+      ),
+      RangeSlider(
+        values: _currentRangeValues,
+        max: 3500,
 
-          // divisions: 5,
-          activeColor: cc.primaryColor,
+        // divisions: 5,
+        activeColor: cc.primaryColor,
 
-          inactiveColor: cc.lightPrimery3,
-          labels: RangeLabels(
-            _currentRangeValues.start.round().toString(),
-            _currentRangeValues.end.round().toString(),
-          ),
-          onChanged: (RangeValues values) {
-            setState(() {
-              _currentRangeValues = values;
-            });
-          },
+        inactiveColor: cc.lightPrimery3,
+        labels: RangeLabels(
+          _currentRangeValues.start.round().toString(),
+          _currentRangeValues.end.round().toString(),
         ),
-        textFieldTitle('Average Rating', fontSize: 13),
-        RatingBar.builder(
+        onChanged: (RangeValues values) {
+          setState(() {
+            _currentRangeValues = values;
+          });
+        },
+      ),
+      Padding(
+        padding: const EdgeInsets.only(left: 25.0),
+        child: textFieldTitle('Average Rating', fontSize: 13),
+      ),
+      const SizedBox(height: 10),
+      Padding(
+        padding: const EdgeInsets.only(left: 25.0),
+        child: RatingBar.builder(
           itemSize: 24,
           initialRating: 3,
           minRating: 1,
@@ -130,21 +151,18 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
             print(rating);
           },
         ),
-        const SizedBox(height: 40),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            customBorderButton('Reset Filter', () {
-              Navigator.of(context).pop();
-            }),
-            customContainerButton('Apply Filter', 180, () {
-              Navigator.of(context).pop();
-            })
-          ],
-        ),
-        const SizedBox(height: 10),
-      ]),
-    );
+      ),
+      const SizedBox(height: 40),
+      Padding(
+        padding: const EdgeInsets.all(10),
+        child: customRowButton('Reset Filter', 'Apply Filter', () {
+          Navigator.of(context).pop();
+        }, () {
+          Navigator.of(context).pop();
+        }),
+      ),
+      const SizedBox(height: 10),
+    ]);
   }
 
   Widget filterOption(String text, bool isSelected) {

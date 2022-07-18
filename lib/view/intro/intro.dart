@@ -85,35 +85,22 @@ class _IntroState extends State<Intro> {
                       )
                       .toList()),
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                //skip Button
-
-                customBorderButton('Skip', () {
-                  Navigator.of(context).pushReplacementNamed(Auth.routeName);
-                }, width: (MediaQuery.of(context).size.width - 45) / 2),
-
-                //continue button
-
-                customContainerButton(
-                    'Continue', (MediaQuery.of(context).size.width - 45) / 2,
-                    () {
-                  if (selectedindex < 2) {
-                    setState(() {
-                      _controller.nextPage(
-                          duration: const Duration(milliseconds: 500),
-                          curve: Curves.easeIn);
-                    });
-                    selectedindex++;
-                    return;
-                  }
-                  if (selectedindex == 2) {
-                    Navigator.of(context).pushReplacementNamed(Auth.routeName);
-                  }
-                })
-              ],
-            ),
+            customRowButton('Skip', 'Continue', () {
+              Navigator.of(context).pushReplacementNamed(Auth.routeName);
+            }, () {
+              if (selectedindex < 2) {
+                setState(() {
+                  _controller.nextPage(
+                      duration: const Duration(milliseconds: 500),
+                      curve: Curves.easeIn);
+                });
+                selectedindex++;
+                return;
+              }
+              if (selectedindex == 2) {
+                Navigator.of(context).pushReplacementNamed(Auth.routeName);
+              }
+            }),
             const SizedBox(height: 10),
           ],
         ),

@@ -3,7 +3,11 @@ import 'package:gren_mart/view/auth/custom_text_field.dart';
 import 'package:gren_mart/view/cart/cart_card.dart';
 import 'package:gren_mart/view/cart/checkout.dart';
 import 'package:gren_mart/view/utils/constant_colors.dart';
+import 'package:gren_mart/view/utils/constant_name.dart';
 import 'package:gren_mart/view/utils/constant_styles.dart';
+
+import '../../model/carts.dart';
+import '../../model/products.dart';
 
 class Cart extends StatelessWidget {
   static const routeName = 'cart';
@@ -13,10 +17,12 @@ class Cart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return ListView(
       children: [
         const SizedBox(height: 10),
-        Expanded(child: CartCard()),
+        ...CartData().cartList.map((ele) {
+          return CartCard(ele.id);
+        }),
         Container(
           // height: 300,
           padding: const EdgeInsets.all(20),
@@ -42,7 +48,7 @@ class Cart extends StatelessWidget {
             const SizedBox(height: 15),
             Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
               SizedBox(
-                  width: MediaQuery.of(context).size.width / 2,
+                  width: screenWidth / 2,
                   child: Container(
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(10),
@@ -94,7 +100,8 @@ class Cart extends StatelessWidget {
             const SizedBox(height: 15),
             customContainerButton('Checkout', double.infinity, () {
               Navigator.of(context).pushNamed(Checkout.routeName);
-            })
+            }),
+            const SizedBox(height: 30),
           ]),
         ),
       ],

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:gren_mart/model/products.dart';
 import 'package:gren_mart/view/auth/auth.dart';
+import 'package:gren_mart/view/auth/enter_otp.dart';
 import 'package:gren_mart/view/auth/reset_password.dart';
 import 'package:gren_mart/view/cart/cart_view.dart';
 import 'package:gren_mart/view/cart/checkout.dart';
@@ -54,15 +55,16 @@ class MyApp extends StatelessWidget {
       home: SplashScreen(),
       routes: {
         Intro.routeName: (context) => Intro(),
-        Auth.routeName: (context) => Auth(),
-        HomeFront.routeName: (context) => HomeFront(),
+        Auth.routeName: (context) => const Auth(),
+        HomeFront.routeName: (context) => const HomeFront(),
         ProductDetails.routeName: (context) => ProductDetails(),
         Cart.routeName: (context) => Cart(),
         Checkout.routeName: (context) => Checkout(),
-        SearchView.routeName: (context) => SearchView(),
+        // SearchView.routeName: (context) => SearchView(),
         ManageAccount.routeName: (context) => ManageAccount(),
         ChangePassword.routeName: (context) => ChangePassword(),
-        ResetPassEmail.routeName: (context) => ResetPassEmail()
+        ResetPassEmail.routeName: (context) => ResetPassEmail(),
+        EnterOTP.routeName: (context) => EnterOTP()
       },
       // ),
       // ),

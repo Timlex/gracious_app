@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gren_mart/view/utils/constant_colors.dart';
+import 'package:gren_mart/view/utils/constant_name.dart';
 
 class CustomDropdown extends StatefulWidget {
   String city;
@@ -32,6 +33,7 @@ class _CustomDropdownState extends State<CustomDropdown> {
         ),
       ),
       child: DropdownButton(
+        hint: Text('Select your city'),
         underline: Container(),
         elevation: 0,
         value: widget.city,
@@ -55,8 +57,11 @@ class _CustomDropdownState extends State<CustomDropdown> {
             alignment: Alignment.centerLeft,
             value: value,
             child: SizedBox(
-              width: MediaQuery.of(context).size.width - 83,
-              child: Text(value),
+              width: screenWidth - 83,
+              child: Padding(
+                padding: const EdgeInsets.only(left: 5),
+                child: Text(value),
+              ),
             ),
           );
         }).toList(),

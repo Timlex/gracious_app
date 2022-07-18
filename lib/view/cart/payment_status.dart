@@ -3,6 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gren_mart/view/home/home_front.dart';
 import 'package:gren_mart/view/utils/app_bars.dart';
 import 'package:gren_mart/view/utils/constant_colors.dart';
+import 'package:gren_mart/view/utils/constant_name.dart';
 import 'package:gren_mart/view/utils/constant_styles.dart';
 
 class PaymentStatusView extends StatefulWidget {
@@ -75,29 +76,21 @@ class _PaymentStatusViewState extends State<PaymentStatusView> {
                 ),
               ),
             )),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                if (!widget.isError)
-                  customBorderButton(
-                    'Back to home',
-                    () {
-                      Navigator.of(context).pushAndRemoveUntil(
-                          MaterialPageRoute(builder: (context) => HomeFront()),
-                          (Route<dynamic> route) => false);
-                    },
-                  ),
-                customContainerButton(
-                    widget.isError ? 'Back to home' : 'Track your order',
-                    widget.isError
-                        ? MediaQuery.of(context).size.width - 50
-                        : 180, () {
-                  setState(() {
-                    widget.isError = !(widget.isError);
-                  });
-                }),
-              ],
-            ),
+            widget.isError
+                ? customRowButton('Back to home', 'Track your order', () {
+                    Navigator.of(context).pushAndRemoveUntil(
+                        MaterialPageRoute(builder: (context) => HomeFront()),
+                        (Route<dynamic> route) => false);
+                  }, () {
+                    setState(() {
+                      widget.isError = !(widget.isError);
+                    });
+                  })
+                : customContainerButton('Back to home', screenWidth - 50, () {
+                    setState(() {
+                      widget.isError = !(widget.isError);
+                    });
+                  }),
             const SizedBox(height: 10),
           ],
         ),

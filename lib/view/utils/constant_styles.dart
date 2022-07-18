@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:gren_mart/view/utils/constant_colors.dart';
+import 'package:gren_mart/view/utils/constant_name.dart';
 
 ConstantColors cc = ConstantColors();
 
@@ -222,6 +223,26 @@ Widget discAmountRow(double discountAmount, double amount) {
             decorationColor: cc.cardGreyHint,
             fontSize: 11),
       ),
+    ],
+  );
+}
+
+Widget customRowButton(
+  String buttonText1,
+  String buttonText2,
+  Function ontap,
+  Function ontap2,
+) {
+  return Row(
+    mainAxisAlignment: MainAxisAlignment.spaceAround,
+    children: [
+      //skip Button
+
+      customBorderButton(buttonText1, ontap, width: (screenWidth - 45) / 2),
+
+      //continue button
+
+      customContainerButton(buttonText2, (screenWidth - 45) / 2, ontap2)
     ],
   );
 }

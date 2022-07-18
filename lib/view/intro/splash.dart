@@ -15,12 +15,13 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     // TODO: implement initState
+
     super.initState();
-    initiateDeviceSize;
   }
 
   @override
   Widget build(BuildContext context) {
+    initiateDeviceSize(context);
     Future.delayed(
       const Duration(seconds: 2),
       () => Navigator.of(context).pushReplacementNamed(Intro.routeName),

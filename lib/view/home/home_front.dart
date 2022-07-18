@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gren_mart/view/browse/browse.dart';
 import 'package:gren_mart/view/cart/cart_view.dart';
+import 'package:gren_mart/view/favorite/favorite.dart';
 import 'package:gren_mart/view/home/home.dart';
 import 'package:gren_mart/view/home/home_helper.dart';
+import 'package:gren_mart/view/search/search.dart';
 import 'package:gren_mart/view/settings/setting.dart';
 import 'package:gren_mart/view/utils/constant_colors.dart';
 import 'package:gren_mart/view/utils/constant_styles.dart';
@@ -22,13 +24,15 @@ class HomeFront extends StatefulWidget {
 
 class _HomeFrontState extends State<HomeFront> {
   final ConstantColors cc = ConstantColors();
+  TextEditingController _textEditingController = TextEditingController();
 
-  List views = [
-    Home(),
-    Browse(),
-    Cart(),
-    SettingView(),
-  ];
+  // List views = [
+  //   Home(),
+  //   SearchView(_textEditingController),
+  //   Cart(),
+  //   const FavoriteView(),
+  //   SettingView(),
+  // ];
 
   int _navigationIndex = 0;
 
@@ -70,18 +74,69 @@ class _HomeFrontState extends State<HomeFront> {
         ),
       );
     }
+    if (_navigationIndex == 3) {
+      return AppBar(
+        elevation: 0,
+        centerTitle: true,
+        title: Text(
+          'My favorite',
+          style: TextStyle(
+              color: cc.blackColor, fontSize: 19, fontWeight: FontWeight.w700),
+        ),
+      );
+    }
     return null;
   }
 
+  void searchHelper() {
+    setState(() {
+      _navigationIndex = 1;
+    });
+  }
+
+  Widget navigationWidget = Home();
   @override
   Widget build(BuildContext context) {
+    if (_navigationIndex == 0) {
+      navigationWidget = Home(
+        searchController: _textEditingController,
+        onFieldSubmitted: searchHelper,
+      );
+    } else if (_navigationIndex == 1) {
+      navigationWidget = SearchView(_textEditingController);
+    }
     return Scaffold(
       appBar: manageAppBar(),
-      body: views[_navigationIndex],
+      body: navigationWidget,
       bottomNavigationBar: BottomNavigationBar(
           onTap: (v) {
+            print(_navigationIndex);
             setState(() {
               _navigationIndex = v;
+              if (v == 0) {
+                _textEditingController.clear();
+                navigationWidget = Home(
+                  searchController: _textEditingController,
+                );
+
+                return;
+              }
+              if (v == 1) {
+                navigationWidget = SearchView(_textEditingController);
+                return;
+              }
+              if (v == 2) {
+                navigationWidget = Cart();
+                return;
+              }
+              if (v == 3) {
+                navigationWidget = FavoriteView();
+                return;
+              }
+              if (v == 4) {
+                navigationWidget = SettingView();
+                return;
+              }
             });
           },
           // fixedColor: cc.blackColor,
@@ -125,6 +180,18 @@ class _HomeFrontState extends State<HomeFront> {
                 ),
                 icon: SvgPicture.asset(
                   'assets/images/icons/bag.svg',
+                  height: 27,
+                  color: cc.greyHint,
+                ),
+                label: ''),
+            BottomNavigationBarItem(
+                activeIcon: SvgPicture.asset(
+                  'assets/images/icons/heart_fill.svg',
+                  height: 27,
+                  color: cc.primaryColor,
+                ),
+                icon: SvgPicture.asset(
+                  'assets/images/icons/heart.svg',
                   height: 27,
                   color: cc.greyHint,
                 ),

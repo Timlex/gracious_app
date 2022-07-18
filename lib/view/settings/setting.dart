@@ -81,9 +81,9 @@ class SettingView extends StatelessWidget {
                 leading: icon
                     ? SvgPicture.asset(
                         imagePath,
-                        height: 40,
+                        height: 35,
                       )
-                    : Image.asset(imagePath2!),
+                    : SizedBox(height: 35, child: Image.asset(imagePath2!)),
                 title: Text(
                   itemText,
                   style: TextStyle(

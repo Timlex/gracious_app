@@ -37,6 +37,9 @@ dependencies:
   flutter_staggered_grid_view:
   modal_bottom_sheet:
   money_formatter:
+  pinput:
+  slide_countdown:
+  
   # provider: 
 
 

@@ -38,10 +38,13 @@ class _CustomTextFieldState extends State<CustomTextField> {
             borderSide:
                 BorderSide(color: ConstantColors().greyBorder, width: 1),
           ),
-          label: Text(
-            widget.levelText,
-            style: TextStyle(
-                color: ConstantColors().greyTextFieldLebel, fontSize: 13),
+          label: Padding(
+            padding: EdgeInsets.only(left: widget.leadingImage == null ? 5 : 0),
+            child: Text(
+              widget.levelText,
+              style: TextStyle(
+                  color: ConstantColors().greyTextFieldLebel, fontSize: 13),
+            ),
           ),
 
           prefixIcon: widget.leadingImage != null

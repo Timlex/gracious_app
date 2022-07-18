@@ -8,12 +8,14 @@ import 'package:gren_mart/view/home/dow_card.dart';
 import 'package:gren_mart/view/home/product_card.dart';
 import 'package:gren_mart/view/search/search.dart';
 import 'package:gren_mart/view/utils/constant_styles.dart';
+import 'package:slide_countdown/slide_countdown.dart';
 import 'poster_card.dart';
 
 class Home extends StatelessWidget {
-  Home({Key? key}) : super(key: key);
-
-  final TextEditingController _searchController = TextEditingController();
+  final TextEditingController? searchController;
+  void Function()? onFieldSubmitted;
+  Home({Key? key, this.searchController, this.onFieldSubmitted})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -25,14 +27,13 @@ class Home extends StatelessWidget {
             height: 20,
           ),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 18),
+            padding: const EdgeInsets.symmetric(horizontal: 25),
             child: CustomTextField(
               'Search your need here',
-              _searchController,
+              searchController!,
               leadingImage: 'assets/images/icons/search_normal.png',
               onFieldSubmitted: (value) {
-                Navigator.of(context).pushNamed(SearchView.routeName,
-                    arguments: [_searchController]);
+                onFieldSubmitted!();
               },
             ),
 
@@ -97,7 +98,7 @@ class Home extends StatelessWidget {
           ),
           const SizedBox(height: 10),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 18),
+            padding: const EdgeInsets.symmetric(horizontal: 25),
             child: seeAllTitle('Fetured products'),
           ),
           const SizedBox(height: 10),
@@ -136,18 +137,31 @@ class Home extends StatelessWidget {
           ),
           const SizedBox(height: 20),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 18),
+            padding: const EdgeInsets.symmetric(horizontal: 25),
             child: Row(
               children: [
-                const SizedBox(width: 18),
+                // const SizedBox(width: 18),
                 const Text(
                   'Deal of the week',
                   style: TextStyle(fontSize: 19, fontWeight: FontWeight.w600),
                 ),
+
                 const Spacer(),
-                DealTimer(DateTime.now().add(const Duration(minutes: 2)), 'h'),
-                DealTimer(DateTime.now().add(const Duration(minutes: 2)), 'm'),
-                DealTimer(DateTime.now().add(const Duration(minutes: 2)), 's'),
+                SlideCountdown(
+                  textStyle:
+                      TextStyle(color: cc.orange, fontWeight: FontWeight.w500),
+                  decoration: BoxDecoration(
+                      color: cc.pureWhite,
+                      borderRadius: BorderRadius.all(Radius.circular(10)),
+                      border: Border.all(
+                        width: .7,
+                        color: cc.orange,
+                      )),
+                  duration: const Duration(days: 2),
+                ),
+                // DealTimer(DateTime.now().add(const Duration(minutes: 2)), 'h'),
+                // DealTimer(DateTime.now().add(const Duration(minutes: 2)), 'm'),
+                // DealTimer(DateTime.now().add(const Duration(minutes: 2)), 's'),
               ],
             ),
           ),

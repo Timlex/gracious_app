@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gren_mart/view/utils/constant_name.dart';
 
 import '../auth/custom_text_field.dart';
 import '../home/product_card.dart';
@@ -34,8 +35,8 @@ class Browse extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double cardWidth = MediaQuery.of(context).size.width / 3.3;
-    double cardHeight = MediaQuery.of(context).size.height / 4.9;
+    double cardWidth = screenWidth / 3.3;
+    double cardHeight = screenHight / 4.9;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [

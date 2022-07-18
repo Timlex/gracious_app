@@ -96,7 +96,7 @@ class _PlusMinusCartState extends State<PlusMinusCart> {
               color: cc.primaryColor,
             ),
             height: 48,
-            width: MediaQuery.of(context).size.width / 2.1,
+            width: screenWidth / 2.1,
             child: Row(
               children: [
                 SvgPicture.asset('assets/images/icons/bag.svg'),

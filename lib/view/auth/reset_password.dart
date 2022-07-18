@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:gren_mart/view/auth/enter_otp.dart';
 import 'package:gren_mart/view/utils/app_bars.dart';
 import 'package:gren_mart/view/utils/constant_colors.dart';
+import 'package:gren_mart/view/utils/constant_name.dart';
 
 import '../utils/constant_styles.dart';
 import 'custom_text_field.dart';
@@ -24,7 +26,7 @@ class ResetPassEmail extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               SizedBox(
-                height: MediaQuery.of(context).size.height / 4,
+                height: screenHight / 4.7,
               ),
               Text(
                 'Reset Password',
@@ -34,22 +36,25 @@ class ResetPassEmail extends StatelessWidget {
                   color: cc.titleTexts,
                 ),
               ),
-              const SizedBox(height: 10),
+              const SizedBox(height: 17),
               Text(
                 'Enter the email you used to creat account and we’ll send instruction for restting password',
                 style: TextStyle(
-                  fontSize: 13,
+                  fontSize: 14,
                   color: ConstantColors().greyParagraph,
                 ),
               ),
-              textFieldTitle('Username'),
+              const SizedBox(height: 10),
+              textFieldTitle('Enter email'),
               CustomTextField(
-                'Enter email',
+                'Email',
                 TextEditingController(),
                 leadingImage: 'assets/images/icons/mail.png',
               ),
               const SizedBox(height: 25),
-              customContainerButton('Send OTP', double.infinity, () {})
+              customContainerButton('Send OTP', double.infinity, () {
+                Navigator.of(context).pushNamed(EnterOTP.routeName);
+              })
             ]),
       ),
     );
