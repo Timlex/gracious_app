@@ -11,6 +11,7 @@ import '../utils/constant_styles.dart';
 
 class Auth extends StatefulWidget {
   static const routeName = 'auth';
+
   const Auth({Key? key}) : super(key: key);
 
   @override
@@ -19,7 +20,13 @@ class Auth extends StatefulWidget {
 
 class _AuthState extends State<Auth> {
   ConstantColors cc = ConstantColors();
-
+  final GlobalKey<FormState> _formKey = GlobalKey();
+  String _email = '';
+  final _passController = TextEditingController();
+  final _emailController = TextEditingController();
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _userNameController = TextEditingController();
+  String city = 'Bangladesh';
   bool login = true;
 
   bool rememberPass = false;
@@ -36,6 +43,20 @@ class _AuthState extends State<Auth> {
     });
   }
 
+  void _onSubmit() {
+    final validated = _formKey.currentState!.validate();
+    if (!validated) {
+      return;
+    }
+    if (_emailController.text == '11111111' &&
+        _passController.text == '11111111') {
+      Navigator.of(context).pushReplacementNamed(HomeFront.routeName);
+      return;
+    }
+    ScaffoldMessenger.of(context)
+        .showSnackBar(snackBar('Invalid email/password'));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -43,8 +64,8 @@ class _AuthState extends State<Auth> {
         preferredSize: const Size(250, 250),
         child: Container(
             height: 230,
-            padding:
-                EdgeInsets.only(top: MediaQuery.of(context).padding.top - 20),
+            // padding:
+            //     EdgeInsets.only(top: MediaQuery.of(context).padding.top - 20),
             decoration: const BoxDecoration(
                 borderRadius: BorderRadius.only(
                   bottomLeft: Radius.circular(30),
@@ -99,7 +120,16 @@ class _AuthState extends State<Auth> {
                   ),
                 ),
                 const SizedBox(height: 15),
-                login ? Login() : SignUp(),
+                login
+                    ? Login(_formKey, _email, _passController, _onSubmit,
+                        _emailController)
+                    : SignUp(
+                        _nameController,
+                        _userNameController,
+                        _emailController,
+                        _passController,
+                        city,
+                      ),
                 const SizedBox(height: 10),
                 if (login)
                   Container(
@@ -137,10 +167,14 @@ class _AuthState extends State<Auth> {
                       )),
                 const SizedBox(height: 10),
                 customContainerButton(
-                    login ? 'Log in' : 'Sign up', double.infinity, () {
-                  Navigator.of(context)
-                      .pushReplacementNamed(HomeFront.routeName);
-                }),
+                    login ? 'Log in' : 'Sign up',
+                    double.infinity,
+                    login
+                        ? _onSubmit
+                        : () {
+                            Navigator.of(context)
+                                .pushReplacementNamed(HomeFront.routeName);
+                          }),
                 const SizedBox(height: 20),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,

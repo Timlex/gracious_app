@@ -3,19 +3,26 @@ import 'package:gren_mart/view/utils/constant_colors.dart';
 import 'package:gren_mart/view/utils/constant_name.dart';
 
 class CustomDropdown extends StatefulWidget {
-  String city;
-  CustomDropdown(this.city, {Key? key}) : super(key: key);
+  String? city;
+  String? country;
+  CustomDropdown({this.country, this.city, Key? key}) : super(key: key);
 
   @override
   State<CustomDropdown> createState() => _CustomDropdownState();
 }
 
 class _CustomDropdownState extends State<CustomDropdown> {
-  List citys = [
+  List countrys = [
     'Bangladesh',
     'Japan',
     'Korea',
     'Africa',
+  ];
+  List citys = [
+    'Dhaka',
+    'Tokyo',
+    'Saul',
+    'Beijing',
   ];
   ConstantColors cc = ConstantColors();
   @override
@@ -33,10 +40,10 @@ class _CustomDropdownState extends State<CustomDropdown> {
         ),
       ),
       child: DropdownButton(
-        hint: Text('Select your city'),
+        hint: Text(widget.city == null ? 'Country' : 'City'),
         underline: Container(),
         elevation: 0,
-        value: widget.city,
+        value: widget.city == null ? widget.country : widget.city,
         style: TextStyle(color: cc.greyHint),
         icon: Icon(
           Icons.keyboard_arrow_down_sharp,
@@ -44,15 +51,25 @@ class _CustomDropdownState extends State<CustomDropdown> {
         ),
         onChanged: (value) {
           setState(() {
-            widget.city = value as String;
+            widget.city == null
+                ? widget.country = value as String
+                : widget.city = value as String;
           });
         },
-        items: <String>[
-          'Bangladesh',
-          'Japan',
-          'Korea',
-          'Africa',
-        ].map<DropdownMenuItem<String>>((String value) {
+        items: (widget.city == null
+                ? <String>[
+                    'Bangladesh',
+                    'Japan',
+                    'Korea',
+                    'Africa',
+                  ]
+                : <String>[
+                    'Dhaka',
+                    'Tokyo',
+                    'Saul',
+                    'Beijing',
+                  ])
+            .map<DropdownMenuItem<String>>((String value) {
           return DropdownMenuItem<String>(
             alignment: Alignment.centerLeft,
             value: value,

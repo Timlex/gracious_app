@@ -6,13 +6,26 @@ class CustomTextField extends StatefulWidget {
   String? leadingImage;
   bool trailing;
   bool obscureText;
-  final TextEditingController controller;
+  TextEditingController? controller;
   void Function(String)? onFieldSubmitted;
-  CustomTextField(this.levelText, this.controller,
-      {this.leadingImage,
-      this.trailing = false,
-      this.obscureText = false,
-      this.onFieldSubmitted});
+  String? Function(String?)? validator;
+  FocusNode? focusNode;
+  void Function(String?)? onSaved;
+  void Function(String)? onChanged;
+  Key? key;
+  CustomTextField(
+    this.levelText, {
+    this.controller,
+    this.leadingImage,
+    this.trailing = false,
+    this.obscureText = false,
+    this.onFieldSubmitted,
+    this.validator,
+    this.focusNode,
+    this.onSaved,
+    this.onChanged,
+    this.key,
+  });
 
   @override
   State<CustomTextField> createState() => _CustomTextFieldState();
@@ -21,72 +34,74 @@ class CustomTextField extends StatefulWidget {
 class _CustomTextFieldState extends State<CustomTextField> {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      // margin: EdgeInsets.only(bottom: 0),
-      child: TextFormField(
-        controller: widget.controller,
-        obscureText: widget.obscureText,
-        decoration: InputDecoration(
-          contentPadding: EdgeInsets.symmetric(horizontal: 8, vertical: 17),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10),
-            borderSide:
-                BorderSide(color: ConstantColors().primaryColor, width: 2),
-          ),
-          enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10),
-            borderSide:
-                BorderSide(color: ConstantColors().greyBorder, width: 1),
-          ),
-          label: Padding(
-            padding: EdgeInsets.only(left: widget.leadingImage == null ? 5 : 0),
-            child: Text(
-              widget.levelText,
-              style: TextStyle(
-                  color: ConstantColors().greyTextFieldLebel, fontSize: 13),
-            ),
-          ),
-
-          prefixIcon: widget.leadingImage != null
-              ? Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    SizedBox(
-                        height: 25,
-                        child: Image.asset(
-                          widget.leadingImage!,
-                        )),
-                  ],
-                )
-              : null,
-          suffixIcon: widget.trailing
-              ? Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          widget.obscureText = !widget.obscureText;
-                        });
-                      },
-                      child: SizedBox(
-                        height: 23,
-                        child: widget.obscureText
-                            ? Image.asset(
-                                'assets/images/icons/pass_hide.png',
-                                fit: BoxFit.fitHeight,
-                              )
-                            : Icon(Icons.remove_red_eye_rounded),
-                      ),
-                    ),
-                  ],
-                )
-              : null,
-
-          //  if (leadingImage != null)?
+    return TextFormField(
+      key: widget.key,
+      focusNode: widget.focusNode,
+      controller: widget.controller,
+      obscureText: widget.obscureText,
+      decoration: InputDecoration(
+        contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 17),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10),
+          borderSide:
+              BorderSide(color: ConstantColors().primaryColor, width: 2),
         ),
-        onFieldSubmitted: widget.onFieldSubmitted,
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10),
+          borderSide: BorderSide(color: ConstantColors().greyBorder, width: 1),
+        ),
+
+        label: Padding(
+          padding: EdgeInsets.only(left: widget.leadingImage == null ? 5 : 0),
+          child: Text(
+            widget.levelText,
+            style: TextStyle(
+                color: ConstantColors().greyTextFieldLebel, fontSize: 13),
+          ),
+        ),
+
+        prefixIcon: widget.leadingImage != null
+            ? Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SizedBox(
+                      height: 25,
+                      child: Image.asset(
+                        widget.leadingImage!,
+                      )),
+                ],
+              )
+            : null,
+        suffixIcon: widget.trailing
+            ? Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        widget.obscureText = !widget.obscureText;
+                      });
+                    },
+                    child: SizedBox(
+                      height: 23,
+                      child: widget.obscureText
+                          ? Image.asset(
+                              'assets/images/icons/pass_hide.png',
+                              fit: BoxFit.fitHeight,
+                            )
+                          : Icon(Icons.remove_red_eye_rounded),
+                    ),
+                  ),
+                ],
+              )
+            : null,
+
+        //  if (leadingImage != null)?
       ),
+      onFieldSubmitted: widget.onFieldSubmitted,
+      validator: widget.validator == null ? null : (_) => widget.validator!(_),
+      onSaved: widget.onSaved == null ? null : (_) => widget.onSaved!(_),
+      onChanged: widget.onChanged == null ? null : (_) => widget.onChanged!(_),
     );
   }
 }

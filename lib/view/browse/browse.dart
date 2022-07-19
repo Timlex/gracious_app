@@ -44,7 +44,7 @@ class Browse extends StatelessWidget {
           padding: const EdgeInsets.only(top: 20, right: 20, left: 20),
           child: CustomTextField(
             'Search your need here',
-            TextEditingController(),
+            controller: TextEditingController(),
             leadingImage: 'assets/images/icons/search_normal.png',
           ),
         ),

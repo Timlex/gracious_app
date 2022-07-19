@@ -6,6 +6,7 @@ import 'package:pinput/pinput.dart';
 
 import '../home/home_front.dart';
 import '../utils/constant_colors.dart';
+import '../utils/constant_styles.dart';
 
 class EnterOTP extends StatelessWidget {
   static const routeName = 'confirm OTP';
@@ -40,57 +41,60 @@ class EnterOTP extends StatelessWidget {
       }, hasElevation: false),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 25),
-        child: Column(children: [
-          SizedBox(height: screenHight / 20),
-          Center(
-            child: SizedBox(
-              height: 90,
-              child: Image.asset('assets/images/email.png'),
-            ),
-          ),
-          const SizedBox(height: 40),
-          Text(
-            'Reset Password',
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.w600,
-              color: cc.titleTexts,
-            ),
-          ),
-          const SizedBox(height: 10),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 40.0),
-            child: Text(
-              'Enter the 4 digit code we sent to to your email in order to reset password',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 13,
-                color: cc.greyParagraph,
+        child: SingleChildScrollView(
+          child: Column(children: [
+            SizedBox(height: screenHight / 20),
+            Center(
+              child: SizedBox(
+                height: 90,
+                child: Image.asset('assets/images/email.png'),
               ),
             ),
-          ),
-          const SizedBox(height: 20),
-          otpPinput(defaultPinTheme, focusedPinTheme, context),
-          const SizedBox(height: 35),
-          Center(
-            child: RichText(
-              text: TextSpan(
-                text: 'Didn\'t received?',
+            const SizedBox(height: 40),
+            Text(
+              'Reset Password',
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.w600,
+                color: cc.titleTexts,
+              ),
+            ),
+            const SizedBox(height: 10),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 40.0),
+              child: Text(
+                'Enter the 4 digit code we sent to to your email in order to reset password',
+                textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 13,
-                  color: ConstantColors().greyParagraph,
+                  color: cc.greyParagraph,
                 ),
-                children: <TextSpan>[
-                  TextSpan(
-                      onEnter: (event) {},
-                      text: 'Send again',
-                      style: TextStyle(
-                          color: cc.primaryColor, fontWeight: FontWeight.bold)),
-                ],
               ),
             ),
-          )
-        ]),
+            const SizedBox(height: 20),
+            otpPinput(defaultPinTheme, focusedPinTheme, context),
+            const SizedBox(height: 35),
+            Center(
+              child: RichText(
+                text: TextSpan(
+                  text: 'Didn\'t received?',
+                  style: TextStyle(
+                    fontSize: 13,
+                    color: ConstantColors().greyParagraph,
+                  ),
+                  children: <TextSpan>[
+                    TextSpan(
+                        onEnter: (event) {},
+                        text: 'Send again',
+                        style: TextStyle(
+                            color: cc.primaryColor,
+                            fontWeight: FontWeight.bold)),
+                  ],
+                ),
+              ),
+            )
+          ]),
+        ),
       ),
     );
   }
@@ -107,30 +111,13 @@ class EnterOTP extends StatelessWidget {
               (Route<dynamic> route) => false);
           return;
         }
-        final snackBar = SnackBar(
-            behavior: SnackBarBehavior.floating,
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-            margin: const EdgeInsets.all(5),
-            backgroundColor: cc.orange,
-            duration: const Duration(seconds: 1),
-            content: Row(
-              children: [
-                const Text(
-                  'Wrong OTP Code',
-                ),
-                const Spacer(),
-                GestureDetector(
-                  child: const Text('Resend code'),
-                  onTap: () {
-                    ScaffoldMessenger.of(context).removeCurrentSnackBar();
-                  },
-                )
-              ],
-            ));
+
         // _scaffoldKey.currentState!.showSnackBar(snackBar);
         ScaffoldMessenger.of(context).removeCurrentMaterialBanner();
-        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        ScaffoldMessenger.of(context).showSnackBar(
+            snackBar('Wrong OTP Code', buttonText: 'Resend code', onTap: () {
+          ScaffoldMessenger.of(context).removeCurrentSnackBar();
+        }));
 
         return;
       },

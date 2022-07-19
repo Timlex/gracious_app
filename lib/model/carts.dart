@@ -43,4 +43,8 @@ class CartData {
     _cartList.removeAt(index);
     print(_cartList.length.toString());
   }
+
+  void addCartTime(String id, int quantity) {
+    _cartList.add(Cart(id, quantity));
+  }
 }

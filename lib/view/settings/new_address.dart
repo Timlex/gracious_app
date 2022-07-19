@@ -9,32 +9,39 @@ import '../home/home_front.dart';
 import '../intro/custom_dropdown.dart';
 import '../utils/constant_styles.dart';
 
-class ManageAccount extends StatefulWidget {
-  static const routeName = 'manage account';
-  ManageAccount({Key? key}) : super(key: key);
-
-  var user = UsersData(
-    'carmeron123',
-    '11111111',
-    'Cameron Williamson',
-    'cameron@cameron.com',
-    'BanglaDesh',
-  );
+class NewAddress extends StatefulWidget {
+  static const routeName = 'new address';
+  NewAddress({Key? key}) : super(key: key);
 
   @override
-  State<ManageAccount> createState() => _ManageAccountState();
+  State<NewAddress> createState() => _NewAddressState();
 }
 
-class _ManageAccountState extends State<ManageAccount> {
+class _NewAddressState extends State<NewAddress> {
   ConstantColors cc = ConstantColors();
 
   final GlobalKey<FormState> _formKey = GlobalKey();
   final _emailController = TextEditingController();
   final _nameController = TextEditingController();
   final _userNameController = TextEditingController();
+  final _passwordController = TextEditingController();
+  final _reFN = FocusNode();
   final _userNameFN = FocusNode();
   final _emailFN = FocusNode();
-  String city = 'Bangladesh';
+  String city = 'Dhaka';
+  String country = 'Bangladesh';
+  List countrys = [
+    'Bangladesh',
+    'Japan',
+    'Korea',
+    'Africa',
+  ];
+  List citys = [
+    'Dhaka',
+    'Tokyo',
+    'Saul',
+    'Beijing',
+  ];
 
   void _onSubmit(String name, String userName, String email, String city) {
     Navigator.of(context).pushReplacementNamed(HomeFront.routeName);
@@ -79,8 +86,6 @@ class _ManageAccountState extends State<ManageAccount> {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 25),
             child: Form(
-              key: _formKey,
-              autovalidateMode: AutovalidateMode.always,
               child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -93,40 +98,22 @@ class _ManageAccountState extends State<ManageAccount> {
                         if (emailText!.isEmpty) {
                           return 'Enter your name';
                         }
-                        if (emailText.length <= 3) {
-                          return 'Enter a valid email/username';
+                        if (emailText.length <= 2) {
+                          return 'Enter a valid name';
                         }
                         return null;
                       },
                       onFieldSubmitted: (_) {
                         FocusScope.of(context).requestFocus(_userNameFN);
                       },
-                      // imagePath: 'assets/images/icons/mail.png',
                     ),
-                    textFieldTitle('User name'),
-                    // const SizedBox(height: 8),
-                    CustomTextField(
-                      'Enter user name',
-                      controller: _userNameController,
-                      focusNode: _userNameFN,
-                      validator: (emailText) {
-                        if (emailText!.isEmpty) {
-                          return 'Enter your username';
-                        }
-                        if (emailText.length < 5) {
-                          return 'Enter at least 5 charecters';
-                        }
-                        return null;
-                      },
-                      onFieldSubmitted: (_) {
-                        FocusScope.of(context).requestFocus(_emailFN);
-                      },
-                    ),
+
                     textFieldTitle('Email'),
                     // const SizedBox(height: 8),
                     CustomTextField(
                       'Enter email address',
                       controller: _emailController,
+                      focusNode: _emailFN,
                       validator: (emailText) {
                         if (emailText!.isEmpty) {
                           return 'Enter your email';
@@ -136,11 +123,64 @@ class _ManageAccountState extends State<ManageAccount> {
                         }
                         return null;
                       },
-                      // imagePath: 'assets/images/icons/mail.png',
+                    ),
+                    textFieldTitle('Phone'),
+                    // const SizedBox(height: 8),
+                    CustomTextField(
+                      'Enter your phone number',
+                      controller: _userNameController,
+                      focusNode: _userNameFN,
+                      validator: (emailText) {
+                        if (emailText!.isEmpty) {
+                          return 'Enter your phone number';
+                        }
+                        if (emailText.length <= 5) {
+                          return 'Enter a valid phone number';
+                        }
+                        return null;
+                      },
+                      onFieldSubmitted: (_) {
+                        FocusScope.of(context).requestFocus(_emailFN);
+                      },
                     ),
                     textFieldTitle('City'),
                     // const SizedBox(height: 8),
                     CustomDropdown(city: city),
+                    textFieldTitle('Country'),
+                    // const SizedBox(height: 8),
+                    CustomDropdown(country: country),
+                    textFieldTitle('Zip code'),
+                    // const SizedBox(height: 8),
+                    CustomTextField(
+                      'Enter your Zip code',
+                      controller: _passwordController,
+                      validator: (emailText) {
+                        // if (emailText!.isEmpty) {
+                        //   return 'Enter at least 6 charechters';
+                        // }
+                        // if (emailText.length <= 5) {
+                        //   return 'Enter at least 6 charechters';
+                        // }
+                        return null;
+                      },
+                      onFieldSubmitted: (_) {
+                        FocusScope.of(context).requestFocus(_reFN);
+                      },
+                    ),
+                    textFieldTitle('Address'),
+                    // const SizedBox(height: 8),
+                    CustomTextField(
+                      'Enter your address',
+                      controller: _passwordController,
+                      focusNode: _reFN,
+                      validator: (emailText) {
+                        if (emailText == _passwordController.text) {
+                          return 'Enter the same password';
+                        }
+                        return null;
+                      },
+                      onFieldSubmitted: (_) {},
+                    ),
                   ]),
             ),
           ),

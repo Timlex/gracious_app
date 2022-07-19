@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gren_mart/view/auth/auth.dart';
 import 'package:gren_mart/view/intro/dot_indicator.dart';
 import 'package:gren_mart/view/utils/constant_colors.dart';
+import 'package:gren_mart/view/utils/constant_name.dart';
 import 'package:gren_mart/view/utils/constant_styles.dart';
 
 import './intro_helper.dart';
@@ -32,7 +33,9 @@ class _IntroState extends State<Intro> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Expanded(
+            SizedBox(height: screenHight / 5),
+            SizedBox(
+              height: screenHight / 2,
               child: PageView(
                   controller: _controller,
                   onPageChanged: (index) {
@@ -74,17 +77,17 @@ class _IntroState extends State<Intro> {
                                   color: ConstantColors().greyParagraph,
                                 ),
                               ),
-                              const SizedBox(height: 36),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: _dotIdicators(),
-                              )
                             ],
                           ),
                         ),
                       )
                       .toList()),
             ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: _dotIdicators(),
+            ),
+            Expanded(child: Container()),
             customRowButton('Skip', 'Continue', () {
               Navigator.of(context).pushReplacementNamed(Auth.routeName);
             }, () {

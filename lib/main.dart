@@ -14,6 +14,7 @@ import 'package:gren_mart/view/intro/splash.dart';
 import 'package:gren_mart/view/search/search.dart';
 import 'package:gren_mart/view/settings/change_password.dart';
 import 'package:gren_mart/view/settings/manage_account.dart';
+import 'package:gren_mart/view/settings/new_address.dart';
 import 'package:gren_mart/view/utils/constant_colors.dart';
 
 void main() {
@@ -56,15 +57,16 @@ class MyApp extends StatelessWidget {
       routes: {
         Intro.routeName: (context) => Intro(),
         Auth.routeName: (context) => const Auth(),
+        ResetPassEmail.routeName: (context) => ResetPassEmail(),
+        EnterOTP.routeName: (context) => EnterOTP(),
         HomeFront.routeName: (context) => const HomeFront(),
         ProductDetails.routeName: (context) => ProductDetails(),
-        Cart.routeName: (context) => Cart(),
+        CartView.routeName: (context) => CartView(),
         Checkout.routeName: (context) => Checkout(),
         // SearchView.routeName: (context) => SearchView(),
+        NewAddress.routeName: (context) => NewAddress(),
         ManageAccount.routeName: (context) => ManageAccount(),
         ChangePassword.routeName: (context) => ChangePassword(),
-        ResetPassEmail.routeName: (context) => ResetPassEmail(),
-        EnterOTP.routeName: (context) => EnterOTP()
       },
       // ),
       // ),

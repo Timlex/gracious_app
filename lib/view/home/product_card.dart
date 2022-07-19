@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gren_mart/model/carts.dart';
 import 'package:gren_mart/model/products.dart';
 import 'package:gren_mart/view/details/product_details.dart';
 import 'package:gren_mart/view/utils/constant_colors.dart';
@@ -116,24 +117,30 @@ class ProductCard extends StatelessWidget {
                     onTap: () {
                       // Navigator.of(context).pushReplacementNamed(Auth.routeName);
                     },
-                    child: Container(
-                        height: 40,
-                        width: double.infinity,
-                        alignment: Alignment.center,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                          border: Border.all(
-                            width: 1,
-                            color: ConstantColors().primaryColor,
-                          ),
-                        ),
-                        child: Text(
-                          'Add to cart',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
+                    child: GestureDetector(
+                      onTap: () {
+                        CartData().addCartTime('10', 3);
+                        print('this is working');
+                      },
+                      child: Container(
+                          height: 40,
+                          width: double.infinity,
+                          alignment: Alignment.center,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            border: Border.all(
+                              width: 1,
                               color: ConstantColors().primaryColor,
-                              fontWeight: FontWeight.w600),
-                        )),
+                            ),
+                          ),
+                          child: Text(
+                            'Add to cart',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                color: ConstantColors().primaryColor,
+                                fontWeight: FontWeight.w600),
+                          )),
+                    ),
                   ),
                 ],
               ),

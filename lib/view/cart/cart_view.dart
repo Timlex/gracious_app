@@ -9,9 +9,9 @@ import 'package:gren_mart/view/utils/constant_styles.dart';
 import '../../model/carts.dart';
 import '../../model/products.dart';
 
-class Cart extends StatelessWidget {
+class CartView extends StatelessWidget {
   static const routeName = 'cart';
-  Cart({Key? key}) : super(key: key);
+  CartView({Key? key}) : super(key: key);
 
   ConstantColors cc = ConstantColors();
 

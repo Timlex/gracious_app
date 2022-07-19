@@ -246,3 +246,26 @@ Widget customRowButton(
     ],
   );
 }
+
+SnackBar snackBar(String content,
+    {String buttonText = '', void Function()? onTap}) {
+  return SnackBar(
+      behavior: SnackBarBehavior.floating,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+      margin: const EdgeInsets.all(5),
+      backgroundColor: cc.orange,
+      duration: const Duration(seconds: 1),
+      content: Row(
+        children: [
+          Text(
+            content,
+          ),
+          const Spacer(),
+          if (buttonText == '')
+            GestureDetector(
+              child: Text(buttonText),
+              onTap: onTap,
+            )
+        ],
+      ));
+}

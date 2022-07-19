@@ -1,14 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:gren_mart/model/user_data.dart';
 import 'package:gren_mart/view/auth/auth.dart';
 import 'package:gren_mart/view/settings/change_password.dart';
 import 'package:gren_mart/view/settings/manage_account.dart';
+import 'package:gren_mart/view/settings/new_address.dart';
 import 'package:gren_mart/view/settings/setting_screen_appbar.dart';
 import 'package:gren_mart/view/utils/constant_colors.dart';
 import 'package:gren_mart/view/utils/constant_styles.dart';
 
-class SettingView extends StatelessWidget {
+class SettingView extends StatefulWidget {
   SettingView({Key? key}) : super(key: key);
+
+  @override
+  State<SettingView> createState() => _SettingViewState();
+}
+
+class _SettingViewState extends State<SettingView> {
+  bool login = true;
 
   ConstantColors cc = ConstantColors();
 
@@ -43,7 +52,10 @@ class SettingView extends StatelessWidget {
         const SizedBox(height: 40),
         settingItem('assets/images/icons/orders.svg', 'My Orders'),
         settingItem(
-            'assets/images/icons/shipping_address.svg', 'Shipping Address'),
+            'assets/images/icons/shipping_address.svg', 'Shipping Address',
+            onTap: () {
+          Navigator.of(context).pushNamed(NewAddress.routeName);
+        }),
         settingItem('assets/images/icons/manage_profile.svg', 'Manage Account',
             onTap: () {
           Navigator.of(context).pushNamed(ManageAccount.routeName);
@@ -61,7 +73,8 @@ class SettingView extends StatelessWidget {
                 MaterialPageRoute(builder: (context) => Auth()),
                 (Route<dynamic> route) => false);
           }),
-        )
+        ),
+        const SizedBox(height: 40),
       ],
     );
   }

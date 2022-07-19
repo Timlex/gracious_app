@@ -30,7 +30,7 @@ class Home extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 25),
             child: CustomTextField(
               'Search your need here',
-              searchController!,
+              controller: searchController!,
               leadingImage: 'assets/images/icons/search_normal.png',
               onFieldSubmitted: (value) {
                 onFieldSubmitted!();
@@ -148,6 +148,7 @@ class Home extends StatelessWidget {
 
                 const Spacer(),
                 SlideCountdown(
+                  showZeroValue: true,
                   textStyle:
                       TextStyle(color: cc.orange, fontWeight: FontWeight.w500),
                   decoration: BoxDecoration(

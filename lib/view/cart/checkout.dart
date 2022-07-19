@@ -65,7 +65,7 @@ class _CheckoutState extends State<Checkout> {
           children: [
             CustomTextField(
               'enter new address',
-              TextEditingController(),
+              controller: TextEditingController(),
               leadingImage: 'assets/images/icons/location.png',
             ),
             const SizedBox(height: 10),

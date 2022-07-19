@@ -1,5 +1,8 @@
+import 'package:badges/badges.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:gren_mart/model/carts.dart';
+import 'package:gren_mart/model/favorites.dart';
 import 'package:gren_mart/view/browse/browse.dart';
 import 'package:gren_mart/view/cart/cart_view.dart';
 import 'package:gren_mart/view/favorite/favorite.dart';
@@ -110,7 +113,6 @@ class _HomeFrontState extends State<HomeFront> {
       body: navigationWidget,
       bottomNavigationBar: BottomNavigationBar(
           onTap: (v) {
-            print(_navigationIndex);
             setState(() {
               _navigationIndex = v;
               if (v == 0) {
@@ -126,7 +128,7 @@ class _HomeFrontState extends State<HomeFront> {
                 return;
               }
               if (v == 2) {
-                navigationWidget = Cart();
+                navigationWidget = CartView();
                 return;
               }
               if (v == 3) {
@@ -140,6 +142,8 @@ class _HomeFrontState extends State<HomeFront> {
             });
           },
           // fixedColor: cc.blackColor,
+
+          type: BottomNavigationBarType.fixed,
           backgroundColor: cc.blackColor,
           selectedItemColor: cc.blackColor,
           unselectedItemColor: cc.blackColor,
@@ -162,12 +166,12 @@ class _HomeFrontState extends State<HomeFront> {
                 label: ''),
             BottomNavigationBarItem(
                 activeIcon: SvgPicture.asset(
-                  'assets/images/icons/browsing_selected.svg',
+                  'assets/images/icons/search_fill.svg',
                   height: 27,
                   color: cc.primaryColor,
                 ),
                 icon: SvgPicture.asset(
-                  'assets/images/icons/browsing.svg',
+                  'assets/images/icons/search.svg',
                   height: 27,
                   color: cc.greyHint,
                 ),
@@ -178,10 +182,17 @@ class _HomeFrontState extends State<HomeFront> {
                   height: 27,
                   color: cc.primaryColor,
                 ),
-                icon: SvgPicture.asset(
-                  'assets/images/icons/bag.svg',
-                  height: 27,
-                  color: cc.greyHint,
+                icon: Badge(
+                  showBadge: CartData().cartList.isEmpty ? false : true,
+                  badgeContent: Text(
+                    CartData().cartList.length.toString(),
+                    style: TextStyle(color: cc.pureWhite),
+                  ),
+                  child: SvgPicture.asset(
+                    'assets/images/icons/bag.svg',
+                    height: 27,
+                    color: cc.greyHint,
+                  ),
                 ),
                 label: ''),
             BottomNavigationBarItem(
@@ -190,10 +201,17 @@ class _HomeFrontState extends State<HomeFront> {
                   height: 27,
                   color: cc.primaryColor,
                 ),
-                icon: SvgPicture.asset(
-                  'assets/images/icons/heart.svg',
-                  height: 27,
-                  color: cc.greyHint,
+                icon: Badge(
+                  showBadge: FavoriteData().favoriteList.isEmpty ? false : true,
+                  badgeContent: Text(
+                    FavoriteData().favoriteList.length.toString(),
+                    style: TextStyle(color: cc.pureWhite),
+                  ),
+                  child: SvgPicture.asset(
+                    'assets/images/icons/heart.svg',
+                    height: 27,
+                    color: cc.greyHint,
+                  ),
                 ),
                 label: ''),
             BottomNavigationBarItem(

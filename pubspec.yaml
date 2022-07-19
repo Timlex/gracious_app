@@ -39,6 +39,7 @@ dependencies:
   money_formatter:
   pinput:
   slide_countdown:
+  badges:
   
   # provider: 
 
