@@ -1,3 +1,5 @@
+import 'package:flutter/cupertino.dart';
+
 class Product {
   final String id;
   String title;
@@ -12,7 +14,7 @@ class Product {
       required this.image});
 }
 
-class Products {
+class Products with ChangeNotifier {
   final List<Product> _products = [
     Product(
       id: '01',

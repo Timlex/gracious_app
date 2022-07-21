@@ -3,10 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:gren_mart/model/products.dart';
 import 'package:gren_mart/view/auth/custom_text_field.dart';
 import 'package:gren_mart/model/poster_data.dart';
-import 'package:gren_mart/view/home/deal_timer.dart';
 import 'package:gren_mart/view/home/dow_card.dart';
 import 'package:gren_mart/view/home/product_card.dart';
-import 'package:gren_mart/view/search/search.dart';
 import 'package:gren_mart/view/utils/constant_styles.dart';
 import 'package:slide_countdown/slide_countdown.dart';
 import 'poster_card.dart';
@@ -112,8 +110,8 @@ class Home extends StatelessWidget {
                 ...Products()
                     .products
                     .map((e) => ProductCard(
-                        e.title, e.amount, 'assets/images/product1.png',
-                        discountAmount: 220))
+                          e.id,
+                        ))
                     .toList()
               ],
             ),
@@ -153,7 +151,7 @@ class Home extends StatelessWidget {
                       TextStyle(color: cc.orange, fontWeight: FontWeight.w500),
                   decoration: BoxDecoration(
                       color: cc.pureWhite,
-                      borderRadius: BorderRadius.all(Radius.circular(10)),
+                      borderRadius: const BorderRadius.all(Radius.circular(10)),
                       border: Border.all(
                         width: .7,
                         color: cc.orange,
@@ -174,12 +172,12 @@ class Home extends StatelessWidget {
                 const SizedBox(
                   width: 18,
                 ),
-                ProductCard('Fresh Fruits', 240, 'assets/images/product1.png',
-                    discountAmount: 220),
-                ProductCard('Fresh Fruits', 240, 'assets/images/product1.png',
-                    discountAmount: 220),
-                ProductCard('Fresh Fruits', 240, 'assets/images/product1.png',
-                    discountAmount: 220)
+                ...Products()
+                    .products
+                    .map((e) => ProductCard(
+                          e.id,
+                        ))
+                    .toList()
               ],
             ),
           ),

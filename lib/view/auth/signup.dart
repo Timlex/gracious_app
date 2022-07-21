@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gren_mart/view/intro/custom_dropdown.dart';
 
-import '../utils/constant_colors.dart';
 import '../utils/constant_styles.dart';
 import 'custom_text_field.dart';
 
@@ -13,7 +12,8 @@ class SignUp extends StatelessWidget {
   final _userNameFN = FocusNode();
   final _emailFN = FocusNode();
   final _reFN = FocusNode();
-  String city;
+  String city = 'Dhaka';
+  String country = 'Bangladesh';
   List countrys = [
     'Bangladesh',
     'Japan',
@@ -98,6 +98,9 @@ class SignUp extends StatelessWidget {
         CustomDropdown(
           city: city,
         ),
+        textFieldTitle('Country'),
+        // const SizedBox(height: 8),
+        CustomDropdown(country: country),
         textFieldTitle('Password'),
         // const SizedBox(height: 8),
         CustomTextField(

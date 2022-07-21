@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
+import 'package:gren_mart/db/database_helper.dart';
 
 import 'package:gren_mart/view/auth/custom_text_field.dart';
 import 'package:gren_mart/view/cart/cart_grid_tile.dart';
@@ -114,6 +114,7 @@ class _CheckoutState extends State<Checkout> {
                 )),
             const SizedBox(height: 20),
             customContainerButton('Pay & Confirm', double.maxFinite, () {
+              DbHelper.deleteDbTable('cart');
               Navigator.push(
                 context,
                 MaterialPageRoute(

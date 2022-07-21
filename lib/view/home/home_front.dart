@@ -3,16 +3,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gren_mart/model/carts.dart';
 import 'package:gren_mart/model/favorites.dart';
-import 'package:gren_mart/view/browse/browse.dart';
 import 'package:gren_mart/view/cart/cart_view.dart';
 import 'package:gren_mart/view/favorite/favorite.dart';
 import 'package:gren_mart/view/home/home.dart';
-import 'package:gren_mart/view/home/home_helper.dart';
 import 'package:gren_mart/view/search/search.dart';
 import 'package:gren_mart/view/settings/setting.dart';
 import 'package:gren_mart/view/utils/constant_colors.dart';
 import 'package:gren_mart/view/utils/constant_styles.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+import 'package:provider/provider.dart';
 
 import '../search/filter_bottom_sheeet.dart';
 
@@ -27,7 +26,7 @@ class HomeFront extends StatefulWidget {
 
 class _HomeFrontState extends State<HomeFront> {
   final ConstantColors cc = ConstantColors();
-  TextEditingController _textEditingController = TextEditingController();
+  final TextEditingController _textEditingController = TextEditingController();
 
   // List views = [
   //   Home(),
@@ -132,7 +131,7 @@ class _HomeFrontState extends State<HomeFront> {
                 return;
               }
               if (v == 3) {
-                navigationWidget = FavoriteView();
+                navigationWidget = const FavoriteView();
                 return;
               }
               if (v == 4) {
@@ -182,18 +181,20 @@ class _HomeFrontState extends State<HomeFront> {
                   height: 27,
                   color: cc.primaryColor,
                 ),
-                icon: Badge(
-                  showBadge: CartData().cartList.isEmpty ? false : true,
-                  badgeContent: Text(
-                    CartData().cartList.length.toString(),
-                    style: TextStyle(color: cc.pureWhite),
-                  ),
-                  child: SvgPicture.asset(
-                    'assets/images/icons/bag.svg',
-                    height: 27,
-                    color: cc.greyHint,
-                  ),
-                ),
+                icon: Consumer<CartData>(builder: (context, cartData, child) {
+                  return Badge(
+                    showBadge: cartData.cartList.isEmpty ? false : true,
+                    badgeContent: Text(
+                      cartData.cartList.length.toString(),
+                      style: TextStyle(color: cc.pureWhite),
+                    ),
+                    child: SvgPicture.asset(
+                      'assets/images/icons/bag.svg',
+                      height: 27,
+                      color: cc.greyHint,
+                    ),
+                  );
+                }),
                 label: ''),
             BottomNavigationBarItem(
                 activeIcon: SvgPicture.asset(
@@ -201,18 +202,22 @@ class _HomeFrontState extends State<HomeFront> {
                   height: 27,
                   color: cc.primaryColor,
                 ),
-                icon: Badge(
-                  showBadge: FavoriteData().favoriteList.isEmpty ? false : true,
-                  badgeContent: Text(
-                    FavoriteData().favoriteList.length.toString(),
-                    style: TextStyle(color: cc.pureWhite),
-                  ),
-                  child: SvgPicture.asset(
-                    'assets/images/icons/heart.svg',
-                    height: 27,
-                    color: cc.greyHint,
-                  ),
-                ),
+                icon: Consumer<FavoriteData>(
+                    builder: (context, favoriteData, child) {
+                  return Badge(
+                    showBadge:
+                        favoriteData.favoriteItems.isEmpty ? false : true,
+                    badgeContent: Text(
+                      favoriteData.favoriteItems.length.toString(),
+                      style: TextStyle(color: cc.pureWhite),
+                    ),
+                    child: SvgPicture.asset(
+                      'assets/images/icons/heart.svg',
+                      height: 27,
+                      color: cc.greyHint,
+                    ),
+                  );
+                }),
                 label: ''),
             BottomNavigationBarItem(
                 activeIcon: SvgPicture.asset(

@@ -1,26 +1,27 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:gren_mart/model/carts.dart';
-import 'package:gren_mart/model/products.dart';
+import 'package:provider/provider.dart';
 
 import '../utils/constant_styles.dart';
 
-class CartCard extends StatefulWidget {
+class CartCard extends StatelessWidget {
   final String id;
-  CartCard(this.id, {Key? key}) : super(key: key);
-
-  @override
-  State<CartCard> createState() => _CartCardState();
-}
-
-class _CartCardState extends State<CartCard> {
+  final String name;
+  final String image;
+  final int quantity;
+  final double price;
+  const CartCard(
+    this.id,
+    this.name,
+    this.image,
+    this.quantity,
+    this.price, {
+    Key? key,
+  }) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    final cartItem = Products().products.firstWhere(
-          (element) => element.id == widget.id,
-        );
+    final carts = Provider.of<CartData>(context, listen: false);
     return Dismissible(
       direction: DismissDirection.endToStart,
       background: Container(
@@ -38,7 +39,7 @@ class _CartCardState extends State<CartCard> {
             ),
             const SizedBox(width: 15),
             SvgPicture.asset(
-              'assets/images/icons/trash.svg',
+              image,
               height: 22,
               width: 22,
               color: cc.pureWhite,
@@ -46,8 +47,10 @@ class _CartCardState extends State<CartCard> {
           ],
         ),
       ),
-      onDismissed: (direction) {},
-      key: Key(widget.id),
+      onDismissed: (direction) {
+        carts.deleteCartItem(id);
+      },
+      key: Key(id),
       child: SizedBox(
         height: 75,
         child: Column(
@@ -59,9 +62,11 @@ class _CartCardState extends State<CartCard> {
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(15),
                 ),
-                child: Image.asset(
-                  cartItem.image[0],
-                  fit: BoxFit.fill,
+                child: SafeArea(
+                  child: Image.asset(
+                    image,
+                    fit: BoxFit.fill,
+                  ),
                 ),
               ),
               title: Row(
@@ -73,13 +78,13 @@ class _CartCardState extends State<CartCard> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          cartItem.title,
+                          name,
                           style: const TextStyle(
                               fontSize: 15, fontWeight: FontWeight.w600),
                         ),
                         const SizedBox(height: 13),
                         Text(
-                          '\$220',
+                          '\$$price',
                           style: TextStyle(
                               color: cc.primaryColor,
                               fontWeight: FontWeight.w600,
@@ -98,55 +103,57 @@ class _CartCardState extends State<CartCard> {
                             width: .4, color: cc.greyTextFieldLebel)),
                     height: 48,
                     width: 105,
-                    child: Row(
-                      children: [
-                        Container(
-                          height: 35,
-                          width: 35,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                            color: Color.fromARGB(33, 208, 47, 68),
+                    child: Consumer<CartData>(builder: (context, cart, child) {
+                      return Row(
+                        children: [
+                          Container(
+                            height: 35,
+                            width: 35,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              color: const Color.fromARGB(33, 208, 47, 68),
+                            ),
+                            child: IconButton(
+                                // padding: EdgeInsets.zero,
+                                onPressed: () {
+                                  cart.minusItem(id);
+                                },
+                                icon: SvgPicture.asset(
+                                  'assets/images/icons/minus.svg',
+                                  color: const Color.fromARGB(255, 208, 47, 68),
+                                )),
                           ),
-                          child: IconButton(
-                              // padding: EdgeInsets.zero,
-                              onPressed: () {},
-                              icon: SvgPicture.asset(
-                                'assets/images/icons/minus.svg',
-                                color: const Color.fromARGB(255, 208, 47, 68),
-                              )),
-                        ),
-                        Expanded(
-                            child: Text(
-                          CartData()
-                              .cartList
-                              .firstWhere((element) => element.id == widget.id)
-                              .quantity
-                              .toString(),
-                          textAlign: TextAlign.center,
-                          style: const TextStyle(
-                              fontSize: 15,
-                              color: Color(0xff475467),
-                              fontWeight: FontWeight.w600),
-                        )),
-                        Container(
-                          height: 35,
-                          width: 35,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                            color: Color.fromARGB(39, 0, 177, 6),
+                          Expanded(
+                              child: Text(
+                            quantity.toString(),
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(
+                                fontSize: 15,
+                                color: Color(0xff475467),
+                                fontWeight: FontWeight.w600),
+                          )),
+                          Container(
+                            height: 35,
+                            width: 35,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              color: const Color.fromARGB(39, 0, 177, 6),
+                            ),
+                            child: IconButton(
+                                onPressed: () => cart.addItem(id),
+                                icon: SvgPicture.asset(
+                                  'assets/images/icons/add.svg',
+                                  color: cc.primaryColor,
+                                )),
                           ),
-                          child: IconButton(
-                              onPressed: () => {},
-                              icon: SvgPicture.asset(
-                                'assets/images/icons/add.svg',
-                                color: cc.primaryColor,
-                              )),
-                        ),
-                      ],
-                    ),
+                        ],
+                      );
+                    }),
                   ),
                   GestureDetector(
-                    onTap: (() {}),
+                    onTap: (() {
+                      carts.deleteCartItem(id);
+                    }),
                     child: Padding(
                       padding: const EdgeInsets.only(left: 7),
                       child: SvgPicture.asset(
@@ -160,7 +167,8 @@ class _CartCardState extends State<CartCard> {
                 ],
               ),
             ),
-            if (!(CartData().cartList.last.id == cartItem.id)) const Divider(),
+            // if (!(CartData().cartList.values.last.id == id))
+            const Divider(),
           ],
         ),
       ),

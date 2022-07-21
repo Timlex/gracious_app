@@ -1,21 +1,32 @@
-class Favorites {
-  String id;
-  Favorites(this.id);
-}
+import 'package:flutter/cupertino.dart';
+import 'package:gren_mart/model/products.dart';
 
-class FavoriteData {
-  final List<Favorites> _favoriteList = [
-    Favorites('01'),
-    Favorites('02'),
-    Favorites('03'),
-    Favorites('04'),
-  ];
+// class Favorites {
+//   final String id;
+//   final String name;
+//   final String image;
+//   double price;
+//   Favorites(this.id, this.name, this.image, this.price);
+// }
 
-  List<Favorites> get favoriteList {
-    return _favoriteList;
+class FavoriteData with ChangeNotifier {
+  final Map<String, Product?> _favoriteItems = {};
+
+  Map<String, Product?> get favoriteItems {
+    return _favoriteItems;
   }
 
-  void deleteFavorite(String id) {
-    _favoriteList.removeWhere((element) => element.id == id);
+  bool isfavorite(String id) {
+    return _favoriteItems.containsKey(id);
+  }
+
+  void toggleFavorite(String id, {Product? product}) {
+    if (_favoriteItems.containsKey(id)) {
+      _favoriteItems.remove(id);
+      notifyListeners();
+      return;
+    }
+    _favoriteItems.putIfAbsent(id, () => product);
+    notifyListeners();
   }
 }

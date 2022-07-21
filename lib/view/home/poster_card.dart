@@ -25,7 +25,6 @@ class PosterCard extends StatelessWidget {
       padding: const EdgeInsets.only(left: 20, top: 25),
       height: 15,
       width: 320,
-      // color: Color.fromARGB(110, 9, 154, 26),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(20),
         gradient: const LinearGradient(
@@ -67,7 +66,7 @@ class PosterCard extends StatelessWidget {
               },
               child: Text(btText),
               style: ElevatedButton.styleFrom(
-                  padding: EdgeInsets.symmetric(
+                  padding: const EdgeInsets.symmetric(
                     horizontal: 22,
                     vertical: 12,
                   ),

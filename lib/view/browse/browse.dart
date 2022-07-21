@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gren_mart/view/utils/constant_name.dart';
 
+import '../../model/products.dart';
 import '../auth/custom_text_field.dart';
 import '../home/product_card.dart';
 import '../search/filter_option.dart';
@@ -73,28 +74,21 @@ class Browse extends StatelessWidget {
         const SizedBox(height: 15),
         Expanded(
           child: GridView(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              childAspectRatio: cardWidth / cardHeight,
-              // crossAxisSpacing: 8,
-              // mainAxisSpacing: 12
-            ),
-            children: [
-              ProductCard('Fresh Fruits', 240, 'assets/images/product1.png',
-                  discountAmount: 220, margin: null),
-              ProductCard('Fresh Fruits', 240, 'assets/images/product1.png',
-                  discountAmount: 220, margin: null),
-              ProductCard('Fresh Fruits', 240, 'assets/images/product1.png',
-                  discountAmount: 220, margin: null),
-              ProductCard('Fresh Fruits', 240, 'assets/images/product1.png',
-                  discountAmount: 220, margin: null),
-              ProductCard('Fresh Fruits', 240, 'assets/images/product1.png',
-                  discountAmount: 220, margin: null),
-              ProductCard('Fresh Fruits', 240, 'assets/images/product1.png',
-                  discountAmount: 220, margin: null),
-            ],
-          ),
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                childAspectRatio: cardWidth / cardHeight,
+                // crossAxisSpacing: 8,
+                // mainAxisSpacing: 12
+              ),
+              children: const []
+              // Products()
+              //     .products
+              //     .map((e) => ProductCard(
+              //         e.id, e.title, e.amount, 'assets/images/product1.png',
+              //         discountAmount: 220))
+              //     .toList(),
+              ),
         ),
       ],
     );

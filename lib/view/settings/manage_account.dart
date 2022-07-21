@@ -34,7 +34,7 @@ class _ManageAccountState extends State<ManageAccount> {
   final _userNameController = TextEditingController();
   final _userNameFN = FocusNode();
   final _emailFN = FocusNode();
-  String city = 'Bangladesh';
+  String city = 'Dhaka';
 
   void _onSubmit(String name, String userName, String email, String city) {
     Navigator.of(context).pushReplacementNamed(HomeFront.routeName);

@@ -1,18 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gren_mart/view/auth/custom_text_field.dart';
-import 'package:gren_mart/view/search/filter_bottom_sheeet.dart';
-import 'package:gren_mart/view/search/filter_option.dart';
-import 'package:gren_mart/view/utils/app_bars.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
+import '../../model/products.dart';
 import '../home/product_card.dart';
 import '../utils/constant_colors.dart';
 
 class SearchView extends StatefulWidget {
   static const routeName = 'search';
-  TextEditingController _searchController;
-  SearchView(this._searchController);
+  final TextEditingController _searchController;
+  const SearchView(this._searchController);
   @override
   State<SearchView> createState() => _SearchViewState();
 }
@@ -108,20 +104,12 @@ class _SearchViewState extends State<SearchView> {
               crossAxisSpacing: 12,
               // mainAxisSpacing: 12
             ),
-            children: [
-              ProductCard('Fresh Fruits', 240, 'assets/images/product1.png',
-                  discountAmount: 220, margin: null),
-              ProductCard('Fresh Fruits', 240, 'assets/images/product1.png',
-                  discountAmount: 220, margin: null),
-              ProductCard('Fresh Fruits', 240, 'assets/images/product1.png',
-                  discountAmount: 220, margin: null),
-              ProductCard('Fresh Fruits', 240, 'assets/images/product1.png',
-                  discountAmount: 220, margin: null),
-              ProductCard('Fresh Fruits', 240, 'assets/images/product1.png',
-                  discountAmount: 220, margin: null),
-              ProductCard('Fresh Fruits', 240, 'assets/images/product1.png',
-                  discountAmount: 220, margin: null),
-            ],
+            children: Products()
+                .products
+                .map((e) => ProductCard(
+                      e.id,
+                    ))
+                .toList(),
           ),
         ),
       ],

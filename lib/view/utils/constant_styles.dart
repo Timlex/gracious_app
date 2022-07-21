@@ -164,15 +164,19 @@ PreferredSizeWidget helloAppBar() {
   );
 }
 
-Widget favoriteIcon({double size = 15}) {
+Widget favoriteIcon(bool isFavorite,
+    {double size = 15, required void Function()? onPressed}) {
   return Container(
-    margin: EdgeInsets.only(top: 9, right: 5),
+    margin: const EdgeInsets.only(top: 9, right: 5),
     child: CircleAvatar(
       radius: size,
       backgroundColor: cc.pureWhite,
       child: IconButton(
-        onPressed: (() {}),
-        icon: Image.asset('assets/images/heart2.png'),
+        onPressed: onPressed,
+        icon: SvgPicture.asset(
+          'assets/images/icons/${isFavorite ? 'red_heart' : 'grey_heart'}.svg',
+          height: 20,
+        ),
       ),
     ),
   );

@@ -12,6 +12,7 @@ class CustomTextField extends StatefulWidget {
   FocusNode? focusNode;
   void Function(String?)? onSaved;
   void Function(String)? onChanged;
+  @override
   Key? key;
   CustomTextField(
     this.levelText, {
@@ -41,6 +42,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
       obscureText: widget.obscureText,
       decoration: InputDecoration(
         contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 17),
+
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
           borderSide:
@@ -49,6 +51,10 @@ class _CustomTextFieldState extends State<CustomTextField> {
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
           borderSide: BorderSide(color: ConstantColors().greyBorder, width: 1),
+        ),
+        errorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10),
+          borderSide: BorderSide(color: ConstantColors().orange, width: 1),
         ),
 
         label: Padding(
@@ -89,7 +95,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
                               'assets/images/icons/pass_hide.png',
                               fit: BoxFit.fitHeight,
                             )
-                          : Icon(Icons.remove_red_eye_rounded),
+                          : const Icon(Icons.remove_red_eye_rounded),
                     ),
                   ),
                 ],

@@ -1,28 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:gren_mart/model/carts.dart';
+import 'package:gren_mart/model/favorites.dart';
 import 'package:gren_mart/model/products.dart';
 import 'package:gren_mart/view/details/product_details.dart';
 import 'package:gren_mart/view/utils/constant_colors.dart';
 import 'package:gren_mart/view/utils/constant_styles.dart';
+import 'package:provider/provider.dart';
 
 class ProductCard extends StatelessWidget {
-  final String _title;
-  double discountAmount;
-  final double _amount;
-  final String _image;
+  final String _id;
+
   EdgeInsetsGeometry? margin;
 
-  ProductCard(this._title, this._amount, this._image,
-      {Key? key,
-      this.discountAmount = 0,
-      this.margin = const EdgeInsets.only(right: 18)})
+  ProductCard(this._id,
+      {Key? key, this.margin = const EdgeInsets.only(right: 18)})
       : super(key: key);
 
   ConstantColors cc = ConstantColors();
 
   @override
   Widget build(BuildContext context) {
-    final product = Products().products.firstWhere((e) => e.amount == _amount);
+    final productData = Provider.of<Products>(context, listen: false);
+
+    final product = productData.products.firstWhere((e) => e.id == _id);
     return GestureDetector(
       onTap: () {
         Navigator.of(context)
@@ -53,7 +53,7 @@ class ProductCard extends StatelessWidget {
                       //   tag: product.id,
                       //   child:
                       Image.asset(
-                    _image,
+                    product.image[0],
                     fit: BoxFit.cover,
                   ),
                   // ),
@@ -96,7 +96,17 @@ class ProductCard extends StatelessWidget {
                         fontWeight: FontWeight.w600),
                   ),
                 ),
-                Positioned(right: 0, child: favoriteIcon())
+                Consumer<FavoriteData>(builder: (context, favoriteData, child) {
+                  return Positioned(
+                      right: 0,
+                      child: favoriteIcon(
+                        favoriteData.isfavorite(_id),
+                        onPressed: () => favoriteData.toggleFavorite(
+                          _id,
+                          product: product,
+                        ),
+                      ));
+                })
               ],
             ),
             const SizedBox(height: 10),
@@ -106,21 +116,30 @@ class ProductCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    _title,
+                    product.title,
                     style: const TextStyle(
                         fontSize: 14, fontWeight: FontWeight.w600),
                   ),
                   const SizedBox(height: 10),
-                  discAmountRow(discountAmount, _amount),
+                  discAmountRow(
+                      (product.amount / 100) * product.discountPecentage,
+                      product.amount),
                   const SizedBox(height: 10),
                   GestureDetector(
                     onTap: () {
                       // Navigator.of(context).pushReplacementNamed(Auth.routeName);
                     },
-                    child: GestureDetector(
-                      onTap: () {
-                        CartData().addCartTime('10', 3);
-                        print('this is working');
+                    child: Consumer<CartData>(
+                      builder: (context, cartData, child) {
+                        return GestureDetector(
+                          onTap: () {
+                            cartData.addCartItem(
+                              _id,
+                              product,
+                            );
+                          },
+                          child: child,
+                        );
                       },
                       child: Container(
                           height: 40,

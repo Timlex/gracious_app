@@ -3,7 +3,6 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gren_mart/view/utils/app_bars.dart';
 import 'package:gren_mart/view/utils/constant_colors.dart';
 
-import '../../model/user_data.dart';
 import '../auth/custom_text_field.dart';
 import '../home/home_front.dart';
 import '../intro/custom_dropdown.dart';
@@ -11,7 +10,7 @@ import '../utils/constant_styles.dart';
 
 class NewAddress extends StatefulWidget {
   static const routeName = 'new address';
-  NewAddress({Key? key}) : super(key: key);
+  const NewAddress({Key? key}) : super(key: key);
 
   @override
   State<NewAddress> createState() => _NewAddressState();
@@ -24,7 +23,8 @@ class _NewAddressState extends State<NewAddress> {
   final _emailController = TextEditingController();
   final _nameController = TextEditingController();
   final _userNameController = TextEditingController();
-  final _passwordController = TextEditingController();
+  final _zipCodeController = TextEditingController();
+  final _addressController = TextEditingController();
   final _reFN = FocusNode();
   final _userNameFN = FocusNode();
   final _emailFN = FocusNode();
@@ -53,7 +53,7 @@ class _NewAddressState extends State<NewAddress> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBars().appBarTitled('Manage Account', () {
+      appBar: AppBars().appBarTitled('Add new address', () {
         Navigator.of(context).pop();
       }, hasButton: true),
       body: ListView(
@@ -153,7 +153,7 @@ class _NewAddressState extends State<NewAddress> {
                     // const SizedBox(height: 8),
                     CustomTextField(
                       'Enter your Zip code',
-                      controller: _passwordController,
+                      controller: _zipCodeController,
                       validator: (emailText) {
                         // if (emailText!.isEmpty) {
                         //   return 'Enter at least 6 charechters';
@@ -171,10 +171,10 @@ class _NewAddressState extends State<NewAddress> {
                     // const SizedBox(height: 8),
                     CustomTextField(
                       'Enter your address',
-                      controller: _passwordController,
+                      controller: _addressController,
                       focusNode: _reFN,
                       validator: (emailText) {
-                        if (emailText == _passwordController.text) {
+                        if (emailText == _addressController.text) {
                           return 'Enter the same password';
                         }
                         return null;

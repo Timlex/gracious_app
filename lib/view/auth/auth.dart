@@ -26,7 +26,7 @@ class _AuthState extends State<Auth> {
   final _emailController = TextEditingController();
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _userNameController = TextEditingController();
-  String city = 'Bangladesh';
+  String city = 'Dhaka';
   bool login = true;
 
   bool rememberPass = false;

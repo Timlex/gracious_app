@@ -2,12 +2,13 @@ import 'package:card_swiper/card_swiper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:gren_mart/model/favorites.dart';
 import 'package:gren_mart/view/details/animated_box.dart';
 import 'package:gren_mart/view/details/plus_minus_cart.dart';
 import 'package:gren_mart/view/intro/dot_indicator.dart';
-import 'package:gren_mart/view/intro/intro.dart';
 import 'package:gren_mart/view/utils/constant_colors.dart';
 import 'package:gren_mart/view/utils/constant_styles.dart';
+import 'package:provider/provider.dart';
 
 import '../../model/products.dart';
 import '../home/product_card.dart';
@@ -25,9 +26,9 @@ class ProductDetails extends StatelessWidget {
     final keyData = ModalRoute.of(context)!.settings.arguments as List;
 
     final key = keyData[0];
-    // final productList =
-    //     Provider.of<Products>(context, listen: false) as List<Product>;
-    final product = Products().products.firstWhere((e) => e.id == key);
+    final productData = Provider.of<Products>(context, listen: false);
+
+    final product = productData.products.firstWhere((e) => e.id == key);
     return Scaffold(
       body: Column(
         children: [
@@ -83,9 +84,17 @@ class ProductDetails extends StatelessWidget {
                         ]),
                   ),
                   actions: [
-                    Container(
-                        margin: const EdgeInsets.only(right: 10),
-                        child: favoriteIcon(size: 18)),
+                    Consumer<FavoriteData>(
+                        builder: (context, favoriteData, child) {
+                      return Container(
+                          margin: const EdgeInsets.only(right: 10),
+                          child: favoriteIcon(
+                              favoriteData.isfavorite(product.id),
+                              size: 18,
+                              onPressed: () => favoriteData.toggleFavorite(
+                                  product.id,
+                                  product: product)));
+                    }),
                   ],
                 ),
                 SliverList(
@@ -177,9 +186,9 @@ class ProductDetails extends StatelessWidget {
                             ),
                             ...Products()
                                 .products
-                                .map((e) => ProductCard(e.title, e.amount,
-                                    'assets/images/product1.png',
-                                    discountAmount: 220))
+                                .map((e) => ProductCard(
+                                      e.id,
+                                    ))
                                 .toList()
 
                             // ProductCard('Fresh Fruits', 240, 'assets/images/product1.png',
