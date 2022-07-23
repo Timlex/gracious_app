@@ -30,7 +30,14 @@ class CartData with ChangeNotifier {
       DbHelper.updateQuantity(
         'cart',
         id,
-        sum,
+        {
+          'productId': value.product.id,
+          'quantity': sum,
+          'title': value.product.title,
+          'discountPecentage': value.product.discountPecentage,
+          'amount': value.product.amount,
+          'image': value.product.image[0],
+        },
       );
       return Cart(
         value.id,

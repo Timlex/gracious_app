@@ -39,7 +39,7 @@ class CartCard extends StatelessWidget {
             ),
             const SizedBox(width: 15),
             SvgPicture.asset(
-              image,
+              'assets/images/icons/trash.svg',
               height: 22,
               width: 22,
               color: cc.pureWhite,
@@ -62,11 +62,14 @@ class CartCard extends StatelessWidget {
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(15),
                 ),
-                child: SafeArea(
-                  child: Image.asset(
-                    image,
-                    fit: BoxFit.fill,
-                  ),
+                child: ListView(
+                  physics: const NeverScrollableScrollPhysics(),
+                  children: [
+                    Image.asset(
+                      image,
+                      fit: BoxFit.fill,
+                    )
+                  ],
                 ),
               ),
               title: Row(

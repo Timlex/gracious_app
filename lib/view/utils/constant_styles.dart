@@ -154,13 +154,13 @@ PreferredSizeWidget helloAppBar() {
         ),
       ),
     ),
-    actions: [
-      customIconButton('notificationIcon', 'notification_bing.svg',
-          padding: 10),
-      const SizedBox(
-        width: 17,
-      )
-    ],
+    // actions: [
+    //   customIconButton('notificationIcon', 'notification_bing.svg',
+    //       padding: 10),
+    //   const SizedBox(
+    //     width: 17,
+    //   )
+    // ],
   );
 }
 

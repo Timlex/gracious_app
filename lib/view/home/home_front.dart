@@ -56,13 +56,13 @@ class _HomeFrontState extends State<HomeFront> {
               );
             },
             icon: SvgPicture.asset('assets/images/icons/filter_setting.svg')),
-        actions: [
-          customIconButton('notificationIcon', 'notification_bing.svg',
-              padding: 10),
-          const SizedBox(
-            width: 17,
-          )
-        ],
+        // actions: [
+        //   customIconButton('notificationIcon', 'notification_bing.svg',
+        //       padding: 10),
+        //   const SizedBox(
+        //     width: 17,
+        //   )
+        // ],
       );
     }
     if (_navigationIndex == 2) {
@@ -131,11 +131,11 @@ class _HomeFrontState extends State<HomeFront> {
                 return;
               }
               if (v == 3) {
-                navigationWidget = const FavoriteView();
+                navigationWidget = FavoriteView();
                 return;
               }
               if (v == 4) {
-                navigationWidget = SettingView();
+                navigationWidget = const SettingView();
                 return;
               }
             });

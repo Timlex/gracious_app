@@ -45,7 +45,7 @@ class FavoriteTile extends StatelessWidget {
           ),
         ),
         onDismissed: (direction) {
-          favoriteData.toggleFavorite(id);
+          favoriteData.deleteFavoriteItem(id);
         },
         key: Key(id),
         child: SizedBox(
@@ -91,7 +91,7 @@ class FavoriteTile extends StatelessWidget {
                     const Spacer(),
                     GestureDetector(
                       onTap: (() {
-                        favoriteData.toggleFavorite(id);
+                        favoriteData.deleteFavoriteItem(id);
                       }),
                       child: Padding(
                         padding: const EdgeInsets.only(left: 7),

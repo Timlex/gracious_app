@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gren_mart/db/database_helper.dart';
 import 'package:gren_mart/model/carts.dart';
+import 'package:gren_mart/model/favorites.dart';
 import 'package:gren_mart/view/intro/intro.dart';
 import 'package:provider/provider.dart';
 
@@ -21,6 +22,7 @@ class _SplashScreenState extends State<SplashScreen> {
     List databases = ['cart', 'favorite'];
     databases.map((e) => DbHelper.database(e));
     Provider.of<CartData>(context, listen: false).fetchCarts();
+    Provider.of<FavoriteData>(context, listen: false).fetchFavorites();
   }
 
   @override

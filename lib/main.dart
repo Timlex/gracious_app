@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gren_mart/model/favorites.dart';
+import 'package:gren_mart/view/settings/shipping_addresses.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/services.dart';
 import 'package:gren_mart/view/auth/auth.dart';
@@ -73,6 +74,7 @@ class MyApp extends StatelessWidget {
             NewAddress.routeName: (context) => const NewAddress(),
             ManageAccount.routeName: (context) => ManageAccount(),
             ChangePassword.routeName: (context) => const ChangePassword(),
+            ShippingAdresses.routeName: (context) => const ShippingAdresses(),
           },
         ),
       ),

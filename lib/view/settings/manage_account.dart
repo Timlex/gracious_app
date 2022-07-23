@@ -1,7 +1,10 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gren_mart/view/utils/app_bars.dart';
 import 'package:gren_mart/view/utils/constant_colors.dart';
+import 'package:image_picker/image_picker.dart';
 
 import '../../model/user_data.dart';
 import '../auth/custom_text_field.dart';
@@ -35,6 +38,20 @@ class _ManageAccountState extends State<ManageAccount> {
   final _userNameFN = FocusNode();
   final _emailFN = FocusNode();
   String city = 'Dhaka';
+  File? _pickedImage;
+
+  Future<void> imageSelectorGallery() async {
+    try {
+      final pickedImage =
+          await ImagePicker.platform.pickImage(source: ImageSource.camera);
+      final tempImage = pickedImage;
+      _pickedImage = File(pickedImage!.path);
+    } catch (error) {
+      print(error);
+    }
+
+    setState(() {});
+  }
 
   void _onSubmit(String name, String userName, String email, String city) {
     Navigator.of(context).pushReplacementNamed(HomeFront.routeName);
@@ -61,16 +78,26 @@ class _ManageAccountState extends State<ManageAccount> {
                 CircleAvatar(
                   backgroundColor: cc.greyYellow,
                   radius: 70,
-                  child: Image.asset(
-                    'assets/images/setting_dp.png',
-                  ),
+                  child: _pickedImage == null
+                      ? Image.asset(
+                          'assets/images/setting_dp.png',
+                        )
+                      : Image.file(
+                          _pickedImage!,
+                          fit: BoxFit.cover,
+                        ),
                 ),
                 Positioned(
                     bottom: 0,
                     right: 0,
-                    child: SvgPicture.asset(
-                      'assets/images/icons/camera.svg',
-                      height: 45,
+                    child: GestureDetector(
+                      onTap: () {
+                        imageSelectorGallery();
+                      },
+                      child: SvgPicture.asset(
+                        'assets/images/icons/camera.svg',
+                        height: 45,
+                      ),
                     ))
               ]),
             ),

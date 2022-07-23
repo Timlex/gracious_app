@@ -18,6 +18,7 @@ class DbHelper {
     db.insert(
       table,
       data,
+      conflictAlgorithm: ConflictAlgorithm.replace,
     );
   }
 
@@ -28,12 +29,12 @@ class DbHelper {
   }
 
   static Future<void> updateQuantity(
-      String table, String productId, int quantity) async {
+      String table, String productId, Map<String, dynamic> data) async {
     final db = await DbHelper.database(table);
     db.update(
       table,
-      {'quantity': quantity},
-      where: 'productId',
+      {'quantity': data['quantity']},
+      where: 'productId = ?',
       whereArgs: [productId],
     );
   }

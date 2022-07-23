@@ -6,11 +6,12 @@ import 'package:gren_mart/view/settings/change_password.dart';
 import 'package:gren_mart/view/settings/manage_account.dart';
 import 'package:gren_mart/view/settings/new_address.dart';
 import 'package:gren_mart/view/settings/setting_screen_appbar.dart';
+import 'package:gren_mart/view/settings/shipping_addresses.dart';
 import 'package:gren_mart/view/utils/constant_colors.dart';
 import 'package:gren_mart/view/utils/constant_styles.dart';
 
 class SettingView extends StatefulWidget {
-  SettingView({Key? key}) : super(key: key);
+  const SettingView({Key? key}) : super(key: key);
 
   @override
   State<SettingView> createState() => _SettingViewState();
@@ -54,7 +55,7 @@ class _SettingViewState extends State<SettingView> {
         settingItem(
             'assets/images/icons/shipping_address.svg', 'Shipping Address',
             onTap: () {
-          Navigator.of(context).pushNamed(NewAddress.routeName);
+          Navigator.of(context).pushNamed(ShippingAdresses.routeName);
         }),
         settingItem('assets/images/icons/manage_profile.svg', 'Manage Account',
             onTap: () {
@@ -70,7 +71,7 @@ class _SettingViewState extends State<SettingView> {
           padding: const EdgeInsets.symmetric(horizontal: 25),
           child: customContainerButton('Log Out', double.infinity, () {
             Navigator.of(context).pushAndRemoveUntil(
-                MaterialPageRoute(builder: (context) => Auth()),
+                MaterialPageRoute(builder: (context) => const Auth()),
                 (Route<dynamic> route) => false);
           }),
         ),
@@ -89,7 +90,7 @@ class _SettingViewState extends State<SettingView> {
             SizedBox(
               child: ListTile(
                 onTap: onTap,
-                visualDensity: VisualDensity(vertical: -3),
+                visualDensity: const VisualDensity(vertical: -3),
                 dense: false,
                 leading: icon
                     ? SvgPicture.asset(
@@ -108,7 +109,7 @@ class _SettingViewState extends State<SettingView> {
                     SvgPicture.asset('assets/images/icons/arrow_right.svg'),
               ),
             ),
-            Divider()
+            const Divider()
           ],
         ),
       ),
