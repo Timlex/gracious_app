@@ -2,11 +2,15 @@ import 'package:flutter/material.dart';
 
 import '../utils/constant_colors.dart';
 
-class RememberBox extends StatelessWidget {
+class RememberBox extends StatefulWidget {
   bool rememberPass = false;
-  Function toggleRemember;
-  RememberBox(this.rememberPass, this.toggleRemember);
+  RememberBox(this.rememberPass);
 
+  @override
+  State<RememberBox> createState() => _RememberBoxState();
+}
+
+class _RememberBoxState extends State<RememberBox> {
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -28,9 +32,11 @@ class RememberBox extends StatelessWidget {
                     width: 1,
                     color: ConstantColors().greyBorder,
                   )),
-              value: rememberPass,
+              value: widget.rememberPass,
               onChanged: (value) {
-                toggleRemember(value);
+                setState(() {
+                  widget.rememberPass = value as bool;
+                });
               }),
         ),
         Text(

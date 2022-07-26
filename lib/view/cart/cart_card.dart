@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:gren_mart/model/carts.dart';
+import 'package:gren_mart/model/cart_data.dart';
 import 'package:provider/provider.dart';
 
 import '../utils/constant_styles.dart';
@@ -86,12 +86,15 @@ class CartCard extends StatelessWidget {
                               fontSize: 15, fontWeight: FontWeight.w600),
                         ),
                         const SizedBox(height: 13),
-                        Text(
-                          '\$$price',
-                          style: TextStyle(
-                              color: cc.primaryColor,
-                              fontWeight: FontWeight.w600,
-                              fontSize: 13),
+                        FittedBox(
+                          fit: BoxFit.cover,
+                          child: Text(
+                            '\$$price',
+                            style: TextStyle(
+                                color: cc.primaryColor,
+                                fontWeight: FontWeight.w600,
+                                fontSize: 13),
+                          ),
                         ),
                       ],
                     ),

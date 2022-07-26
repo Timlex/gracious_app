@@ -1,8 +1,8 @@
 import 'package:badges/badges.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:gren_mart/model/carts.dart';
-import 'package:gren_mart/model/favorites.dart';
+import 'package:gren_mart/model/cart_data.dart';
+import 'package:gren_mart/model/favorite_data.dart';
 import 'package:gren_mart/view/cart/cart_view.dart';
 import 'package:gren_mart/view/favorite/favorite.dart';
 import 'package:gren_mart/view/home/home.dart';
@@ -185,7 +185,7 @@ class _HomeFrontState extends State<HomeFront> {
                   return Badge(
                     showBadge: cartData.cartList.isEmpty ? false : true,
                     badgeContent: Text(
-                      cartData.cartList.length.toString(),
+                      cartData.totalQuantity().toString(),
                       style: TextStyle(color: cc.pureWhite),
                     ),
                     child: SvgPicture.asset(

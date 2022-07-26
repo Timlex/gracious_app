@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:gren_mart/service/state_dropdown_service.dart';
 import 'package:gren_mart/view/auth/auth.dart';
 import 'package:gren_mart/view/intro/dot_indicator.dart';
 import 'package:gren_mart/view/utils/constant_colors.dart';
 import 'package:gren_mart/view/utils/constant_name.dart';
 import 'package:gren_mart/view/utils/constant_styles.dart';
+import 'package:provider/provider.dart';
 
 import './intro_helper.dart';
 
@@ -53,13 +55,13 @@ class _IntroState extends State<Intro> {
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               Container(
-                                height: 250,
-                                width: 250,
+                                height: screenHight / 3.5,
+                                width: screenHight / 3.5,
                                 margin:
                                     const EdgeInsets.symmetric(vertical: 20),
                                 child: Image.asset(e['imagePath'] as String),
                               ),
-                              SizedBox(height: 8),
+                              const SizedBox(height: 8),
                               Text(
                                 e['introTitle'] as String,
                                 style: TextStyle(
@@ -83,12 +85,15 @@ class _IntroState extends State<Intro> {
                       )
                       .toList()),
             ),
+            const SizedBox(height: 10),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: _dotIdicators(),
             ),
             Expanded(child: Container()),
             customRowButton('Skip', 'Continue', () {
+              Provider.of<StateDropdownService>(context, listen: false)
+                  .getStates(1);
               Navigator.of(context).pushReplacementNamed(Auth.routeName);
             }, () {
               if (selectedindex < 2) {
@@ -101,6 +106,8 @@ class _IntroState extends State<Intro> {
                 return;
               }
               if (selectedindex == 2) {
+                Provider.of<StateDropdownService>(context, listen: false)
+                    .getStates(1);
                 Navigator.of(context).pushReplacementNamed(Auth.routeName);
               }
             }),

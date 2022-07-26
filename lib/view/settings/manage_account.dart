@@ -9,7 +9,6 @@ import 'package:image_picker/image_picker.dart';
 import '../../model/user_data.dart';
 import '../auth/custom_text_field.dart';
 import '../home/home_front.dart';
-import '../intro/custom_dropdown.dart';
 import '../utils/constant_styles.dart';
 
 class ManageAccount extends StatefulWidget {
@@ -37,7 +36,8 @@ class _ManageAccountState extends State<ManageAccount> {
   final _userNameController = TextEditingController();
   final _userNameFN = FocusNode();
   final _emailFN = FocusNode();
-  String city = 'Dhaka';
+  String? country;
+  List<String> countris = [];
   File? _pickedImage;
 
   Future<void> imageSelectorGallery() async {
@@ -78,14 +78,14 @@ class _ManageAccountState extends State<ManageAccount> {
                 CircleAvatar(
                   backgroundColor: cc.greyYellow,
                   radius: 70,
-                  child: _pickedImage == null
-                      ? Image.asset(
+                  backgroundImage: _pickedImage == null
+                      ? const AssetImage(
                           'assets/images/setting_dp.png',
                         )
-                      : Image.file(
-                          _pickedImage!,
-                          fit: BoxFit.cover,
-                        ),
+                      : FileImage(_pickedImage!) as ImageProvider<Object>,
+                  //     _pickedImage!,
+                  //     fit: BoxFit.cover,
+                  //   ),
                 ),
                 Positioned(
                     bottom: 0,
@@ -167,7 +167,7 @@ class _ManageAccountState extends State<ManageAccount> {
                     ),
                     textFieldTitle('City'),
                     // const SizedBox(height: 8),
-                    CustomDropdown(city: city),
+                    // CustomDropdown('city:'),
                   ]),
             ),
           ),

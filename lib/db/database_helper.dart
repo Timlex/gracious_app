@@ -46,6 +46,7 @@ class DbHelper {
 
   static Future<void> deleteDbSI(String table, String id) async {
     final db = await DbHelper.database(table);
+
     db.delete(
       table,
       where: 'productId = ?',

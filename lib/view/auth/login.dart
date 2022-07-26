@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:gren_mart/view/auth/custom_text_field.dart';
-import 'package:gren_mart/view/home/home_front.dart';
 
 import '../utils/constant_styles.dart';
 
@@ -48,7 +47,6 @@ class _LoginState extends State<Login> {
           },
           onChanged: (emailText) {
             widget._emailText = emailText;
-            print(widget._emailText);
           },
         ),
         textFieldTitle('Password'),

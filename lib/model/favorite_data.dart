@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:gren_mart/db/database_helper.dart';
-import 'package:gren_mart/model/products.dart';
+import 'package:gren_mart/model/product_data.dart';
 
 // class Favorites {
 //   final String id;

@@ -93,4 +93,7 @@ class Products with ChangeNotifier {
   List<Product> get products {
     return _products;
   }
+
+  Future<void> fetchProducts() async {}
+  Future<void> fetchCampaign() async {}
 }

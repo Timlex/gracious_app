@@ -29,6 +29,7 @@ class _ShippingAdressesState extends State<ShippingAdresses> {
       'address': '6391 Elgin St. Celina, Delaware 10299'
     },
   ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -100,6 +101,16 @@ class _ShippingAdressesState extends State<ShippingAdresses> {
                     setState(() {
                       selectedId = e['id'];
                     });
+                  },
+                  onLongPress: () {
+                    // showMenu(
+                    //     context: context,
+                    //     position: RelativeRect.fromSize(Positioned, container),
+                    //     items: [
+                    //       const PopupMenuItem(child: Text('Select')),
+                    //       const PopupMenuItem(child: Text('Edit')),
+                    //       const PopupMenuItem(child: Text('Delete')),
+                    //     ]);
                   },
                   child: addressBox(
                       selectedId == e['id'], e['title'], e['address']),

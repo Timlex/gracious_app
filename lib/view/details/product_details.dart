@@ -2,7 +2,7 @@ import 'package:card_swiper/card_swiper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:gren_mart/model/favorites.dart';
+import 'package:gren_mart/model/favorite_data.dart';
 import 'package:gren_mart/view/details/animated_box.dart';
 import 'package:gren_mart/view/details/plus_minus_cart.dart';
 import 'package:gren_mart/view/intro/dot_indicator.dart';
@@ -10,7 +10,7 @@ import 'package:gren_mart/view/utils/constant_colors.dart';
 import 'package:gren_mart/view/utils/constant_styles.dart';
 import 'package:provider/provider.dart';
 
-import '../../model/products.dart';
+import '../../model/product_data.dart';
 import '../home/product_card.dart';
 import '../intro/intro_helper.dart';
 

@@ -1,11 +1,12 @@
 import 'package:card_swiper/card_swiper.dart';
 import 'package:flutter/material.dart';
-import 'package:gren_mart/model/products.dart';
+import 'package:gren_mart/model/product_data.dart';
+import 'package:gren_mart/service/poster_slider_service.dart';
 import 'package:gren_mart/view/auth/custom_text_field.dart';
-import 'package:gren_mart/model/poster_data.dart';
 import 'package:gren_mart/view/home/dow_card.dart';
 import 'package:gren_mart/view/home/product_card.dart';
 import 'package:gren_mart/view/utils/constant_styles.dart';
+import 'package:provider/provider.dart';
 import 'package:slide_countdown/slide_countdown.dart';
 import 'poster_card.dart';
 
@@ -17,6 +18,7 @@ class Home extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Provider.of<PosterSliderService>(context, listen: false).fetchPosters();
     // final productData = Provider.of<Products>(context, listen: false).products;
     return SingleChildScrollView(
       child: Column(
@@ -78,21 +80,26 @@ class Home extends StatelessWidget {
           SizedBox(
             height: 170,
             width: double.infinity,
-            child: Swiper(
-              itemBuilder: (BuildContext context, int index) {
-                return PosterCard(
-                  PosterData().posterData[index].title,
-                  'Shop now',
-                  PosterData().posterData[index].description,
-                  () {},
-                  PosterData().posterData[index].image,
-                );
-              },
-              itemCount: PosterData().posterData.length,
-              viewportFraction: 0.8,
-              scale: 0.9,
-              autoplay: true,
-            ),
+            child: Consumer<PosterSliderService>(
+                builder: (context, posterData, child) {
+              return posterData.posterDataList.isEmpty
+                  ? loadingProgressBar()
+                  : Swiper(
+                      itemBuilder: (BuildContext context, int index) {
+                        return PosterCard(
+                          posterData.posterDataList[index].title,
+                          'Shop now',
+                          posterData.posterDataList[index].description,
+                          () {},
+                          posterData.posterDataList[index].image,
+                        );
+                      },
+                      itemCount: posterData.posterDataList.length,
+                      viewportFraction: 0.8,
+                      scale: 0.9,
+                      autoplay: true,
+                    );
+            }),
           ),
           const SizedBox(height: 10),
           Padding(

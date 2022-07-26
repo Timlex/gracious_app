@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:gren_mart/model/carts.dart';
-import 'package:gren_mart/model/favorites.dart';
-import 'package:gren_mart/model/products.dart';
+import 'package:gren_mart/model/cart_data.dart';
+import 'package:gren_mart/model/favorite_data.dart';
+import 'package:gren_mart/model/product_data.dart';
 import 'package:gren_mart/view/details/product_details.dart';
 import 'package:gren_mart/view/utils/constant_colors.dart';
 import 'package:gren_mart/view/utils/constant_styles.dart';
@@ -122,7 +122,8 @@ class ProductCard extends StatelessWidget {
                   ),
                   const SizedBox(height: 10),
                   discAmountRow(
-                      (product.amount / 100) * product.discountPecentage,
+                      ((product.amount -
+                          (product.amount / 100) * product.discountPecentage)),
                       product.amount),
                   const SizedBox(height: 10),
                   GestureDetector(

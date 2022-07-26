@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:gren_mart/db/database_helper.dart';
-import 'package:gren_mart/model/products.dart';
+import 'package:gren_mart/model/product_data.dart';
 
 class Cart {
   final String id;
@@ -122,5 +122,13 @@ class CartData with ChangeNotifier {
     await DbHelper.deleteDbSI('cart', id);
     _cartItems.remove(id);
     notifyListeners();
+  }
+
+  int totalQuantity() {
+    var total = 0;
+    cartList.forEach((key, value) {
+      total += value.quantity;
+    });
+    return total;
   }
 }

@@ -6,7 +6,7 @@ import 'package:gren_mart/view/utils/constant_name.dart';
 import 'package:gren_mart/view/utils/constant_styles.dart';
 import 'package:provider/provider.dart';
 
-import '../../model/carts.dart';
+import '../../model/cart_data.dart';
 
 class CartView extends StatelessWidget {
   static const routeName = 'cart';
@@ -57,7 +57,7 @@ class CartView extends StatelessWidget {
               rows('Total',
                   trailing: '\$${totalPrice + shippingCos + discount}'),
               const SizedBox(height: 25),
-              rows('Promo code'),
+              rows('Cupon code'),
               const SizedBox(height: 15),
               Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
                 SizedBox(
@@ -70,7 +70,7 @@ class CartView extends StatelessWidget {
                       child: TextField(
                         decoration: InputDecoration(
                             label: Text(
-                              'Enter promo code',
+                              'Enter Cupon code',
                               style: TextStyle(
                                 color: cc.greyHint,
                                 fontSize: 13,

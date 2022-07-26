@@ -1,5 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:gren_mart/model/favorites.dart';
+import 'package:gren_mart/model/auth_data.dart';
+import 'package:gren_mart/model/favorite_data.dart';
+import 'package:gren_mart/model/other_data.dart';
+import 'package:gren_mart/service/country_dropdown_service.dart';
+import 'package:gren_mart/service/poster_slider_service.dart';
+import 'package:gren_mart/service/state_dropdown_service.dart';
+import 'package:gren_mart/view/auth/order_data.dart';
 import 'package:gren_mart/view/settings/shipping_addresses.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/services.dart';
@@ -17,8 +23,8 @@ import 'package:gren_mart/view/settings/manage_account.dart';
 import 'package:gren_mart/view/settings/new_address.dart';
 import 'package:gren_mart/view/utils/constant_colors.dart';
 
-import 'model/carts.dart';
-import 'model/products.dart';
+import 'model/cart_data.dart';
+import 'model/product_data.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -36,15 +42,15 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider.value(
-          value: Products(),
-        ),
-        ChangeNotifierProvider.value(
-          value: CartData(),
-        ),
-        ChangeNotifierProvider.value(
-          value: FavoriteData(),
-        ),
+        ChangeNotifierProvider.value(value: AuthData()),
+        ChangeNotifierProvider.value(value: OtherData()),
+        ChangeNotifierProvider.value(value: Products()),
+        ChangeNotifierProvider.value(value: CartData()),
+        ChangeNotifierProvider.value(value: FavoriteData()),
+        ChangeNotifierProvider(create: (_) => OrderData()),
+        ChangeNotifierProvider(create: (_) => CountryDropdownService()),
+        ChangeNotifierProvider(create: (_) => StateDropdownService()),
+        ChangeNotifierProvider(create: (_) => PosterSliderService()),
       ],
       child: Consumer<Products>(
         builder: (context, value, child) => MaterialApp(
@@ -63,7 +69,7 @@ class MyApp extends StatelessWidget {
           home: const SplashScreen(),
           routes: {
             Intro.routeName: (context) => Intro(),
-            Auth.routeName: (context) => const Auth(),
+            Auth.routeName: (context) => Auth(),
             ResetPassEmail.routeName: (context) => ResetPassEmail(),
             EnterOTP.routeName: (context) => EnterOTP(),
             HomeFront.routeName: (context) => const HomeFront(),

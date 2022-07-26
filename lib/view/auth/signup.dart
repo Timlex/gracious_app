@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:gren_mart/service/country_dropdown_service.dart';
 import 'package:gren_mart/view/intro/custom_dropdown.dart';
+import 'package:provider/provider.dart';
 
+import '../../service/state_dropdown_service.dart';
 import '../utils/constant_styles.dart';
 import 'custom_text_field.dart';
 
@@ -12,27 +15,12 @@ class SignUp extends StatelessWidget {
   final _userNameFN = FocusNode();
   final _emailFN = FocusNode();
   final _reFN = FocusNode();
-  String city = 'Dhaka';
-  String country = 'Bangladesh';
-  List countrys = [
-    'Bangladesh',
-    'Japan',
-    'Korea',
-    'Africa',
-  ];
-  List citys = [
-    'Dhaka',
-    'Tokyo',
-    'Saul',
-    'Beijing',
-  ];
 
   SignUp(
     this._nameController,
     this._userNameController,
     this._emailController,
-    this._passwordController,
-    this.city, {
+    this._passwordController, {
     Key? key,
   }) : super(key: key);
 
@@ -93,14 +81,59 @@ class SignUp extends StatelessWidget {
             return null;
           },
         ),
-        textFieldTitle('City'),
-        // const SizedBox(height: 8),
-        CustomDropdown(
-          city: city,
-        ),
         textFieldTitle('Country'),
         // const SizedBox(height: 8),
-        CustomDropdown(country: country),
+        Consumer<CountryDropdownService>(
+          builder: (context, cProvider, child) => cProvider
+                  .countryDropdownList.isNotEmpty
+              ? CustomDropdown(
+                  'Country',
+                  cProvider.countryDropdownList,
+                  (newValue) {
+                    cProvider.setCountryIdAndValue(newValue);
+                    Provider.of<StateDropdownService>(context, listen: false)
+                        .getStates(cProvider.selectedCountryId);
+                  },
+                  value: cProvider.selectedCountry,
+                )
+              : SizedBox(
+                  height: 10,
+                  child: Center(
+                    child: FittedBox(
+                      child: CircularProgressIndicator(
+                        color: cc.greyHint,
+                      ),
+                    ),
+                  )),
+        ),
+        textFieldTitle('State'),
+        Consumer<StateDropdownService>(
+            builder: ((context, sModel, child) =>
+                // sModel.stateDropdownList.isEmpty
+                //     ? SizedBox(
+                //         child: Center(
+                //             child: CircularProgressIndicator(
+                //         color: cc.greyHint,
+                //       )))
+                //     :
+                (sModel.isLoading
+                    ? SizedBox(
+                        height: 10,
+                        child: Center(
+                          child: FittedBox(
+                            child: CircularProgressIndicator(
+                              color: cc.greyHint,
+                            ),
+                          ),
+                        ))
+                    : CustomDropdown(
+                        'State',
+                        sModel.stateDropdownList,
+                        (newValue) {
+                          sModel.setStateIdAndValue(newValue);
+                        },
+                        value: sModel.selectedState,
+                      )))),
         textFieldTitle('Password'),
         // const SizedBox(height: 8),
         CustomTextField(

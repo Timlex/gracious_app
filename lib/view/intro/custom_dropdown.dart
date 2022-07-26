@@ -2,28 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:gren_mart/view/utils/constant_colors.dart';
 import 'package:gren_mart/view/utils/constant_name.dart';
 
-class CustomDropdown extends StatefulWidget {
-  String? city;
+class CustomDropdown extends StatelessWidget {
+  String hintText;
+  List listData;
+  String? value;
   String? country;
-  CustomDropdown({this.country, this.city, Key? key}) : super(key: key);
+  void Function(Object?)? onChanged;
+  CustomDropdown(this.hintText, this.listData, this.onChanged,
+      {this.value, Key? key})
+      : super(key: key);
 
-  @override
-  State<CustomDropdown> createState() => _CustomDropdownState();
-}
-
-class _CustomDropdownState extends State<CustomDropdown> {
-  List countrys = [
-    'Bangladesh',
-    'Japan',
-    'Korea',
-    'Africa',
-  ];
-  List citys = [
-    'Dhaka',
-    'Tokyo',
-    'Saul',
-    'Beijing',
-  ];
   ConstantColors cc = ConstantColors();
   @override
   Widget build(BuildContext context) {
@@ -40,37 +28,18 @@ class _CustomDropdownState extends State<CustomDropdown> {
         ),
       ),
       child: DropdownButton(
-        hint: Text(widget.city == null ? 'Country' : 'City'),
+        hint: Text(hintText),
         underline: Container(),
         elevation: 0,
-        value: widget.city == null ? widget.country : widget.city,
+        value: value,
         style: TextStyle(color: cc.greyHint),
         icon: Icon(
           Icons.keyboard_arrow_down_sharp,
           color: ConstantColors().greyHint,
         ),
-        onChanged: (value) {
-          setState(() {
-            widget.city == null
-                ? widget.country = value as String
-                : widget.city = value as String;
-          });
-        },
-        items: (widget.city == null
-                ? <String>[
-                    'Bangladesh',
-                    'Japan',
-                    'Korea',
-                    'Africa',
-                  ]
-                : <String>[
-                    'Dhaka',
-                    'Tokyo',
-                    'Saul',
-                    'Beijing',
-                  ])
-            .map<DropdownMenuItem<String>>((String value) {
-          return DropdownMenuItem<String>(
+        onChanged: onChanged,
+        items: (listData).map((value) {
+          return DropdownMenuItem(
             alignment: Alignment.centerLeft,
             value: value,
             child: SizedBox(

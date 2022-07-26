@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:gren_mart/view/utils/constant_colors.dart';
 import 'package:gren_mart/view/utils/constant_name.dart';
@@ -214,7 +215,7 @@ Widget discAmountRow(double discountAmount, double amount) {
   return Row(
     children: [
       Text(
-        '\$${discountAmount <= 0 ? amount.toString() : discountAmount.toString()}',
+        '\$${discountAmount <= 0 ? amount.toString() : discountAmount.toStringAsFixed(2)}',
         style: TextStyle(
             color: cc.primaryColor, fontWeight: FontWeight.w600, fontSize: 13),
       ),
@@ -272,4 +273,12 @@ SnackBar snackBar(String content,
             )
         ],
       ));
+}
+
+Widget loadingProgressBar() {
+  return Center(
+      child: SpinKitRotatingCircle(
+    size: 50,
+    color: cc.primaryColor,
+  ));
 }

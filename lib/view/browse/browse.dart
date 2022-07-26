@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gren_mart/view/utils/constant_name.dart';
 
-import '../../model/products.dart';
 import '../auth/custom_text_field.dart';
-import '../home/product_card.dart';
 import '../search/filter_option.dart';
 import '../utils/constant_colors.dart';
 

@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gren_mart/view/utils/app_bars.dart';
 import 'package:gren_mart/view/utils/constant_colors.dart';
 import 'package:image_picker/image_picker.dart';
@@ -10,7 +9,6 @@ import 'package:image_picker/image_picker.dart';
 
 import '../auth/custom_text_field.dart';
 import '../home/home_front.dart';
-import '../intro/custom_dropdown.dart';
 import '../utils/constant_styles.dart';
 
 class NewAddress extends StatefulWidget {
@@ -101,42 +99,42 @@ class _NewAddressState extends State<NewAddress> {
       }, hasButton: true),
       body: ListView(
         children: [
-          const SizedBox(
-            height: 30,
-          ),
-          Center(
-            child: SizedBox(
-              width: 155,
-              child: Stack(alignment: Alignment.center, children: [
-                Container(
-                    // padding: const EdgeInsets.all(9),
-                    decoration: const BoxDecoration(
-                        shape: BoxShape.circle, color: Colors.yellow),
-                    child: FittedBox(
-                        fit: BoxFit.cover,
-                        child: _pickedImage == null
-                            ? Image.asset(
-                                'assets/images/setting_dp.png',
-                              )
-                            : Image.file(
-                                _pickedImage!,
-                                fit: BoxFit.cover,
-                              ))),
-                Positioned(
-                    bottom: 0,
-                    right: 0,
-                    child: GestureDetector(
-                      onTap: () {
-                        imageSelectorGallery();
-                      },
-                      child: SvgPicture.asset(
-                        'assets/images/icons/camera.svg',
-                        height: 45,
-                      ),
-                    ))
-              ]),
-            ),
-          ),
+          // const SizedBox(
+          //   height: 30,
+          // ),
+          // Center(
+          //   child: SizedBox(
+          //     width: 155,
+          //     child: Stack(alignment: Alignment.center, children: [
+          //       Container(
+          //           // padding: const EdgeInsets.all(9),
+          //           decoration: const BoxDecoration(
+          //               shape: BoxShape.circle, color: Colors.yellow),
+          //           child: FittedBox(
+          //               fit: BoxFit.cover,
+          //               child: _pickedImage == null
+          //                   ? Image.asset(
+          //                       'assets/images/setting_dp.png',
+          //                     )
+          //                   : Image.file(
+          //                       _pickedImage!,
+          //                       fit: BoxFit.cover,
+          //                     ))),
+          //       Positioned(
+          //           bottom: 0,
+          //           right: 0,
+          //           child: GestureDetector(
+          //             onTap: () {
+          //               imageSelectorGallery();
+          //             },
+          //             child: SvgPicture.asset(
+          //               'assets/images/icons/camera.svg',
+          //               height: 45,
+          //             ),
+          //           ))
+          //     ]),
+          //   ),
+          // ),
           const SizedBox(height: 15),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 25),
@@ -198,12 +196,12 @@ class _NewAddressState extends State<NewAddress> {
                         FocusScope.of(context).requestFocus(_emailFN);
                       },
                     ),
-                    textFieldTitle('City'),
-                    // const SizedBox(height: 8),
-                    CustomDropdown(city: city),
                     textFieldTitle('Country'),
                     // const SizedBox(height: 8),
-                    CustomDropdown(country: country),
+                    // CustomDropdown('Country'),
+                    // textFieldTitle('Country'),
+                    // const SizedBox(height: 8),
+                    // CustomDropdown(country: country),
                     textFieldTitle('Zip code'),
                     // const SizedBox(height: 8),
                     CustomTextField(
