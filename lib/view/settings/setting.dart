@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:gren_mart/model/auth_data.dart';
+import 'package:gren_mart/service/signin_signup_service.dart';
 import 'package:gren_mart/view/auth/auth.dart';
 import 'package:gren_mart/view/settings/change_password.dart';
 import 'package:gren_mart/view/settings/manage_account.dart';
@@ -75,7 +75,7 @@ class _SettingViewState extends State<SettingView> {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 25),
           child: customContainerButton('Log Out', double.infinity, () {
-            Provider.of<AuthData>(context, listen: false).logout();
+            Provider.of<SignInSignUpService>(context, listen: false).logout();
             Navigator.of(context).pushAndRemoveUntil(
                 MaterialPageRoute(builder: (context) => Auth()),
                 (Route<dynamic> route) => false);

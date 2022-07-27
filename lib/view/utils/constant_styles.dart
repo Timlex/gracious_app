@@ -127,7 +127,7 @@ Widget customIconButton(
   );
 }
 
-PreferredSizeWidget helloAppBar() {
+PreferredSizeWidget helloAppBar(String name) {
   return AppBar(
     elevation: 0,
     backgroundColor: ConstantColors().pureWhite,
@@ -145,7 +145,7 @@ PreferredSizeWidget helloAppBar() {
               style: TextStyle(color: ConstantColors().greyHint, fontSize: 12),
             ),
             Text(
-              'Robert',
+              name.isEmpty ? '' : name,
               style: TextStyle(
                   color: ConstantColors().titleTexts,
                   fontSize: 16,
@@ -275,10 +275,10 @@ SnackBar snackBar(String content,
       ));
 }
 
-Widget loadingProgressBar() {
+Widget loadingProgressBar({Color? color, double size = 35}) {
   return Center(
       child: SpinKitRotatingCircle(
-    size: 50,
-    color: cc.primaryColor,
+    size: size,
+    color: color ?? cc.primaryColor,
   ));
 }

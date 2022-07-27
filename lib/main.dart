@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:gren_mart/model/auth_data.dart';
 import 'package:gren_mart/model/favorite_data.dart';
 import 'package:gren_mart/model/other_data.dart';
 import 'package:gren_mart/service/country_dropdown_service.dart';
 import 'package:gren_mart/service/poster_slider_service.dart';
+import 'package:gren_mart/service/signin_signup_service.dart';
 import 'package:gren_mart/service/state_dropdown_service.dart';
+import 'package:gren_mart/service/user_profile_service.dart';
 import 'package:gren_mart/view/auth/order_data.dart';
 import 'package:gren_mart/view/settings/shipping_addresses.dart';
 import 'package:provider/provider.dart';
@@ -42,7 +43,6 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider.value(value: AuthData()),
         ChangeNotifierProvider.value(value: OtherData()),
         ChangeNotifierProvider.value(value: Products()),
         ChangeNotifierProvider.value(value: CartData()),
@@ -51,6 +51,8 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => CountryDropdownService()),
         ChangeNotifierProvider(create: (_) => StateDropdownService()),
         ChangeNotifierProvider(create: (_) => PosterSliderService()),
+        ChangeNotifierProvider(create: (_) => UserProfileService()),
+        ChangeNotifierProvider(create: (_) => SignInSignUpService()),
       ],
       child: Consumer<Products>(
         builder: (context, value, child) => MaterialApp(

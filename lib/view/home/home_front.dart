@@ -13,6 +13,7 @@ import 'package:gren_mart/view/utils/constant_styles.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 
+import '../../service/user_profile_service.dart';
 import '../search/filter_bottom_sheeet.dart';
 
 class HomeFront extends StatefulWidget {
@@ -38,9 +39,9 @@ class _HomeFrontState extends State<HomeFront> {
 
   int _navigationIndex = 0;
 
-  PreferredSizeWidget? manageAppBar() {
+  PreferredSizeWidget? manageAppBar(BuildContext context, String name) {
     if (_navigationIndex == 0) {
-      return helloAppBar();
+      return helloAppBar(name);
     }
     if (_navigationIndex == 1) {
       return AppBar(
@@ -108,7 +109,8 @@ class _HomeFrontState extends State<HomeFront> {
       navigationWidget = SearchView(_textEditingController);
     }
     return Scaffold(
-      appBar: manageAppBar(),
+      appBar: manageAppBar(context,
+          Provider.of<UserProfileService>(context).userProfileData.name),
       body: navigationWidget,
       bottomNavigationBar: BottomNavigationBar(
           onTap: (v) {
