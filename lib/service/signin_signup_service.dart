@@ -9,8 +9,11 @@ import 'package:shared_preferences/shared_preferences.dart';
 class SignInSignUpService with ChangeNotifier {
   SignInModel? signInData;
   var _token;
+  var password;
+  var email;
   bool login = true;
   bool isLoading = false;
+  bool rememberPass = false;
 
   toggleSigninSignup() {
     login = !login;
@@ -20,6 +23,12 @@ class SignInSignUpService with ChangeNotifier {
   toggleLaodingSpinner() {
     isLoading = !isLoading;
     print(isLoading.toString() + '------------------------');
+    notifyListeners();
+  }
+
+  toggleRememberPass(bool? value) {
+    rememberPass = value as bool;
+    print(rememberPass);
     notifyListeners();
   }
 
@@ -36,11 +45,6 @@ class SignInSignUpService with ChangeNotifier {
       return null;
     }
     return _token;
-  }
-
-  void logout() {
-    // signInData!.token = null;
-    isLoading = false;
   }
 
   Future<bool> signInOption(String? email, String? password) async {
@@ -61,11 +65,21 @@ class SignInSignUpService with ChangeNotifier {
 
         final pref = await SharedPreferences.getInstance();
         print('working on pref');
-        final userData = json.encode({
+        final tokenData = json.encode({
           'token': signInData!.token,
         });
-        await pref.setString('userData', userData);
-        print(json.decode(pref.getString('userData').toString()));
+        await pref.setString('token', tokenData);
+        if (rememberPass) {
+          final userData = json.encode({
+            'email': email,
+            'password': password,
+          });
+          pref.setString('userData', userData);
+        }
+        if (!rememberPass) {
+          resetEmailPassData();
+        }
+
         notifyListeners();
         return true;
       }
@@ -78,16 +92,51 @@ class SignInSignUpService with ChangeNotifier {
     }
   }
 
-  Future<bool> getToken() async {
+  Future<dynamic> getToken() async {
     var token;
+    final ref = await SharedPreferences.getInstance();
+    if (!ref.containsKey('token')) {
+      return;
+    }
+    final data = ref.getString('token');
+    token = json.decode(data.toString());
+    _token = token['token'];
+    notifyListeners();
+    print(token);
+    return _token;
+  }
+
+  Future<bool> getUserData() async {
     final ref = await SharedPreferences.getInstance();
     if (!ref.containsKey('userData')) {
       return false;
     }
     final data = ref.getString('userData');
-    token = json.decode(data.toString());
-    _token = token;
+    final signinData = json.decode(data.toString()) as Map<String, dynamic>;
+    email = signinData['email'];
+    password = signinData['password'];
+    toggleRememberPass(true);
     notifyListeners();
     return true;
+  }
+
+  Future<void> resetEmailPassData() async {
+    final pref = await SharedPreferences.getInstance();
+    pref.remove('userData');
+    email = null;
+    password = null;
+    notifyListeners();
+  }
+
+  Future<void> signOut() async {
+    final ref = await SharedPreferences.getInstance();
+    if (!ref.containsKey('token')) {
+      return;
+    }
+    ref.remove('token');
+
+    notifyListeners();
+    print(token);
+    return _token;
   }
 }

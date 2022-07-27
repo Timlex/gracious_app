@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:gren_mart/service/auth_text_controller_service.dart';
 import 'package:gren_mart/service/country_dropdown_service.dart';
 import 'package:gren_mart/service/signin_signup_service.dart';
 import 'package:gren_mart/service/user_profile_service.dart';
@@ -21,15 +22,10 @@ class Auth extends StatelessWidget {
   ConstantColors cc = ConstantColors();
   final GlobalKey<FormState> _formKey = GlobalKey();
   final String _email = '';
-  final _passController = TextEditingController();
-  final _emailController = TextEditingController();
-  final TextEditingController _nameController = TextEditingController();
-  final TextEditingController _userNameController = TextEditingController();
+  var email;
   List<String> contries = [];
   bool login = true;
   bool loading = false;
-
-  bool rememberPass = false;
 
   void _toggleLogin() {
     // setState(() {
@@ -45,7 +41,12 @@ class Auth extends StatelessWidget {
 
     if (login) {
       await Provider.of<SignInSignUpService>(context, listen: false)
-          .signInOption(_emailController.text.trim(), _passController.text)
+          .signInOption(
+              Provider.of<AuthTextControllerService>(context, listen: false)
+                  .email
+                  .trim(),
+              Provider.of<AuthTextControllerService>(context, listen: false)
+                  .password)
           .then((value) async {
         if (value) {
           await Provider.of<UserProfileService>(context, listen: false)
@@ -53,6 +54,7 @@ class Auth extends StatelessWidget {
                   Provider.of<SignInSignUpService>(context, listen: false)
                       .token);
           Navigator.of(context).pushReplacementNamed(HomeFront.routeName);
+
           return;
         }
         // setState(() {
@@ -60,6 +62,7 @@ class Auth extends StatelessWidget {
         // });
         Provider.of<SignInSignUpService>(context, listen: false)
             .toggleLaodingSpinner();
+
         ScaffoldMessenger.of(context)
             .showSnackBar(snackBar('SomeThing went wrong'));
       });
@@ -136,15 +139,15 @@ class Auth extends StatelessWidget {
                 Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20.0),
                     child: ssData.login
-                        ? Login(_formKey, _email, _passController, () {
-                            _onSubmit(context);
-                          }, _emailController)
-                        : SignUp(
-                            _nameController,
-                            _userNameController,
-                            _emailController,
-                            _passController,
-                          )),
+                        ? Login(
+                            _formKey,
+                            () {
+                              _onSubmit(context);
+                            },
+                            initialPass: ssData.password,
+                            initialemail: ssData.email,
+                          )
+                        : SignUp()),
                 const SizedBox(height: 10),
                 Consumer<SignInSignUpService>(
                     builder: (context, ssData, child) {
@@ -157,9 +160,10 @@ class Auth extends StatelessWidget {
                               child: Row(
                                 children: [
                                   Expanded(
-                                    child: RememberBox(
-                                      rememberPass,
-                                    ),
+                                    child: RememberBox(ssData.rememberPass,
+                                        (value) {
+                                      ssData.toggleRememberPass(value);
+                                    }),
                                   ),
                                   GestureDetector(
                                     onTap: () {
@@ -191,21 +195,22 @@ class Auth extends StatelessWidget {
                   child: Stack(
                     children: [
                       customContainerButton(
-                          ssData.isLoading
-                              ? ''
-                              : (ssData.login ? 'Log in' : 'Sign up'),
-                          double.infinity,
-                          ssData.login
-                              ? () {
-                                  ssData.toggleLaodingSpinner();
-                                  _onSubmit(context);
+                        ssData.isLoading
+                            ? ''
+                            : (ssData.login ? 'Log in' : 'Sign up'),
+                        double.infinity,
+                        ssData.login
+                            ? () {
+                                ssData.toggleLaodingSpinner();
+                                _onSubmit(context);
 
-                                  ssData.toggleLaodingSpinner();
-                                }
-                              : () {
-                                  Navigator.of(context).pushReplacementNamed(
-                                      HomeFront.routeName);
-                                }),
+                                ssData.toggleLaodingSpinner();
+                              }
+                            : () {
+                                Navigator.of(context)
+                                    .pushReplacementNamed(HomeFront.routeName);
+                              },
+                      ),
                       if (ssData.isLoading)
                         const SizedBox(
                             height: 50,

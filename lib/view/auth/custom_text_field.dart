@@ -12,6 +12,7 @@ class CustomTextField extends StatefulWidget {
   FocusNode? focusNode;
   void Function(String?)? onSaved;
   void Function(String)? onChanged;
+  String? initialValue;
   @override
   Key? key;
   CustomTextField(
@@ -25,6 +26,7 @@ class CustomTextField extends StatefulWidget {
     this.focusNode,
     this.onSaved,
     this.onChanged,
+    this.initialValue,
     this.key,
   });
 
@@ -36,6 +38,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      initialValue: widget.initialValue,
       key: widget.key,
       focusNode: widget.focusNode,
       controller: widget.controller,

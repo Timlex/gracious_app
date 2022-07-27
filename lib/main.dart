@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gren_mart/model/favorite_data.dart';
 import 'package:gren_mart/model/other_data.dart';
+import 'package:gren_mart/service/auth_text_controller_service.dart';
 import 'package:gren_mart/service/country_dropdown_service.dart';
 import 'package:gren_mart/service/poster_slider_service.dart';
 import 'package:gren_mart/service/signin_signup_service.dart';
@@ -53,6 +54,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => PosterSliderService()),
         ChangeNotifierProvider(create: (_) => UserProfileService()),
         ChangeNotifierProvider(create: (_) => SignInSignUpService()),
+        ChangeNotifierProvider(create: (_) => AuthTextControllerService()),
       ],
       child: Consumer<Products>(
         builder: (context, value, child) => MaterialApp(

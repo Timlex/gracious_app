@@ -10,6 +10,7 @@ class UserProfileService with ChangeNotifier {
 
   Future<void> fetchProfileService(var token) async {
     print('fetching posters');
+    print(token);
 
     final url = Uri.parse('$baseApiUrl/user/profile');
     print(token);
@@ -29,11 +30,11 @@ class UserProfileService with ChangeNotifier {
         userProfileData = data.userDetails;
 
         // posterDataList = data.data;
-        // print(userProfileData.name + userProfileData.email + '---------------');
+        print(userProfileData.name + userProfileData.email + '---------------');
         // print('-------------------------------------');
         notifyListeners();
       } else {
-        // print('something went wrong');
+        throw '';
       }
     } catch (error) {
       // print(error);

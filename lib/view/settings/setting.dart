@@ -75,7 +75,11 @@ class _SettingViewState extends State<SettingView> {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 25),
           child: customContainerButton('Log Out', double.infinity, () {
-            Provider.of<SignInSignUpService>(context, listen: false).logout();
+            Provider.of<SignInSignUpService>(context, listen: false).signOut();
+            Provider.of<SignInSignUpService>(context, listen: false)
+                .toggleLaodingSpinner();
+            Provider.of<SignInSignUpService>(context, listen: false)
+                .getUserData();
             Navigator.of(context).pushAndRemoveUntil(
                 MaterialPageRoute(builder: (context) => Auth()),
                 (Route<dynamic> route) => false);

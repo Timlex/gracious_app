@@ -1,37 +1,31 @@
 import 'package:flutter/material.dart';
+import 'package:gren_mart/service/auth_text_controller_service.dart';
 import 'package:gren_mart/view/auth/custom_text_field.dart';
+import 'package:provider/provider.dart';
 
 import '../utils/constant_styles.dart';
 
-class Login extends StatefulWidget {
+class Login extends StatelessWidget {
   final GlobalKey<FormState> _formKey;
-  String _emailText;
-  final TextEditingController _passController;
-  final TextEditingController _emailController;
   Function onSave;
-  Login(this._formKey, this._emailText, this._passController, this.onSave,
-      this._emailController,
-      {Key? key})
+  String? initialPass;
+  String? initialemail;
+  Login(this._formKey, this.onSave,
+      {this.initialemail, this.initialPass, Key? key})
       : super(key: key);
-
-  @override
-  State<Login> createState() => _LoginState();
-}
-
-class _LoginState extends State<Login> {
   final _passFN = FocusNode();
 
   @override
   Widget build(BuildContext context) {
     return Form(
-      key: widget._formKey,
+      key: _formKey,
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         textFieldTitle('Username'),
         const SizedBox(height: 3),
         CustomTextField(
           'Email',
-          controller: widget._emailController,
           leadingImage: 'assets/images/icons/mail.png',
+          initialValue: initialemail,
           validator: (emailText) {
             if (emailText!.isEmpty) {
               return 'Enter your email/username';
@@ -41,29 +35,35 @@ class _LoginState extends State<Login> {
             }
             return null;
           },
-          onFieldSubmitted: (_) {
-            widget._emailText = _;
+          onFieldSubmitted: (emailText) {
+            Provider.of<AuthTextControllerService>(context, listen: false)
+                .setEmail(emailText);
             FocusScope.of(context).requestFocus(_passFN);
           },
           onChanged: (emailText) {
-            widget._emailText = emailText;
+            Provider.of<AuthTextControllerService>(context, listen: false)
+                .setEmail(emailText);
           },
         ),
         textFieldTitle('Password'),
         CustomTextField(
           'Password',
-          controller: widget._passController,
           focusNode: _passFN,
           leadingImage: 'assets/images/icons/password.png',
           trailing: true,
           obscureText: true,
+          initialValue: initialPass,
           validator: (pass) {
             if (pass == null || pass.length < 6) {
               return 'Password must be at least 6 digit.';
             }
             return null;
           },
-          onFieldSubmitted: (_) => widget.onSave(),
+          onChanged: (value) {
+            Provider.of<AuthTextControllerService>(context, listen: false)
+                .setPass(value);
+          },
+          onFieldSubmitted: (_) => onSave(),
         ),
       ]),
     );
