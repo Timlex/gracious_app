@@ -106,8 +106,6 @@ class _IntroState extends State<Intro> {
                 return;
               }
               if (selectedindex == 2) {
-                Provider.of<StateDropdownService>(context, listen: false)
-                    .getStates(1);
                 Navigator.of(context).pushReplacementNamed(Auth.routeName);
               }
             }),

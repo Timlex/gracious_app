@@ -5,6 +5,7 @@ class AuthTextControllerService with ChangeNotifier {
   var _password;
   var _name;
   var _userName;
+  var _cityAddress;
 
   setEmail(value) {
     _email = value;
@@ -23,6 +24,13 @@ class AuthTextControllerService with ChangeNotifier {
 
   setUserName(value) {
     _userName = value;
+
+    notifyListeners();
+  }
+
+  setCityAddress(value) {
+    _cityAddress = value;
+
     notifyListeners();
   }
 
@@ -40,5 +48,9 @@ class AuthTextControllerService with ChangeNotifier {
 
   String get password {
     return _password;
+  }
+
+  String get cityAddress {
+    return _cityAddress;
   }
 }

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gren_mart/model/cart_data.dart';
 import 'package:gren_mart/model/favorite_data.dart';
+import 'package:gren_mart/service/navigation_bar_helper_service.dart';
 import 'package:gren_mart/view/cart/cart_view.dart';
 import 'package:gren_mart/view/favorite/favorite.dart';
 import 'package:gren_mart/view/home/home.dart';
@@ -13,21 +14,18 @@ import 'package:gren_mart/view/utils/constant_styles.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 
+import '../../service/auth_text_controller_service.dart';
+import '../../service/country_dropdown_service.dart';
+import '../../service/state_dropdown_service.dart';
 import '../../service/user_profile_service.dart';
 import '../search/filter_bottom_sheeet.dart';
 
-class HomeFront extends StatefulWidget {
+class HomeFront extends StatelessWidget {
   static const String routeName = 'HomeFront/';
 
-  const HomeFront({Key? key}) : super(key: key);
+  HomeFront({Key? key}) : super(key: key);
 
-  @override
-  State<HomeFront> createState() => _HomeFrontState();
-}
-
-class _HomeFrontState extends State<HomeFront> {
   final ConstantColors cc = ConstantColors();
-  final TextEditingController _textEditingController = TextEditingController();
 
   // List views = [
   //   Home(),
@@ -91,159 +89,174 @@ class _HomeFrontState extends State<HomeFront> {
     return null;
   }
 
-  void searchHelper() {
-    setState(() {
-      _navigationIndex = 1;
-    });
-  }
-
-  Widget navigationWidget = Home();
+  Widget navigationWidget = const Home();
   @override
   Widget build(BuildContext context) {
+    _navigationIndex =
+        Provider.of<NavigationBarHelperService>(context).navigationIndex;
     if (_navigationIndex == 0) {
-      navigationWidget = Home(
-        searchController: _textEditingController,
-        onFieldSubmitted: searchHelper,
-      );
+      navigationWidget = const Home();
     } else if (_navigationIndex == 1) {
-      navigationWidget = SearchView(_textEditingController);
+      navigationWidget = const SearchView();
     }
-    return Scaffold(
-      appBar: manageAppBar(context,
-          Provider.of<UserProfileService>(context).userProfileData.name),
-      body: navigationWidget,
-      bottomNavigationBar: BottomNavigationBar(
-          onTap: (v) {
-            setState(() {
-              _navigationIndex = v;
-              if (v == 0) {
-                _textEditingController.clear();
-                navigationWidget = Home(
-                  searchController: _textEditingController,
-                );
+    Provider.of<CountryDropdownService>(context, listen: false)
+        .getContries()
+        .then((value) =>
+            Provider.of<StateDropdownService>(context, listen: false)
+                .getStates(value ?? 1));
+    return Consumer<NavigationBarHelperService>(
+        builder: (context, nData, child) {
+      return Scaffold(
+        appBar: manageAppBar(context,
+            Provider.of<UserProfileService>(context).userProfileData.name),
+        body: navigationWidget,
+        bottomNavigationBar: BottomNavigationBar(
+            onTap: (v) {
+              nData.setNavigationIndex(v);
+              if (nData.navigationIndex == 0) {
+                nData.setSearchText('');
+                navigationWidget = const Home();
 
                 return;
               }
-              if (v == 1) {
-                navigationWidget = SearchView(_textEditingController);
+              if (nData.navigationIndex == 1) {
+                navigationWidget = const SearchView();
                 return;
               }
-              if (v == 2) {
+              if (nData.navigationIndex == 2) {
                 navigationWidget = CartView();
                 return;
               }
-              if (v == 3) {
+              if (nData.navigationIndex == 3) {
                 navigationWidget = FavoriteView();
                 return;
               }
-              if (v == 4) {
+              if (nData.navigationIndex == 4) {
                 navigationWidget = const SettingView();
                 return;
               }
-            });
-          },
-          // fixedColor: cc.blackColor,
+            },
+            // fixedColor: cc.blackColor,
 
-          type: BottomNavigationBarType.fixed,
-          backgroundColor: cc.blackColor,
-          selectedItemColor: cc.blackColor,
-          unselectedItemColor: cc.blackColor,
-          currentIndex: _navigationIndex,
-          showSelectedLabels: false,
-          showUnselectedLabels: false,
-          elevation: 0,
-          items: [
-            BottomNavigationBarItem(
-                activeIcon: SvgPicture.asset(
-                  'assets/images/icons/home_selected.svg',
-                  height: 27,
-                  color: cc.primaryColor,
-                ),
-                icon: SvgPicture.asset(
-                  'assets/images/icons/home.svg',
-                  height: 27,
-                  color: cc.greyHint,
-                ),
-                label: ''),
-            BottomNavigationBarItem(
-                activeIcon: SvgPicture.asset(
-                  'assets/images/icons/search_fill.svg',
-                  height: 27,
-                  color: cc.primaryColor,
-                ),
-                icon: SvgPicture.asset(
-                  'assets/images/icons/search.svg',
-                  height: 27,
-                  color: cc.greyHint,
-                ),
-                label: ''),
-            BottomNavigationBarItem(
-                activeIcon: SvgPicture.asset(
-                  'assets/images/icons/bag_fill.svg',
-                  height: 27,
-                  color: cc.primaryColor,
-                ),
-                icon: Consumer<CartData>(builder: (context, cartData, child) {
-                  return Badge(
-                    showBadge: cartData.cartList.isEmpty ? false : true,
-                    badgeContent: Text(
-                      cartData.totalQuantity().toString(),
-                      style: TextStyle(color: cc.pureWhite),
-                    ),
-                    child: SvgPicture.asset(
-                      'assets/images/icons/bag.svg',
-                      height: 27,
-                      color: cc.greyHint,
-                    ),
-                  );
-                }),
-                label: ''),
-            BottomNavigationBarItem(
-                activeIcon: SvgPicture.asset(
-                  'assets/images/icons/heart_fill.svg',
-                  height: 27,
-                  color: cc.primaryColor,
-                ),
-                icon: Consumer<FavoriteData>(
-                    builder: (context, favoriteData, child) {
-                  return Badge(
-                    showBadge:
-                        favoriteData.favoriteItems.isEmpty ? false : true,
-                    badgeContent: Text(
-                      favoriteData.favoriteItems.length.toString(),
-                      style: TextStyle(color: cc.pureWhite),
-                    ),
-                    child: SvgPicture.asset(
-                      'assets/images/icons/heart.svg',
-                      height: 27,
-                      color: cc.greyHint,
-                    ),
-                  );
-                }),
-                label: ''),
-            BottomNavigationBarItem(
-                activeIcon: SvgPicture.asset(
-                  'assets/images/icons/setting_fill.svg',
-                  height: 27,
-                  color: cc.primaryColor,
-                ),
-                icon: SvgPicture.asset(
-                  'assets/images/icons/setting_unfill.svg',
-                  height: 27,
-                  color: cc.greyHint,
-                ),
-                label: ''),
-          ]
-          //
-          // BNHelper.bottomNavigationIconData
-          //     .map(
-          //       (e) => BottomNavigationBarItem(
-          //           icon: SvgPicture.asset(
-          //               'assets/images/icons/${e['iconPath']}'),
-          //           label: e['iconName'] as String),
-          //     )
-          //     .toList()),
-          ),
-    );
+            type: BottomNavigationBarType.fixed,
+            backgroundColor: cc.blackColor,
+            selectedItemColor: cc.blackColor,
+            unselectedItemColor: cc.blackColor,
+            currentIndex: nData.navigationIndex,
+            showSelectedLabels: false,
+            showUnselectedLabels: false,
+            elevation: 0,
+            items: [
+              BottomNavigationBarItem(
+                  activeIcon: SvgPicture.asset(
+                    'assets/images/icons/home_selected.svg',
+                    height: 27,
+                    color: cc.primaryColor,
+                  ),
+                  icon: SvgPicture.asset(
+                    'assets/images/icons/home.svg',
+                    height: 27,
+                    color: cc.greyHint,
+                  ),
+                  label: ''),
+              BottomNavigationBarItem(
+                  activeIcon: SvgPicture.asset(
+                    'assets/images/icons/search_fill.svg',
+                    height: 27,
+                    color: cc.primaryColor,
+                  ),
+                  icon: SvgPicture.asset(
+                    'assets/images/icons/search.svg',
+                    height: 27,
+                    color: cc.greyHint,
+                  ),
+                  label: ''),
+              BottomNavigationBarItem(
+                  activeIcon: SvgPicture.asset(
+                    'assets/images/icons/bag_fill.svg',
+                    height: 27,
+                    color: cc.primaryColor,
+                  ),
+                  icon: Consumer<CartData>(builder: (context, cartData, child) {
+                    return Badge(
+                      showBadge: cartData.cartList.isEmpty ? false : true,
+                      badgeContent: Text(
+                        cartData.totalQuantity().toString(),
+                        style: TextStyle(color: cc.pureWhite),
+                      ),
+                      child: SvgPicture.asset(
+                        'assets/images/icons/bag.svg',
+                        height: 27,
+                        color: cc.greyHint,
+                      ),
+                    );
+                  }),
+                  label: ''),
+              BottomNavigationBarItem(
+                  activeIcon: SvgPicture.asset(
+                    'assets/images/icons/heart_fill.svg',
+                    height: 27,
+                    color: cc.primaryColor,
+                  ),
+                  icon: Consumer<FavoriteData>(
+                      builder: (context, favoriteData, child) {
+                    return Badge(
+                      showBadge:
+                          favoriteData.favoriteItems.isEmpty ? false : true,
+                      badgeContent: Text(
+                        favoriteData.favoriteItems.length.toString(),
+                        style: TextStyle(color: cc.pureWhite),
+                      ),
+                      child: SvgPicture.asset(
+                        'assets/images/icons/heart.svg',
+                        height: 27,
+                        color: cc.greyHint,
+                      ),
+                    );
+                  }),
+                  label: ''),
+              BottomNavigationBarItem(
+                  activeIcon: SvgPicture.asset(
+                    'assets/images/icons/setting_fill.svg',
+                    height: 27,
+                    color: cc.primaryColor,
+                  ),
+                  icon: SvgPicture.asset(
+                    'assets/images/icons/setting_unfill.svg',
+                    height: 27,
+                    color: cc.greyHint,
+                  ),
+                  label: ''),
+            ]
+            //
+            // BNHelper.bottomNavigationIconData
+            //     .map(
+            //       (e) => BottomNavigationBarItem(
+            //           icon: SvgPicture.asset(
+            //               'assets/images/icons/${e['iconPath']}'),
+            //           label: e['iconName'] as String),
+            //     )
+            //     .toList()),
+            ),
+      );
+    });
+  }
+
+  Future<void> setData(BuildContext context) async {
+    final value = Provider.of<UserProfileService>(context).userProfileData;
+    print('setting datas');
+    await Provider.of<AuthTextControllerService>(context, listen: false)
+        .setEmail(value.email);
+    await Provider.of<AuthTextControllerService>(context, listen: false)
+        .setName(value.name);
+    await Provider.of<AuthTextControllerService>(context, listen: false)
+        .setUserName(value.username);
+    await Provider.of<AuthTextControllerService>(context, listen: false)
+        .setEmail(value.email);
+    await Provider.of<CountryDropdownService>(context, listen: false)
+        .setCountryIdAndValue(value.country.name);
+
+    await Provider.of<StateDropdownService>(context, listen: false)
+        .setStateIdAndValue(value.state.name);
   }
 }

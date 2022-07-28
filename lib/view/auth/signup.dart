@@ -11,7 +11,8 @@ import 'custom_text_field.dart';
 class SignUp extends StatelessWidget {
   final _userNameFN = FocusNode();
   final _emailFN = FocusNode();
-  final _reFN = FocusNode();
+  final _passFN = FocusNode();
+  final _rePassFN = FocusNode();
 
   SignUp({
     Key? key,
@@ -135,10 +136,30 @@ class SignUp extends StatelessWidget {
                           },
                           value: sModel.selectedState,
                         )))),
-          textFieldTitle('Password'),
+          textFieldTitle('City'),
           // const SizedBox(height: 8),
           CustomTextField(
+            'City',
+            validator: (cityText) {
+              if (cityText!.isEmpty) {
+                return 'Enter at least 6 charechters';
+              }
+              if (cityText.length <= 5) {
+                return 'Enter at least 6 charechters';
+              }
+              return null;
+            },
+            onFieldSubmitted: (_) {
+              FocusScope.of(context).requestFocus(_passFN);
+            },
+            onChanged: (city) {
+              authController.setCityAddress(city);
+            },
+          ),
+          textFieldTitle('Password'),
+          CustomTextField(
             'Enter password',
+            focusNode: _passFN,
             validator: (emailText) {
               if (emailText!.isEmpty) {
                 return 'Enter at least 6 charechters';
@@ -149,7 +170,7 @@ class SignUp extends StatelessWidget {
               return null;
             },
             onFieldSubmitted: (_) {
-              FocusScope.of(context).requestFocus(_reFN);
+              FocusScope.of(context).requestFocus(_rePassFN);
             },
             onChanged: (pass) {
               authController.setPass(pass);
@@ -159,7 +180,7 @@ class SignUp extends StatelessWidget {
           // const SizedBox(height: 8),
           CustomTextField(
             'Re enter password',
-            focusNode: _reFN,
+            focusNode: _rePassFN,
             validator: (password) {
               if (password == authController.password) {
                 return 'Enter the same password';

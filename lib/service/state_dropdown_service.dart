@@ -16,11 +16,12 @@ class StateDropdownService with ChangeNotifier {
   setStateIdAndValue(value) {
     selectedState = value;
     final valueIndex = stateDropdownList.indexOf(value);
+    print(selectedState + selectedStateId.toString() + '---------------');
     notifyListeners();
   }
 
   Future<void> getStates(selectedCountryId) async {
-    print('getting state data');
+    print('getting state data____________' + selectedCountryId.toString());
     isLoading = true;
     notifyListeners();
     final url = Uri.parse('$baseApiUrl/state/$selectedCountryId');

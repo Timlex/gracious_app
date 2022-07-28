@@ -24,6 +24,7 @@ import 'package:gren_mart/view/settings/change_password.dart';
 import 'package:gren_mart/view/settings/manage_account.dart';
 import 'package:gren_mart/view/settings/new_address.dart';
 import 'package:gren_mart/view/utils/constant_colors.dart';
+import './service/navigation_bar_helper_service.dart';
 
 import 'model/cart_data.dart';
 import 'model/product_data.dart';
@@ -55,6 +56,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => UserProfileService()),
         ChangeNotifierProvider(create: (_) => SignInSignUpService()),
         ChangeNotifierProvider(create: (_) => AuthTextControllerService()),
+        ChangeNotifierProvider(create: (_) => NavigationBarHelperService()),
       ],
       child: Consumer<Products>(
         builder: (context, value, child) => MaterialApp(
@@ -76,7 +78,7 @@ class MyApp extends StatelessWidget {
             Auth.routeName: (context) => Auth(),
             ResetPassEmail.routeName: (context) => ResetPassEmail(),
             EnterOTP.routeName: (context) => EnterOTP(),
-            HomeFront.routeName: (context) => const HomeFront(),
+            HomeFront.routeName: (context) => HomeFront(),
             ProductDetails.routeName: (context) => ProductDetails(),
             CartView.routeName: (context) => CartView(),
             Checkout.routeName: (context) => Checkout(),

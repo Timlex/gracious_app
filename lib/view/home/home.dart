@@ -1,6 +1,7 @@
 import 'package:card_swiper/card_swiper.dart';
 import 'package:flutter/material.dart';
 import 'package:gren_mart/model/product_data.dart';
+import 'package:gren_mart/service/navigation_bar_helper_service.dart';
 import 'package:gren_mart/service/poster_slider_service.dart';
 import 'package:gren_mart/view/auth/custom_text_field.dart';
 import 'package:gren_mart/view/home/dow_card.dart';
@@ -11,10 +12,9 @@ import 'package:slide_countdown/slide_countdown.dart';
 import 'poster_card.dart';
 
 class Home extends StatelessWidget {
-  final TextEditingController? searchController;
-  void Function()? onFieldSubmitted;
-  Home({Key? key, this.searchController, this.onFieldSubmitted})
-      : super(key: key);
+  const Home({
+    Key? key,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -30,10 +30,14 @@ class Home extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 25),
             child: CustomTextField(
               'Search your need here',
-              controller: searchController!,
               leadingImage: 'assets/images/icons/search_normal.png',
               onFieldSubmitted: (value) {
-                onFieldSubmitted!();
+                Provider.of<NavigationBarHelperService>(context, listen: false)
+                    .setNavigationIndex(1);
+              },
+              onChanged: (value) {
+                Provider.of<NavigationBarHelperService>(context, listen: false)
+                    .setSearchText(value);
               },
             ),
 

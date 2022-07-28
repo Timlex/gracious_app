@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:gren_mart/service/navigation_bar_helper_service.dart';
 import 'package:gren_mart/view/auth/custom_text_field.dart';
+import 'package:provider/provider.dart';
 
 import '../../model/product_data.dart';
 import '../home/product_card.dart';
@@ -7,8 +9,7 @@ import '../utils/constant_colors.dart';
 
 class SearchView extends StatefulWidget {
   static const routeName = 'search';
-  final TextEditingController _searchController;
-  const SearchView(this._searchController);
+  const SearchView();
   @override
   State<SearchView> createState() => _SearchViewState();
 }
@@ -68,8 +69,14 @@ class _SearchViewState extends State<SearchView> {
           padding: const EdgeInsets.only(top: 20, right: 20, left: 20),
           child: CustomTextField(
             'Search your need here',
-            controller: widget._searchController,
+            initialValue:
+                Provider.of<NavigationBarHelperService>(context, listen: false)
+                    .serchText,
             leadingImage: 'assets/images/icons/search_normal.png',
+            onChanged: (value) {
+              Provider.of<NavigationBarHelperService>(context, listen: false)
+                  .setSearchText(value);
+            },
           ),
         ),
         // const SizedBox(height: 15),

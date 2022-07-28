@@ -20,8 +20,8 @@ class SignInSignUpService with ChangeNotifier {
     notifyListeners();
   }
 
-  toggleLaodingSpinner() {
-    isLoading = !isLoading;
+  toggleLaodingSpinner({bool? value}) {
+    isLoading = value ?? !isLoading;
     print(isLoading.toString() + '------------------------');
     notifyListeners();
   }
@@ -115,6 +115,7 @@ class SignInSignUpService with ChangeNotifier {
     final signinData = json.decode(data.toString()) as Map<String, dynamic>;
     email = signinData['email'];
     password = signinData['password'];
+    print(email);
     toggleRememberPass(true);
     notifyListeners();
     return true;
@@ -136,7 +137,7 @@ class SignInSignUpService with ChangeNotifier {
     ref.remove('token');
 
     notifyListeners();
-    print(token);
+    // print(token);
     return _token;
   }
 }

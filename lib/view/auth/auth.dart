@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:gren_mart/service/auth_text_controller_service.dart';
-import 'package:gren_mart/service/country_dropdown_service.dart';
+import 'package:gren_mart/service/navigation_bar_helper_service.dart';
 import 'package:gren_mart/service/signin_signup_service.dart';
 import 'package:gren_mart/service/user_profile_service.dart';
 import 'package:gren_mart/view/auth/horizontal_devider.dart';
@@ -13,6 +13,8 @@ import 'package:gren_mart/view/home/home_front.dart';
 import 'package:gren_mart/view/utils/constant_colors.dart';
 import 'package:provider/provider.dart';
 
+import '../../service/country_dropdown_service.dart';
+import '../../service/state_dropdown_service.dart';
 import '../utils/constant_styles.dart';
 
 class Auth extends StatelessWidget {
@@ -40,19 +42,27 @@ class Auth extends StatelessWidget {
     }
 
     if (login) {
+      var email =
+          (Provider.of<AuthTextControllerService>(context, listen: false)
+              .email);
+      var pass = (Provider.of<AuthTextControllerService>(context, listen: false)
+          .password);
+      if (email == null) {
+        email = Provider.of<SignInSignUpService>(context, listen: false).email;
+        pass =
+            Provider.of<SignInSignUpService>(context, listen: false).password;
+      }
+      Provider.of<NavigationBarHelperService>(context, listen: false)
+          .setNavigationIndex(0);
       await Provider.of<SignInSignUpService>(context, listen: false)
-          .signInOption(
-              Provider.of<AuthTextControllerService>(context, listen: false)
-                  .email
-                  .trim(),
-              Provider.of<AuthTextControllerService>(context, listen: false)
-                  .password)
+          .signInOption(email.trim(), pass)
           .then((value) async {
         if (value) {
           await Provider.of<UserProfileService>(context, listen: false)
               .fetchProfileService(
                   Provider.of<SignInSignUpService>(context, listen: false)
                       .token);
+
           Navigator.of(context).pushReplacementNamed(HomeFront.routeName);
 
           return;
@@ -74,8 +84,11 @@ class Auth extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Provider.of<CountryDropdownService>(context, listen: false).getContries();
-
+    Provider.of<CountryDropdownService>(context, listen: false)
+        .getContries()
+        .then((value) =>
+            Provider.of<StateDropdownService>(context, listen: false)
+                .getStates(value));
     return Scaffold(
       body: Consumer<SignInSignUpService>(builder: (context, ssData, child) {
         return SingleChildScrollView(

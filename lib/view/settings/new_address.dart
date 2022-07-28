@@ -4,11 +4,15 @@ import 'package:flutter/material.dart';
 import 'package:gren_mart/view/utils/app_bars.dart';
 import 'package:gren_mart/view/utils/constant_colors.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:provider/provider.dart';
 // import 'package:path/path.dart' as path;
 // import 'package:path_provider/path_provider.dart' as sysPath;
 
+import '../../service/country_dropdown_service.dart';
+import '../../service/state_dropdown_service.dart';
 import '../auth/custom_text_field.dart';
 import '../home/home_front.dart';
+import '../intro/custom_dropdown.dart';
 import '../utils/constant_styles.dart';
 
 class NewAddress extends StatefulWidget {
@@ -198,10 +202,58 @@ class _NewAddressState extends State<NewAddress> {
                     ),
                     textFieldTitle('Country'),
                     // const SizedBox(height: 8),
-                    // CustomDropdown('Country'),
-                    // textFieldTitle('Country'),
-                    // const SizedBox(height: 8),
-                    // CustomDropdown(country: country),
+                    Consumer<CountryDropdownService>(
+                      builder: (context, cProvider, child) =>
+                          cProvider.countryDropdownList.isNotEmpty
+                              ? CustomDropdown(
+                                  'Country',
+                                  cProvider.countryDropdownList,
+                                  (newValue) {
+                                    cProvider.setCountryIdAndValue(newValue);
+                                    Provider.of<StateDropdownService>(context,
+                                            listen: false)
+                                        .getStates(cProvider.selectedCountryId);
+                                  },
+                                  value: cProvider.selectedCountry,
+                                )
+                              : SizedBox(
+                                  height: 10,
+                                  child: Center(
+                                    child: FittedBox(
+                                      child: CircularProgressIndicator(
+                                        color: cc.greyHint,
+                                      ),
+                                    ),
+                                  )),
+                    ),
+                    textFieldTitle('State'),
+                    Consumer<StateDropdownService>(
+                        builder: ((context, sModel, child) =>
+                            // sModel.stateDropdownList.isEmpty
+                            //     ? SizedBox(
+                            //         child: Center(
+                            //             child: CircularProgressIndicator(
+                            //         color: cc.greyHint,
+                            //       )))
+                            //     :
+                            (sModel.isLoading
+                                ? SizedBox(
+                                    height: 10,
+                                    child: Center(
+                                      child: FittedBox(
+                                        child: CircularProgressIndicator(
+                                          color: cc.greyHint,
+                                        ),
+                                      ),
+                                    ))
+                                : CustomDropdown(
+                                    'State',
+                                    sModel.stateDropdownList,
+                                    (newValue) {
+                                      sModel.setStateIdAndValue(newValue);
+                                    },
+                                    value: sModel.selectedState,
+                                  )))),
                     textFieldTitle('Zip code'),
                     // const SizedBox(height: 8),
                     CustomTextField(

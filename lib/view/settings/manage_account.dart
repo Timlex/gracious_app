@@ -2,13 +2,19 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:gren_mart/service/auth_text_controller_service.dart';
+import 'package:gren_mart/service/user_profile_service.dart';
 import 'package:gren_mart/view/utils/app_bars.dart';
 import 'package:gren_mart/view/utils/constant_colors.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:provider/provider.dart';
 
 import '../../model/user_data.dart';
+import '../../service/country_dropdown_service.dart';
+import '../../service/state_dropdown_service.dart';
 import '../auth/custom_text_field.dart';
 import '../home/home_front.dart';
+import '../intro/custom_dropdown.dart';
 import '../utils/constant_styles.dart';
 
 class ManageAccount extends StatefulWidget {
@@ -31,9 +37,6 @@ class _ManageAccountState extends State<ManageAccount> {
   ConstantColors cc = ConstantColors();
 
   final GlobalKey<FormState> _formKey = GlobalKey();
-  final _emailController = TextEditingController();
-  final _nameController = TextEditingController();
-  final _userNameController = TextEditingController();
   final _userNameFN = FocusNode();
   final _emailFN = FocusNode();
   String? country;
@@ -66,125 +69,214 @@ class _ManageAccountState extends State<ManageAccount> {
       appBar: AppBars().appBarTitled('Manage Account', () {
         Navigator.of(context).pop();
       }, hasButton: true),
-      body: ListView(
-        children: [
-          const SizedBox(
-            height: 30,
-          ),
-          Center(
-            child: SizedBox(
-              width: 155,
-              child: Stack(alignment: Alignment.center, children: [
-                CircleAvatar(
-                  backgroundColor: cc.greyYellow,
-                  radius: 70,
-                  backgroundImage: _pickedImage == null
-                      ? const AssetImage(
-                          'assets/images/setting_dp.png',
-                        )
-                      : FileImage(_pickedImage!) as ImageProvider<Object>,
-                  //     _pickedImage!,
-                  //     fit: BoxFit.cover,
-                  //   ),
-                ),
-                Positioned(
-                    bottom: 0,
-                    right: 0,
-                    child: GestureDetector(
-                      onTap: () {
-                        imageSelectorGallery();
-                      },
-                      child: SvgPicture.asset(
-                        'assets/images/icons/camera.svg',
-                        height: 45,
+      body: Consumer<UserProfileService>(builder: (context, uData, child) {
+        return ListView(
+          children: [
+            const SizedBox(
+              height: 30,
+            ),
+            Center(
+              child: SizedBox(
+                width: 155,
+                child: Stack(alignment: Alignment.center, children: [
+                  CircleAvatar(
+                    backgroundColor: cc.greyYellow,
+                    radius: 70,
+                    backgroundImage: _pickedImage == null
+                        ? NetworkImage(
+                            uData.userProfileData.profileImageUrl as String,
+                          )
+                        : FileImage(_pickedImage!) as ImageProvider<Object>,
+                    //     _pickedImage!,
+                    //     fit: BoxFit.cover,
+                    //   ),
+                  ),
+                  Positioned(
+                      bottom: 0,
+                      right: 0,
+                      child: GestureDetector(
+                        onTap: () {
+                          imageSelectorGallery();
+                        },
+                        child: SvgPicture.asset(
+                          'assets/images/icons/camera.svg',
+                          height: 45,
+                        ),
+                      ))
+                ]),
+              ),
+            ),
+            const SizedBox(height: 15),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 25),
+              child: Form(
+                key: _formKey,
+                autovalidateMode: AutovalidateMode.always,
+                child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      textFieldTitle('Name'),
+                      // const SizedBox(height: 8),
+                      CustomTextField(
+                        'Enter name', initialValue: uData.userProfileData.name,
+                        validator: (nameText) {
+                          if (nameText!.isEmpty) {
+                            return 'Enter your name';
+                          }
+                          if (nameText.length <= 3) {
+                            return 'Enter a valid email/username';
+                          }
+                          return null;
+                        },
+                        onFieldSubmitted: (_) {
+                          FocusScope.of(context).requestFocus(_userNameFN);
+                        },
+                        onChanged: (value) {
+                          Provider.of<AuthTextControllerService>(context,
+                                  listen: false)
+                              .setName(value);
+                        },
+                        // imagePath: 'assets/images/icons/mail.png',
                       ),
-                    ))
-              ]),
+                      textFieldTitle('User name'),
+                      // const SizedBox(height: 8),
+                      CustomTextField(
+                        'Enter user name',
+                        initialValue: uData.userProfileData.username,
+                        focusNode: _userNameFN,
+                        validator: (usernameText) {
+                          if (usernameText!.isEmpty) {
+                            return 'Enter your username';
+                          }
+                          if (usernameText.length < 5) {
+                            return 'Enter at least 5 charecters';
+                          }
+                          return null;
+                        },
+                        onFieldSubmitted: (_) {
+                          FocusScope.of(context).requestFocus(_emailFN);
+                        },
+                        onChanged: (value) {
+                          Provider.of<AuthTextControllerService>(context,
+                                  listen: false)
+                              .setUserName(value);
+                        },
+                      ),
+                      textFieldTitle('Email'),
+                      // const SizedBox(height: 8),
+                      CustomTextField(
+                        'Enter email address',
+                        initialValue: uData.userProfileData.address,
+                        validator: (emailText) {
+                          if (emailText!.isEmpty) {
+                            return 'Enter your email';
+                          }
+                          if (emailText.length <= 5) {
+                            return 'Enter a valid email';
+                          }
+                          return null;
+                        },
+                        onChanged: (value) {
+                          Provider.of<AuthTextControllerService>(context,
+                                  listen: false)
+                              .setEmail(value);
+                        },
+                        // imagePath: 'assets/images/icons/mail.png',
+                      ),
+
+                      textFieldTitle('Country'),
+                      // const SizedBox(height: 8),
+                      Consumer<CountryDropdownService>(
+                        builder: (context, cProvider, child) => cProvider
+                                .countryDropdownList.isNotEmpty
+                            ? CustomDropdown(
+                                'Country',
+                                cProvider.countryDropdownList,
+                                (newValue) {
+                                  cProvider.setCountryIdAndValue(newValue);
+                                  Provider.of<StateDropdownService>(context,
+                                          listen: false)
+                                      .getStates(cProvider.selectedCountryId);
+                                },
+                                value: cProvider.selectedCountry,
+                              )
+                            : SizedBox(
+                                height: 10,
+                                child: Center(
+                                  child: FittedBox(
+                                    child: CircularProgressIndicator(
+                                      color: cc.greyHint,
+                                    ),
+                                  ),
+                                )),
+                      ),
+                      textFieldTitle('State'),
+                      Consumer<StateDropdownService>(
+                          builder: ((context, sModel, child) =>
+                              // sModel.stateDropdownList.isEmpty
+                              //     ? SizedBox(
+                              //         child: Center(
+                              //             child: CircularProgressIndicator(
+                              //         color: cc.greyHint,
+                              //       )))
+                              //     :
+                              (sModel.isLoading
+                                  ? SizedBox(
+                                      height: 10,
+                                      child: Center(
+                                        child: FittedBox(
+                                          child: CircularProgressIndicator(
+                                            color: cc.greyHint,
+                                          ),
+                                        ),
+                                      ))
+                                  : CustomDropdown(
+                                      'State',
+                                      sModel.stateDropdownList,
+                                      (newValue) {
+                                        sModel.setStateIdAndValue(newValue);
+                                      },
+                                      value: sModel.selectedState,
+                                    )))),
+                      textFieldTitle('City'),
+                      // const SizedBox(height: 8),
+                      CustomTextField(
+                        'Enter your address',
+                        initialValue: uData.userProfileData.address,
+                        validator: (cityText) {
+                          if (cityText!.isEmpty) {
+                            return 'Enter your address';
+                          }
+                          if (cityText.length <= 5) {
+                            return 'Enter a valid address';
+                          }
+                          return null;
+                        },
+                        onChanged: (value) {
+                          Provider.of<AuthTextControllerService>(context,
+                                  listen: false)
+                              .setName(value);
+                        },
+                        // imagePath: 'assets/images/icons/mail.png',
+                      ),
+                    ]),
+              ),
             ),
-          ),
-          const SizedBox(height: 15),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 25),
-            child: Form(
-              key: _formKey,
-              autovalidateMode: AutovalidateMode.always,
-              child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    textFieldTitle('Name'),
-                    // const SizedBox(height: 8),
-                    CustomTextField(
-                      'Enter name',
-                      controller: _nameController,
-                      validator: (emailText) {
-                        if (emailText!.isEmpty) {
-                          return 'Enter your name';
-                        }
-                        if (emailText.length <= 3) {
-                          return 'Enter a valid email/username';
-                        }
-                        return null;
-                      },
-                      onFieldSubmitted: (_) {
-                        FocusScope.of(context).requestFocus(_userNameFN);
-                      },
-                      // imagePath: 'assets/images/icons/mail.png',
-                    ),
-                    textFieldTitle('User name'),
-                    // const SizedBox(height: 8),
-                    CustomTextField(
-                      'Enter user name',
-                      controller: _userNameController,
-                      focusNode: _userNameFN,
-                      validator: (emailText) {
-                        if (emailText!.isEmpty) {
-                          return 'Enter your username';
-                        }
-                        if (emailText.length < 5) {
-                          return 'Enter at least 5 charecters';
-                        }
-                        return null;
-                      },
-                      onFieldSubmitted: (_) {
-                        FocusScope.of(context).requestFocus(_emailFN);
-                      },
-                    ),
-                    textFieldTitle('Email'),
-                    // const SizedBox(height: 8),
-                    CustomTextField(
-                      'Enter email address',
-                      controller: _emailController,
-                      validator: (emailText) {
-                        if (emailText!.isEmpty) {
-                          return 'Enter your email';
-                        }
-                        if (emailText.length <= 5) {
-                          return 'Enter a valid email';
-                        }
-                        return null;
-                      },
-                      // imagePath: 'assets/images/icons/mail.png',
-                    ),
-                    textFieldTitle('City'),
-                    // const SizedBox(height: 8),
-                    // CustomDropdown('city:'),
-                  ]),
+            const SizedBox(height: 40),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 25.0),
+              child: customContainerButton('Save Changes', double.infinity, () {
+                final validated = _formKey.currentState!.validate();
+                if (!validated) {
+                  return;
+                }
+                Navigator.of(context).pop();
+              }),
             ),
-          ),
-          const SizedBox(height: 40),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 25.0),
-            child: customContainerButton('Save Changes', double.infinity, () {
-              final validated = _formKey.currentState!.validate();
-              if (!validated) {
-                return;
-              }
-              Navigator.of(context).pop();
-            }),
-          ),
-          const SizedBox(height: 45)
-        ],
-      ),
+            const SizedBox(height: 45)
+          ],
+        );
+      }),
     );
   }
 }
