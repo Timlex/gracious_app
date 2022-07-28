@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:gren_mart/service/auth_text_controller_service.dart';
 import 'package:gren_mart/service/navigation_bar_helper_service.dart';
 import 'package:gren_mart/service/signin_signup_service.dart';
@@ -22,12 +21,11 @@ class Auth extends StatelessWidget {
 
   Auth({Key? key}) : super(key: key);
   ConstantColors cc = ConstantColors();
-  final GlobalKey<FormState> _formKey = GlobalKey();
+  final GlobalKey<FormState> _formKeySignin = GlobalKey();
+  final GlobalKey<FormState> _formKeySignup = GlobalKey();
   final String _email = '';
   var email;
   List<String> contries = [];
-  bool login = true;
-  bool loading = false;
 
   void _toggleLogin() {
     // setState(() {
@@ -35,8 +33,9 @@ class Auth extends StatelessWidget {
     // });
   }
 
-  Future<void> _onSubmit(BuildContext context) async {
-    final validated = _formKey.currentState!.validate();
+  Future<void> _onSubmit(
+      BuildContext context, bool login, GlobalKey<FormState> formKey) async {
+    final validated = formKey.currentState!.validate();
     if (!validated) {
       return;
     }
@@ -78,17 +77,60 @@ class Auth extends StatelessWidget {
       });
       return;
     }
-    ScaffoldMessenger.of(context)
-        .showSnackBar(snackBar('Invalid email/password'));
+    if (!(Provider.of<SignInSignUpService>(context, listen: false)
+        .termsAndCondi)) {
+      ScaffoldMessenger.of(context).showSnackBar(
+          snackBar('Please read and accept the terms and condition'));
+      return;
+    }
+    Provider.of<SignInSignUpService>(context, listen: false)
+        .signUpOption(
+            Provider.of<AuthTextControllerService>(context, listen: false)
+                .email,
+            Provider.of<AuthTextControllerService>(context, listen: false)
+                .password,
+            Provider.of<AuthTextControllerService>(context, listen: false).name,
+            Provider.of<AuthTextControllerService>(context, listen: false)
+                .username,
+            Provider.of<AuthTextControllerService>(context, listen: false)
+                .phoneNumber,
+            Provider.of<AuthTextControllerService>(context, listen: false)
+                .countryCode,
+            Provider.of<AuthTextControllerService>(context, listen: false)
+                .country
+                .toString(),
+            Provider.of<AuthTextControllerService>(context, listen: false)
+                .state
+                .toString(),
+            Provider.of<AuthTextControllerService>(context, listen: false)
+                .cityAddress,
+            'true')
+        .onError((error, stackTrace) {
+      Provider.of<SignInSignUpService>(context, listen: false)
+          .toggleLaodingSpinner(value: false);
+      ScaffoldMessenger.of(context).showSnackBar(snackBar(error.toString()));
+      return false;
+    });
+    Provider.of<SignInSignUpService>(context, listen: false)
+        .toggleLaodingSpinner();
+
+    // ScaffoldMessenger.of(context)
+    //     .showSnackBar(snackBar('Invalid email/password'));
   }
 
   @override
   Widget build(BuildContext context) {
     Provider.of<CountryDropdownService>(context, listen: false)
         .getContries()
-        .then((value) =>
-            Provider.of<StateDropdownService>(context, listen: false)
-                .getStates(value));
+        .then((value) {
+      Provider.of<AuthTextControllerService>(context, listen: false)
+          .setCountry(value ?? 1);
+      Provider.of<StateDropdownService>(context, listen: false)
+          .getStates(value ?? 1)
+          .then((value) =>
+              Provider.of<AuthTextControllerService>(context, listen: false)
+                  .setState(value ?? 1));
+    });
     return Scaffold(
       body: Consumer<SignInSignUpService>(builder: (context, ssData, child) {
         return SingleChildScrollView(
@@ -153,14 +195,14 @@ class Auth extends StatelessWidget {
                     padding: const EdgeInsets.symmetric(horizontal: 20.0),
                     child: ssData.login
                         ? Login(
-                            _formKey,
+                            _formKeySignin,
                             () {
-                              _onSubmit(context);
+                              _onSubmit(context, ssData.login, _formKeySignin);
                             },
                             initialPass: ssData.password,
                             initialemail: ssData.email,
                           )
-                        : SignUp()),
+                        : SignUp(_formKeySignup)),
                 const SizedBox(height: 10),
                 Consumer<SignInSignUpService>(
                     builder: (context, ssData, child) {
@@ -215,22 +257,28 @@ class Auth extends StatelessWidget {
                         ssData.login
                             ? () {
                                 ssData.toggleLaodingSpinner();
-                                _onSubmit(context);
+                                _onSubmit(
+                                    context, ssData.login, _formKeySignin);
 
                                 ssData.toggleLaodingSpinner();
                               }
                             : () {
-                                Navigator.of(context)
-                                    .pushReplacementNamed(HomeFront.routeName);
+                                ssData.toggleLaodingSpinner();
+                                _onSubmit(
+                                    context, ssData.login, _formKeySignup);
+
+                                ssData.toggleLaodingSpinner();
+                                // Navigator.of(context)
+                                //     .pushReplacementNamed(HomeFront.routeName);
                               },
                       ),
                       if (ssData.isLoading)
-                        const SizedBox(
+                        SizedBox(
                             height: 50,
                             width: double.infinity,
                             child: Center(
-                                child: SpinKitThreeBounce(
-                                    color: Colors.white, size: 20)))
+                                child: loadingProgressBar(
+                                    size: 30, color: cc.pureWhite)))
                     ],
                   ),
                 ),

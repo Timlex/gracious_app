@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:gren_mart/view/utils/constant_colors.dart';
 import 'package:gren_mart/view/utils/constant_name.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 ConstantColors cc = ConstantColors();
 
@@ -277,7 +277,7 @@ SnackBar snackBar(String content,
 
 Widget loadingProgressBar({Color? color, double size = 35}) {
   return Center(
-      child: SpinKitRotatingCircle(
+      child: LoadingAnimationWidget.staggeredDotsWave(
     size: size,
     color: color ?? cc.primaryColor,
   ));

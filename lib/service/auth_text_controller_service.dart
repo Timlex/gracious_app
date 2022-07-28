@@ -6,6 +6,10 @@ class AuthTextControllerService with ChangeNotifier {
   var _name;
   var _userName;
   var _cityAddress;
+  var _phoneNumber;
+  var _country;
+  var _state;
+  var _countryCode = 'BD';
 
   setEmail(value) {
     _email = value;
@@ -34,6 +38,31 @@ class AuthTextControllerService with ChangeNotifier {
     notifyListeners();
   }
 
+  setPhoneNumber(String value) {
+    _phoneNumber = value;
+
+    notifyListeners();
+  }
+
+  setCountry(value) {
+    _country = value;
+
+    notifyListeners();
+  }
+
+  setState(value) {
+    _state = value;
+
+    notifyListeners();
+  }
+
+  setCountryCode(value) {
+    _countryCode = value;
+    print(_countryCode);
+
+    notifyListeners();
+  }
+
   String get email {
     return _email;
   }
@@ -50,7 +79,23 @@ class AuthTextControllerService with ChangeNotifier {
     return _password;
   }
 
+  dynamic get country {
+    return _country;
+  }
+
+  dynamic get state {
+    return _state;
+  }
+
   String get cityAddress {
     return _cityAddress;
+  }
+
+  String get phoneNumber {
+    return _phoneNumber;
+  }
+
+  String get countryCode {
+    return _countryCode;
   }
 }

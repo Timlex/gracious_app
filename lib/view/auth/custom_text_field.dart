@@ -13,6 +13,7 @@ class CustomTextField extends StatefulWidget {
   void Function(String?)? onSaved;
   void Function(String)? onChanged;
   String? initialValue;
+  TextInputType? keyboardType;
   @override
   Key? key;
   CustomTextField(
@@ -27,6 +28,7 @@ class CustomTextField extends StatefulWidget {
     this.onSaved,
     this.onChanged,
     this.initialValue,
+    this.keyboardType,
     this.key,
   });
 
@@ -40,6 +42,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
     return TextFormField(
       initialValue: widget.initialValue,
       key: widget.key,
+      keyboardType: widget.keyboardType,
       focusNode: widget.focusNode,
       controller: widget.controller,
       obscureText: widget.obscureText,

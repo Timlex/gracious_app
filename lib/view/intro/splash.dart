@@ -64,15 +64,14 @@ class _SplashScreenState extends State<SplashScreen> {
           await Provider.of<UserProfileService>(context, listen: false)
               .fetchProfileService(value)
               .then((value) {
-            // setData(context);
+            Provider.of<PosterSliderService>(context, listen: false)
+                .fetchPosters();
           }).onError((error, stackTrace) =>
                   Navigator.of(context).pushReplacementNamed(Intro.routeName));
         } catch (error) {
           print(error);
         }
 
-        await Provider.of<PosterSliderService>(context, listen: false)
-            .fetchPosters();
         Navigator.of(context).pushReplacementNamed(HomeFront.routeName);
 
         // setData(Provider.of<UserProfileService>(context, listen: false)

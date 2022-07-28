@@ -48,6 +48,8 @@ dependencies:
   shimmer: 
   flutter_spinkit:
   shared_preferences:
+  loading_animation_widget:
+  intl_phone_field:
   
   provider: ^6.0.3
 

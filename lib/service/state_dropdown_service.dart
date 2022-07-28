@@ -20,7 +20,7 @@ class StateDropdownService with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> getStates(selectedCountryId) async {
+  Future getStates(selectedCountryId) async {
     print('getting state data____________' + selectedCountryId.toString());
     isLoading = true;
     notifyListeners();
@@ -44,6 +44,7 @@ class StateDropdownService with ChangeNotifier {
         // setStateIdAndValue(selectedCountryId);
         isLoading = false;
         notifyListeners();
+        return selectedCountryId;
       } else {
         // print('something went wrong');
       }
