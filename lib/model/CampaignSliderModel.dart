@@ -1,7 +1,3 @@
-// To parse this JSON data, do
-//
-//     final campaignSliderModel = campaignSliderModelFromJson(jsonString);
-
 import 'dart:convert';
 
 CampaignSliderModel campaignSliderModelFromJson(String str) =>
@@ -11,21 +7,21 @@ String campaignSliderModelToJson(CampaignSliderModel data) =>
     json.encode(data.toJson());
 
 class CampaignSliderModel {
-  CampaignSliderModel({
-    required this.currentPage,
-    required this.data,
-    required this.firstPageUrl,
-    required this.from,
-    required this.lastPage,
-    required this.lastPageUrl,
-    required this.links,
-    this.nextPageUrl,
-    required this.path,
-    required this.perPage,
-    this.prevPageUrl,
-    required this.to,
-    required this.total,
-  });
+  CampaignSliderModel(
+      {required this.currentPage,
+      required this.data,
+      required this.firstPageUrl,
+      required this.from,
+      required this.lastPage,
+      required this.lastPageUrl,
+      required this.links,
+      this.nextPageUrl,
+      required this.path,
+      required this.perPage,
+      this.prevPageUrl,
+      required this.to,
+      required this.total,
+      required});
 
   int currentPage;
   List<Datum> data;
@@ -109,23 +105,23 @@ class Datum {
 
 class Link {
   Link({
-    this.url,
+    required this.url,
     required this.label,
     required this.active,
   });
 
-  String? url;
+  String url;
   String label;
   bool active;
 
   factory Link.fromJson(Map<String, dynamic> json) => Link(
-        url: json["url"],
+        url: json["url"] ?? null,
         label: json["label"],
         active: json["active"],
       );
 
   Map<String, dynamic> toJson() => {
-        "url": url,
+        "url": url ?? null,
         "label": label,
         "active": active,
       };

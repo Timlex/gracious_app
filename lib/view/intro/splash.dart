@@ -3,7 +3,7 @@ import 'package:gren_mart/db/database_helper.dart';
 import 'package:gren_mart/model/cart_data.dart';
 import 'package:gren_mart/model/favorite_data.dart';
 import 'package:gren_mart/service/country_dropdown_service.dart';
-import 'package:gren_mart/service/poster_slider_service.dart';
+import 'package:gren_mart/service/poster_campaign_slider_service.dart';
 import 'package:gren_mart/service/signin_signup_service.dart';
 import 'package:gren_mart/service/state_dropdown_service.dart';
 import 'package:gren_mart/service/user_profile_service.dart';
@@ -63,8 +63,10 @@ class _SplashScreenState extends State<SplashScreen> {
         await Provider.of<UserProfileService>(context, listen: false)
             .fetchProfileService(value)
             .then((value) async {
-          await Provider.of<PosterSliderService>(context, listen: false)
+          await Provider.of<PosterCampaignSliderService>(context, listen: false)
               .fetchPosters();
+          await Provider.of<PosterCampaignSliderService>(context, listen: false)
+              .fetchCampaigns();
           Navigator.of(context).pushReplacementNamed(HomeFront.routeName);
         });
         //   .onError((error, stackTrace) =>

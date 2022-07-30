@@ -3,7 +3,7 @@ import 'package:gren_mart/model/favorite_data.dart';
 import 'package:gren_mart/model/other_data.dart';
 import 'package:gren_mart/service/auth_text_controller_service.dart';
 import 'package:gren_mart/service/country_dropdown_service.dart';
-import 'package:gren_mart/service/poster_slider_service.dart';
+import 'package:gren_mart/service/poster_campaign_slider_service.dart';
 import 'package:gren_mart/service/reset_pass_otp_service.dart';
 import 'package:gren_mart/service/signin_signup_service.dart';
 import 'package:gren_mart/service/state_dropdown_service.dart';
@@ -54,7 +54,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => OrderData()),
         ChangeNotifierProvider(create: (_) => CountryDropdownService()),
         ChangeNotifierProvider(create: (_) => StateDropdownService()),
-        ChangeNotifierProvider(create: (_) => PosterSliderService()),
+        ChangeNotifierProvider(create: (_) => PosterCampaignSliderService()),
         ChangeNotifierProvider(create: (_) => UserProfileService()),
         ChangeNotifierProvider(create: (_) => SignInSignUpService()),
         ChangeNotifierProvider(create: (_) => AuthTextControllerService()),

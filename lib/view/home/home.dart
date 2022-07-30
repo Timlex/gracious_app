@@ -2,7 +2,7 @@ import 'package:card_swiper/card_swiper.dart';
 import 'package:flutter/material.dart';
 import 'package:gren_mart/model/product_data.dart';
 import 'package:gren_mart/service/navigation_bar_helper_service.dart';
-import 'package:gren_mart/service/poster_slider_service.dart';
+import 'package:gren_mart/service/poster_campaign_slider_service.dart';
 import 'package:gren_mart/view/auth/custom_text_field.dart';
 import 'package:gren_mart/view/home/dow_card.dart';
 import 'package:gren_mart/view/home/product_card.dart';
@@ -18,7 +18,10 @@ class Home extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Provider.of<PosterSliderService>(context, listen: false).fetchPosters();
+    Provider.of<PosterCampaignSliderService>(context, listen: false)
+        .fetchPosters();
+    Provider.of<PosterCampaignSliderService>(context, listen: false)
+        .fetchCampaigns();
     // final productData = Provider.of<Products>(context, listen: false).products;
     return SingleChildScrollView(
       child: Column(
@@ -84,7 +87,7 @@ class Home extends StatelessWidget {
           SizedBox(
             height: 170,
             width: double.infinity,
-            child: Consumer<PosterSliderService>(
+            child: Consumer<PosterCampaignSliderService>(
                 builder: (context, posterData, child) {
               return posterData.posterDataList.isEmpty
                   ? loadingProgressBar()
@@ -130,19 +133,20 @@ class Home extends StatelessWidget {
           const SizedBox(height: 20),
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
-            child: Row(
-              children: [
-                const SizedBox(
-                  width: 18,
-                ),
-                DODCard('Fresh Products', 'Shop now', () {},
-                    'assets/images/basket.png'),
-                DODCard('Vegetable Collection', 'Shop now', () {},
-                    'assets/images/basket.png'),
-                DODCard('One Month Whole', 'Shop now', () {},
-                    'assets/images/basket.png'),
-              ],
-            ),
+            child: Consumer<PosterCampaignSliderService>(
+                builder: (context, pcData, child) {
+              return pcData.campaignDataList.isEmpty
+                  ? loadingProgressBar()
+                  : Row(
+                      children: [
+                        const SizedBox(width: 20),
+                        ...pcData.campaignDataList.map((e) {
+                          print(e.title);
+                          return DODCard(e.title, e.buttonText, () {}, e.image);
+                        }).toList()
+                      ],
+                    );
+            }),
           ),
           const SizedBox(height: 20),
           Padding(
