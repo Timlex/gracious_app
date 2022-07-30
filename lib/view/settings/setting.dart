@@ -34,7 +34,7 @@ class _SettingViewState extends State<SettingView> {
       return ListView(
         padding: const EdgeInsets.all(0),
         children: [
-          SettingScreenAppBar(uData.userProfileData.profileImageUrl as String),
+          SettingScreenAppBar(uData.userProfileData.profileImageUrl),
           Center(
             child: Text(
               uData.userProfileData.name,
@@ -52,7 +52,7 @@ class _SettingViewState extends State<SettingView> {
                 (uData.userProfileData.phone == null
                         ? ''
                         : uData.userProfileData.phone.toString() + '.') +
-                    uData.userProfileData.email,
+                    uData.userProfileData.email.toString(),
                 style: TextStyle(
                   fontSize: 14,
                   color: cc.greyHint,
@@ -165,6 +165,6 @@ class _SettingViewState extends State<SettingView> {
         .setCountryIdAndValue(value.country.name);
 
     await Provider.of<StateDropdownService>(context, listen: false)
-        .setStateIdAndValue(value.state.name);
+        .setStateIdAndValue(value.state!.name);
   }
 }

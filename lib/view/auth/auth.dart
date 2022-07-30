@@ -70,7 +70,7 @@ class Auth extends StatelessWidget {
         //   loading = !loading;
         // });
         Provider.of<SignInSignUpService>(context, listen: false)
-            .toggleLaodingSpinner();
+            .toggleLaodingSpinner(value: false);
 
         ScaffoldMessenger.of(context)
             .showSnackBar(snackBar('SomeThing went wrong'));
@@ -105,11 +105,29 @@ class Auth extends StatelessWidget {
             Provider.of<AuthTextControllerService>(context, listen: false)
                 .cityAddress,
             'true')
-        .onError((error, stackTrace) {
+        .then((value) async {
+      if (value) {
+        await Provider.of<UserProfileService>(context, listen: false)
+            .fetchProfileService(
+                Provider.of<SignInSignUpService>(context, listen: false).token);
+
+        Navigator.of(context).pushReplacementNamed(HomeFront.routeName);
+
+        return;
+      }
+      // setState(() {
+      //   loading = !loading;
+      // });
+      Provider.of<SignInSignUpService>(context, listen: false)
+          .toggleLaodingSpinner();
+
+      ScaffoldMessenger.of(context)
+          .showSnackBar(snackBar('SomeThing went wrong'));
+    }).onError((error, stackTrace) {
       Provider.of<SignInSignUpService>(context, listen: false)
           .toggleLaodingSpinner(value: false);
       ScaffoldMessenger.of(context).showSnackBar(snackBar(error.toString()));
-      return false;
+      return;
     });
     Provider.of<SignInSignUpService>(context, listen: false)
         .toggleLaodingSpinner();

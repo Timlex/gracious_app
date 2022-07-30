@@ -49,7 +49,7 @@ class SignInSignUpService with ChangeNotifier {
   }
 
   String? get token {
-    if (signInData!.token == null) {
+    if (_token == null) {
       return null;
     }
     return _token;
@@ -62,7 +62,7 @@ class SignInSignUpService with ChangeNotifier {
 
     try {
       final response = await http.post(url, body: {
-        'username': email,
+        'username': email!.toLowerCase().trim(),
         'password': password,
       });
       if (response.statusCode == 200) {
@@ -91,6 +91,9 @@ class SignInSignUpService with ChangeNotifier {
         notifyListeners();
         return true;
       }
+      if (response.statusCode == 422) {
+        print('Invalide username');
+      }
 
       return false;
     } catch (error) {
@@ -112,6 +115,7 @@ class SignInSignUpService with ChangeNotifier {
       String cityAdress,
       String termsAndCondition) async {
     toggleLaodingSpinner(value: true);
+    toggleRememberPass(true);
     if (0 != 1) {
       print(
           '$email + $password $name + $username + $phoneNumber + $countryCode + $countryId, $stateId + $cityAdress + $termsAndCondition');
@@ -120,10 +124,10 @@ class SignInSignUpService with ChangeNotifier {
 
     try {
       final response = await http.post(url, body: {
-        'username': email,
+        'username': username.toLowerCase().trim(),
         'password': password,
         'full_name': name,
-        'email': email,
+        'email': email.toLowerCase().trim(),
         'phone': phoneNumber,
         'country_id': countryId,
         'country_code': countryCode,
@@ -134,13 +138,16 @@ class SignInSignUpService with ChangeNotifier {
         final data = SignUpModel.fromJson(jsonDecode(response.body));
         print(data.token);
         signUpData = data;
-        _token = signInData!.token;
+        print(signUpData!.token);
+        _token = signUpData!.token;
+        print(_token.toString() + '+++++++++++++++');
 
         final pref = await SharedPreferences.getInstance();
         print('working on pref');
         final tokenData = json.encode({
           'token': signUpData!.token,
         });
+
         await pref.setString('token', tokenData);
         if (rememberPass) {
           final userData = json.encode({

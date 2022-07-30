@@ -253,7 +253,7 @@ Widget customRowButton(
 }
 
 SnackBar snackBar(String content,
-    {String buttonText = '', void Function()? onTap}) {
+    {String? buttonText, void Function()? onTap}) {
   return SnackBar(
       behavior: SnackBarBehavior.floating,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
@@ -264,9 +264,10 @@ SnackBar snackBar(String content,
         children: [
           Text(
             content,
+            overflow: TextOverflow.fade,
           ),
           const Spacer(),
-          if (buttonText == '')
+          if (buttonText != null)
             GestureDetector(
               child: Text(buttonText),
               onTap: onTap,

@@ -26,15 +26,6 @@ class HomeFront extends StatelessWidget {
   HomeFront({Key? key}) : super(key: key);
 
   final ConstantColors cc = ConstantColors();
-
-  // List views = [
-  //   Home(),
-  //   SearchView(_textEditingController),
-  //   Cart(),
-  //   const FavoriteView(),
-  //   SettingView(),
-  // ];
-
   int _navigationIndex = 0;
 
   PreferredSizeWidget? manageAppBar(BuildContext context, String name) {
@@ -99,6 +90,8 @@ class HomeFront extends StatelessWidget {
     } else if (_navigationIndex == 1) {
       navigationWidget = const SearchView();
     }
+    // Provider.of<UserProfileService>(context, listen: false).fetchProfileService(
+    //     Provider.of<SignInSignUpService>(context, listen: false).token);
     Provider.of<CountryDropdownService>(context, listen: false)
         .getContries()
         .then((value) =>
@@ -257,6 +250,6 @@ class HomeFront extends StatelessWidget {
         .setCountryIdAndValue(value.country.name);
 
     await Provider.of<StateDropdownService>(context, listen: false)
-        .setStateIdAndValue(value.state.name);
+        .setStateIdAndValue(value.state!.name);
   }
 }

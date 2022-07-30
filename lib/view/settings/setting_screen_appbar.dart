@@ -3,7 +3,7 @@ import 'package:gren_mart/view/utils/constant_colors.dart';
 import 'package:gren_mart/view/utils/constant_name.dart';
 
 class SettingScreenAppBar extends StatelessWidget {
-  String image;
+  String? image;
   SettingScreenAppBar(this.image, {Key? key}) : super(key: key);
 
   ConstantColors cc = ConstantColors();
@@ -38,9 +38,12 @@ class SettingScreenAppBar extends StatelessWidget {
             child: CircleAvatar(
               backgroundColor: cc.greyYellow,
               radius: screenWidth / 6.5,
-              backgroundImage: NetworkImage(
-                image,
-              ),
+              backgroundImage: image != null
+                  ? NetworkImage(
+                      image as String,
+                    )
+                  : const AssetImage('assets/images/setting_dp.png')
+                      as ImageProvider<Object>,
             ),
           ),
         ],

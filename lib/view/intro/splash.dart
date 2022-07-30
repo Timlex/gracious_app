@@ -49,7 +49,7 @@ class _SplashScreenState extends State<SplashScreen> {
         .setCountryIdAndValue(value.country.name);
 
     await Provider.of<StateDropdownService>(context, listen: false)
-        .setStateIdAndValue(value.state.name);
+        .setStateIdAndValue(value.state!.name);
   }
 
   @override
@@ -63,23 +63,22 @@ class _SplashScreenState extends State<SplashScreen> {
         try {
           await Provider.of<UserProfileService>(context, listen: false)
               .fetchProfileService(value)
-              .then((value) {
-            Provider.of<PosterSliderService>(context, listen: false)
+              .then((value) async {
+            await Provider.of<PosterSliderService>(context, listen: false)
                 .fetchPosters();
+            Navigator.of(context).pushReplacementNamed(HomeFront.routeName);
           }).onError((error, stackTrace) =>
                   Navigator.of(context).pushReplacementNamed(Intro.routeName));
         } catch (error) {
           print(error);
         }
-
-        Navigator.of(context).pushReplacementNamed(HomeFront.routeName);
+        await Provider.of<SignInSignUpService>(context, listen: false)
+            .getUserData();
 
         // setData(Provider.of<UserProfileService>(context, listen: false)
         //     .userProfileData);
         return;
       }
-      await Provider.of<SignInSignUpService>(context, listen: false)
-          .getUserData();
 
       Future.delayed(const Duration(seconds: 1));
       Navigator.of(context).pushReplacementNamed(Auth.routeName);

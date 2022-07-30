@@ -83,10 +83,13 @@ class _ManageAccountState extends State<ManageAccount> {
                     backgroundColor: cc.greyYellow,
                     radius: 70,
                     backgroundImage: _pickedImage == null
-                        ? NetworkImage(
-                            uData.userProfileData.profileImageUrl as String,
-                          )
-                        : FileImage(_pickedImage!) as ImageProvider<Object>,
+                        ? (uData.userProfileData.profileImageUrl != null
+                            ? NetworkImage(
+                                uData.userProfileData.profileImageUrl,
+                              )
+                            : const AssetImage('assets/images/setting_dp.png')
+                                as ImageProvider<Object>)
+                        : FileImage(_pickedImage!),
                     //     _pickedImage!,
                     //     fit: BoxFit.cover,
                     //   ),

@@ -58,6 +58,9 @@ class SignUp extends StatelessWidget {
               if (ussernameText!.isEmpty) {
                 return 'Enter your userName';
               }
+              if (ussernameText.contains(' ')) {
+                return 'Enter username without space.';
+              }
               if (ussernameText.length <= 5) {
                 return 'Enter at least 5 charecters';
               }

@@ -9,7 +9,7 @@ class UserProfileService with ChangeNotifier {
   late UserDetails userProfileData;
 
   Future<UserDetails> fetchProfileService(var token) async {
-    print('fetching posters');
+    print('fetching profile data');
     print(token);
 
     final url = Uri.parse('$baseApiUrl/user/profile');
@@ -22,25 +22,28 @@ class UserProfileService with ChangeNotifier {
       "Authorization": "Bearer $token",
     };
 
-    try {
-      final response = await http.get(url, headers: header);
+    // try {
+    final response = await http.get(url, headers: header);
+    if (response.statusCode == 200) {
       print(response.statusCode);
-      if (response.statusCode == 200) {
-        final data = UserProfileModel.fromJson(jsonDecode(response.body));
-        userProfileData = data.userDetails;
+      final data = UserProfileModel.fromJson(jsonDecode(response.body));
+      print(data.userDetails.name);
+      userProfileData = data.userDetails;
 
-        // posterDataList = data.data;
-        print(userProfileData.name + userProfileData.email + '---------------');
-        // print('-------------------------------------');
-        return userProfileData;
-        notifyListeners();
-      } else {
-        throw '';
-      }
-    } catch (error) {
-      // print(error);
-
-      rethrow;
+      // posterDataList = data.data;
+      print(userProfileData.name +
+          userProfileData.email.toString() +
+          '---------------');
+      // print('-------------------------------------');
+      notifyListeners();
+      return userProfileData;
     }
+    throw '';
   }
+  //   //  catch (error) {
+  //   //   // print(error);
+
+  //   //   rethrow;
+  //   // }
+  // }
 }
