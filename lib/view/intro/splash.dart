@@ -9,7 +9,6 @@ import 'package:gren_mart/service/state_dropdown_service.dart';
 import 'package:gren_mart/service/user_profile_service.dart';
 import 'package:gren_mart/view/auth/auth.dart';
 import 'package:gren_mart/view/home/home_front.dart';
-import 'package:gren_mart/view/intro/intro.dart';
 import 'package:provider/provider.dart';
 
 import '../../service/auth_text_controller_service.dart';
@@ -60,18 +59,19 @@ class _SplashScreenState extends State<SplashScreen> {
         .getToken()
         .then((value) async {
       if (value != null) {
-        try {
-          await Provider.of<UserProfileService>(context, listen: false)
-              .fetchProfileService(value)
-              .then((value) async {
-            await Provider.of<PosterSliderService>(context, listen: false)
-                .fetchPosters();
-            Navigator.of(context).pushReplacementNamed(HomeFront.routeName);
-          }).onError((error, stackTrace) =>
-                  Navigator.of(context).pushReplacementNamed(Intro.routeName));
-        } catch (error) {
-          print(error);
-        }
+        // try {
+        await Provider.of<UserProfileService>(context, listen: false)
+            .fetchProfileService(value)
+            .then((value) async {
+          await Provider.of<PosterSliderService>(context, listen: false)
+              .fetchPosters();
+          Navigator.of(context).pushReplacementNamed(HomeFront.routeName);
+        });
+        //   .onError((error, stackTrace) =>
+        //           Navigator.of(context).pushReplacementNamed(Intro.routeName));
+        // } catch (error) {
+        //   print(error);
+        // }
         await Provider.of<SignInSignUpService>(context, listen: false)
             .getUserData();
 

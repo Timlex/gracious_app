@@ -6,7 +6,7 @@ import 'package:gren_mart/service/user_profile_service.dart';
 import 'package:gren_mart/view/auth/horizontal_devider.dart';
 import 'package:gren_mart/view/auth/login.dart';
 import 'package:gren_mart/view/auth/remember.dart';
-import 'package:gren_mart/view/auth/reset_password.dart';
+import 'package:gren_mart/view/auth/enter_email_reset_pass.dart';
 import 'package:gren_mart/view/auth/signup.dart';
 import 'package:gren_mart/view/home/home_front.dart';
 import 'package:gren_mart/view/utils/constant_colors.dart';
@@ -63,17 +63,16 @@ class Auth extends StatelessWidget {
                       .token);
 
           Navigator.of(context).pushReplacementNamed(HomeFront.routeName);
-
           return;
         }
-        // setState(() {
-        //   loading = !loading;
-        // });
         Provider.of<SignInSignUpService>(context, listen: false)
             .toggleLaodingSpinner(value: false);
 
         ScaffoldMessenger.of(context)
             .showSnackBar(snackBar('SomeThing went wrong'));
+      }).onError((error, stackTrace) {
+        ScaffoldMessenger.of(context).showSnackBar(snackBar(error.toString()));
+        print(error.toString());
       });
       return;
     }
@@ -81,6 +80,7 @@ class Auth extends StatelessWidget {
         .termsAndCondi)) {
       ScaffoldMessenger.of(context).showSnackBar(
           snackBar('Please read and accept the terms and condition'));
+
       return;
     }
     Provider.of<SignInSignUpService>(context, listen: false)

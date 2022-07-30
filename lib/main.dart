@@ -4,16 +4,18 @@ import 'package:gren_mart/model/other_data.dart';
 import 'package:gren_mart/service/auth_text_controller_service.dart';
 import 'package:gren_mart/service/country_dropdown_service.dart';
 import 'package:gren_mart/service/poster_slider_service.dart';
+import 'package:gren_mart/service/reset_pass_otp_service.dart';
 import 'package:gren_mart/service/signin_signup_service.dart';
 import 'package:gren_mart/service/state_dropdown_service.dart';
 import 'package:gren_mart/service/user_profile_service.dart';
 import 'package:gren_mart/view/auth/order_data.dart';
+import 'package:gren_mart/view/auth/reset_password.dart';
 import 'package:gren_mart/view/settings/shipping_addresses.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/services.dart';
 import 'package:gren_mart/view/auth/auth.dart';
 import 'package:gren_mart/view/auth/enter_otp.dart';
-import 'package:gren_mart/view/auth/reset_password.dart';
+import 'package:gren_mart/view/auth/enter_email_reset_pass.dart';
 import 'package:gren_mart/view/cart/cart_view.dart';
 import 'package:gren_mart/view/cart/checkout.dart';
 import 'package:gren_mart/view/details/product_details.dart';
@@ -57,6 +59,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => SignInSignUpService()),
         ChangeNotifierProvider(create: (_) => AuthTextControllerService()),
         ChangeNotifierProvider(create: (_) => NavigationBarHelperService()),
+        ChangeNotifierProvider(create: (_) => ResetPassOTPService()),
       ],
       child: Consumer<Products>(
         builder: (context, value, child) => MaterialApp(
@@ -87,6 +90,7 @@ class MyApp extends StatelessWidget {
             ManageAccount.routeName: (context) => ManageAccount(),
             ChangePassword.routeName: (context) => const ChangePassword(),
             ShippingAdresses.routeName: (context) => const ShippingAdresses(),
+            ResetPassword.routeName: (context) => const ResetPassword(),
           },
         ),
       ),

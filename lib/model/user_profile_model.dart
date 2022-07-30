@@ -34,7 +34,7 @@ class UserDetails {
     required this.username,
     required this.emailVerified,
     this.emailVerifyToken,
-    required this.phone,
+    this.phone,
     this.address,
     this.state,
     this.city,
@@ -55,7 +55,7 @@ class UserDetails {
   String username;
   String emailVerified;
   dynamic emailVerifyToken;
-  String phone;
+  String? phone;
   dynamic address;
   dynamic state;
   dynamic city;

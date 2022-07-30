@@ -1,10 +1,13 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:gren_mart/view/auth/auth.dart';
+import 'package:gren_mart/service/auth_text_controller_service.dart';
+import 'package:gren_mart/service/reset_pass_otp_service.dart';
+import 'package:gren_mart/view/auth/reset_password.dart';
 import 'package:gren_mart/view/utils/app_bars.dart';
 import 'package:gren_mart/view/utils/constant_name.dart';
 import 'package:pinput/pinput.dart';
+import 'package:provider/provider.dart';
 
-import '../home/home_front.dart';
 import '../utils/constant_colors.dart';
 import '../utils/constant_styles.dart';
 
@@ -84,7 +87,15 @@ class EnterOTP extends StatelessWidget {
                   ),
                   children: <TextSpan>[
                     TextSpan(
-                        onEnter: (event) {},
+                        recognizer: TapGestureRecognizer()
+                          ..onTap = () {
+                            Provider.of<ResetPassOTPService>(context,
+                                    listen: false)
+                                .getOtp(Provider.of<AuthTextControllerService>(
+                                        context,
+                                        listen: false)
+                                    .email);
+                          },
                         text: 'Send again',
                         style: TextStyle(
                             color: cc.primaryColor,
@@ -105,17 +116,21 @@ class EnterOTP extends StatelessWidget {
       defaultPinTheme: defaultPinTheme,
       focusedPinTheme: focusedPinTheme,
       validator: (s) {
-        if (s == '2222') {
-          Navigator.of(context).pushAndRemoveUntil(
-              MaterialPageRoute(builder: (context) => Auth()),
-              (Route<dynamic> route) => false);
+        if (s ==
+            Provider.of<ResetPassOTPService>(context, listen: false)
+                .getOtpModel
+                .otp) {
+          Navigator.of(context).pushReplacementNamed(ResetPassword.routeName);
           return;
         }
 
         // _scaffoldKey.currentState!.showSnackBar(snackBar);
-        ScaffoldMessenger.of(context).removeCurrentMaterialBanner();
+        ScaffoldMessenger.of(context).removeCurrentSnackBar();
         ScaffoldMessenger.of(context).showSnackBar(
             snackBar('Wrong OTP Code', buttonText: 'Resend code', onTap: () {
+          Provider.of<ResetPassOTPService>(context, listen: false).getOtp(
+              Provider.of<AuthTextControllerService>(context, listen: false)
+                  .email);
           ScaffoldMessenger.of(context).removeCurrentSnackBar();
         }));
 

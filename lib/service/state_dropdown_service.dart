@@ -21,7 +21,7 @@ class StateDropdownService with ChangeNotifier {
   }
 
   Future getStates(selectedCountryId) async {
-    print('getting state data____________' + selectedCountryId.toString());
+    // print('getting state data____________' + selectedCountryId.toString());
     isLoading = true;
     notifyListeners();
     final url = Uri.parse('$baseApiUrl/state/$selectedCountryId');
