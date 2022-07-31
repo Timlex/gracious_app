@@ -21,10 +21,12 @@ class OrderDetails extends StatelessWidget {
     double discount = 0;
     double totalPrice = orderData.totalAmount;
     return Scaffold(
-      appBar: AppBars().appBarTitled('My orders', () {
+      appBar: AppBars().appBarTitled(tracker, () {
         Navigator.of(context).pop();
       }),
       body: ListView(
+        physics: const BouncingScrollPhysics(
+            parent: AlwaysScrollableScrollPhysics()),
         children: [
           const SizedBox(height: 10),
           ...orderData.productInfos.map((e) {

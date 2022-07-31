@@ -104,6 +104,8 @@ class _SearchViewState extends State<SearchView> {
         const SizedBox(height: 15),
         Expanded(
           child: GridView(
+            physics: const BouncingScrollPhysics(
+                parent: AlwaysScrollableScrollPhysics()),
             padding: const EdgeInsets.symmetric(horizontal: 20),
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 2,

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:focused_menu/modals.dart';
 import 'package:gren_mart/view/settings/new_address.dart';
 import 'package:gren_mart/view/utils/app_bars.dart';
 import 'package:gren_mart/view/utils/constant_colors.dart';
 import 'package:gren_mart/view/utils/constant_styles.dart';
+import 'package:focused_menu/focused_menu.dart';
 
 class ShippingAdresses extends StatefulWidget {
   static const routeName = 'shipping addresses';
@@ -37,6 +39,8 @@ class _ShippingAdressesState extends State<ShippingAdresses> {
         Navigator.of(context).pop();
       }),
       body: ListView(
+        physics: const BouncingScrollPhysics(
+            parent: AlwaysScrollableScrollPhysics()),
         children: [
           const SizedBox(height: 25),
           // Padding(
@@ -93,24 +97,31 @@ class _ShippingAdressesState extends State<ShippingAdresses> {
           const SizedBox(height: 10),
           ...addresses.map(((e) => Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 25),
-                child: GestureDetector(
-                  onTap: () {
-                    if (selectedId == e['id']) {
+                child: FocusedMenuHolder(
+                  menuItems: [
+                    FocusedMenuItem(
+                        title: const Text('Select'),
+                        onPressed: () {
+                          if (e['id'] == selectedId) {
+                            return;
+                          }
+                          setState(() {
+                            selectedId = e['id'];
+                          });
+                        }),
+                    FocusedMenuItem(
+                        title: const Text('Edit'), onPressed: () {}),
+                    FocusedMenuItem(
+                        title: const Text('Delete'), onPressed: () {}),
+                  ],
+                  openWithTap: false,
+                  onPressed: () {
+                    if (e['id'] == selectedId) {
                       return;
                     }
                     setState(() {
                       selectedId = e['id'];
                     });
-                  },
-                  onLongPress: () {
-                    // showMenu(
-                    //     context: context,
-                    //     position: RelativeRect.fromSize(Positioned, container),
-                    //     items: [
-                    //       const PopupMenuItem(child: Text('Select')),
-                    //       const PopupMenuItem(child: Text('Edit')),
-                    //       const PopupMenuItem(child: Text('Delete')),
-                    //     ]);
                   },
                   child: addressBox(
                       selectedId == e['id'], e['title'], e['address']),

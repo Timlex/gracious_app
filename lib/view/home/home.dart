@@ -4,9 +4,10 @@ import 'package:gren_mart/model/product_data.dart';
 import 'package:gren_mart/service/navigation_bar_helper_service.dart';
 import 'package:gren_mart/service/poster_campaign_slider_service.dart';
 import 'package:gren_mart/view/auth/custom_text_field.dart';
-import 'package:gren_mart/view/home/dow_card.dart';
+import 'package:gren_mart/view/home/dod_card.dart';
 import 'package:gren_mart/view/home/product_card.dart';
 import 'package:gren_mart/view/utils/constant_styles.dart';
+import 'package:gren_mart/view/utils/skelletons.dart';
 import 'package:provider/provider.dart';
 import 'package:slide_countdown/slide_countdown.dart';
 import 'poster_card.dart';
@@ -24,13 +25,15 @@ class Home extends StatelessWidget {
         .fetchCampaigns();
     // final productData = Provider.of<Products>(context, listen: false).products;
     return SingleChildScrollView(
+      physics:
+          const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
       child: Column(
         children: [
           const SizedBox(
             height: 20,
           ),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 25),
+            padding: const EdgeInsets.symmetric(horizontal: 20),
             child: CustomTextField(
               'Search your need here',
               leadingImage: 'assets/images/icons/search_normal.png',
@@ -90,7 +93,7 @@ class Home extends StatelessWidget {
             child: Consumer<PosterCampaignSliderService>(
                 builder: (context, posterData, child) {
               return posterData.posterDataList.isEmpty
-                  ? loadingProgressBar()
+                  ? posterSkelleton()
                   : Swiper(
                       itemBuilder: (BuildContext context, int index) {
                         return PosterCard(
@@ -110,16 +113,18 @@ class Home extends StatelessWidget {
           ),
           const SizedBox(height: 10),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 25),
+            padding: const EdgeInsets.symmetric(horizontal: 20),
             child: seeAllTitle('Fetured products'),
           ),
           const SizedBox(height: 10),
           SingleChildScrollView(
+            physics: const BouncingScrollPhysics(
+                parent: AlwaysScrollableScrollPhysics()),
             scrollDirection: Axis.horizontal,
             child: Row(
               children: [
                 const SizedBox(
-                  width: 18,
+                  width: 20,
                 ),
                 ...Products()
                     .products
@@ -132,6 +137,8 @@ class Home extends StatelessWidget {
           ),
           const SizedBox(height: 20),
           SingleChildScrollView(
+            physics: const BouncingScrollPhysics(
+                parent: AlwaysScrollableScrollPhysics()),
             scrollDirection: Axis.horizontal,
             child: Consumer<PosterCampaignSliderService>(
                 builder: (context, pcData, child) {
@@ -150,7 +157,7 @@ class Home extends StatelessWidget {
           ),
           const SizedBox(height: 20),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 25),
+            padding: const EdgeInsets.symmetric(horizontal: 20),
             child: Row(
               children: [
                 // const SizedBox(width: 18),
@@ -181,11 +188,13 @@ class Home extends StatelessWidget {
           ),
           const SizedBox(height: 20),
           SingleChildScrollView(
+            physics: const BouncingScrollPhysics(
+                parent: AlwaysScrollableScrollPhysics()),
             scrollDirection: Axis.horizontal,
             child: Row(
               children: [
                 const SizedBox(
-                  width: 18,
+                  width: 20,
                 ),
                 ...Products()
                     .products

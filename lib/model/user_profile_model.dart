@@ -39,7 +39,7 @@ class UserDetails {
     this.state,
     this.city,
     this.zipcode,
-    required this.country,
+    this.country,
     this.image,
     required this.createdAt,
     required this.updatedAt,
@@ -60,7 +60,7 @@ class UserDetails {
   dynamic state;
   dynamic city;
   dynamic zipcode;
-  Country country;
+  dynamic country;
   dynamic image;
   DateTime createdAt;
   DateTime updatedAt;
@@ -81,7 +81,8 @@ class UserDetails {
         state: json["state"],
         city: json["city"],
         zipcode: json["zipcode"],
-        country: Country.fromJson(json["country"]),
+        country:
+            json["country"] == null ? '' : Country.fromJson(json["country"]),
         image: json["image"],
         createdAt: DateTime.parse(json["created_at"]),
         updatedAt: DateTime.parse(json["updated_at"]),
@@ -103,7 +104,7 @@ class UserDetails {
         "state": state,
         "city": city,
         "zipcode": zipcode,
-        "country": country.toJson(),
+        "country": country!.toJson(),
         "image": image,
         "created_at": createdAt.toIso8601String(),
         "updated_at": updatedAt.toIso8601String(),

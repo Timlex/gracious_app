@@ -76,7 +76,7 @@ class PosterCard extends StatelessWidget {
                     color: cc.blackColor,
                     fontSize: 17,
                     fontWeight: FontWeight.w600,
-                    overflow: TextOverflow.fade,
+                    overflow: TextOverflow.ellipsis,
                   ),
                   maxLines: 1,
                 ),
@@ -91,7 +91,7 @@ class PosterCard extends StatelessWidget {
                     description,
                     style: TextStyle(
                       color: cc.greyParagraph,
-                      overflow: TextOverflow.fade,
+                      overflow: TextOverflow.ellipsis,
                     ),
                     maxLines: 3,
                   ),

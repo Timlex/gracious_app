@@ -18,6 +18,8 @@ class MyOrders extends StatelessWidget {
         Navigator.of(context).pop();
       }),
       body: ListView(
+        physics: const BouncingScrollPhysics(
+            parent: AlwaysScrollableScrollPhysics()),
         children: orderData
             .map((e) => OrderTile(
                   e.totalAmount,

@@ -102,6 +102,8 @@ class _NewAddressState extends State<NewAddress> {
         Navigator.of(context).pop();
       }, hasButton: true),
       body: ListView(
+        physics: const BouncingScrollPhysics(
+            parent: AlwaysScrollableScrollPhysics()),
         children: [
           // const SizedBox(
           //   height: 30,

@@ -50,6 +50,8 @@ dependencies:
   shared_preferences:
   loading_animation_widget:
   intl_phone_field:
+  cached_network_image:
+  focused_menu:
   
   provider: ^6.0.3
 

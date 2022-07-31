@@ -20,7 +20,9 @@ class FavoriteView extends StatelessWidget {
                   style: TextStyle(color: cc.greyHint),
                 ),
               )
-            : Column(
+            : ListView(
+                physics: const BouncingScrollPhysics(
+                    parent: AlwaysScrollableScrollPhysics()),
                 children: favoriteData.favoriteItems.values.map((e) {
                   return FavoriteTile(e!.id);
                 }).toList(),

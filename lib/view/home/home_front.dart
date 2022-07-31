@@ -247,7 +247,7 @@ class HomeFront extends StatelessWidget {
     await Provider.of<AuthTextControllerService>(context, listen: false)
         .setEmail(value.email);
     await Provider.of<CountryDropdownService>(context, listen: false)
-        .setCountryIdAndValue(value.country.name);
+        .setCountryIdAndValue(value.country!.name);
 
     await Provider.of<StateDropdownService>(context, listen: false)
         .setStateIdAndValue(value.state!.name);

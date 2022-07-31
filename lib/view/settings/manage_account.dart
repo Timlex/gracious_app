@@ -71,6 +71,8 @@ class _ManageAccountState extends State<ManageAccount> {
       }, hasButton: true),
       body: Consumer<UserProfileService>(builder: (context, uData, child) {
         return ListView(
+          physics: const BouncingScrollPhysics(
+              parent: AlwaysScrollableScrollPhysics()),
           children: [
             const SizedBox(
               height: 30,

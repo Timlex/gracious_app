@@ -96,11 +96,13 @@ class Auth extends StatelessWidget {
                 .phoneNumber,
             Provider.of<AuthTextControllerService>(context, listen: false)
                 .countryCode,
-            Provider.of<AuthTextControllerService>(context, listen: false)
-                .country
+            (Provider.of<AuthTextControllerService>(context, listen: false)
+                        .country ??
+                    1)
                 .toString(),
-            Provider.of<AuthTextControllerService>(context, listen: false)
-                .state
+            (Provider.of<AuthTextControllerService>(context, listen: false)
+                        .state ??
+                    1)
                 .toString(),
             Provider.of<AuthTextControllerService>(context, listen: false)
                 .cityAddress,
