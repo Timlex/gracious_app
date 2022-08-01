@@ -42,8 +42,8 @@ class CountryDropdownService with ChangeNotifier {
           countryDropdownIdList.add(data.countries[i].id);
         }
 
-        selectedCountry = data.countries[0].name;
-        selectedCountryId = data.countries[0].id;
+        selectedCountry = 'Bangladesh';
+        selectedCountryId = 1;
 
         print(selectedCountry);
         // print(countryDropdownList);

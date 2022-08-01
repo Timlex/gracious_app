@@ -32,7 +32,6 @@ class _SettingViewState extends State<SettingView> {
   Widget build(BuildContext context) {
     return Consumer<UserProfileService>(builder: (context, uData, child) {
       return ListView(
-        physics: const NeverScrollableScrollPhysics(),
         padding: const EdgeInsets.all(0),
         children: [
           SettingScreenAppBar(uData.userProfileData.profileImageUrl),
@@ -153,7 +152,6 @@ class _SettingViewState extends State<SettingView> {
   Future<void> setData(BuildContext context) async {
     final value =
         Provider.of<UserProfileService>(context, listen: false).userProfileData;
-    print('setting datas');
     await Provider.of<AuthTextControllerService>(context, listen: false)
         .setEmail(value.email);
     await Provider.of<AuthTextControllerService>(context, listen: false)
@@ -163,9 +161,9 @@ class _SettingViewState extends State<SettingView> {
     await Provider.of<AuthTextControllerService>(context, listen: false)
         .setEmail(value.email);
     await Provider.of<CountryDropdownService>(context, listen: false)
-        .setCountryIdAndValue(value.country!.name);
+        .setCountryIdAndValue(value.country.name);
 
     await Provider.of<StateDropdownService>(context, listen: false)
-        .setStateIdAndValue(value.state!.name);
+        .setStateIdAndValue(value.state.name);
   }
 }

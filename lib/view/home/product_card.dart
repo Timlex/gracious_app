@@ -1,35 +1,49 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:gren_mart/model/cart_data.dart';
 import 'package:gren_mart/model/favorite_data.dart';
 import 'package:gren_mart/model/product_data.dart';
 import 'package:gren_mart/view/details/product_details.dart';
 import 'package:gren_mart/view/utils/constant_colors.dart';
+import 'package:gren_mart/view/utils/constant_name.dart';
 import 'package:gren_mart/view/utils/constant_styles.dart';
 import 'package:provider/provider.dart';
 
 class ProductCard extends StatelessWidget {
-  final String _id;
+  final int _id;
+  final String title;
+  final int price;
+  final double campaignPercentage;
+  final String imgUrl;
+  final int discountPrice;
+  final bool isCartable;
 
   EdgeInsetsGeometry? margin;
 
-  ProductCard(this._id,
-      {Key? key, this.margin = const EdgeInsets.only(right: 18)})
-      : super(key: key);
+  ProductCard(
+    this._id,
+    this.title,
+    this.price,
+    this.discountPrice,
+    this.campaignPercentage,
+    this.imgUrl,
+    this.isCartable, {
+    Key? key,
+    this.margin = const EdgeInsets.only(right: 18),
+  }) : super(key: key);
 
   ConstantColors cc = ConstantColors();
 
   @override
   Widget build(BuildContext context) {
-    final productData = Provider.of<Products>(context, listen: false);
-
-    final product = productData.products.firstWhere((e) => e.id == _id);
     return GestureDetector(
       onTap: () {
         Navigator.of(context)
-            .pushNamed(ProductDetails.routeName, arguments: [product.id]);
+            .pushNamed(ProductDetails.routeName, arguments: [_id]);
       },
       child: Container(
-        width: 160,
+        width: screenWidth / 2.57,
+        height: screenHight / 3.7,
         margin: margin,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
@@ -41,20 +55,30 @@ class ProductCard extends StatelessWidget {
             Stack(
               children: [
                 Container(
+                  height: screenHight / 8,
                   width: double.infinity,
-                  decoration: const BoxDecoration(
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(10),
-                      topRight: Radius.circular(10),
-                    ),
-                  ),
+                  decoration: BoxDecoration(
+                      borderRadius: const BorderRadius.only(
+                        topLeft: Radius.circular(10),
+                        topRight: Radius.circular(10),
+                      ),
+                      color: cc.whiteGrey),
                   child:
                       // Hero(
                       //   tag: product.id,
                       //   child:
-                      Image.asset(
-                    product.image[0],
-                    fit: BoxFit.cover,
+                      ClipRRect(
+                    borderRadius: const BorderRadius.only(
+                        topLeft: Radius.circular(10),
+                        topRight: Radius.circular(10)),
+                    child: CachedNetworkImage(
+                      imageUrl: imgUrl,
+                      placeholder: (context, url) => Image.asset(
+                        'assets/images/skelleton.png',
+                      ),
+                      errorWidget: (context, url, error) =>
+                          const Icon(Icons.error),
+                    ),
                   ),
                   // ),
                 ),
@@ -77,35 +101,41 @@ class ProductCard extends StatelessWidget {
                         fontWeight: FontWeight.w600),
                   ),
                 ),
-                Container(
-                  margin: const EdgeInsets.only(top: 35),
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 3, horizontal: 6),
-                  decoration: BoxDecoration(
-                    borderRadius: const BorderRadius.only(
-                      topRight: Radius.circular(5),
-                      bottomRight: Radius.circular(5),
+                if (campaignPercentage > 0)
+                  Container(
+                    margin: const EdgeInsets.only(top: 35),
+                    padding:
+                        const EdgeInsets.symmetric(vertical: 3, horizontal: 6),
+                    decoration: BoxDecoration(
+                      borderRadius: const BorderRadius.only(
+                        topRight: Radius.circular(5),
+                        bottomRight: Radius.circular(5),
+                      ),
+                      color: cc.orange,
                     ),
-                    color: cc.orange,
+                    child: Text(
+                      campaignPercentage.toString(),
+                      style: TextStyle(
+                          color: cc.pureWhite,
+                          fontSize: 10,
+                          fontWeight: FontWeight.w600),
+                    ),
                   ),
-                  child: Text(
-                    '09.75%',
-                    style: TextStyle(
-                        color: cc.pureWhite,
-                        fontSize: 10,
-                        fontWeight: FontWeight.w600),
-                  ),
-                ),
                 Consumer<FavoriteData>(builder: (context, favoriteData, child) {
                   return Positioned(
                       right: 0,
-                      child: favoriteIcon(
-                        favoriteData.isfavorite(_id),
-                        onPressed: () => favoriteData.toggleFavorite(
-                          _id,
-                          product: product,
-                        ),
-                      ));
+                      child:
+                          favoriteIcon(favoriteData.isfavorite(_id.toString()),
+                              onPressed: () => favoriteData.toggleFavorite(
+                                    _id.toString(),
+                                    product: Product(
+                                        id: _id.toString(),
+                                        title: title,
+                                        amount: price.toDouble(),
+                                        discountPecentage:
+                                            campaignPercentage.toDouble(),
+                                        image: [imgUrl]),
+                                  )));
                 })
               ],
             ),
@@ -116,15 +146,14 @@ class ProductCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    product.title,
+                    title,
                     style: const TextStyle(
                         fontSize: 14, fontWeight: FontWeight.w600),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                   ),
                   const SizedBox(height: 10),
-                  discAmountRow(
-                      ((product.amount -
-                          (product.amount / 100) * product.discountPecentage)),
-                      product.amount),
+                  discAmountRow(discountPrice, price),
                   const SizedBox(height: 10),
                   GestureDetector(
                     onTap: () {
@@ -133,12 +162,20 @@ class ProductCard extends StatelessWidget {
                     child: Consumer<CartData>(
                       builder: (context, cartData, child) {
                         return GestureDetector(
-                          onTap: () {
-                            cartData.addCartItem(
-                              _id,
-                              product,
-                            );
-                          },
+                          onTap: isCartable
+                              ? () {
+                                  cartData.addCartItem(
+                                    _id.toString(),
+                                    Product(
+                                        id: _id.toString(),
+                                        title: title,
+                                        amount: price.toDouble(),
+                                        discountPecentage:
+                                            campaignPercentage.toDouble(),
+                                        image: [imgUrl]),
+                                  );
+                                }
+                              : (() {}),
                           child: child,
                         );
                       },

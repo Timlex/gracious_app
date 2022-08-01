@@ -1,4 +1,6 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:gren_mart/view/settings/manage_account.dart';
 import 'package:gren_mart/view/utils/constant_colors.dart';
 import 'package:gren_mart/view/utils/constant_name.dart';
 
@@ -13,6 +15,7 @@ class SettingScreenAppBar extends StatelessWidget {
     return SizedBox(
       height: screenHight / 3,
       child: Stack(
+        clipBehavior: Clip.none,
         children: [
           Container(
             width: double.infinity,
@@ -33,18 +36,37 @@ class SettingScreenAppBar extends StatelessWidget {
             ),
           ),
           Positioned(
-            top: screenHight / 6,
+            top: screenHight / 7,
             right: screenWidth / 2.9,
-            child: CircleAvatar(
-              backgroundColor: cc.greyYellow,
-              radius: screenWidth / 6.5,
-              backgroundImage: image != null
-                  ? NetworkImage(
-                      image as String,
-                    )
-                  : const AssetImage('assets/images/setting_dp.png')
-                      as ImageProvider<Object>,
-            ),
+            child: GestureDetector(
+                onTap: () =>
+                    Navigator.of(context).pushNamed(ManageAccount.routeName),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(150),
+                  child: CachedNetworkImage(
+                    height: 130,
+                    width: 130,
+                    fit: BoxFit.cover,
+                    alignment: Alignment.topCenter,
+                    imageUrl: image ?? '',
+                    placeholder: (context, url) => Image.asset(
+                      'assets/images/skelleton.png',
+                    ),
+                    errorWidget: (context, url, error) =>
+                        const Icon(Icons.error),
+                  ),
+                )
+                // CircleAvatar(
+                //   backgroundColor: cc.greyYellow,
+                //   radius: screenWidth / 6.5,
+                //   backgroundImage: image != null
+                //       ? NetworkImage(
+                //           image as String,
+                //         )
+                //       : const AssetImage('assets/images/setting_dp.png')
+                //           as ImageProvider<Object>,
+                // ),
+                ),
           ),
         ],
       ),

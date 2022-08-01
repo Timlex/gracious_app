@@ -66,25 +66,22 @@ class PosterCard extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Padding(
-              padding: const EdgeInsets.only(left: 10),
-              child: SizedBox(
-                width: screenWidth / 2.9,
-                child: Text(
-                  title,
-                  style: TextStyle(
-                    color: cc.blackColor,
-                    fontSize: 17,
-                    fontWeight: FontWeight.w600,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  maxLines: 1,
+            SizedBox(
+              width: screenWidth / 2.9,
+              child: Text(
+                title,
+                style: TextStyle(
+                  color: cc.blackColor,
+                  fontSize: screenWidth / 25,
+                  fontWeight: FontWeight.w600,
+                  overflow: TextOverflow.ellipsis,
                 ),
+                maxLines: 1,
               ),
             ),
             const SizedBox(height: 15),
             SizedBox(
-                width: screenWidth / 2.7,
+                width: screenWidth / 3,
                 child: Padding(
                   padding: const EdgeInsets.only(left: 10),
                   child: Text(
@@ -96,7 +93,7 @@ class PosterCard extends StatelessWidget {
                     maxLines: 3,
                   ),
                 )),
-            const SizedBox(height: 15),
+            // const SizedBox(height: 15),
             // ElevatedButton(
             //   onPressed: () {
             //     btFunction;
@@ -115,11 +112,12 @@ class PosterCard extends StatelessWidget {
             // const Spacer()
           ],
         ),
+        const Spacer(),
         Padding(
           padding: const EdgeInsets.only(left: 15),
           child: SizedBox(
               height: screenHight / 7,
-              width: screenWidth / 3.4,
+              width: screenWidth / 3.7,
               child: Image.network(
                 image,
                 fit: BoxFit.cover,

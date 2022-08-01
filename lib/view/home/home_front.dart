@@ -4,6 +4,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gren_mart/model/cart_data.dart';
 import 'package:gren_mart/model/favorite_data.dart';
 import 'package:gren_mart/service/navigation_bar_helper_service.dart';
+import 'package:gren_mart/service/product_card_data_service.dart';
 import 'package:gren_mart/view/cart/cart_view.dart';
 import 'package:gren_mart/view/favorite/favorite.dart';
 import 'package:gren_mart/view/home/home.dart';
@@ -97,6 +98,10 @@ class HomeFront extends StatelessWidget {
         .then((value) =>
             Provider.of<StateDropdownService>(context, listen: false)
                 .getStates(value ?? 1));
+    Provider.of<ProductCardDataService>(context, listen: false)
+        .fetchFeaturedProductCardData();
+    Provider.of<ProductCardDataService>(context, listen: false)
+        .fetchCapmaignCardProductData();
     return Consumer<NavigationBarHelperService>(
         builder: (context, nData, child) {
       return Scaffold(
@@ -159,7 +164,7 @@ class HomeFront extends StatelessWidget {
                     color: cc.primaryColor,
                   ),
                   icon: SvgPicture.asset(
-                    'assets/images/icons/search.svg',
+                    'assets/images/icons/search_navi.svg',
                     height: 27,
                     color: cc.greyHint,
                   ),
@@ -247,9 +252,9 @@ class HomeFront extends StatelessWidget {
     await Provider.of<AuthTextControllerService>(context, listen: false)
         .setEmail(value.email);
     await Provider.of<CountryDropdownService>(context, listen: false)
-        .setCountryIdAndValue(value.country!.name);
+        .setCountryIdAndValue(value.country.name);
 
     await Provider.of<StateDropdownService>(context, listen: false)
-        .setStateIdAndValue(value.state!.name);
+        .setStateIdAndValue(value.state);
   }
 }

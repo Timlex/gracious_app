@@ -1,13 +1,14 @@
 // To parse this JSON data, do
 //
-//     final signUpModel = signUpModelFromJson(jsonString);
+//     final userProfileModel = userProfileModelFromJson(jsonString);
 
 import 'dart:convert';
 
-UserProfileModel signUpModelFromJson(String str) =>
+UserProfileModel userProfileModelFromJson(String str) =>
     UserProfileModel.fromJson(json.decode(str));
 
-String signUpModelToJson(UserProfileModel data) => json.encode(data.toJson());
+String userProfileModelToJson(UserProfileModel data) =>
+    json.encode(data.toJson());
 
 class UserProfileModel {
   UserProfileModel({
@@ -33,19 +34,19 @@ class UserDetails {
     required this.email,
     required this.username,
     required this.emailVerified,
-    this.emailVerifyToken,
-    this.phone,
-    this.address,
-    this.state,
-    this.city,
-    this.zipcode,
-    this.country,
-    this.image,
+    required this.emailVerifyToken,
+    required this.phone,
+    required this.address,
+    required this.state,
+    required this.city,
+    required this.zipcode,
+    required this.country,
+    required this.image,
     required this.createdAt,
     required this.updatedAt,
     this.facebookId,
     this.googleId,
-    this.profileImageUrl,
+    required this.profileImageUrl,
     required this.shipping,
   });
 
@@ -54,19 +55,19 @@ class UserDetails {
   String email;
   String username;
   String emailVerified;
-  dynamic emailVerifyToken;
-  String? phone;
+  String emailVerifyToken;
+  dynamic phone;
   dynamic address;
-  dynamic state;
-  dynamic city;
+  Country state;
+  String city;
   dynamic zipcode;
-  dynamic country;
-  dynamic image;
+  Country country;
+  String image;
   DateTime createdAt;
   DateTime updatedAt;
   dynamic facebookId;
   dynamic googleId;
-  dynamic profileImageUrl;
+  String profileImageUrl;
   List<dynamic> shipping;
 
   factory UserDetails.fromJson(Map<String, dynamic> json) => UserDetails(
@@ -78,11 +79,10 @@ class UserDetails {
         emailVerifyToken: json["email_verify_token"],
         phone: json["phone"],
         address: json["address"],
-        state: json["state"],
+        state: Country.fromJson(json["state"]),
         city: json["city"],
         zipcode: json["zipcode"],
-        country:
-            json["country"] == null ? '' : Country.fromJson(json["country"]),
+        country: Country.fromJson(json["country"]),
         image: json["image"],
         createdAt: DateTime.parse(json["created_at"]),
         updatedAt: DateTime.parse(json["updated_at"]),
@@ -101,10 +101,10 @@ class UserDetails {
         "email_verify_token": emailVerifyToken,
         "phone": phone,
         "address": address,
-        "state": state,
+        "state": state.toJson(),
         "city": city,
         "zipcode": zipcode,
-        "country": country!.toJson(),
+        "country": country.toJson(),
         "image": image,
         "created_at": createdAt.toIso8601String(),
         "updated_at": updatedAt.toIso8601String(),
@@ -122,6 +122,7 @@ class Country {
     required this.status,
     required this.createdAt,
     required this.updatedAt,
+    this.countryId,
   });
 
   int id;
@@ -129,6 +130,7 @@ class Country {
   String status;
   DateTime createdAt;
   DateTime updatedAt;
+  int? countryId;
 
   factory Country.fromJson(Map<String, dynamic> json) => Country(
         id: json["id"],
@@ -136,6 +138,7 @@ class Country {
         status: json["status"],
         createdAt: DateTime.parse(json["created_at"]),
         updatedAt: DateTime.parse(json["updated_at"]),
+        countryId: json.containsKey("country_id") ? json["country_id"] : null,
       );
 
   Map<String, dynamic> toJson() => {
@@ -144,5 +147,6 @@ class Country {
         "status": status,
         "created_at": createdAt.toIso8601String(),
         "updated_at": updatedAt.toIso8601String(),
+        "country_id": countryId,
       };
 }

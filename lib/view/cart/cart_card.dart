@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:gren_mart/model/cart_data.dart';
+import 'package:gren_mart/view/utils/constant_name.dart';
 import 'package:provider/provider.dart';
 
 import '../utils/constant_styles.dart';
@@ -52,24 +53,19 @@ class CartCard extends StatelessWidget {
       },
       key: Key(id),
       child: SizedBox(
-        height: 75,
+        height: screenWidth / 4.3,
         child: Column(
           children: [
             ListTile(
               leading: Container(
-                height: 80,
-                width: 80,
+                height: screenWidth / 4.3,
+                width: screenWidth / 7,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(15),
                 ),
-                child: ListView(
-                  physics: const NeverScrollableScrollPhysics(),
-                  children: [
-                    Image.asset(
-                      image,
-                      fit: BoxFit.fill,
-                    )
-                  ],
+                child: Image.asset(
+                  image,
+                  fit: BoxFit.fill,
                 ),
               ),
               title: Row(
@@ -80,10 +76,12 @@ class CartCard extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          name,
-                          style: const TextStyle(
-                              fontSize: 15, fontWeight: FontWeight.w600),
+                        FittedBox(
+                          child: Text(
+                            name,
+                            style: const TextStyle(
+                                fontSize: 15, fontWeight: FontWeight.w600),
+                          ),
                         ),
                         const SizedBox(height: 13),
                         FittedBox(

@@ -16,9 +16,10 @@ class _AnimatedBoxState extends State<AnimatedBox> {
   @override
   Widget build(BuildContext context) {
     return AnimatedContainer(
-      duration: Duration(milliseconds: 310),
+      duration: const Duration(milliseconds: 310),
       height: expanded ? min(widget.content.length.toDouble() / 1.2, 400) : 50,
       child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 5),
         // margin: EdgeInsets.symmetric(horizontal: 15, vertical: 6),
         child: Column(
           children: [
@@ -40,8 +41,8 @@ class _AnimatedBoxState extends State<AnimatedBox> {
                       })),
             ),
             AnimatedContainer(
-              duration: Duration(milliseconds: 300),
-              margin: EdgeInsets.symmetric(horizontal: 15, vertical: 6),
+              duration: const Duration(milliseconds: 300),
+              margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 6),
               height:
                   expanded ? min(widget.content.length.toDouble() / 3, 70) : 0,
               child: Text(widget.content),

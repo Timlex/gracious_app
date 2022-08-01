@@ -16,6 +16,7 @@ class StateDropdownService with ChangeNotifier {
   setStateIdAndValue(value) {
     selectedState = value;
     final valueIndex = stateDropdownList.indexOf(value);
+    selectedStateId = stateDropdownIdList[valueIndex];
     print(selectedState + selectedStateId.toString() + '---------------');
     notifyListeners();
   }

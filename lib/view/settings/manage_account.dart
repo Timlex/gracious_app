@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gren_mart/service/auth_text_controller_service.dart';
@@ -81,21 +82,42 @@ class _ManageAccountState extends State<ManageAccount> {
               child: SizedBox(
                 width: 155,
                 child: Stack(alignment: Alignment.center, children: [
-                  CircleAvatar(
-                    backgroundColor: cc.greyYellow,
-                    radius: 70,
-                    backgroundImage: _pickedImage == null
-                        ? (uData.userProfileData.profileImageUrl != null
-                            ? NetworkImage(
-                                uData.userProfileData.profileImageUrl,
-                              )
-                            : const AssetImage('assets/images/setting_dp.png')
-                                as ImageProvider<Object>)
-                        : FileImage(_pickedImage!),
-                    //     _pickedImage!,
-                    //     fit: BoxFit.cover,
-                    //   ),
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(150),
+                    child: _pickedImage == null
+                        ? CachedNetworkImage(
+                            height: 150,
+                            width: 150,
+                            fit: BoxFit.cover,
+                            alignment: Alignment.topCenter,
+                            imageUrl: uData.userProfileData.profileImageUrl,
+                            placeholder: (context, url) => Image.asset(
+                              'assets/images/skelleton.png',
+                            ),
+                            errorWidget: (context, url, error) =>
+                                const Icon(Icons.error),
+                          )
+                        : Image.file(
+                            _pickedImage!,
+                            height: 150,
+                            width: 150,
+                            fit: BoxFit.cover,
+                          ),
                   ),
+                  // CircleAvatar(
+                  //   backgroundColor: cc.greyYellow,
+                  //   radius: 70,
+                  //   backgroundImage:  (uData.userProfileData.profileImageUrl != null
+                  //           ? NetworkImage(
+                  //               uData.userProfileData.profileImageUrl,
+                  //             )
+                  //           : const AssetImage('assets/images/setting_dp.png')
+                  //               as ImageProvider<Object>)
+                  //       ,
+                  //     _pickedImage!,
+                  //     fit: BoxFit.cover,
+                  //   ),
+                  // ),
                   Positioned(
                       bottom: 0,
                       right: 0,

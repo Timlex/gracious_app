@@ -3,6 +3,7 @@ import 'package:focused_menu/modals.dart';
 import 'package:gren_mart/view/settings/new_address.dart';
 import 'package:gren_mart/view/utils/app_bars.dart';
 import 'package:gren_mart/view/utils/constant_colors.dart';
+import 'package:gren_mart/view/utils/constant_name.dart';
 import 'package:gren_mart/view/utils/constant_styles.dart';
 import 'package:focused_menu/focused_menu.dart';
 
@@ -96,7 +97,7 @@ class _ShippingAdressesState extends State<ShippingAdresses> {
           // ),
           const SizedBox(height: 10),
           ...addresses.map(((e) => Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 25),
+                padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: FocusedMenuHolder(
                   menuItems: [
                     FocusedMenuItem(
@@ -108,12 +109,21 @@ class _ShippingAdressesState extends State<ShippingAdresses> {
                           setState(() {
                             selectedId = e['id'];
                           });
-                        }),
+                        },
+                        backgroundColor: cc.whiteGrey),
                     FocusedMenuItem(
-                        title: const Text('Edit'), onPressed: () {}),
+                        title: const Text('Edit'),
+                        onPressed: () {},
+                        backgroundColor: cc.whiteGrey),
                     FocusedMenuItem(
-                        title: const Text('Delete'), onPressed: () {}),
+                        title: const Text('Delete'),
+                        onPressed: () {},
+                        backgroundColor: cc.whiteGrey)
                   ],
+                  blurBackgroundColor: Colors.white,
+                  menuBoxDecoration: const BoxDecoration(boxShadow: null),
+                  blurSize: 0,
+                  menuWidth: screenWidth - 40,
                   openWithTap: false,
                   onPressed: () {
                     if (e['id'] == selectedId) {

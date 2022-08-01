@@ -3,6 +3,7 @@ import 'package:gren_mart/service/auth_text_controller_service.dart';
 import 'package:gren_mart/service/country_dropdown_service.dart';
 import 'package:gren_mart/service/signin_signup_service.dart';
 import 'package:gren_mart/view/intro/custom_dropdown.dart';
+import 'package:gren_mart/view/utils/constant_name.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:provider/provider.dart';
 
@@ -264,28 +265,29 @@ class SignUp extends StatelessWidget {
                     }),
               ),
               const SizedBox(width: 5),
-              FittedBox(
-                child: RichText(
-                  overflow: TextOverflow.clip,
-                  textAlign: TextAlign.end,
-                  softWrap: true,
-                  maxLines: 1,
-                  text: TextSpan(
-                      text: 'Accept all',
-                      style: TextStyle(
-                        color: cc.greyHint,
-                        fontWeight: FontWeight.w600,
-                      ),
-                      children: [
-                        TextSpan(
-                            text: ' Terms and Conditions',
-                            style: TextStyle(color: cc.primaryColor)),
-                        TextSpan(
-                            text: ' & ', style: TextStyle(color: cc.greyHint)),
-                        TextSpan(
-                            text: ' Privacy Policy',
-                            style: TextStyle(color: cc.primaryColor)),
-                      ]),
+              SizedBox(
+                width: screenWidth - 85,
+                child: FittedBox(
+                  child: RichText(
+                    softWrap: true,
+                    text: TextSpan(
+                        text: 'Accept all',
+                        style: TextStyle(
+                          color: cc.greyHint,
+                          fontWeight: FontWeight.w600,
+                        ),
+                        children: [
+                          TextSpan(
+                              text: ' Terms and Conditions',
+                              style: TextStyle(color: cc.primaryColor)),
+                          TextSpan(
+                              text: ' & ',
+                              style: TextStyle(color: cc.greyHint)),
+                          TextSpan(
+                              text: ' Privacy Policy',
+                              style: TextStyle(color: cc.primaryColor)),
+                        ]),
+                  ),
                 ),
               ),
             ],

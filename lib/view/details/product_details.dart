@@ -11,8 +11,10 @@ import 'package:gren_mart/view/utils/constant_styles.dart';
 import 'package:provider/provider.dart';
 
 import '../../model/product_data.dart';
+import '../../service/product_card_data_service.dart';
 import '../home/product_card.dart';
 import '../intro/intro_helper.dart';
+import '../utils/constant_name.dart';
 
 class ProductDetails extends StatelessWidget {
   static const routeName = 'product details screen';
@@ -38,14 +40,19 @@ class ProductDetails extends StatelessWidget {
                 SliverAppBar(
                   elevation: 1,
                   foregroundColor: cc.greyHint,
-                  expandedHeight: 300,
+                  expandedHeight: screenWidth / 1.37,
                   pinned: true,
                   flexibleSpace: FlexibleSpaceBar(
                     background: Swiper(
                       itemBuilder: (BuildContext context, int index) {
-                        return Image.asset(
+                        return
+                            // Hero(
+                            //   tag: product.id,
+                            //   child:
+                            Image.asset(
                           product.image[index],
                           fit: BoxFit.cover,
+                          // ),
                         );
                       },
                       itemCount: product.image.length,
@@ -120,7 +127,7 @@ class ProductDetails extends StatelessWidget {
                                         fontWeight: FontWeight.w600),
                                   ),
                                   const SizedBox(height: 17),
-                                  discAmountRow(220, product.amount),
+                                  discAmountRow(220, product.amount.toInt()),
                                 ],
                               ),
                             ),
@@ -173,32 +180,43 @@ class ProductDetails extends StatelessWidget {
 
                       const SizedBox(height: 10),
                       Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 18),
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
                         child: seeAllTitle('Fetured products'),
                       ),
                       const SizedBox(height: 10),
-                      SingleChildScrollView(
-                        scrollDirection: Axis.horizontal,
-                        child: Row(
-                          children: [
-                            const SizedBox(
-                              width: 18,
-                            ),
-                            ...Products()
-                                .products
-                                .map((e) => ProductCard(
-                                      e.id,
-                                    ))
-                                .toList()
-
-                            // ProductCard('Fresh Fruits', 240, 'assets/images/product1.png',
-                            //     discountAmount: 220),
-                            // ProductCard('Fresh Fruits', 240, 'assets/images/product1.png',
-                            //     discountAmount: 220),
-                            // ProductCard('Fresh Fruits', 240, 'assets/images/product1.png',
-                            //     discountAmount: 220)
-                          ],
-                        ),
+                      SizedBox(
+                        height: screenHight / 3.7,
+                        child: Consumer<ProductCardDataService>(
+                            builder: (context, products, child) {
+                          return products.featuredCardProductsList.isNotEmpty
+                              ? ListView.builder(
+                                  physics: const BouncingScrollPhysics(
+                                      parent: AlwaysScrollableScrollPhysics()),
+                                  padding: const EdgeInsets.only(left: 20),
+                                  shrinkWrap: true,
+                                  scrollDirection: Axis.horizontal,
+                                  itemCount:
+                                      products.featuredCardProductsList.length,
+                                  itemBuilder: (context, index) => ProductCard(
+                                    products
+                                        .featuredCardProductsList[index].prdId,
+                                    products
+                                        .featuredCardProductsList[index].title,
+                                    products
+                                        .featuredCardProductsList[index].price,
+                                    products.featuredCardProductsList[index]
+                                        .discountPrice,
+                                    products.featuredCardProductsList[index]
+                                        .campaignPercentage
+                                        .toDouble(),
+                                    products
+                                        .featuredCardProductsList[index].imgUrl,
+                                    products.featuredCardProductsList[index]
+                                        .isCartAble,
+                                  ),
+                                )
+                              : loadingProgressBar();
+                        }),
                       ),
                       const SizedBox(height: 70),
                     ],
@@ -210,7 +228,7 @@ class ProductDetails extends StatelessWidget {
           Container(
               height: 90,
               padding: const EdgeInsets.only(
-                left: 23,
+                left: 20,
                 right: 23,
                 top: 17,
                 bottom: 7,

@@ -60,7 +60,8 @@ class _CheckoutState extends State<Checkout> {
       body: Padding(
         padding: const EdgeInsets.all(20),
         child: ListView(
-          physics: const NeverScrollableScrollPhysics(),
+          physics: const BouncingScrollPhysics(
+              parent: AlwaysScrollableScrollPhysics()),
           children: [
             // CustomTextField(
             //   'enter new address',

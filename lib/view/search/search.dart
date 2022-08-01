@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gren_mart/service/navigation_bar_helper_service.dart';
 import 'package:gren_mart/view/auth/custom_text_field.dart';
+import 'package:gren_mart/view/utils/constant_name.dart';
 import 'package:provider/provider.dart';
 
 import '../../model/product_data.dart';
@@ -40,8 +41,8 @@ class _SearchViewState extends State<SearchView> {
 
   @override
   Widget build(BuildContext context) {
-    double cardWidth = MediaQuery.of(context).size.width / 3.3;
-    double cardHeight = MediaQuery.of(context).size.height / 4.9;
+    double cardWidth = screenWidth / 3.3;
+    double cardHeight = screenHight / 4.9;
     // final routeData =
     //     ModalRoute.of(context)!.settings.arguments as List<dynamic>;
     return
@@ -106,7 +107,7 @@ class _SearchViewState extends State<SearchView> {
           child: GridView(
             physics: const BouncingScrollPhysics(
                 parent: AlwaysScrollableScrollPhysics()),
-            padding: const EdgeInsets.symmetric(horizontal: 20),
+            padding: const EdgeInsets.only(left: 20),
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 2,
               childAspectRatio: cardWidth / cardHeight,
@@ -116,8 +117,13 @@ class _SearchViewState extends State<SearchView> {
             children: Products()
                 .products
                 .map((e) => ProductCard(
-                      e.id,
-                    ))
+                    int.parse(e.id),
+                    e.title,
+                    e.amount.toInt(),
+                    e.amount.toInt(),
+                    e.discountPecentage,
+                    e.image[0],
+                    true))
                 .toList(),
           ),
         ),

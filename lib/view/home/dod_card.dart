@@ -41,28 +41,32 @@ class DODCard extends StatelessWidget {
                 children: [
                   SizedBox(
                     width: screenWidth / 4.5,
-                    child: Text(
-                      'Deal of the Day',
-                      style: TextStyle(
-                        color: cc.orange,
-                        fontSize: 15,
-                        // fontWeight: FontWeight.w600,
+                    child: FittedBox(
+                      child: Text(
+                        'Deal of the Day',
+                        style: TextStyle(
+                          color: cc.orange,
+                          fontSize: screenWidth / 27,
+                          // fontWeight: FontWeight.w600,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                        // maxLines: 1,
                       ),
-                      overflow: TextOverflow.ellipsis,
-                      // maxLines: 1,
                     ),
                   ),
                   const SizedBox(height: 12),
                   SizedBox(
                     width: screenWidth / 5,
-                    child: Text(
-                      title,
-                      overflow: TextOverflow.ellipsis,
-                      maxLines: 2,
-                      style: TextStyle(
-                        color: cc.blackColor,
-                        fontSize: 17,
-                        fontWeight: FontWeight.w600,
+                    child: SafeArea(
+                      child: Text(
+                        title,
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 2,
+                        style: TextStyle(
+                          color: cc.blackColor,
+                          fontSize: screenWidth / 24,
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
                     ),
                   ),

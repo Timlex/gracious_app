@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gren_mart/view/order/order_details.dart';
 import 'package:gren_mart/view/utils/constant_colors.dart';
+import 'package:gren_mart/view/utils/constant_name.dart';
 import 'package:intl/intl.dart';
 
 class OrderTile extends StatelessWidget {
@@ -22,7 +23,7 @@ class OrderTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 75,
+      height: screenHight / 7,
       child: Column(
         children: [
           ListTile(
@@ -52,12 +53,12 @@ class OrderTile extends StatelessWidget {
               ],
             ),
             trailing: SizedBox(
-              width: 150,
+              width: screenWidth / 2.5,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   Container(
-                    width: 85,
+                    width: screenWidth / 4,
                     padding:
                         const EdgeInsets.symmetric(horizontal: 10, vertical: 3),
                     decoration: BoxDecoration(

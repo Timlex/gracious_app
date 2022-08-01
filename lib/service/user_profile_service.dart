@@ -38,7 +38,8 @@ class UserProfileService with ChangeNotifier {
       notifyListeners();
       return userProfileData;
     }
-    throw '';
+    return userProfileData;
+    // throw '';
   }
   //   //  catch (error) {
   //   //   // print(error);

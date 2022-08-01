@@ -211,7 +211,7 @@ Widget seeAllTitle(String title) {
   );
 }
 
-Widget discAmountRow(double discountAmount, double amount) {
+Widget discAmountRow(int discountAmount, int amount) {
   return Row(
     children: [
       Text(

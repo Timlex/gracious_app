@@ -95,19 +95,24 @@ class CartView extends StatelessWidget {
                   },
                   child: Padding(
                     padding: const EdgeInsets.only(left: 10),
-                    child: Text(
-                      'Apply Promo code',
-                      style: TextStyle(
-                        color: Colors.transparent,
-                        shadows: [
-                          Shadow(
-                              offset: const Offset(0, -5),
-                              color: cc.primaryColor)
-                        ],
-                        decoration: TextDecoration.underline,
-                        decorationColor: cc.primaryColor,
-                        decorationThickness: 1.5,
-                        // fontWeight: FontWeight.w600,
+                    child: SizedBox(
+                      width: screenWidth / 3,
+                      child: FittedBox(
+                        child: Text(
+                          'Apply Promo code',
+                          style: TextStyle(
+                            color: Colors.transparent,
+                            shadows: [
+                              Shadow(
+                                  offset: const Offset(0, -5),
+                                  color: cc.primaryColor)
+                            ],
+                            decoration: TextDecoration.underline,
+                            decorationColor: cc.primaryColor,
+                            decorationThickness: 1.5,
+                            // fontWeight: FontWeight.w600,
+                          ),
+                        ),
                       ),
                     ),
                   ),
