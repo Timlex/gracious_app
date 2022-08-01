@@ -36,7 +36,7 @@ class SettingScreenAppBar extends StatelessWidget {
             ),
           ),
           Positioned(
-            top: screenHight / 7,
+            top: screenHight / 6,
             right: screenWidth / 2.9,
             child: GestureDetector(
                 onTap: () =>
@@ -44,8 +44,8 @@ class SettingScreenAppBar extends StatelessWidget {
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(150),
                   child: CachedNetworkImage(
-                    height: 130,
-                    width: 130,
+                    height: screenWidth / 3.16,
+                    width: screenWidth / 3.16,
                     fit: BoxFit.cover,
                     alignment: Alignment.topCenter,
                     imageUrl: image ?? '',

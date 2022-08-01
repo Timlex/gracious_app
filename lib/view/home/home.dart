@@ -199,7 +199,7 @@ class Home extends StatelessWidget {
                           // DealTimer(DateTime.now().add(const Duration(minutes: 2)), 's'),
                         ],
                       )
-                    : loadingProgressBar());
+                    : null);
           }),
           const SizedBox(height: 20),
           SizedBox(

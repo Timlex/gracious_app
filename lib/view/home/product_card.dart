@@ -68,10 +68,12 @@ class ProductCard extends StatelessWidget {
                       //   tag: product.id,
                       //   child:
                       ClipRRect(
-                    borderRadius: const BorderRadius.only(
-                        topLeft: Radius.circular(10),
-                        topRight: Radius.circular(10)),
+                    borderRadius: BorderRadius.circular(10),
+                    //  const BorderRadius.only(
+                    //     topLeft: Radius.circular(10),
+                    //     topRight: Radius.circular(10)),
                     child: CachedNetworkImage(
+                      fit: BoxFit.cover,
                       imageUrl: imgUrl,
                       placeholder: (context, url) => Image.asset(
                         'assets/images/skelleton.png',

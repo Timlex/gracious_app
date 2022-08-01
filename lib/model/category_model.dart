@@ -1,24 +1,22 @@
 // To parse this JSON data, do
 //
-//     final campaignProductModel = campaignProductModelFromJson(jsonString);
+//     final categoryModel = categoryModelFromJson(jsonString);
 
 import 'dart:convert';
 
-CampaignProductModel campaignProductModelFromJson(String str) =>
-    CampaignProductModel.fromJson(json.decode(str));
+CategoryModel categoryModelFromJson(String str) =>
+    CategoryModel.fromJson(json.decode(str));
 
-String campaignProductModelToJson(CampaignProductModel data) =>
-    json.encode(data.toJson());
+String categoryModelToJson(CategoryModel data) => json.encode(data.toJson());
 
-class CampaignProductModel {
-  CampaignProductModel({
+class CategoryModel {
+  CategoryModel({
     required this.categories,
   });
 
   List<Category> categories;
 
-  factory CampaignProductModel.fromJson(Map<String, dynamic> json) =>
-      CampaignProductModel(
+  factory CategoryModel.fromJson(Map<String, dynamic> json) => CategoryModel(
         categories: List<Category>.from(
             json["categories"].map((x) => Category.fromJson(x))),
       );
@@ -38,20 +36,20 @@ class Category {
 
   int id;
   String title;
-  String? imageUrl;
   String? image;
+  String? imageUrl;
 
   factory Category.fromJson(Map<String, dynamic> json) => Category(
         id: json["id"],
         title: json["title"],
-        image: json["image"],
-        imageUrl: json["image_url"],
+        image: json["image"] ?? null,
+        imageUrl: json["image_url"] ?? null,
       );
 
   Map<String, dynamic> toJson() => {
         "id": id,
         "title": title,
-        "image": image,
-        "image_url": imageUrl,
+        "image": image ?? null,
+        "image_url": imageUrl ?? null,
       };
 }

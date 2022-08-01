@@ -1,24 +1,24 @@
 // To parse this JSON data, do
 //
-//     final campaignProductModel = campaignProductModelFromJson(jsonString);
+//     final subCategoryModel = subCategoryModelFromJson(jsonString);
 
 import 'dart:convert';
 
-CampaignProductModel campaignProductModelFromJson(String str) =>
-    CampaignProductModel.fromJson(json.decode(str));
+SubCategoryModel subCategoryModelFromJson(String str) =>
+    SubCategoryModel.fromJson(json.decode(str));
 
-String campaignProductModelToJson(CampaignProductModel data) =>
+String subCategoryModelToJson(SubCategoryModel data) =>
     json.encode(data.toJson());
 
-class CampaignProductModel {
-  CampaignProductModel({
+class SubCategoryModel {
+  SubCategoryModel({
     required this.subcategories,
   });
 
   List<Subcategory> subcategories;
 
-  factory CampaignProductModel.fromJson(Map<String, dynamic> json) =>
-      CampaignProductModel(
+  factory SubCategoryModel.fromJson(Map<String, dynamic> json) =>
+      SubCategoryModel(
         subcategories: List<Subcategory>.from(
             json["subcategories"].map((x) => Subcategory.fromJson(x))),
       );

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gren_mart/model/favorite_data.dart';
 import 'package:gren_mart/model/other_data.dart';
 import 'package:gren_mart/service/auth_text_controller_service.dart';
+import 'package:gren_mart/service/categories_data_service.dart';
 import 'package:gren_mart/service/country_dropdown_service.dart';
 import 'package:gren_mart/service/poster_campaign_slider_service.dart';
 import 'package:gren_mart/service/product_card_data_service.dart';
@@ -62,6 +63,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => NavigationBarHelperService()),
         ChangeNotifierProvider(create: (_) => ResetPassOTPService()),
         ChangeNotifierProvider(create: (_) => ProductCardDataService()),
+        ChangeNotifierProvider(create: (_) => CategoriesDataService()),
       ],
       child: Consumer<Products>(
         builder: (context, value, child) => MaterialApp(

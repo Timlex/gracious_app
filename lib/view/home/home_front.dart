@@ -42,7 +42,7 @@ class HomeFront extends StatelessWidget {
                 context: context,
                 builder: (context) => SingleChildScrollView(
                   controller: ModalScrollController.of(context),
-                  child: const FilterBottomSheet(),
+                  child: FilterBottomSheet(),
                 ),
               );
             },

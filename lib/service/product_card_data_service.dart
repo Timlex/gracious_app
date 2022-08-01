@@ -50,7 +50,7 @@ class ProductCardDataService with ChangeNotifier {
         campaignCardProductList = data.products;
         campaignInfo = data.campaignInfo;
 
-        print(featuredCardProductsList[0].prdId);
+        // print(featuredCardProductsList[0].prdId);
         // print(countryDropdownList);
 
         notifyListeners();
