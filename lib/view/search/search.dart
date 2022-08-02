@@ -21,8 +21,6 @@ class SearchView extends StatelessWidget {
 
   ScrollController controller = ScrollController();
 
-  int pageNo = 2;
-
   // @override
   // void initState() {
   //   // TODO: implement initState
@@ -177,13 +175,17 @@ class SearchView extends StatelessWidget {
           .setIsLoading(true);
 
       Provider.of<SearchResultDataService>(context, listen: false)
-          .fetchProductsBy(pageNo: pageNo.toString())
+          .fetchProductsBy(
+              pageNo:
+                  Provider.of<SearchResultDataService>(context, listen: false)
+                      .pageNumber
+                      .toString())
           .then((value) {
         if (value != null) {
           ScaffoldMessenger.of(context).showSnackBar(snackBar(value));
         }
       });
-      pageNo++;
+      Provider.of<SearchResultDataService>(context, listen: false).nextPage();
     }
   }
 

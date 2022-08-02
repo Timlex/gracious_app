@@ -19,7 +19,15 @@ class SearchResultDataService with ChangeNotifier {
   bool? lastPage;
   String categoryId = '';
   String subCategoryId = '';
+  String sortBy = '';
+  int pageNumber = 2;
   bool noProduct = false;
+  List<String> sortOption = [
+    'popularity',
+    'latest',
+    'price_low',
+    'price_high',
+  ];
 
   setRangeValues(value) {
     rangevalue = value;
@@ -30,6 +38,11 @@ class SearchResultDataService with ChangeNotifier {
 
   setLastPage(value) {
     lastPage = value;
+    notifyListeners();
+  }
+
+  nextPage() {
+    pageNumber++;
     notifyListeners();
   }
 
@@ -63,10 +76,16 @@ class SearchResultDataService with ChangeNotifier {
     notifyListeners();
   }
 
+  setSortBy(value) {
+    sortBy = value.toString();
+    notifyListeners();
+  }
+
   resetSerch() {
     lastPage = false;
     searchResult = [];
     resultMeta = null;
+    pageNumber = 2;
     notifyListeners();
   }
 
@@ -79,15 +98,17 @@ class SearchResultDataService with ChangeNotifier {
     categoryId = '';
     subCategoryId = '';
     ratingPoint = '';
+    sortBy = '';
+
     rangevalue = const RangeValues(0, 3500);
 
     notifyListeners();
   }
 
-  Future fetchProductsBy(
-      {String count = '', sortBy = '', String pageNo = ''}) async {
+  Future fetchProductsBy({String count = '', String pageNo = ''}) async {
     print(lastPage);
-    if (lastPage != null && lastPage!) {
+
+    if (lastPage!) {
       setIsLoading(false);
       notifyListeners();
       print('Leaving fetching___________');
@@ -110,7 +131,7 @@ class SearchResultDataService with ChangeNotifier {
         setLastPage(resultMeta!.lastPage.toString() == pageNo);
         print(isLoading);
         print(searchResult.length);
-        print(resultMeta!.total.toString() + '-------------------');
+        print(resultMeta!.lastPage.toString() + '-------------------');
         setIsLoading(false);
         setNoProduct(resultMeta!.total == 0);
 
