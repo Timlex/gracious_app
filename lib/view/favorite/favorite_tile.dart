@@ -1,12 +1,13 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:gren_mart/model/favorite_data.dart';
+import 'package:gren_mart/service/favorite_data_service.dart';
 import 'package:gren_mart/view/utils/constant_colors.dart';
 import 'package:provider/provider.dart';
 
 class FavoriteTile extends StatelessWidget {
-  final String id;
+  final int id;
 
   FavoriteTile(this.id, {Key? key}) : super(key: key);
 
@@ -14,10 +15,11 @@ class FavoriteTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<FavoriteData>(builder: (context, favoriteData, child) {
+    return Consumer<FavoriteDataService>(
+        builder: (context, favoriteData, child) {
       final favoriteItem = favoriteData.favoriteItems.values
           .toList()
-          .firstWhere((element) => element!.id == id);
+          .firstWhere((element) => element.id == id);
       return Dismissible(
         dragStartBehavior: DragStartBehavior.start,
         direction: DismissDirection.endToStart,
@@ -47,23 +49,33 @@ class FavoriteTile extends StatelessWidget {
         onDismissed: (direction) {
           favoriteData.deleteFavoriteItem(id);
         },
-        key: Key(id),
+        key: Key(id.toString()),
         child: SizedBox(
           height: 75,
           child: Column(
             children: [
               ListTile(
                 leading: Container(
-                  height: 80,
-                  width: 80,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(15),
-                  ),
-                  child: Image.asset(
-                    favoriteItem!.image[0],
-                    fit: BoxFit.fill,
-                  ),
-                ),
+                    height: 80,
+                    width: 80,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(10),
+                      //  const BorderRadius.only(
+                      //     topLeft: Radius.circular(10),
+                      //     topRight: Radius.circular(10)),
+                      child: CachedNetworkImage(
+                        fit: BoxFit.cover,
+                        imageUrl: favoriteItem.imgUrl,
+                        placeholder: (context, url) => Image.asset(
+                          'assets/images/skelleton.png',
+                        ),
+                        errorWidget: (context, url, error) =>
+                            const Icon(Icons.error),
+                      ),
+                    )),
                 title: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -79,7 +91,7 @@ class FavoriteTile extends StatelessWidget {
                           ),
                           const SizedBox(height: 13),
                           Text(
-                            '\$${favoriteItem.amount}',
+                            '\$${favoriteItem.price}',
                             style: TextStyle(
                                 color: cc.primaryColor,
                                 fontWeight: FontWeight.w600,
