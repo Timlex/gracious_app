@@ -17,6 +17,7 @@ import 'package:provider/provider.dart';
 
 import '../../service/auth_text_controller_service.dart';
 import '../../service/country_dropdown_service.dart';
+import '../../service/search_result_data_service.dart';
 import '../../service/state_dropdown_service.dart';
 import '../../service/user_profile_service.dart';
 import '../search/filter_bottom_sheeet.dart';
@@ -42,18 +43,18 @@ class HomeFront extends StatelessWidget {
                 context: context,
                 builder: (context) => SingleChildScrollView(
                   controller: ModalScrollController.of(context),
-                  child: FilterBottomSheet(),
+                  child: const FilterBottomSheet(),
                 ),
               );
             },
             icon: SvgPicture.asset('assets/images/icons/filter_setting.svg')),
-        // actions: [
-        //   customIconButton('notificationIcon', 'notification_bing.svg',
-        //       padding: 10),
-        //   const SizedBox(
-        //     width: 17,
-        //   )
-        // ],
+        actions: [
+          customIconButton('notificationIcon', 'notification_bing.svg',
+              padding: 10),
+          const SizedBox(
+            width: 17,
+          )
+        ],
       );
     }
     if (_navigationIndex == 2) {
@@ -89,7 +90,7 @@ class HomeFront extends StatelessWidget {
     if (_navigationIndex == 0) {
       navigationWidget = const Home();
     } else if (_navigationIndex == 1) {
-      navigationWidget = const SearchView();
+      navigationWidget = SearchView();
     }
     // Provider.of<UserProfileService>(context, listen: false).fetchProfileService(
     //     Provider.of<SignInSignUpService>(context, listen: false).token);
@@ -118,7 +119,11 @@ class HomeFront extends StatelessWidget {
                 return;
               }
               if (nData.navigationIndex == 1) {
-                navigationWidget = const SearchView();
+                Provider.of<SearchResultDataService>(context, listen: false)
+                    .resetSerch();
+                Provider.of<SearchResultDataService>(context, listen: false)
+                    .fetchProductsBy(pageNo: '1');
+                navigationWidget = SearchView();
                 return;
               }
               if (nData.navigationIndex == 2) {

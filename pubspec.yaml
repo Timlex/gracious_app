@@ -52,6 +52,7 @@ dependencies:
   intl_phone_field:
   cached_network_image:
   focused_menu:
+  pull_to_refresh:
   
   provider: ^6.0.3
 

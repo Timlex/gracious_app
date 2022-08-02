@@ -107,15 +107,10 @@ Widget containerBorder(String imagePath, String text,
   );
 }
 
-Widget customIconButton(
-  String iconTitle,
-  String iconName, {
-  double padding = 8.0,
-}) {
+Widget customIconButton(String iconTitle, String iconName,
+    {double padding = 8.0, void Function()? onTap}) {
   return GestureDetector(
-    onTap: () {
-      print('$iconTitle has been tapped');
-    },
+    onTap: onTap,
     child: Padding(
       padding: EdgeInsets.all(padding),
       child: SvgPicture.asset(

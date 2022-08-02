@@ -8,17 +8,17 @@ import 'package:http/http.dart' as http;
 
 class CategoriesDataService with ChangeNotifier {
   List<Category> categorydataList = [];
-  Category? selectedCategorie;
+  String selectedCategorieId = '';
   List<Subcategory> subCategorydataList = [];
-  Subcategory? selectedSubCategorie;
+  String selectedSubCategorieId = '';
 
   setSelectedCategory(value) {
-    selectedCategorie = value;
+    selectedCategorieId = value;
     notifyListeners();
   }
 
   setSelectedSubCategory(value) {
-    selectedSubCategorie = value;
+    selectedSubCategorieId = value;
     notifyListeners();
   }
 
@@ -37,7 +37,6 @@ class CategoriesDataService with ChangeNotifier {
         final data = CategoryModel.fromJson(jsonDecode(response.body));
 
         categorydataList = data.categories;
-        selectedCategorie = categorydataList[0];
 
         notifyListeners();
       } else {
@@ -64,7 +63,6 @@ class CategoriesDataService with ChangeNotifier {
         final data = SubCategoryModel.fromJson(jsonDecode(response.body));
 
         subCategorydataList = data.subcategories;
-        selectedSubCategorie = subCategorydataList[0];
 
         notifyListeners();
       } else {

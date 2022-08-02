@@ -7,6 +7,7 @@ import 'package:gren_mart/service/country_dropdown_service.dart';
 import 'package:gren_mart/service/poster_campaign_slider_service.dart';
 import 'package:gren_mart/service/product_card_data_service.dart';
 import 'package:gren_mart/service/reset_pass_otp_service.dart';
+import 'package:gren_mart/service/search_result_data_service.dart';
 import 'package:gren_mart/service/signin_signup_service.dart';
 import 'package:gren_mart/service/state_dropdown_service.dart';
 import 'package:gren_mart/service/user_profile_service.dart';
@@ -64,6 +65,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => ResetPassOTPService()),
         ChangeNotifierProvider(create: (_) => ProductCardDataService()),
         ChangeNotifierProvider(create: (_) => CategoriesDataService()),
+        ChangeNotifierProvider(create: (_) => SearchResultDataService()),
       ],
       child: Consumer<Products>(
         builder: (context, value, child) => MaterialApp(

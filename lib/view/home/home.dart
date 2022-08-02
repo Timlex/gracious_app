@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:gren_mart/service/navigation_bar_helper_service.dart';
 import 'package:gren_mart/service/poster_campaign_slider_service.dart';
 import 'package:gren_mart/service/product_card_data_service.dart';
+import 'package:gren_mart/service/search_result_data_service.dart';
 import 'package:gren_mart/view/auth/custom_text_field.dart';
 import 'package:gren_mart/view/home/dod_card.dart';
 import 'package:gren_mart/view/home/product_card.dart';
@@ -38,11 +39,15 @@ class Home extends StatelessWidget {
               'Search your need here',
               leadingImage: 'assets/images/icons/search_normal.png',
               onFieldSubmitted: (value) {
+                Provider.of<SearchResultDataService>(context, listen: false)
+                    .resetSerch();
+                Provider.of<SearchResultDataService>(context, listen: false)
+                    .fetchProductsBy(pageNo: '1');
                 Provider.of<NavigationBarHelperService>(context, listen: false)
                     .setNavigationIndex(1);
               },
               onChanged: (value) {
-                Provider.of<NavigationBarHelperService>(context, listen: false)
+                Provider.of<SearchResultDataService>(context, listen: false)
                     .setSearchText(value);
               },
             ),
@@ -194,9 +199,6 @@ class Home extends StatelessWidget {
                             duration: DateTime.now()
                                 .difference(campInfo.campaignInfo!.endDate),
                           ),
-                          // DealTimer(DateTime.now().add(const Duration(minutes: 2)), 'h'),
-                          // DealTimer(DateTime.now().add(const Duration(minutes: 2)), 'm'),
-                          // DealTimer(DateTime.now().add(const Duration(minutes: 2)), 's'),
                         ],
                       )
                     : null);

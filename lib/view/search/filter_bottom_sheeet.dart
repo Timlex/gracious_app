@@ -2,14 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gren_mart/service/categories_data_service.dart';
+import 'package:gren_mart/service/search_result_data_service.dart';
 import 'package:gren_mart/view/utils/constant_styles.dart';
 import 'package:money_formatter/money_formatter.dart';
 import 'package:provider/provider.dart';
 
 class FilterBottomSheet extends StatelessWidget {
-  FilterBottomSheet({Key? key}) : super(key: key);
-
-  RangeValues _currentRangeValues = const RangeValues(1045, 3100);
+  const FilterBottomSheet({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -17,9 +16,10 @@ class FilterBottomSheet extends StatelessWidget {
         .fetchCategories();
     Provider.of<CategoriesDataService>(context, listen: false)
         .fetchSubCategories();
-    MoneyFormatter startRange =
-        MoneyFormatter(amount: _currentRangeValues.start);
-    MoneyFormatter endRange = MoneyFormatter(amount: _currentRangeValues.end);
+    MoneyFormatter startRange = MoneyFormatter(
+        amount: Provider.of<SearchResultDataService>(context).rangevalue.start);
+    MoneyFormatter endRange = MoneyFormatter(
+        amount: Provider.of<SearchResultDataService>(context).rangevalue.end);
     return Consumer<CategoriesDataService>(builder: (context, catData, chaild) {
       return catData.subCategorydataList.isEmpty
           ? loadingProgressBar()
@@ -44,20 +44,22 @@ class FilterBottomSheet extends StatelessWidget {
                     itemBuilder: ((context, index) {
                       final e = catData.categorydataList[index];
                       // print(e.title);
-                      final isSelected = e.id == catData.selectedCategorie!.id;
+                      final isSelected =
+                          e.id.toString() == catData.selectedCategorieId;
                       return GestureDetector(
                           onTap: () {
                             if (isSelected) {
+                              catData.setSelectedCategory('');
                               return;
                             }
-                            catData.setSelectedCategory(e);
+                            catData.setSelectedCategory(e.id.toString());
                           },
                           child: filterOption(e.title, isSelected));
                     })),
               ),
               Padding(
                 padding: const EdgeInsets.only(left: 25.0),
-                child: textFieldTitle('All Units', fontSize: 13),
+                child: textFieldTitle('Sub-category', fontSize: 13),
               ),
               Container(
                 height: 50,
@@ -68,13 +70,14 @@ class FilterBottomSheet extends StatelessWidget {
                     itemBuilder: ((context, index) {
                       final e = catData.subCategorydataList[index];
                       final isSelected =
-                          e.id == catData.selectedSubCategorie!.id;
+                          e.id.toString() == catData.selectedSubCategorieId;
                       return GestureDetector(
                           onTap: () {
                             if (isSelected) {
+                              catData.setSelectedSubCategory('');
                               return;
                             }
-                            catData.setSelectedSubCategory(e);
+                            catData.setSelectedSubCategory(e.id.toString());
                           },
                           child: filterOption(e.title, isSelected));
                     })),
@@ -96,22 +99,25 @@ class FilterBottomSheet extends StatelessWidget {
                   ],
                 ),
               ),
-              RangeSlider(
-                values: _currentRangeValues,
-                max: 3500,
+              Consumer<SearchResultDataService>(
+                  builder: (context, srData, child) {
+                return RangeSlider(
+                  values: srData.rangevalue,
+                  max: 3500,
 
-                // divisions: 5,
-                activeColor: cc.primaryColor,
+                  // divisions: 5,
+                  activeColor: cc.primaryColor,
 
-                inactiveColor: cc.lightPrimery3,
-                labels: RangeLabels(
-                  _currentRangeValues.start.round().toString(),
-                  _currentRangeValues.end.round().toString(),
-                ),
-                onChanged: (RangeValues values) {
-                  _currentRangeValues = values;
-                },
-              ),
+                  inactiveColor: cc.lightPrimery3,
+                  labels: RangeLabels(
+                    srData.rangevalue.start.round().toString(),
+                    srData.rangevalue.end.round().toString(),
+                  ),
+                  onChanged: (RangeValues values) {
+                    srData.setRangeValues(values);
+                  },
+                );
+              }),
               Padding(
                 padding: const EdgeInsets.only(left: 25.0),
                 child: textFieldTitle('Average Rating', fontSize: 13),
@@ -119,32 +125,57 @@ class FilterBottomSheet extends StatelessWidget {
               const SizedBox(height: 10),
               Padding(
                 padding: const EdgeInsets.only(left: 25.0),
-                child: RatingBar.builder(
-                  itemSize: 24,
-                  initialRating: 3,
-                  minRating: 1,
-                  direction: Axis.horizontal,
-                  allowHalfRating: false,
-                  itemCount: 5,
-                  itemPadding: const EdgeInsets.symmetric(horizontal: 3),
-                  itemBuilder: (context, _) => SvgPicture.asset(
-                    'assets/images/icons/star.svg',
-                    color: cc.orangeRating,
-                  ),
-                  onRatingUpdate: (rating) {
-                    print(rating);
-                  },
-                ),
-              ),
-              const SizedBox(height: 40),
-              Padding(
-                padding: const EdgeInsets.all(10),
-                child: customRowButton('Reset Filter', 'Apply Filter', () {
-                  Navigator.of(context).pop();
-                }, () {
-                  Navigator.of(context).pop();
+                child: Consumer<SearchResultDataService>(
+                    builder: (context, srData, child) {
+                  return RatingBar.builder(
+                    itemSize: 24,
+                    initialRating: 0,
+                    minRating: 1,
+                    direction: Axis.horizontal,
+                    allowHalfRating: false,
+                    itemCount: 5,
+                    itemPadding: const EdgeInsets.symmetric(horizontal: 3),
+                    itemBuilder: (context, _) => SvgPicture.asset(
+                      'assets/images/icons/star.svg',
+                      color: cc.orangeRating,
+                    ),
+                    onRatingUpdate: (rating) {
+                      srData.setRating(rating.toInt());
+                      print(rating);
+                    },
+                  );
                 }),
               ),
+              const SizedBox(height: 40),
+              Consumer<SearchResultDataService>(
+                  builder: (context, srData, child) {
+                return Padding(
+                  padding: const EdgeInsets.all(10),
+                  child: customRowButton('Reset Filter', 'Apply Filter', () {
+                    Provider.of<CategoriesDataService>(context, listen: false)
+                        .setSelectedCategory('');
+                    Provider.of<CategoriesDataService>(context, listen: false)
+                        .setSelectedSubCategory('');
+                    srData.resetSerchFilters();
+                    srData.fetchProductsBy(pageNo: '1');
+                    Navigator.of(context).pop();
+                  }, () {
+                    srData.setCategoryId(Provider.of<CategoriesDataService>(
+                            context,
+                            listen: false)
+                        .selectedCategorieId
+                        .toString());
+                    srData.setSubCategoryId(Provider.of<CategoriesDataService>(
+                            context,
+                            listen: false)
+                        .selectedSubCategorieId
+                        .toString());
+                    srData.resetSerch();
+                    srData.fetchProductsBy(pageNo: '1');
+                    Navigator.of(context).pop();
+                  }),
+                );
+              }),
               const SizedBox(height: 10),
             ]);
     });
