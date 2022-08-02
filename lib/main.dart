@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:gren_mart/model/favorite_data.dart';
 import 'package:gren_mart/model/other_data.dart';
 import 'package:gren_mart/service/auth_text_controller_service.dart';
+import 'package:gren_mart/service/cart_data_service.dart';
 import 'package:gren_mart/service/categories_data_service.dart';
 import 'package:gren_mart/service/country_dropdown_service.dart';
+import 'package:gren_mart/service/favorite_data_service.dart';
 import 'package:gren_mart/service/poster_campaign_slider_service.dart';
 import 'package:gren_mart/service/product_card_data_service.dart';
 import 'package:gren_mart/service/reset_pass_otp_service.dart';
@@ -31,7 +32,6 @@ import 'package:gren_mart/view/settings/new_address.dart';
 import 'package:gren_mart/view/utils/constant_colors.dart';
 import './service/navigation_bar_helper_service.dart';
 
-import 'model/cart_data.dart';
 import 'model/product_data.dart';
 
 void main() {
@@ -52,8 +52,8 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider.value(value: OtherData()),
         ChangeNotifierProvider.value(value: Products()),
-        ChangeNotifierProvider.value(value: CartData()),
-        ChangeNotifierProvider.value(value: FavoriteData()),
+        ChangeNotifierProvider.value(value: CartDataService()),
+        ChangeNotifierProvider.value(value: FavoriteDataService()),
         ChangeNotifierProvider(create: (_) => OrderData()),
         ChangeNotifierProvider(create: (_) => CountryDropdownService()),
         ChangeNotifierProvider(create: (_) => StateDropdownService()),

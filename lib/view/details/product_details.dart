@@ -2,7 +2,7 @@ import 'package:card_swiper/card_swiper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:gren_mart/model/favorite_data.dart';
+import 'package:gren_mart/service/favorite_data_service.dart';
 import 'package:gren_mart/view/details/animated_box.dart';
 import 'package:gren_mart/view/details/plus_minus_cart.dart';
 import 'package:gren_mart/view/intro/dot_indicator.dart';
@@ -91,16 +91,18 @@ class ProductDetails extends StatelessWidget {
                         ]),
                   ),
                   actions: [
-                    Consumer<FavoriteData>(
+                    Consumer<FavoriteDataService>(
                         builder: (context, favoriteData, child) {
                       return Container(
                           margin: const EdgeInsets.only(right: 10),
                           child: favoriteIcon(
                               favoriteData.isfavorite(product.id),
                               size: 18,
-                              onPressed: () => favoriteData.toggleFavorite(
-                                  product.id,
-                                  product: product)));
+                              onPressed: () {}
+                              // => favoriteData.toggleFavorite(
+                              //     product.id,
+                              //     product: product)
+                              ));
                     }),
                   ],
                 ),

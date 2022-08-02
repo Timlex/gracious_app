@@ -1,8 +1,8 @@
 import 'package:badges/badges.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:gren_mart/model/cart_data.dart';
-import 'package:gren_mart/model/favorite_data.dart';
+import 'package:gren_mart/service/cart_data_service.dart';
+import 'package:gren_mart/service/favorite_data_service.dart';
 import 'package:gren_mart/service/navigation_bar_helper_service.dart';
 import 'package:gren_mart/service/product_card_data_service.dart';
 import 'package:gren_mart/view/cart/cart_view.dart';
@@ -212,7 +212,8 @@ class HomeFront extends StatelessWidget {
                     height: 27,
                     color: cc.primaryColor,
                   ),
-                  icon: Consumer<CartData>(builder: (context, cartData, child) {
+                  icon: Consumer<CartDataService>(
+                      builder: (context, cartData, child) {
                     return Badge(
                       showBadge: cartData.cartList.isEmpty ? false : true,
                       badgeContent: Text(
@@ -233,7 +234,7 @@ class HomeFront extends StatelessWidget {
                     height: 27,
                     color: cc.primaryColor,
                   ),
-                  icon: Consumer<FavoriteData>(
+                  icon: Consumer<FavoriteDataService>(
                       builder: (context, favoriteData, child) {
                     return Badge(
                       showBadge:

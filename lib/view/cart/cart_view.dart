@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:gren_mart/service/cart_data_service.dart';
 import 'package:gren_mart/view/cart/cart_card.dart';
 import 'package:gren_mart/view/cart/checkout.dart';
 import 'package:gren_mart/view/utils/constant_colors.dart';
 import 'package:gren_mart/view/utils/constant_name.dart';
 import 'package:gren_mart/view/utils/constant_styles.dart';
 import 'package:provider/provider.dart';
-
-import '../../model/cart_data.dart';
 
 class CartView extends StatelessWidget {
   static const routeName = 'cart';
@@ -16,12 +15,12 @@ class CartView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<CartData>(builder: (context, cartData, child) {
+    return Consumer<CartDataService>(builder: (context, cartData, child) {
       double shippingCos = 0;
       double discount = 0;
       double totalPrice = 0;
       for (var element in cartData.cartList.values) {
-        totalPrice += (element.product.amount * element.quantity);
+        totalPrice += (element.price * element.quantity);
       }
       return ListView(
         physics: const BouncingScrollPhysics(
@@ -31,10 +30,10 @@ class CartView extends StatelessWidget {
           ...cartData.cartList.values
               .map((e) => CartCard(
                     e.id,
-                    e.product.title,
-                    e.product.image[0],
+                    e.title,
+                    e.imgUrl,
                     e.quantity,
-                    e.product.amount,
+                    e.price,
                   ))
               .toList(),
           Container(

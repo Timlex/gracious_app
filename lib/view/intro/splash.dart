@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:gren_mart/db/database_helper.dart';
-import 'package:gren_mart/model/cart_data.dart';
-import 'package:gren_mart/model/favorite_data.dart';
+import 'package:gren_mart/service/cart_data_service.dart';
 import 'package:gren_mart/service/country_dropdown_service.dart';
+import 'package:gren_mart/service/favorite_data_service.dart';
 import 'package:gren_mart/service/poster_campaign_slider_service.dart';
 import 'package:gren_mart/service/signin_signup_service.dart';
 import 'package:gren_mart/service/state_dropdown_service.dart';
@@ -29,8 +29,8 @@ class _SplashScreenState extends State<SplashScreen> {
     super.initState();
     List databases = ['cart', 'favorite'];
     databases.map((e) => DbHelper.database(e));
-    Provider.of<CartData>(context, listen: false).fetchCarts();
-    Provider.of<FavoriteData>(context, listen: false).fetchFavorites();
+    Provider.of<CartDataService>(context, listen: false).fetchCarts();
+    Provider.of<FavoriteDataService>(context, listen: false).fetchFavorites();
   }
 
   Future<void> setData(BuildContext context) async {

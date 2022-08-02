@@ -1,17 +1,18 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:gren_mart/model/cart_data.dart';
 import 'package:gren_mart/view/utils/constant_name.dart';
 import 'package:provider/provider.dart';
 
+import '../../service/cart_data_service.dart';
 import '../utils/constant_styles.dart';
 
 class CartCard extends StatelessWidget {
-  final String id;
+  final int id;
   final String name;
   final String image;
   final int quantity;
-  final double price;
+  final int price;
   const CartCard(
     this.id,
     this.name,
@@ -22,7 +23,7 @@ class CartCard extends StatelessWidget {
   }) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    final carts = Provider.of<CartData>(context, listen: false);
+    final carts = Provider.of<CartDataService>(context, listen: false);
     return Dismissible(
       direction: DismissDirection.endToStart,
       background: Container(
@@ -51,23 +52,33 @@ class CartCard extends StatelessWidget {
       onDismissed: (direction) {
         carts.deleteCartItem(id);
       },
-      key: Key(id),
+      key: Key(id.toString()),
       child: SizedBox(
         height: screenWidth / 4.3,
         child: Column(
           children: [
             ListTile(
               leading: Container(
-                height: screenWidth / 4.3,
-                width: screenWidth / 7,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(15),
-                ),
-                child: Image.asset(
-                  image,
-                  fit: BoxFit.fill,
-                ),
-              ),
+                  height: screenWidth / 4.3,
+                  width: screenWidth / 7,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(10),
+                    //  const BorderRadius.only(
+                    //     topLeft: Radius.circular(10),
+                    //     topRight: Radius.circular(10)),
+                    child: CachedNetworkImage(
+                      fit: BoxFit.cover,
+                      imageUrl: image,
+                      placeholder: (context, url) => Image.asset(
+                        'assets/images/skelleton.png',
+                      ),
+                      errorWidget: (context, url, error) =>
+                          const Icon(Icons.error),
+                    ),
+                  )),
               title: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -107,7 +118,8 @@ class CartCard extends StatelessWidget {
                             width: .4, color: cc.greyTextFieldLebel)),
                     height: 48,
                     width: 105,
-                    child: Consumer<CartData>(builder: (context, cart, child) {
+                    child: Consumer<CartDataService>(
+                        builder: (context, cart, child) {
                       return Row(
                         children: [
                           Container(

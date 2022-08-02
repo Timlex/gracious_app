@@ -1,8 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:gren_mart/model/cart_data.dart';
-import 'package:gren_mart/model/favorite_data.dart';
-import 'package:gren_mart/model/product_data.dart';
+import 'package:gren_mart/service/cart_data_service.dart';
+import 'package:gren_mart/service/favorite_data_service.dart';
 import 'package:gren_mart/view/details/product_details.dart';
 import 'package:gren_mart/view/utils/constant_colors.dart';
 import 'package:gren_mart/view/utils/constant_name.dart';
@@ -123,20 +122,18 @@ class ProductCard extends StatelessWidget {
                           fontWeight: FontWeight.w600),
                     ),
                   ),
-                Consumer<FavoriteData>(builder: (context, favoriteData, child) {
+                Consumer<FavoriteDataService>(
+                    builder: (context, favoriteData, child) {
                   return Positioned(
                       right: 0,
                       child:
                           favoriteIcon(favoriteData.isfavorite(_id.toString()),
                               onPressed: () => favoriteData.toggleFavorite(
-                                    _id.toString(),
-                                    product: Product(
-                                        id: _id.toString(),
-                                        title: title,
-                                        amount: price.toDouble(),
-                                        discountPecentage:
-                                            campaignPercentage.toDouble(),
-                                        image: [imgUrl]),
+                                    _id,
+                                    title,
+                                    price,
+                                    discountPrice,
+                                    imgUrl,
                                   )));
                 })
               ],
@@ -161,21 +158,19 @@ class ProductCard extends StatelessWidget {
                     onTap: () {
                       // Navigator.of(context).pushReplacementNamed(Auth.routeName);
                     },
-                    child: Consumer<CartData>(
+                    child: Consumer<CartDataService>(
                       builder: (context, cartData, child) {
                         return GestureDetector(
                           onTap: isCartable
                               ? () {
                                   cartData.addCartItem(
-                                    _id.toString(),
-                                    Product(
-                                        id: _id.toString(),
-                                        title: title,
-                                        amount: price.toDouble(),
-                                        discountPecentage:
-                                            campaignPercentage.toDouble(),
-                                        image: [imgUrl]),
-                                  );
+                                      _id,
+                                      title,
+                                      price,
+                                      discountPrice,
+                                      campaignPercentage,
+                                      1,
+                                      imgUrl);
                                 }
                               : (() {}),
                           child: child,
