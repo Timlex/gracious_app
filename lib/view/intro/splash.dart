@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:gren_mart/db/database_helper.dart';
 import 'package:gren_mart/service/cart_data_service.dart';
-import 'package:gren_mart/service/country_dropdown_service.dart';
 import 'package:gren_mart/service/favorite_data_service.dart';
 import 'package:gren_mart/service/poster_campaign_slider_service.dart';
 import 'package:gren_mart/service/signin_signup_service.dart';
-import 'package:gren_mart/service/state_dropdown_service.dart';
 import 'package:gren_mart/service/user_profile_service.dart';
 import 'package:gren_mart/view/auth/auth.dart';
 import 'package:gren_mart/view/home/home_front.dart';
@@ -33,23 +31,23 @@ class _SplashScreenState extends State<SplashScreen> {
     Provider.of<FavoriteDataService>(context, listen: false).fetchFavorites();
   }
 
-  Future<void> setData(BuildContext context) async {
-    final value = Provider.of<UserProfileService>(context).userProfileData;
-    print('setting datas');
-    await Provider.of<AuthTextControllerService>(context, listen: false)
-        .setEmail(value.email);
-    await Provider.of<AuthTextControllerService>(context, listen: false)
-        .setName(value.name);
-    await Provider.of<AuthTextControllerService>(context, listen: false)
-        .setUserName(value.username);
-    await Provider.of<AuthTextControllerService>(context, listen: false)
-        .setEmail(value.email);
-    await Provider.of<CountryDropdownService>(context, listen: false)
-        .setCountryIdAndValue(value.country.name);
+  // Future<void> setData(BuildContext context) async {
+  //   final value = Provider.of<UserProfileService>(context).userProfileData;
+  //   print('setting datas');
+  //   await Provider.of<AuthTextControllerService>(context, listen: false)
+  //       .setEmail(value.email);
+  //   await Provider.of<AuthTextControllerService>(context, listen: false)
+  //       .setName(value.name);
+  //   await Provider.of<AuthTextControllerService>(context, listen: false)
+  //       .setUserName(value.username);
+  //   await Provider.of<AuthTextControllerService>(context, listen: false)
+  //       .setEmail(value.email);
+  //   await Provider.of<CountryDropdownService>(context, listen: false)
+  //       .setCountryIdAndValue(value.country.name);
 
-    await Provider.of<StateDropdownService>(context, listen: false)
-        .setStateIdAndValue(value.state.name);
-  }
+  //   await Provider.of<StateDropdownService>(context, listen: false)
+  //       .setStateIdAndValue(value.state!.name);
+  // }
 
   @override
   Widget build(BuildContext context) {

@@ -58,7 +58,7 @@ class UserDetails {
   String emailVerifyToken;
   dynamic phone;
   dynamic address;
-  Country state;
+  Country? state;
   String city;
   dynamic zipcode;
   Country country;
@@ -79,7 +79,7 @@ class UserDetails {
         emailVerifyToken: json["email_verify_token"],
         phone: json["phone"],
         address: json["address"],
-        state: Country.fromJson(json["state"]),
+        state: json["state"] != null ? Country.fromJson(json["state"]) : null,
         city: json["city"],
         zipcode: json["zipcode"],
         country: Country.fromJson(json["country"]),
@@ -101,7 +101,7 @@ class UserDetails {
         "email_verify_token": emailVerifyToken,
         "phone": phone,
         "address": address,
-        "state": state.toJson(),
+        "state": state!.toJson(),
         "city": city,
         "zipcode": zipcode,
         "country": country.toJson(),

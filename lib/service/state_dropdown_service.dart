@@ -8,6 +8,7 @@ import 'package:http/http.dart' as http;
 class StateDropdownService with ChangeNotifier {
   List stateDropdownList = [];
   List stateDropdownIdList = [];
+  late List<States> allState;
   var selectedState;
   var selectedStateId;
 
@@ -17,6 +18,15 @@ class StateDropdownService with ChangeNotifier {
     selectedState = value;
     final valueIndex = stateDropdownList.indexOf(value);
     selectedStateId = stateDropdownIdList[valueIndex];
+    print(selectedState + selectedStateId.toString() + '---------------');
+    notifyListeners();
+  }
+
+  setStateIdAndValueByCountryId() {
+    print(allState.length);
+    final valueState = allState[0];
+    selectedState = valueState.name;
+    selectedStateId = valueState.id;
     print(selectedState + selectedStateId.toString() + '---------------');
     notifyListeners();
   }
@@ -34,6 +44,8 @@ class StateDropdownService with ChangeNotifier {
       if (response.statusCode == 200) {
         final data = StateDropdownModel.fromJson(jsonDecode(response.body));
         var stateData = [];
+        allState = data.state;
+        print(allState[0].name + '-------------------');
         for (int i = 0; i < data.state.length; i++) {
           var element = data.state[i];
           stateData.add(element.name);

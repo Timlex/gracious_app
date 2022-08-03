@@ -15,11 +15,11 @@ class StateDropdownModel {
     required this.state,
   });
 
-  List<State> state;
+  List<States> state;
 
   factory StateDropdownModel.fromJson(Map<String, dynamic> json) =>
       StateDropdownModel(
-        state: List<State>.from(json["state"].map((x) => State.fromJson(x))),
+        state: List<States>.from(json["state"].map((x) => States.fromJson(x))),
       );
 
   Map<String, dynamic> toJson() => {
@@ -27,8 +27,8 @@ class StateDropdownModel {
       };
 }
 
-class State {
-  State({
+class States {
+  States({
     required this.id,
     required this.name,
     required this.countryId,
@@ -38,7 +38,7 @@ class State {
   String name;
   int countryId;
 
-  factory State.fromJson(Map<String, dynamic> json) => State(
+  factory States.fromJson(Map<String, dynamic> json) => States(
         id: json["id"],
         name: json["name"],
         countryId: json["country_id"],

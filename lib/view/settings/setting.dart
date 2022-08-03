@@ -16,14 +16,9 @@ import '../../service/auth_text_controller_service.dart';
 import '../../service/country_dropdown_service.dart';
 import '../../service/state_dropdown_service.dart';
 
-class SettingView extends StatefulWidget {
-  const SettingView({Key? key}) : super(key: key);
+class SettingView extends StatelessWidget {
+  SettingView({Key? key}) : super(key: key);
 
-  @override
-  State<SettingView> createState() => _SettingViewState();
-}
-
-class _SettingViewState extends State<SettingView> {
   bool login = true;
 
   ConstantColors cc = ConstantColors();
@@ -162,8 +157,14 @@ class _SettingViewState extends State<SettingView> {
         .setEmail(value.email);
     await Provider.of<CountryDropdownService>(context, listen: false)
         .setCountryIdAndValue(value.country.name);
-
-    await Provider.of<StateDropdownService>(context, listen: false)
-        .setStateIdAndValue(value.state.name);
+    if (value.state != null) {
+      await Provider.of<StateDropdownService>(context, listen: false)
+          .setStateIdAndValue(value.state!.name);
+    }
+    if (value.state == null) {
+      print('state is null');
+      Provider.of<StateDropdownService>(context, listen: false)
+          .setStateIdAndValueByCountryId();
+    }
   }
 }

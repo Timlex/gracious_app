@@ -15,7 +15,6 @@ import 'package:gren_mart/view/utils/constant_styles.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 
-import '../../service/auth_text_controller_service.dart';
 import '../../service/country_dropdown_service.dart';
 import '../../service/search_result_data_service.dart';
 import '../../service/state_dropdown_service.dart';
@@ -167,7 +166,7 @@ class HomeFront extends StatelessWidget {
                 return;
               }
               if (nData.navigationIndex == 4) {
-                navigationWidget = const SettingView();
+                navigationWidget = SettingView();
                 return;
               }
             },
@@ -278,21 +277,21 @@ class HomeFront extends StatelessWidget {
     });
   }
 
-  Future<void> setData(BuildContext context) async {
-    final value = Provider.of<UserProfileService>(context).userProfileData;
-    print('setting datas');
-    await Provider.of<AuthTextControllerService>(context, listen: false)
-        .setEmail(value.email);
-    await Provider.of<AuthTextControllerService>(context, listen: false)
-        .setName(value.name);
-    await Provider.of<AuthTextControllerService>(context, listen: false)
-        .setUserName(value.username);
-    await Provider.of<AuthTextControllerService>(context, listen: false)
-        .setEmail(value.email);
-    await Provider.of<CountryDropdownService>(context, listen: false)
-        .setCountryIdAndValue(value.country.name);
+//   Future<void> setData(BuildContext context) async {
+//     final value = Provider.of<UserProfileService>(context).userProfileData;
+//     print('setting datas');
+//     await Provider.of<AuthTextControllerService>(context, listen: false)
+//         .setEmail(value.email);
+//     await Provider.of<AuthTextControllerService>(context, listen: false)
+//         .setName(value.name);
+//     await Provider.of<AuthTextControllerService>(context, listen: false)
+//         .setUserName(value.username);
+//     await Provider.of<AuthTextControllerService>(context, listen: false)
+//         .setEmail(value.email);
+//     await Provider.of<CountryDropdownService>(context, listen: false)
+//         .setCountryIdAndValue(value.country.name);
 
-    await Provider.of<StateDropdownService>(context, listen: false)
-        .setStateIdAndValue(value.state);
-  }
+//     await Provider.of<StateDropdownService>(context, listen: false)
+//         .setStateIdAndValue(value.state);
+//   }
 }
