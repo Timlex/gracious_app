@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gren_mart/service/cart_data_service.dart';
-import 'package:gren_mart/view/cart/cart_card.dart';
+import 'package:gren_mart/view/cart/cart_tile.dart';
 import 'package:gren_mart/view/cart/checkout.dart';
 import 'package:gren_mart/view/utils/constant_colors.dart';
 import 'package:gren_mart/view/utils/constant_name.dart';
@@ -28,12 +28,13 @@ class CartView extends StatelessWidget {
         children: [
           const SizedBox(height: 10),
           ...cartData.cartList.values
-              .map((e) => CartCard(
+              .map((e) => CartTile(
                     e.id,
                     e.title,
                     e.imgUrl,
                     e.quantity,
                     e.price,
+                    e.discountPrice,
                   ))
               .toList(),
           Container(

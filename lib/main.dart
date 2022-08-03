@@ -6,6 +6,7 @@ import 'package:gren_mart/service/categories_data_service.dart';
 import 'package:gren_mart/service/change_password_service.dart';
 import 'package:gren_mart/service/country_dropdown_service.dart';
 import 'package:gren_mart/service/favorite_data_service.dart';
+import 'package:gren_mart/service/manage_account_service.dart';
 import 'package:gren_mart/service/poster_campaign_slider_service.dart';
 import 'package:gren_mart/service/product_card_data_service.dart';
 import 'package:gren_mart/service/reset_pass_otp_service.dart';
@@ -68,6 +69,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => CategoriesDataService()),
         ChangeNotifierProvider(create: (_) => SearchResultDataService()),
         ChangeNotifierProvider(create: (_) => ChangePasswordService()),
+        ChangeNotifierProvider(create: (_) => ManageAccountService()),
       ],
       child: Consumer<Products>(
         builder: (context, value, child) => MaterialApp(

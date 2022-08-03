@@ -38,7 +38,7 @@ class UserDetails {
     required this.phone,
     required this.address,
     required this.state,
-    required this.city,
+    this.city,
     required this.zipcode,
     required this.country,
     required this.image,
@@ -59,7 +59,7 @@ class UserDetails {
   dynamic phone;
   dynamic address;
   Country? state;
-  String city;
+  String? city;
   dynamic zipcode;
   Country country;
   String image;

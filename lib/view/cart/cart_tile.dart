@@ -7,22 +7,25 @@ import 'package:provider/provider.dart';
 import '../../service/cart_data_service.dart';
 import '../utils/constant_styles.dart';
 
-class CartCard extends StatelessWidget {
+class CartTile extends StatelessWidget {
   final int id;
   final String name;
   final String image;
   final int quantity;
   final int price;
-  const CartCard(
+  int discountPrice;
+  CartTile(
     this.id,
     this.name,
     this.image,
     this.quantity,
-    this.price, {
+    this.price,
+    this.discountPrice, {
     Key? key,
   }) : super(key: key);
   @override
   Widget build(BuildContext context) {
+    print(discountPrice);
     final carts = Provider.of<CartDataService>(context, listen: false);
     return Dismissible(
       direction: DismissDirection.endToStart,
@@ -98,7 +101,7 @@ class CartCard extends StatelessWidget {
                         FittedBox(
                           fit: BoxFit.cover,
                           child: Text(
-                            '\$$price',
+                            '\$${discountPrice == 0 ? price : discountPrice}',
                             style: TextStyle(
                                 color: cc.primaryColor,
                                 fontWeight: FontWeight.w600,

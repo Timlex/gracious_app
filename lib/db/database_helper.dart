@@ -33,7 +33,7 @@ class DbHelper {
     final db = await DbHelper.database(table);
     db.update(
       table,
-      {'quantity': data['quantity']},
+      data,
       where: 'productId = ?',
       whereArgs: [productId],
     );

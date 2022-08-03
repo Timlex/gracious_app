@@ -18,7 +18,7 @@ class CustomDropdown extends StatelessWidget {
     return Container(
       height: 56,
       width: double.infinity,
-      margin: const EdgeInsets.symmetric(vertical: 10),
+      margin: const EdgeInsets.symmetric(vertical: 5),
       alignment: Alignment.center,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),

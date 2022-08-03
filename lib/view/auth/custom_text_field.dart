@@ -46,6 +46,8 @@ class _CustomTextFieldState extends State<CustomTextField> {
       focusNode: widget.focusNode,
       controller: widget.controller,
       obscureText: widget.obscureText,
+      style:
+          TextStyle(color: ConstantColors().greyTextFieldLebel, fontSize: 13),
       decoration: InputDecoration(
         contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 17),
 
@@ -63,6 +65,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
           borderSide: BorderSide(color: ConstantColors().orange, width: 1),
         ),
         hintText: widget.levelText,
+
         hintStyle:
             TextStyle(color: ConstantColors().greyTextFieldLebel, fontSize: 13),
         // label: Padding(

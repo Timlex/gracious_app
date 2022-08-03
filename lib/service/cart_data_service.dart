@@ -24,13 +24,13 @@ class CartDataService with ChangeNotifier {
         'cart',
         id,
         {
-          'productId': id,
+          // 'productId': id,
           'quantity': sum,
-          'title': value.title,
-          'price': value.price,
-          'discountPrice': value.discountPrice,
-          'campaignPercentage': value.campaignPercentage,
-          'imgUrl': value.imgUrl,
+          // 'title': value.title,
+          // 'price': value.price,
+          // 'discountPrice': value.discountPrice,
+          // 'campaignPercentage': value.campaignPercentage,
+          // 'imgUrl': value.imgUrl,
         },
       );
       return Cart(
@@ -48,7 +48,7 @@ class CartDataService with ChangeNotifier {
   }
 
   void minusItem(int id) {
-    if (_cartItems[id]!.quantity == 1) {
+    if (_cartItems[id.toString()]!.quantity == 1) {
       return;
     }
     _cartItems.update(id.toString(), (value) {
@@ -57,13 +57,13 @@ class CartDataService with ChangeNotifier {
         'cart',
         id,
         {
-          'productId': id,
+          // 'productId': id,
           'quantity': sum,
-          'title': value.title,
-          'price': value.price,
-          'discountPrice': value.discountPrice,
-          'campaignPercentage': value.campaignPercentage,
-          'imgUrl': value.imgUrl,
+          // 'title': value.title,
+          // 'price': value.price,
+          // 'discountPrice': value.discountPrice,
+          // 'campaignPercentage': value.campaignPercentage,
+          // 'imgUrl': value.imgUrl,
         },
       );
       return Cart(
