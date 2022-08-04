@@ -12,14 +12,13 @@ class FilterBottomSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Provider.of<CategoriesDataService>(context, listen: false)
-        .fetchCategories();
-    Provider.of<CategoriesDataService>(context, listen: false)
-        .fetchSubCategories();
+    initCategories(context);
+
     MoneyFormatter startRange = MoneyFormatter(
         amount: Provider.of<SearchResultDataService>(context).rangevalue.start);
     MoneyFormatter endRange = MoneyFormatter(
         amount: Provider.of<SearchResultDataService>(context).rangevalue.end);
+
     return Consumer<CategoriesDataService>(builder: (context, catData, chaild) {
       return catData.subCategorydataList.isEmpty
           ? loadingProgressBar()
@@ -152,33 +151,22 @@ class FilterBottomSheet extends StatelessWidget {
                 return Padding(
                   padding: const EdgeInsets.all(10),
                   child: customRowButton('Reset Filter', 'Apply Filter', () {
-                    Provider.of<CategoriesDataService>(context, listen: false)
-                        .setSelectedCategory('');
-                    Provider.of<CategoriesDataService>(context, listen: false)
-                        .setSelectedSubCategory('');
-                    srData.resetSerchFilters();
-                    srData.fetchProductsBy(pageNo: '1');
-                    Navigator.of(context).pop();
+                    filterReset(context, srData);
                   }, () {
-                    srData.setCategoryId(Provider.of<CategoriesDataService>(
-                            context,
-                            listen: false)
-                        .selectedCategorieId
-                        .toString());
-                    srData.setSubCategoryId(Provider.of<CategoriesDataService>(
-                            context,
-                            listen: false)
-                        .selectedSubCategorieId
-                        .toString());
-                    srData.resetSerch();
-                    srData.fetchProductsBy(pageNo: '1');
-                    Navigator.of(context).pop();
+                    filterApply(context, srData);
                   }),
                 );
               }),
               const SizedBox(height: 10),
             ]);
     });
+  }
+
+  initCategories(BuildContext context) {
+    Provider.of<CategoriesDataService>(context, listen: false)
+        .fetchCategories();
+    Provider.of<CategoriesDataService>(context, listen: false)
+        .fetchSubCategories();
   }
 
   Widget filterOption(String text, bool isSelected) {
@@ -203,5 +191,37 @@ class FilterBottomSheet extends StatelessWidget {
         )
       ]),
     );
+  }
+
+  filterApply(BuildContext context, SearchResultDataService srData) {
+    srData.setCategoryId(
+        Provider.of<CategoriesDataService>(context, listen: false)
+            .selectedCategorieId
+            .toString());
+    srData.setSubCategoryId(
+        Provider.of<CategoriesDataService>(context, listen: false)
+            .selectedSubCategorieId
+            .toString());
+    srData.resetSerch();
+    srData.fetchProductsBy(pageNo: '1');
+    srData.setFilterOn(true);
+    if (srData.categoryId == '' &&
+        srData.subCategoryId == '' &&
+        srData.minPrice == '' &&
+        srData.maxPrice == '' &&
+        srData.ratingPoint == '') {
+      srData.setFilterOn(false);
+    }
+    Navigator.of(context).pop();
+  }
+
+  void filterReset(BuildContext context, SearchResultDataService srData) {
+    Provider.of<CategoriesDataService>(context, listen: false)
+        .setSelectedCategory('');
+    Provider.of<CategoriesDataService>(context, listen: false)
+        .setSelectedSubCategory('');
+    srData.resetSerchFilters();
+    srData.fetchProductsBy(pageNo: '1');
+    Navigator.of(context).pop();
   }
 }

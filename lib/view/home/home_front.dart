@@ -30,8 +30,7 @@ class HomeFront extends StatelessWidget {
   int _navigationIndex = 0;
 
   PreferredSizeWidget? manageAppBar(BuildContext context, String name) {
-    final values =
-        Provider.of<SearchResultDataService>(context, listen: false).sortOption;
+    final values = Provider.of<SearchResultDataService>(context, listen: false);
     if (_navigationIndex == 0) {
       return helloAppBar(name);
     }
@@ -48,7 +47,12 @@ class HomeFront extends StatelessWidget {
                 ),
               );
             },
-            icon: SvgPicture.asset('assets/images/icons/filter_setting.svg')),
+            icon: SvgPicture.asset(
+              'assets/images/icons/filter_setting.svg',
+              color: Provider.of<SearchResultDataService>(context).finterOn
+                  ? cc.primaryColor
+                  : null,
+            )),
         actions: [
           PopupMenuButton<String>(
               icon: Icon(
@@ -67,19 +71,19 @@ class HomeFront extends StatelessWidget {
               itemBuilder: (context) => [
                     PopupMenuItem(
                       child: const Text('Popularity'),
-                      value: values[0],
+                      value: values.sortOption[0],
                     ),
                     PopupMenuItem(
                       child: const Text('Letest'),
-                      value: values[1],
+                      value: values.sortOption[1],
                     ),
                     PopupMenuItem(
                       child: const Text('Lower price'),
-                      value: values[2],
+                      value: values.sortOption[2],
                     ),
                     PopupMenuItem(
                       child: const Text('Higher price'),
-                      value: values[3],
+                      value: values.sortOption[3],
                     ),
                   ]),
           const SizedBox(

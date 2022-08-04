@@ -12,47 +12,53 @@ import 'package:provider/provider.dart';
 import '../../service/auth_text_controller_service.dart';
 import '../utils/constant_name.dart';
 
-class SplashScreen extends StatefulWidget {
+class SplashScreen extends StatelessWidget {
   const SplashScreen({Key? key}) : super(key: key);
 
   @override
-  State<SplashScreen> createState() => _SplashScreenState();
-}
+  Widget build(BuildContext context) {
+    getDatabegeData(context);
+    initiateDeviceSize(context);
 
-class _SplashScreenState extends State<SplashScreen> {
-  final GlobalKey _scaffold = GlobalKey();
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
+    initiateAutoSignIn(context);
+
+    return Scaffold(
+      body: Center(
+        child: Container(
+          height: 150,
+          width: 300,
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Image.asset(
+                  'assets/images/grenmart.png',
+                  // fit: BoxFit.cover,
+                ),
+                const SizedBox(
+                  height: 15,
+                ),
+                const Text(
+                  'v1.00',
+                  style: TextStyle(
+                      color: Color.fromARGB(127, 158, 158, 158),
+                      fontWeight: FontWeight.bold),
+                )
+              ]),
+        ),
+      ),
+    );
+  }
+
+  getDatabegeData(BuildContext context) {
     List databases = ['cart', 'favorite'];
     databases.map((e) => DbHelper.database(e));
     Provider.of<CartDataService>(context, listen: false).fetchCarts();
     Provider.of<FavoriteDataService>(context, listen: false).fetchFavorites();
   }
 
-  // Future<void> setData(BuildContext context) async {
-  //   final value = Provider.of<UserProfileService>(context).userProfileData;
-  //   print('setting datas');
-  //   await Provider.of<AuthTextControllerService>(context, listen: false)
-  //       .setEmail(value.email);
-  //   await Provider.of<AuthTextControllerService>(context, listen: false)
-  //       .setName(value.name);
-  //   await Provider.of<AuthTextControllerService>(context, listen: false)
-  //       .setUserName(value.username);
-  //   await Provider.of<AuthTextControllerService>(context, listen: false)
-  //       .setEmail(value.email);
-  //   await Provider.of<CountryDropdownService>(context, listen: false)
-  //       .setCountryIdAndValue(value.country.name);
-
-  //   await Provider.of<StateDropdownService>(context, listen: false)
-  //       .setStateIdAndValue(value.state!.name);
-  // }
-
-  @override
-  Widget build(BuildContext context) {
-    initiateDeviceSize(context);
-
+  initiateAutoSignIn(BuildContext context) {
     Provider.of<SignInSignUpService>(context, listen: false)
         .getToken()
         .then((value) async {
@@ -88,34 +94,5 @@ class _SplashScreenState extends State<SplashScreen> {
       Provider.of<AuthTextControllerService>(context, listen: false).setPass(
           Provider.of<SignInSignUpService>(context, listen: false).password);
     });
-
-    return Scaffold(
-      key: _scaffold,
-      body: Center(
-        child: Container(
-          height: 150,
-          width: 300,
-          padding: const EdgeInsets.all(8.0),
-          child: Column(
-              mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Image.asset(
-                  'assets/images/grenmart.png',
-                  // fit: BoxFit.cover,
-                ),
-                const SizedBox(
-                  height: 15,
-                ),
-                const Text(
-                  'v1.00',
-                  style: TextStyle(
-                      color: Color.fromARGB(127, 158, 158, 158),
-                      fontWeight: FontWeight.bold),
-                )
-              ]),
-        ),
-      ),
-    );
   }
 }

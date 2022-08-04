@@ -125,14 +125,14 @@ class EnterOTP extends StatelessWidget {
         }
 
         // _scaffoldKey.currentState!.showSnackBar(snackBar);
-        ScaffoldMessenger.of(context).removeCurrentSnackBar();
-        ScaffoldMessenger.of(context).showSnackBar(
-            snackBar('Wrong OTP Code', buttonText: 'Resend code', onTap: () {
+
+        snackBar(context, 'Wrong OTP Code', buttonText: 'Resend code',
+            onTap: () {
           Provider.of<ResetPassOTPService>(context, listen: false).getOtp(
               Provider.of<AuthTextControllerService>(context, listen: false)
                   .email);
           ScaffoldMessenger.of(context).removeCurrentSnackBar();
-        }));
+        });
 
         return;
       },

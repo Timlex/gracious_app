@@ -50,7 +50,7 @@ class ManageAccount extends StatelessWidget {
         Provider.of<SignInSignUpService>(context, listen: false).token;
     maData.updateProfile(_token).then((value) async {
       if (value != null) {
-        ScaffoldMessenger.of(context).showSnackBar(snackBar(value));
+        snackBar(context, value);
         maData.setIsLoading(false);
         return;
       }
@@ -156,7 +156,8 @@ class ManageAccount extends StatelessWidget {
                                               Text(
                                                 'Cameta',
                                                 style: TextStyle(
-                                                    color: cc.primaryColor),
+                                                    color:
+                                                        cc.greyTextFieldLebel),
                                               )
                                             ]),
                                           ),
@@ -180,7 +181,8 @@ class ManageAccount extends StatelessWidget {
                                               Text(
                                                 'Gallery',
                                                 style: TextStyle(
-                                                    color: cc.primaryColor),
+                                                    color:
+                                                        cc.greyTextFieldLebel),
                                               )
                                             ]),
                                           ),

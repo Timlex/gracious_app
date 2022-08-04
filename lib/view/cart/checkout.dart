@@ -1,39 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:gren_mart/db/database_helper.dart';
+import 'package:gren_mart/service/shipping_addresses_service.dart';
 
 import 'package:gren_mart/view/cart/cart_grid_tile.dart';
 import 'package:gren_mart/view/cart/payment_status.dart';
 import 'package:gren_mart/view/settings/new_address.dart';
 import 'package:gren_mart/view/utils/app_bars.dart';
 import 'package:gren_mart/view/utils/constant_colors.dart';
+import 'package:gren_mart/view/utils/constant_name.dart';
 import 'package:gren_mart/view/utils/constant_styles.dart';
+import 'package:provider/provider.dart';
 
-class Checkout extends StatefulWidget {
+class Checkout extends StatelessWidget {
   static const routeName = 'checkout';
 
-  @override
-  State<Checkout> createState() => _CheckoutState();
-}
-
-class _CheckoutState extends State<Checkout> {
   ConstantColors cc = ConstantColors();
 
   String selectedName = 'payp';
   bool error = false;
   String selectedId = '01';
-
-  List addresses = [
-    {
-      'id': '01',
-      'title': 'Home',
-      'address': '6391 Elgin St. Celina, Delaware 10299'
-    },
-    {
-      'id': '02',
-      'title': 'Home',
-      'address': '6391 Elgin St. Celina, Delaware 10299'
-    },
-  ];
 
   List gridImages = [
     'cod',
@@ -69,17 +54,25 @@ class _CheckoutState extends State<Checkout> {
             //   leadingImage: 'assets/images/icons/location.png',
             // ),
             // const SizedBox(height: 10),
-            ...addresses.map(((e) => GestureDetector(
-                  onTap: () {
-                    if (selectedId == e['id']) {
-                      return;
-                    }
-                    setState(() {
-                      selectedId = e['id'];
-                    });
-                  },
-                  child: addressBox(selectedId == e['id']),
-                ))),
+            if (Provider.of<ShippingAddressesService>(context)
+                .shippingAddresseList
+                .isEmpty)
+              loadingProgressBar(),
+            ...Provider.of<ShippingAddressesService>(context)
+                .shippingAddresseList
+                .map(((e) {
+              final saService =
+                  Provider.of<ShippingAddressesService>(context, listen: false);
+              return GestureDetector(
+                onTap: () {
+                  if (saService.selectedAddress.id == e.id) {
+                    return;
+                  }
+                  saService.setSelectedAddress(e);
+                },
+                child: addressBox(e.id),
+              );
+            })).toList(),
             GestureDetector(
               onTap: () {
                 Navigator.of(context).pushNamed(NewAddress.routeName);
@@ -127,8 +120,9 @@ class _CheckoutState extends State<Checkout> {
             ),
             const SizedBox(height: 10),
             SizedBox(
-                height: 260,
+                height: screenHight / 2.74,
                 child: GridView(
+                  physics: const NeverScrollableScrollPhysics(),
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 3,
                       childAspectRatio: 3 / 1.2,
@@ -142,9 +136,9 @@ class _CheckoutState extends State<Checkout> {
                                 if (selectedName == e) {
                                   return;
                                 }
-                                setState(() {
-                                  selectedName = e;
-                                });
+                                // setState(() {
+                                //   selectedName = e;
+                                // });
                               },
                               child: CartGridTile(e, e == selectedName))))
                       .toList(),
@@ -165,35 +159,41 @@ class _CheckoutState extends State<Checkout> {
     );
   }
 
-  Widget addressBox(bool selected) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 15),
-      padding: const EdgeInsets.symmetric(vertical: 12),
-      decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10),
-          color: selected ? cc.lightPrimery3 : cc.whiteGrey,
-          border: Border.all(
-              color: selected ? cc.primaryColor : cc.greyHint, width: .5)),
-      child: Stack(children: [
-        const ListTile(
-          title: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 5, vertical: 5),
-            child: Text('Home'),
+  Widget addressBox(int id) {
+    return Consumer<ShippingAddressesService>(
+        builder: (context, saService, child) {
+      final shippingAddress = saService.shippingAddresseList
+          .firstWhere((element) => element.id == id);
+      final selected = shippingAddress.id == saService.selectedAddress.id;
+      return Container(
+        margin: const EdgeInsets.only(bottom: 15),
+        padding: const EdgeInsets.symmetric(vertical: 12),
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10),
+            color: selected ? cc.lightPrimery3 : cc.whiteGrey,
+            border: Border.all(
+                color: selected ? cc.primaryColor : cc.greyHint, width: .5)),
+        child: Stack(children: [
+          ListTile(
+            title: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+              child: Text(shippingAddress.name),
+            ),
+            subtitle: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+              child: Text(shippingAddress.address),
+            ),
           ),
-          subtitle: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 5, vertical: 5),
-            child: Text('6391 Elgin St. Celina, Delaware 10299'),
-          ),
-        ),
-        if (selected)
-          Positioned(
-              top: 10,
-              right: 15,
-              child: Icon(
-                Icons.check_box,
-                color: cc.primaryColor,
-              ))
-      ]),
-    );
+          if (selected)
+            Positioned(
+                top: 10,
+                right: 15,
+                child: Icon(
+                  Icons.check_box,
+                  color: cc.primaryColor,
+                ))
+        ]),
+      );
+    });
   }
 }

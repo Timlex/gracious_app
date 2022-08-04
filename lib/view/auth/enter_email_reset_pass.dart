@@ -25,13 +25,10 @@ class ResetPassEmail extends StatelessWidget {
         Navigator.of(context).pushNamed(EnterOTP.routeName);
         return;
       }
-      ScaffoldMessenger.of(context).removeCurrentSnackBar();
-      ScaffoldMessenger.of(context).showSnackBar(snackBar(value.toString()));
+      snackBar(context, value.toString());
       return;
     }).onError((error, stackTrace) {
-      ScaffoldMessenger.of(context).removeCurrentSnackBar();
-      ScaffoldMessenger.of(context)
-          .showSnackBar(snackBar('Something Went Wrong'));
+      snackBar(context, 'Something Went Wrong');
     });
     resetData.toggleLaodingSpinner(value: false);
   }

@@ -51,10 +51,10 @@ class _ResetPasswordState extends State<ResetPassword> {
               (Route<dynamic> route) => false);
           return;
         }
-        ScaffoldMessenger.of(context).showSnackBar(snackBar(value));
+        snackBar(context, value);
         return;
       }).onError((error, stackTrace) {
-        ScaffoldMessenger.of(context).showSnackBar(snackBar(error.toString()));
+        snackBar(context, error.toString());
         return;
       });
     }

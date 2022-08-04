@@ -19,7 +19,6 @@ class _ShippingAdressesState extends State<ShippingAdresses> {
   ConstantColors cc = ConstantColors();
   String? address;
   String? addressTitle;
-  String selectedId = '01';
   List addresses = [
     {
       'id': '01',
@@ -101,17 +100,6 @@ class _ShippingAdressesState extends State<ShippingAdresses> {
                 child: FocusedMenuHolder(
                   menuItems: [
                     FocusedMenuItem(
-                        title: const Text('Select'),
-                        onPressed: () {
-                          if (e['id'] == selectedId) {
-                            return;
-                          }
-                          setState(() {
-                            selectedId = e['id'];
-                          });
-                        },
-                        backgroundColor: cc.whiteGrey),
-                    FocusedMenuItem(
                         title: const Text('Edit'),
                         onPressed: () {},
                         backgroundColor: cc.whiteGrey),
@@ -125,21 +113,14 @@ class _ShippingAdressesState extends State<ShippingAdresses> {
                   blurSize: 0,
                   menuWidth: screenWidth - 40,
                   openWithTap: false,
-                  onPressed: () {
-                    if (e['id'] == selectedId) {
-                      return;
-                    }
-                    setState(() {
-                      selectedId = e['id'];
-                    });
-                  },
-                  child: addressBox(
-                      selectedId == e['id'], e['title'], e['address']),
+                  onPressed: () {},
+                  child: addressBox(e['title'], e['address']),
                 ),
               ))),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 25),
-            child: customContainerButton('Add new', double.infinity, () {
+            child:
+                customContainerButton('Add new address', double.infinity, () {
               Navigator.of(context).pushNamed(NewAddress.routeName);
             }),
           )
@@ -148,15 +129,14 @@ class _ShippingAdressesState extends State<ShippingAdresses> {
     );
   }
 
-  Widget addressBox(bool selected, String addressTile, String address) {
+  Widget addressBox(String addressTile, String address) {
     return Container(
       margin: const EdgeInsets.only(bottom: 15),
       padding: const EdgeInsets.symmetric(vertical: 12),
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
-          color: selected ? cc.lightPrimery3 : cc.whiteGrey,
-          border: Border.all(
-              color: selected ? cc.primaryColor : cc.greyHint, width: .5)),
+          color: cc.whiteGrey,
+          border: Border.all(color: cc.greyHint, width: .5)),
       child: Stack(children: [
         ListTile(
           title: Padding(
@@ -168,14 +148,6 @@ class _ShippingAdressesState extends State<ShippingAdresses> {
             child: Text(address),
           ),
         ),
-        if (selected)
-          Positioned(
-              top: 10,
-              right: 15,
-              child: Icon(
-                Icons.check_box,
-                color: cc.primaryColor,
-              ))
       ]),
     );
   }

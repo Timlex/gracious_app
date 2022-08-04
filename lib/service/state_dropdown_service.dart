@@ -22,7 +22,7 @@ class StateDropdownService with ChangeNotifier {
     notifyListeners();
   }
 
-  setStateIdAndValueByCountryId() {
+  setStateIdAndValueDefault() {
     print(allState.length);
     final valueState = allState[0];
     selectedState = valueState.name;

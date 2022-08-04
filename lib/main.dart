@@ -11,6 +11,7 @@ import 'package:gren_mart/service/poster_campaign_slider_service.dart';
 import 'package:gren_mart/service/product_card_data_service.dart';
 import 'package:gren_mart/service/reset_pass_otp_service.dart';
 import 'package:gren_mart/service/search_result_data_service.dart';
+import 'package:gren_mart/service/shipping_addresses_service.dart';
 import 'package:gren_mart/service/signin_signup_service.dart';
 import 'package:gren_mart/service/state_dropdown_service.dart';
 import 'package:gren_mart/service/user_profile_service.dart';
@@ -52,10 +53,10 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider.value(value: OtherData()),
-        ChangeNotifierProvider.value(value: Products()),
-        ChangeNotifierProvider.value(value: CartDataService()),
-        ChangeNotifierProvider.value(value: FavoriteDataService()),
+        ChangeNotifierProvider(create: (_) => OtherData()),
+        ChangeNotifierProvider(create: (_) => Products()),
+        ChangeNotifierProvider(create: (_) => CartDataService()),
+        ChangeNotifierProvider(create: (_) => FavoriteDataService()),
         ChangeNotifierProvider(create: (_) => OrderData()),
         ChangeNotifierProvider(create: (_) => CountryDropdownService()),
         ChangeNotifierProvider(create: (_) => StateDropdownService()),
@@ -70,6 +71,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => SearchResultDataService()),
         ChangeNotifierProvider(create: (_) => ChangePasswordService()),
         ChangeNotifierProvider(create: (_) => ManageAccountService()),
+        ChangeNotifierProvider(create: (_) => ShippingAddressesService()),
       ],
       child: Consumer<Products>(
         builder: (context, value, child) => MaterialApp(

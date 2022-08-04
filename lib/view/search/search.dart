@@ -107,8 +107,7 @@ class SearchView extends StatelessWidget {
                       if (snapshot.connectionState == ConnectionState.waiting) {
                         return loadingProgressBar();
                       }
-                      ScaffoldMessenger.of(context)
-                          .showSnackBar(snackBar('Timeout'));
+                      snackBar(context, 'Timeout!');
                       return Center(
                         child: Text(
                           'Something went wrong!',
@@ -182,7 +181,7 @@ class SearchView extends StatelessWidget {
                       .toString())
           .then((value) {
         if (value != null) {
-          ScaffoldMessenger.of(context).showSnackBar(snackBar(value));
+          snackBar(context, value);
         }
       });
       Provider.of<SearchResultDataService>(context, listen: false).nextPage();

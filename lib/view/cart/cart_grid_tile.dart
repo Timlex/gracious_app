@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gren_mart/view/utils/constant_name.dart';
 
 import '../utils/constant_colors.dart';
 
@@ -11,7 +12,7 @@ class CartGridTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       // height: 1,
-      width: 100,
+      width: screenWidth / 3,
       padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 12),
       alignment: Alignment.center,
       decoration: BoxDecoration(

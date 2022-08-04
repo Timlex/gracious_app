@@ -36,7 +36,7 @@ class _ChangePasswordState extends State<ChangePassword> {
         .then((value) {
       if (value != null) {
         print(value);
-        ScaffoldMessenger.of(context).showSnackBar(snackBar(value ?? ''));
+        snackBar(context, value ?? '');
         cpData.toggPassleLaodingSpinner(value: false);
         return;
       }
@@ -44,7 +44,7 @@ class _ChangePasswordState extends State<ChangePassword> {
       Navigator.of(context).pop();
     }).onError((error, stackTrace) {
       cpData.toggPassleLaodingSpinner(value: false);
-      ScaffoldMessenger.of(context).showSnackBar(snackBar(''));
+      snackBar(context, '');
     });
   }
 

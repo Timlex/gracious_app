@@ -46,7 +46,7 @@ class UserDetails {
     required this.updatedAt,
     this.facebookId,
     this.googleId,
-    required this.profileImageUrl,
+    this.profileImageUrl,
     required this.shipping,
   });
 
@@ -67,7 +67,7 @@ class UserDetails {
   DateTime updatedAt;
   dynamic facebookId;
   dynamic googleId;
-  String profileImageUrl;
+  String? profileImageUrl;
   List<dynamic> shipping;
 
   factory UserDetails.fromJson(Map<String, dynamic> json) => UserDetails(

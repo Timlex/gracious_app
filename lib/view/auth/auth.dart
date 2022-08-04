@@ -23,15 +23,7 @@ class Auth extends StatelessWidget {
   ConstantColors cc = ConstantColors();
   final GlobalKey<FormState> _formKeySignin = GlobalKey();
   final GlobalKey<FormState> _formKeySignup = GlobalKey();
-  final String _email = '';
-  var email;
   List<String> contries = [];
-
-  void _toggleLogin() {
-    // setState(() {
-    //   login = !login;
-    // });
-  }
 
   Future<void> _onSubmit(
       BuildContext context, bool login, GlobalKey<FormState> formKey) async {
@@ -40,117 +32,80 @@ class Auth extends StatelessWidget {
       return;
     }
 
+    final ssService = Provider.of<SignInSignUpService>(context, listen: false);
+    final authTextControllers =
+        Provider.of<AuthTextControllerService>(context, listen: false);
+    ssService.toggleLaodingSpinner(value: true);
     if (login) {
-      var email =
-          (Provider.of<AuthTextControllerService>(context, listen: false)
-              .email);
-      var pass = (Provider.of<AuthTextControllerService>(context, listen: false)
-          .password);
+      var email = authTextControllers.email;
+      var pass = authTextControllers.password;
       if (email == null) {
-        email = Provider.of<SignInSignUpService>(context, listen: false).email;
-        pass =
-            Provider.of<SignInSignUpService>(context, listen: false).password;
+        email = ssService.email;
+        pass = ssService.password;
       }
       Provider.of<NavigationBarHelperService>(context, listen: false)
           .setNavigationIndex(0);
-      await Provider.of<SignInSignUpService>(context, listen: false)
-          .signInOption(email.trim(), pass)
-          .then((value) async {
+      await ssService.signInOption(email.trim(), pass).then((value) async {
         if (value) {
           await Provider.of<UserProfileService>(context, listen: false)
-              .fetchProfileService(
-                  Provider.of<SignInSignUpService>(context, listen: false)
-                      .token);
+              .fetchProfileService(ssService.token);
 
+          ssService.toggleLaodingSpinner(value: false);
           Navigator.of(context).pushReplacementNamed(HomeFront.routeName);
           return;
         }
-        Provider.of<SignInSignUpService>(context, listen: false)
-            .toggleLaodingSpinner(value: false);
+        ssService.toggleLaodingSpinner(value: false);
 
-        ScaffoldMessenger.of(context)
-            .showSnackBar(snackBar('SomeThing went wrong'));
+        snackBar(context, 'SomeThing went wrong');
       }).onError((error, stackTrace) {
-        ScaffoldMessenger.of(context).showSnackBar(snackBar(error.toString()));
+        snackBar(context, error.toString());
         print(error.toString());
       });
+      ssService.toggleLaodingSpinner(value: false);
       return;
     }
-    if (!(Provider.of<SignInSignUpService>(context, listen: false)
-        .termsAndCondi)) {
-      ScaffoldMessenger.of(context).showSnackBar(
-          snackBar('Please read and accept the terms and condition'));
+    if (!(ssService.termsAndCondi)) {
+      snackBar(context, 'Please read and accept the terms and condition');
+      ssService.toggleLaodingSpinner(value: false);
 
       return;
     }
-    Provider.of<SignInSignUpService>(context, listen: false)
+    ssService
         .signUpOption(
-            Provider.of<AuthTextControllerService>(context, listen: false)
-                .email,
-            Provider.of<AuthTextControllerService>(context, listen: false)
-                .password,
-            Provider.of<AuthTextControllerService>(context, listen: false).name,
-            Provider.of<AuthTextControllerService>(context, listen: false)
-                .username,
-            Provider.of<AuthTextControllerService>(context, listen: false)
-                .phoneNumber,
-            Provider.of<AuthTextControllerService>(context, listen: false)
-                .countryCode,
-            (Provider.of<AuthTextControllerService>(context, listen: false)
-                        .country ??
-                    1)
-                .toString(),
-            (Provider.of<AuthTextControllerService>(context, listen: false)
-                        .state ??
-                    1)
-                .toString(),
-            Provider.of<AuthTextControllerService>(context, listen: false)
-                .cityAddress,
+            authTextControllers.email,
+            authTextControllers.password,
+            authTextControllers.name,
+            authTextControllers.username,
+            authTextControllers.phoneNumber,
+            authTextControllers.countryCode,
+            (authTextControllers.country ?? 1).toString(),
+            (authTextControllers.state ?? 1).toString(),
+            authTextControllers.cityAddress,
             'true')
         .then((value) async {
       if (value) {
         await Provider.of<UserProfileService>(context, listen: false)
-            .fetchProfileService(
-                Provider.of<SignInSignUpService>(context, listen: false).token);
+            .fetchProfileService(ssService.token);
 
+        ssService.toggleLaodingSpinner(value: false);
         Navigator.of(context).pushReplacementNamed(HomeFront.routeName);
 
         return;
       }
-      // setState(() {
-      //   loading = !loading;
-      // });
-      Provider.of<SignInSignUpService>(context, listen: false)
-          .toggleLaodingSpinner();
+      ssService.toggleLaodingSpinner();
 
-      ScaffoldMessenger.of(context)
-          .showSnackBar(snackBar('SomeThing went wrong'));
+      snackBar(context, 'SomeThing went wrong');
     }).onError((error, stackTrace) {
-      Provider.of<SignInSignUpService>(context, listen: false)
-          .toggleLaodingSpinner(value: false);
-      ScaffoldMessenger.of(context).showSnackBar(snackBar(error.toString()));
+      ssService.toggleLaodingSpinner(value: false);
+      snackBar(context, error.toString());
       return;
     });
-    Provider.of<SignInSignUpService>(context, listen: false)
-        .toggleLaodingSpinner();
-
-    // ScaffoldMessenger.of(context)
-    //     .showSnackBar(snackBar('Invalid email/password'));
+    ssService.toggleLaodingSpinner(value: false);
   }
 
   @override
   Widget build(BuildContext context) {
-    Provider.of<CountryDropdownService>(context, listen: false)
-        .getContries()
-        .then((value) {
-      Provider.of<AuthTextControllerService>(context, listen: false)
-          .setCountry(value ?? 1);
-      Provider.of<StateDropdownService>(context, listen: false)
-          .getStates(value ?? 1)
-          .then((value) =>
-              Provider.of<AuthTextControllerService>(context, listen: false)
-                  .setState(value ?? 1));
-    });
+    countryStateInitiate(context);
     return Scaffold(
       body: Consumer<SignInSignUpService>(builder: (context, ssData, child) {
         return SingleChildScrollView(
@@ -367,5 +322,19 @@ class Auth extends StatelessWidget {
         );
       }),
     );
+  }
+
+  countryStateInitiate(BuildContext context) {
+    Provider.of<CountryDropdownService>(context, listen: false)
+        .getContries()
+        .then((value) {
+      Provider.of<AuthTextControllerService>(context, listen: false)
+          .setCountry(value ?? 1);
+      Provider.of<StateDropdownService>(context, listen: false)
+          .getStates(value ?? 1)
+          .then((value) =>
+              Provider.of<AuthTextControllerService>(context, listen: false)
+                  .setState(value ?? 1));
+    });
   }
 }

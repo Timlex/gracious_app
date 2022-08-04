@@ -22,6 +22,7 @@ class SearchResultDataService with ChangeNotifier {
   String sortBy = '';
   int pageNumber = 2;
   bool noProduct = false;
+  bool finterOn = false;
   List<String> sortOption = [
     'popularity',
     'latest',
@@ -81,11 +82,17 @@ class SearchResultDataService with ChangeNotifier {
     notifyListeners();
   }
 
+  setFilterOn(value) {
+    finterOn = value;
+    notifyListeners();
+  }
+
   resetSerch() {
     lastPage = false;
     searchResult = [];
     resultMeta = null;
     pageNumber = 2;
+    finterOn = false;
     notifyListeners();
   }
 
@@ -99,6 +106,7 @@ class SearchResultDataService with ChangeNotifier {
     subCategoryId = '';
     ratingPoint = '';
     sortBy = '';
+    finterOn = false;
 
     rangevalue = const RangeValues(0, 3500);
 

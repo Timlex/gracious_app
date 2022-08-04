@@ -7,6 +7,8 @@ import 'package:gren_mart/view/utils/constant_name.dart';
 import 'package:gren_mart/view/utils/constant_styles.dart';
 import 'package:provider/provider.dart';
 
+import '../../service/shipping_addresses_service.dart';
+
 class CartView extends StatelessWidget {
   static const routeName = 'cart';
   CartView({Key? key}) : super(key: key);
@@ -120,6 +122,8 @@ class CartView extends StatelessWidget {
               ]),
               const SizedBox(height: 15),
               customContainerButton('Checkout', double.infinity, () {
+                Provider.of<ShippingAddressesService>(context, listen: false)
+                    .fetchUsersShippingAddress(globalUserToken);
                 Navigator.of(context).pushNamed(Checkout.routeName);
               }),
               const SizedBox(height: 30),

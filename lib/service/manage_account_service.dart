@@ -117,7 +117,9 @@ class ManageAccountService with ChangeNotifier {
         "Authorization": "Bearer $token",
       },
     );
+    print(pickeImage);
     if (pickeImage != null) {
+      print(pickeImage!.path);
       var multiport = await http.MultipartFile.fromPath(
         'file',
         pickeImage!.path,

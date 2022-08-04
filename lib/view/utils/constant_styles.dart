@@ -247,9 +247,12 @@ Widget customRowButton(
   );
 }
 
-SnackBar snackBar(String content,
+snackBar(BuildContext context, String content,
     {String? buttonText, void Function()? onTap}) {
-  return SnackBar(
+  ScaffoldMessenger.of(context).removeCurrentSnackBar();
+  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+
+      // width: screenWidth - 100,
       behavior: SnackBarBehavior.floating,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
       margin: const EdgeInsets.all(5),
@@ -268,12 +271,39 @@ SnackBar snackBar(String content,
               onTap: onTap,
             )
         ],
-      ));
+      )));
 }
 
 Widget loadingProgressBar({Color? color, double size = 35}) {
-  return Center(
-      child: LoadingAnimationWidget.staggeredDotsWave(
+  return
+      // Center(
+      //   child: SizedBox(
+      //     height: size,
+      //     child: Lottie.asset(
+      //       'assets/animations/lottie_loading_spinner_4.json',
+      //       height: size,
+      //       // delegates: LottieDelegates(
+      //       //   // text: (initialText) => '**$initialText**',
+      //       //   values: [
+      //       //     ValueDelegate.color(
+      //       //       const ['Shape Layer 1', 'Rectangle', 'Fill 1'],
+      //       //       value: cc.primaryColor,
+      //       //     ),
+      //       //     // ValueDelegate.opacity(
+      //       //     //   const ['Shape Layer 1', 'Rectangle'],
+      //       //     //   callback: (frameInfo) => (frameInfo.overallProgress * 100).round(),
+      //       //     // ),
+      //       //     // ValueDelegate.position(
+      //       //     //   const ['Shape Layer 1', 'Rectangle', '**'],
+      //       //     //   relative: const Offset(100, 200),
+      //       //     // ),
+      //       //   ],
+      //       // ),
+      //     ),
+      //   ),
+      // );
+      Center(
+          child: LoadingAnimationWidget.staggeredDotsWave(
     size: size,
     color: color ?? cc.primaryColor,
   ));
