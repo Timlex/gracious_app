@@ -87,7 +87,6 @@ class ShippingAddressesService with ChangeNotifier {
     };
     try {
       final response = await http.get(url, headers: header);
-      print(response.body);
       if (response.statusCode == 200) {
         final data = ShippingAddressesModel.fromJson(jsonDecode(response.body));
         shippingAddresseList = data.data;
