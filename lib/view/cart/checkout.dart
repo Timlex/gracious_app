@@ -65,7 +65,7 @@ class Checkout extends StatelessWidget {
                   Provider.of<ShippingAddressesService>(context, listen: false);
               return GestureDetector(
                 onTap: () {
-                  if (saService.selectedAddress.id == e.id) {
+                  if (saService.selectedAddress!.id == e.id) {
                     return;
                   }
                   saService.setSelectedAddress(e);
@@ -75,7 +75,7 @@ class Checkout extends StatelessWidget {
             })).toList(),
             GestureDetector(
               onTap: () {
-                Navigator.of(context).pushNamed(NewAddress.routeName);
+                Navigator.of(context).pushNamed(AddNewAddress.routeName);
               },
               child: Container(
                   // margin: const EdgeInsets.all(8),
@@ -164,7 +164,7 @@ class Checkout extends StatelessWidget {
         builder: (context, saService, child) {
       final shippingAddress = saService.shippingAddresseList
           .firstWhere((element) => element.id == id);
-      final selected = shippingAddress.id == saService.selectedAddress.id;
+      final selected = shippingAddress.id == saService.selectedAddress!.id;
       return Container(
         margin: const EdgeInsets.only(bottom: 15),
         padding: const EdgeInsets.symmetric(vertical: 12),

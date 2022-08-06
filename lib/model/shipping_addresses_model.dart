@@ -1,13 +1,13 @@
 // To parse this JSON data, do
 //
-//     final shippingAddresses = shippingAddressesFromJson(jsonString);
+//     final ticketDetailsModel = ticketDetailsModelFromJson(jsonString);
 
 import 'dart:convert';
 
-ShippingAddressesModel shippingAddressesFromJson(String str) =>
+ShippingAddressesModel ticketDetailsModelFromJson(String str) =>
     ShippingAddressesModel.fromJson(json.decode(str));
 
-String shippingAddressesToJson(ShippingAddressesModel data) =>
+String ticketDetailsModelToJson(ShippingAddressesModel data) =>
     json.encode(data.toJson());
 
 class ShippingAddressesModel {
@@ -31,26 +31,58 @@ class Datum {
   Datum({
     required this.id,
     required this.name,
-    required this.address,
+    required this.email,
+    required this.phone,
     required this.userId,
+    required this.countryId,
+    required this.stateId,
+    required this.city,
+    this.zipCode,
+    required this.address,
+    required this.createdAt,
+    required this.updatedAt,
   });
 
   int id;
   String name;
-  String address;
+  String email;
+  String phone;
   int userId;
+  int countryId;
+  int stateId;
+  String city;
+  String? zipCode;
+  String address;
+  DateTime createdAt;
+  DateTime updatedAt;
 
   factory Datum.fromJson(Map<String, dynamic> json) => Datum(
         id: json["id"],
         name: json["name"],
-        address: json["address"],
+        email: json["email"],
+        phone: json["phone"],
         userId: json["user_id"],
+        countryId: json["country_id"],
+        stateId: json["state_id"],
+        city: json["city"],
+        zipCode: json["zip_code"],
+        address: json["address"],
+        createdAt: DateTime.parse(json["created_at"]),
+        updatedAt: DateTime.parse(json["updated_at"]),
       );
 
   Map<String, dynamic> toJson() => {
         "id": id,
         "name": name,
-        "address": address,
+        "email": email,
+        "phone": phone,
         "user_id": userId,
+        "country_id": countryId,
+        "state_id": stateId,
+        "city": city,
+        "zip_code": zipCode,
+        "address": address,
+        "created_at": createdAt.toIso8601String(),
+        "updated_at": updatedAt.toIso8601String(),
       };
 }

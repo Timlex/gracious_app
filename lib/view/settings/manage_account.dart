@@ -8,6 +8,7 @@ import 'package:gren_mart/service/signin_signup_service.dart';
 import 'package:gren_mart/service/user_profile_service.dart';
 import 'package:gren_mart/view/utils/app_bars.dart';
 import 'package:gren_mart/view/utils/constant_colors.dart';
+import 'package:gren_mart/view/utils/constant_name.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:provider/provider.dart';
@@ -90,7 +91,7 @@ class ManageAccount extends StatelessWidget {
             ),
             Center(
               child: SizedBox(
-                width: 155,
+                width: screenWidth / 2.7,
                 child: Stack(alignment: Alignment.center, children: [
                   ClipRRect(
                     borderRadius: BorderRadius.circular(150),

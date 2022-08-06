@@ -61,7 +61,7 @@ class FavoriteDataService with ChangeNotifier {
 
   void deleteFavoriteItem(int id) async {
     await DbHelper.deleteDbSI('favorite', id);
-    _favoriteItems.remove(id);
+    _favoriteItems.removeWhere((key, value) => value.id == id);
     notifyListeners();
   }
 }

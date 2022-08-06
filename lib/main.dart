@@ -14,10 +14,14 @@ import 'package:gren_mart/service/search_result_data_service.dart';
 import 'package:gren_mart/service/shipping_addresses_service.dart';
 import 'package:gren_mart/service/signin_signup_service.dart';
 import 'package:gren_mart/service/state_dropdown_service.dart';
+import 'package:gren_mart/service/ticket_chat_service.dart';
+import 'package:gren_mart/service/ticket_service.dart';
 import 'package:gren_mart/service/user_profile_service.dart';
 import 'package:gren_mart/view/auth/order_data.dart';
 import 'package:gren_mart/view/auth/reset_password.dart';
 import 'package:gren_mart/view/settings/shipping_addresses.dart';
+import 'package:gren_mart/view/ticket/add_new_ticket.dart';
+import 'package:gren_mart/view/ticket/all_ticket_view.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/services.dart';
 import 'package:gren_mart/view/auth/auth.dart';
@@ -72,6 +76,8 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => ChangePasswordService()),
         ChangeNotifierProvider(create: (_) => ManageAccountService()),
         ChangeNotifierProvider(create: (_) => ShippingAddressesService()),
+        ChangeNotifierProvider(create: (_) => TicketService()),
+        ChangeNotifierProvider(create: (_) => TicketChatService()),
       ],
       child: Consumer<Products>(
         builder: (context, value, child) => MaterialApp(
@@ -98,11 +104,13 @@ class MyApp extends StatelessWidget {
             CartView.routeName: (context) => CartView(),
             Checkout.routeName: (context) => Checkout(),
             // SearchView.routeName: (context) => SearchView(),
-            NewAddress.routeName: (context) => const NewAddress(),
+            AddNewAddress.routeName: (context) => AddNewAddress(),
             ManageAccount.routeName: (context) => ManageAccount(),
             ChangePassword.routeName: (context) => const ChangePassword(),
             ShippingAdresses.routeName: (context) => const ShippingAdresses(),
             ResetPassword.routeName: (context) => const ResetPassword(),
+            AllTicketsView.routeName: (context) => AllTicketsView(),
+            AddNewTicket.routeName: (context) => AddNewTicket(),
           },
         ),
       ),

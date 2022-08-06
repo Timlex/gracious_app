@@ -6,6 +6,9 @@ import 'package:gren_mart/view/utils/constant_colors.dart';
 import 'package:gren_mart/view/utils/constant_name.dart';
 import 'package:gren_mart/view/utils/constant_styles.dart';
 import 'package:focused_menu/focused_menu.dart';
+import 'package:provider/provider.dart';
+
+import '../../service/shipping_addresses_service.dart';
 
 class ShippingAdresses extends StatefulWidget {
   static const routeName = 'shipping addresses';
@@ -17,20 +20,6 @@ class ShippingAdresses extends StatefulWidget {
 
 class _ShippingAdressesState extends State<ShippingAdresses> {
   ConstantColors cc = ConstantColors();
-  String? address;
-  String? addressTitle;
-  List addresses = [
-    {
-      'id': '01',
-      'title': 'Home',
-      'address': '6391 Elgin St. Celina, Delaware 10299'
-    },
-    {
-      'id': '02',
-      'title': 'Home',
-      'address': '6391 Elgin St. Celina, Delaware 10299'
-    },
-  ];
 
   @override
   Widget build(BuildContext context) {
@@ -94,34 +83,35 @@ class _ShippingAdressesState extends State<ShippingAdresses> {
           //     },
           //   ),
           // ),
-          const SizedBox(height: 10),
-          ...addresses.map(((e) => Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: FocusedMenuHolder(
-                  menuItems: [
-                    FocusedMenuItem(
-                        title: const Text('Edit'),
-                        onPressed: () {},
-                        backgroundColor: cc.whiteGrey),
-                    FocusedMenuItem(
-                        title: const Text('Delete'),
-                        onPressed: () {},
-                        backgroundColor: cc.whiteGrey)
-                  ],
-                  blurBackgroundColor: Colors.white,
-                  menuBoxDecoration: const BoxDecoration(boxShadow: null),
-                  blurSize: 0,
-                  menuWidth: screenWidth - 40,
-                  openWithTap: false,
-                  onPressed: () {},
-                  child: addressBox(e['title'], e['address']),
-                ),
-              ))),
+          if (Provider.of<ShippingAddressesService>(context)
+              .shippingAddresseList
+              .isEmpty)
+            loadingProgressBar(),
+          ...Provider.of<ShippingAddressesService>(context)
+              .shippingAddresseList
+              .map(((e) => Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: FocusedMenuHolder(
+                      menuItems: [
+                        FocusedMenuItem(
+                            title: const Text('Delete'),
+                            onPressed: () {},
+                            backgroundColor: cc.whiteGrey)
+                      ],
+                      blurBackgroundColor: Colors.white,
+                      menuBoxDecoration: const BoxDecoration(boxShadow: null),
+                      blurSize: 0,
+                      menuWidth: screenWidth - 40,
+                      openWithTap: false,
+                      onPressed: () {},
+                      child: addressBox(e.name, e.address),
+                    ),
+                  ))),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 25),
             child:
                 customContainerButton('Add new address', double.infinity, () {
-              Navigator.of(context).pushNamed(NewAddress.routeName);
+              Navigator.of(context).pushNamed(AddNewAddress.routeName);
             }),
           )
         ],

@@ -149,7 +149,7 @@ class CartDataService with ChangeNotifier {
 
   void deleteCartItem(int id) async {
     await DbHelper.deleteDbSI('cart', id);
-    _cartItems.remove(id);
+    _cartItems.remove(id.toString());
     notifyListeners();
   }
 

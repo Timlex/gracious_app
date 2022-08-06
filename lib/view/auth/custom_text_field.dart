@@ -50,7 +50,6 @@ class _CustomTextFieldState extends State<CustomTextField> {
           TextStyle(color: ConstantColors().greyTextFieldLebel, fontSize: 13),
       decoration: InputDecoration(
         contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 17),
-
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
           borderSide:
@@ -59,6 +58,10 @@ class _CustomTextFieldState extends State<CustomTextField> {
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
           borderSide: BorderSide(color: ConstantColors().greyBorder, width: 1),
+        ),
+        focusedErrorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10),
+          borderSide: BorderSide(color: ConstantColors().orange, width: 1),
         ),
         errorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),

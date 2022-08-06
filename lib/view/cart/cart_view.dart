@@ -123,7 +123,7 @@ class CartView extends StatelessWidget {
               const SizedBox(height: 15),
               customContainerButton('Checkout', double.infinity, () {
                 Provider.of<ShippingAddressesService>(context, listen: false)
-                    .fetchUsersShippingAddress(globalUserToken);
+                    .fetchUsersShippingAddress();
                 Navigator.of(context).pushNamed(Checkout.routeName);
               }),
               const SizedBox(height: 30),

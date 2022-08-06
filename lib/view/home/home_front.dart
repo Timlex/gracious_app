@@ -121,8 +121,6 @@ class HomeFront extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     searchHelper(context);
-    countryStateInitiate(context);
-    productsGetter(context);
 
     return Consumer<NavigationBarHelperService>(
         builder: (context, nData, child) {
@@ -201,6 +199,8 @@ class HomeFront extends StatelessWidget {
     _navigationIndex =
         Provider.of<NavigationBarHelperService>(context).navigationIndex;
     if (_navigationIndex == 0) {
+      countryStateInitiate(context);
+      productsGetter(context);
       navigationWidget = const Home();
     } else if (_navigationIndex == 1) {
       navigationWidget = SearchView();

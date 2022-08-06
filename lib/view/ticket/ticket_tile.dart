@@ -1,20 +1,20 @@
+import 'package:badges/badges.dart';
 import 'package:flutter/material.dart';
-import 'package:gren_mart/view/order/order_details.dart';
 import 'package:gren_mart/view/utils/constant_colors.dart';
 import 'package:gren_mart/view/utils/constant_name.dart';
 import 'package:intl/intl.dart';
 
-class OrderTile extends StatelessWidget {
-  final double totalAmount;
-  final String trackingCode;
-  final DateTime orderedDate;
-  final bool delivered;
+class TicketTile extends StatelessWidget {
+  final String title;
+  final int ticketId;
+  final DateTime submitDate;
+  final String priority;
   final bool divider;
-  OrderTile(
-    this.totalAmount,
-    this.trackingCode,
-    this.orderedDate,
-    this.delivered,
+  TicketTile(
+    this.title,
+    this.ticketId,
+    this.submitDate,
+    this.priority,
     this.divider, {
     Key? key,
   }) : super(key: key);
@@ -23,31 +23,31 @@ class OrderTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: screenHight / 10,
+      height: screenHight / 7,
       child: Column(
         children: [
           ListTile(
             dense: true,
             visualDensity: const VisualDensity(vertical: -3),
             onTap: () {
-              Navigator.of(context).push(MaterialPageRoute<void>(
-                builder: (BuildContext context) => OrderDetails(trackingCode),
-              ));
+              // Navigator.of(context).push(MaterialPageRoute<void>(
+              //   builder: (BuildContext context) => OrderDetails(title),
+              // ));
             },
             title: Text(
-              '\$${totalAmount.toStringAsFixed(2)}',
+              title,
               style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
             ),
             subtitle: Row(
               children: [
                 Text(
-                  trackingCode,
+                  '#$ticketId',
                   style: TextStyle(
                       color: cc.primaryColor, fontWeight: FontWeight.w600),
                 ),
                 const SizedBox(width: 10),
                 Text(
-                  DateFormat.yMMMd().format(orderedDate),
+                  DateFormat.yMMMd().format(submitDate),
                   style: TextStyle(color: cc.greyHint),
                 )
               ],
@@ -63,18 +63,21 @@ class OrderTile extends StatelessWidget {
                         const EdgeInsets.symmetric(horizontal: 10, vertical: 3),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(10),
-                      color: delivered ? cc.primaryColor : cc.orange,
+                      color: cc.whiteGrey,
                     ),
                     child: Text(
-                      delivered ? 'Delivered' : 'Pending',
-                      style: TextStyle(color: cc.pureWhite),
+                      priority,
+                      style: TextStyle(
+                          color: cc.blackColor, fontWeight: FontWeight.w600),
                       textAlign: TextAlign.center,
                     ),
                   ),
                   const SizedBox(width: 15),
-                  const Icon(
-                    Icons.arrow_forward_ios,
-                    size: 20,
+                  Badge(
+                    child: const Icon(
+                      Icons.arrow_forward_ios,
+                      size: 20,
+                    ),
                   )
                 ],
               ),
