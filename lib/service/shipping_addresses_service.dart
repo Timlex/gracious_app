@@ -20,6 +20,8 @@ class ShippingAddressesService with ChangeNotifier {
   String? zipCode;
   String? address;
   String? city;
+  bool alertBoxLoading = false;
+  bool noData = false;
 
   setName(value) {
     name = value;
@@ -76,6 +78,16 @@ class ShippingAddressesService with ChangeNotifier {
     notifyListeners();
   }
 
+  setAlertBoxLoading(value) {
+    alertBoxLoading = value;
+    notifyListeners();
+  }
+
+  setNoData(value) {
+    noData = value;
+    notifyListeners();
+  }
+
   Future<dynamic> fetchUsersShippingAddress() async {
     print('$globalUserToken --------------');
     final url = Uri.parse('$baseApiUrl/user/all-shipping-address');
@@ -91,6 +103,7 @@ class ShippingAddressesService with ChangeNotifier {
         final data = ShippingAddressesModel.fromJson(jsonDecode(response.body));
         shippingAddresseList = data.data;
         selectedAddress ??= shippingAddresseList[0];
+        setNoData(data.data.isEmpty);
 
         notifyListeners();
         return;
@@ -146,5 +159,35 @@ class ShippingAddressesService with ChangeNotifier {
 
       rethrow;
     }
+  }
+
+  Future<dynamic> deleteSingleAddress(id) async {
+    print('$globalUserToken --------------');
+    final url = Uri.parse('$baseApiUrl/user/shipping-address/delete/$id');
+    var header = {
+      //if header type is application/json then the data should be in jsonEncode method
+      "Accept": "application/json",
+      "Authorization": "Bearer $globalUserToken",
+    };
+    // try {
+    final response = await http.get(url, headers: header);
+    if (response.statusCode == 200) {
+      print(response.body);
+      shippingAddresseList.removeWhere((element) => element.id == id);
+      notifyListeners();
+      return;
+    }
+    if (response.statusCode == 422) {
+      final data = json.decode(response.body);
+      print(data['message']);
+      return data['message'];
+    }
+
+    return 'Someting went wrong';
+    // } catch (error) {
+    //   print(error);
+
+    //   rethrow;
+    // }
   }
 }
