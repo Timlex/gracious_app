@@ -22,12 +22,13 @@ class AllTicketsView extends StatelessWidget {
   Widget build(BuildContext context) {
     double cardWidth = screenWidth / 3.3;
     double cardHeight = screenHight / 4.9;
-    controller.addListener((() => scrollListener(context)));
+    // controller.addListener((() => scrollListener(context)));
 
     // final routeData =
     //     ModalRoute.of(context)!.settings.arguments as List<dynamic>;
     return Scaffold(
         appBar: AppBars().appBarTitled('All tickets', () {
+          Provider.of<TicketService>(context, listen: false).clearTickets();
           Navigator.of(context).pop();
         }),
         body:
@@ -87,11 +88,11 @@ class AllTicketsView extends StatelessWidget {
           itemCount: ticketsService.ticketsList.length,
           itemBuilder: (context, index) {
             return TicketTile(
-              ticketsService.ticketsList[0].title,
-              ticketsService.ticketsList[0].id,
-              ticketsService.ticketsList[0].createdAt,
-              ticketsService.ticketsList[0].priority,
-              ticketsService.ticketsList[0].id !=
+              ticketsService.ticketsList[index].title,
+              ticketsService.ticketsList[index].id,
+              ticketsService.ticketsList[index].createdAt,
+              ticketsService.ticketsList[index].priority,
+              ticketsService.ticketsList[index].id !=
                   ticketsService.ticketsList.last.id,
             );
           });

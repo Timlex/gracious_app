@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:focused_menu/modals.dart';
 import 'package:gren_mart/view/settings/new_address.dart';
 import 'package:gren_mart/view/utils/app_bars.dart';
 import 'package:gren_mart/view/utils/constant_colors.dart';
-import 'package:gren_mart/view/utils/constant_name.dart';
 import 'package:gren_mart/view/utils/constant_styles.dart';
-import 'package:focused_menu/focused_menu.dart';
 import 'package:provider/provider.dart';
 
 import '../../service/shipping_addresses_service.dart';
@@ -91,21 +88,11 @@ class _ShippingAdressesState extends State<ShippingAdresses> {
               .shippingAddresseList
               .map(((e) => Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: FocusedMenuHolder(
-                      menuItems: [
-                        FocusedMenuItem(
-                            title: const Text('Delete'),
-                            onPressed: () {},
-                            backgroundColor: cc.whiteGrey)
-                      ],
-                      blurBackgroundColor: Colors.white,
-                      menuBoxDecoration: const BoxDecoration(boxShadow: null),
-                      blurSize: 0,
-                      menuWidth: screenWidth - 40,
-                      openWithTap: false,
-                      onPressed: () {},
-                      child: addressBox(e.name, e.address),
-                    ),
+                    child: Dismissible(
+                        key: Key(e.id.toString()),
+                        direction: DismissDirection.endToStart,
+                        onDismissed: (direction) {},
+                        child: addressBox(e.name, e.address)),
                   ))),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 25),

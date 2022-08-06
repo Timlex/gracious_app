@@ -92,6 +92,8 @@ class MyApp extends StatelessWidget {
             //     backgroundColor: ConstantColors().blackColor),
             buttonTheme:
                 ButtonThemeData(buttonColor: ConstantColors().primaryColor),
+            textSelectionTheme: TextSelectionThemeData(
+                cursorColor: ConstantColors().primaryColor),
           ),
           home: const SplashScreen(),
           routes: {

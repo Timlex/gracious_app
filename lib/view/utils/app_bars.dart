@@ -8,11 +8,12 @@ class AppBars {
   PreferredSizeWidget appBarTitled(String? title, Function ontap,
       {bool hasButton = true,
       bool hasElevation = true,
-      List<Widget>? actions = null}) {
+      bool? centerTitle = true,
+      List<Widget>? actions}) {
     return AppBar(
         elevation: hasElevation ? 1 : 0,
         foregroundColor: cc.blackColor,
-        centerTitle: true,
+        centerTitle: centerTitle,
         title: title == null
             ? null
             : Text(

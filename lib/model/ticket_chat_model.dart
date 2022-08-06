@@ -80,7 +80,7 @@ class TicketDetails {
   TicketDetails({
     required this.id,
     required this.title,
-    required this.via,
+    this.via,
     this.operatingSystem,
     required this.userAgent,
     required this.description,
@@ -96,7 +96,7 @@ class TicketDetails {
 
   int id;
   String title;
-  String via;
+  String? via;
   dynamic operatingSystem;
   String userAgent;
   String description;

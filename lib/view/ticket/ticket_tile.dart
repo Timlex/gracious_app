@@ -1,8 +1,11 @@
 import 'package:badges/badges.dart';
 import 'package:flutter/material.dart';
+import 'package:gren_mart/service/ticket_chat_service.dart';
+import 'package:gren_mart/view/ticket/ticket_chat.dart';
 import 'package:gren_mart/view/utils/constant_colors.dart';
 import 'package:gren_mart/view/utils/constant_name.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
 class TicketTile extends StatelessWidget {
   final String title;
@@ -23,16 +26,18 @@ class TicketTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: screenHight / 7,
+      height: screenHight / 10,
       child: Column(
         children: [
           ListTile(
             dense: true,
             visualDensity: const VisualDensity(vertical: -3),
             onTap: () {
-              // Navigator.of(context).push(MaterialPageRoute<void>(
-              //   builder: (BuildContext context) => OrderDetails(title),
-              // ));
+              Provider.of<TicketChatService>(context, listen: false)
+                  .fetchSingleTickets(ticketId);
+              Navigator.of(context).push(MaterialPageRoute<void>(
+                builder: (BuildContext context) => TicketChat(title),
+              ));
             },
             title: Text(
               title,

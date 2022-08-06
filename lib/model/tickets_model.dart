@@ -77,7 +77,7 @@ class Datum {
   Datum({
     required this.id,
     required this.title,
-    required this.via,
+    this.via,
     this.operatingSystem,
     required this.userAgent,
     required this.description,
@@ -93,7 +93,7 @@ class Datum {
 
   int id;
   String title;
-  String via;
+  String? via;
   dynamic operatingSystem;
   String userAgent;
   String description;
