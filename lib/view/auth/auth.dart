@@ -231,18 +231,13 @@ class Auth extends StatelessWidget {
                         double.infinity,
                         ssData.login
                             ? () {
-                                ssData.toggleLaodingSpinner();
                                 _onSubmit(
                                     context, ssData.login, _formKeySignin);
-
-                                ssData.toggleLaodingSpinner();
                               }
                             : () {
-                                ssData.toggleLaodingSpinner();
                                 _onSubmit(
                                     context, ssData.login, _formKeySignup);
 
-                                ssData.toggleLaodingSpinner();
                                 // Navigator.of(context)
                                 //     .pushReplacementNamed(HomeFront.routeName);
                               },

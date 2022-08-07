@@ -33,12 +33,13 @@ class SettingView extends StatelessWidget {
         padding: const EdgeInsets.all(0),
         children: [
           SettingScreenAppBar(uData.userProfileData.profileImageUrl),
+          const SizedBox(height: 10),
           Center(
             child: Text(
               uData.userProfileData.name,
               style: const TextStyle(
                 fontSize: 18,
-                fontWeight: FontWeight.w600,
+                fontWeight: FontWeight.bold,
               ),
             ),
           ),
@@ -69,7 +70,10 @@ class SettingView extends StatelessWidget {
               onTap: () {
             Provider.of<ShippingAddressesService>(context, listen: false)
                 .fetchUsersShippingAddress();
-            Navigator.of(context).pushNamed(ShippingAdresses.routeName);
+            Navigator.of(context).pushNamed(ShippingAdresses.routeName).then(
+                (value) => Provider.of<ShippingAddressesService>(context,
+                        listen: false)
+                    .setNoData(false));
           }),
           settingItem(
               'assets/images/icons/manage_profile.svg', 'Manage Account',
