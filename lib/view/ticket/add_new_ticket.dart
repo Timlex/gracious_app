@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:gren_mart/service/add_new_ticket_service.dart';
 import 'package:gren_mart/view/auth/custom_text_field.dart';
 import 'package:gren_mart/view/intro/custom_dropdown.dart';
 import 'package:provider/provider.dart';
 
-import '../../service/ticket_service.dart';
-import '../home/home_front.dart';
 import '../utils/app_bars.dart';
 import '../utils/constant_styles.dart';
 
@@ -15,9 +14,25 @@ class AddNewTicket extends StatelessWidget {
   final GlobalKey<FormState> _formKey = GlobalKey();
   final _subjectFN = FocusNode();
 
-  void _onSubmit(BuildContext context) {
-    Navigator.of(context).pushReplacementNamed(HomeFront.routeName);
-
+  Future _onSubmit(BuildContext context, AddNewTicketService ntService) async {
+    final validated = _formKey.currentState!.validate();
+    if (!validated) {
+      return;
+    }
+    ntService.setIsLoading(true);
+    await ntService.addNewToken().then((value) {
+      if (value != null) {
+        ntService.setIsLoading(false);
+        snackBar(context, value);
+        return;
+      }
+      ntService.setIsLoading(false);
+      Navigator.of(context).pop();
+      return;
+    }).onError(
+        (error, stackTrace) => snackBar(context, 'Couldn\'t add Ticket'));
+    ntService.setIsLoading(false);
+    Navigator.of(context).pop();
     // ScaffoldMessenger.of(context)
     //     .showSnackBar(snackBar('Invalid email/password'));
   }
@@ -28,7 +43,8 @@ class AddNewTicket extends StatelessWidget {
         appBar: AppBars().appBarTitled('Add new address', () {
           Navigator.of(context).pop();
         }, hasButton: true),
-        body: Consumer<TicketService>(builder: (context, tService, child) {
+        body:
+            Consumer<AddNewTicketService>(builder: (context, ntService, child) {
           return ListView(
             physics: const BouncingScrollPhysics(
                 parent: AlwaysScrollableScrollPhysics()),
@@ -37,6 +53,7 @@ class AddNewTicket extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 25),
                 child: Form(
+                  key: _formKey,
                   child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -44,7 +61,9 @@ class AddNewTicket extends StatelessWidget {
                         // const SizedBox(height: 8),
                         CustomTextField(
                           'Enter a title',
-                          onChanged: (value) {},
+                          onChanged: (value) {
+                            ntService.setTitle(value);
+                          },
                           validator: (name) {
                             if (name!.isEmpty) {
                               return 'Enter your name';
@@ -62,7 +81,9 @@ class AddNewTicket extends StatelessWidget {
                         // const SizedBox(height: 8),
                         CustomTextField(
                           'Enter a subject',
-                          onChanged: (value) {},
+                          onChanged: (value) {
+                            ntService.setSubject(value);
+                          },
                           validator: (name) {
                             if (name!.isEmpty) {
                               return 'Enter a valid subject';
@@ -72,34 +93,40 @@ class AddNewTicket extends StatelessWidget {
                             }
                             return null;
                           },
-                          onFieldSubmitted: (_) {},
+                          onFieldSubmitted: (_) async {
+                            ntService.setIsLoading(false);
+                          },
                         ),
-                        textFieldTitle('Country'),
+                        textFieldTitle('Priority'),
                         // const SizedBox(height: 8),
                         CustomDropdown(
-                          'Country',
-                          tService.priorityList,
+                          ntService.selectedPriority as String,
+                          ntService.priority,
                           (newValue) {
-                            tService.setPriority(newValue as String);
+                            ntService.setSelectedPriority(newValue as String);
                           },
-                          value: tService.priority,
+                          value: ntService.selectedPriority,
                         ),
 
-                        textFieldTitle('State'),
-                        CustomDropdown(
-                          'State',
-                          tService.departmentsList,
-                          (newValue) {
-                            tService.setDepartment(newValue);
-                          },
-                          value: tService.department,
-                        ),
+                        textFieldTitle('Department'),
+                        ntService.allDepartment.isEmpty
+                            ? loadingProgressBar()
+                            : CustomDropdown(
+                                ntService.selectedDepartment.name,
+                                ntService.departmentNames,
+                                (newValue) {
+                                  ntService.setSelectedDepartment(newValue);
+                                },
+                                value: ntService.selectedDepartment.name,
+                              ),
 
                         textFieldTitle('Description'),
                         // const SizedBox(height: 8),
                         CustomTextField(
                           'Describe your issue',
-                          onChanged: (value) {},
+                          onChanged: (value) {
+                            ntService.setDescription(value);
+                          },
                           validator: (address) {
                             if (address == null) {
                               return 'You have to give an address';
@@ -116,16 +143,26 @@ class AddNewTicket extends StatelessWidget {
               ),
               const SizedBox(height: 40),
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                child:
-                    customContainerButton('Save Changes', double.infinity, () {
-                  final validated = _formKey.currentState!.validate();
-                  if (!validated) {
-                    return;
-                  }
-                  Navigator.of(context).pop();
-                }),
-              ),
+                  padding: const EdgeInsets.symmetric(horizontal: 25.0),
+                  child: Stack(
+                    children: [
+                      customContainerButton(
+                          ntService.isLoading ? '' : 'Add tocken',
+                          double.infinity,
+                          ntService.isLoading
+                              ? () {}
+                              : () {
+                                  _onSubmit(context, ntService);
+                                }),
+                      if (ntService.isLoading)
+                        SizedBox(
+                            height: 50,
+                            width: double.infinity,
+                            child: Center(
+                                child: loadingProgressBar(
+                                    size: 30, color: cc.pureWhite)))
+                    ],
+                  )),
               const SizedBox(height: 45)
             ],
           );

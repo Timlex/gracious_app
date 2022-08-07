@@ -82,7 +82,7 @@ class TicketChatService with ChangeNotifier {
     Map<String, String> fieldss = {
       'user_type': 'mobile',
       'message': message,
-      'send_notify_mail': 'on',
+      'send_notify_mail': notifyViaMail ? 'on' : 'off',
     };
 
     var request = http.MultipartRequest('POST', url);

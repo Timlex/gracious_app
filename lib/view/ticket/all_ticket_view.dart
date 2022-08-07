@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gren_mart/service/add_new_ticket_service.dart';
 import 'package:gren_mart/service/search_result_data_service.dart';
 import 'package:gren_mart/view/ticket/add_new_ticket.dart';
 import 'package:gren_mart/view/ticket/ticket_tile.dart';
@@ -36,7 +37,6 @@ class AllTicketsView extends StatelessWidget {
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const SizedBox(height: 15),
               Expanded(
                 child: ticketsService.ticketsList.isNotEmpty
                     ? ticketsListView(cardWidth, cardHeight, ticketsService)
@@ -62,7 +62,17 @@ class AllTicketsView extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 25),
                 child: customContainerButton('Add new address', double.infinity,
                     () {
-                  Navigator.of(context).pushNamed(AddNewTicket.routeName);
+                  Provider.of<AddNewTicketService>(context, listen: false)
+                      .fetchDepartments()
+                      .onError((error, stackTrace) =>
+                          snackBar(context, 'Message loading failed!'));
+                  Navigator.of(context)
+                      .pushNamed(AddNewTicket.routeName)
+                      .then((value) {
+                    Provider.of<AddNewTicketService>(context, listen: false)
+                        .clearAllData();
+                    ticketsService.fetchTickets();
+                  });
                 }),
               ),
               const SizedBox(height: 40),
@@ -125,28 +135,3 @@ class AllTicketsView extends StatelessWidget {
     return true;
   }
 }
-
-// class CustomShapePainter extends CustomPainter {
-//   @override
-//   void paint(Canvas canvas, Size size) {
-//     var paint = Paint()
-//       ..color = Colors.blue
-//       ..strokeWidth = 15;
-
-//     var path = Path();
-//     // path.moveTo(0, 0);
-//     path.lineTo(15, 45);
-
-//     // path.lineTo(size.width, size.height * 0.8);
-//     path.lineTo(15, 45);
-//     path.lineTo(15, 30);
-//     // path.lineTo(0, 0);
-
-//     canvas.drawPath(path, paint);
-//   }
-
-//   @override
-//   bool shouldRepaint(CustomShapePainter oldDelegate) {
-//     return false;
-//   }
-// }

@@ -43,70 +43,70 @@ class TicketChat extends StatelessWidget {
         body: tcService.messagesList.isEmpty
             ? loadingProgressBar()
             : Consumer<TicketChatService>(builder: (context, tcService, child) {
-                return Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 15),
-                  child: Column(
-                    children: [
-                      Expanded(
-                        child: ListView.builder(
-                            reverse: true,
-                            itemCount: tcService.messagesList.length,
-                            itemBuilder: ((context, index) {
-                              final element = tcService.messagesList[index];
-                              final usersMessage = element.type != 'admin';
-                              return Row(
-                                mainAxisAlignment: usersMessage
-                                    ? MainAxisAlignment.end
-                                    : MainAxisAlignment.start,
-                                children: [
-                                  Container(
-                                    // height: 60,
-                                    margin: const EdgeInsets.symmetric(
-                                        vertical: 10),
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 15, vertical: 15),
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.only(
-                                        topLeft: const Radius.circular(20),
-                                        topRight: const Radius.circular(20),
-                                        bottomLeft: usersMessage
-                                            ? const Radius.circular(20)
-                                            : Radius.zero,
-                                        bottomRight: usersMessage
-                                            ? Radius.zero
-                                            : const Radius.circular(20),
-                                      ),
-                                      color: usersMessage
-                                          ? cc.primaryColor
-                                          : const Color(0xffEFEFEF),
+                return Column(
+                  children: [
+                    Expanded(
+                      child: ListView.builder(
+                          padding: const EdgeInsets.symmetric(horizontal: 15),
+                          reverse: true,
+                          itemCount: tcService.messagesList.length,
+                          itemBuilder: ((context, index) {
+                            final element = tcService.messagesList[index];
+                            final usersMessage = element.type != 'admin';
+                            return Row(
+                              mainAxisAlignment: usersMessage
+                                  ? MainAxisAlignment.end
+                                  : MainAxisAlignment.start,
+                              children: [
+                                Container(
+                                  // height: 60,
+                                  margin:
+                                      const EdgeInsets.symmetric(vertical: 10),
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 15, vertical: 15),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.only(
+                                      topLeft: const Radius.circular(20),
+                                      topRight: const Radius.circular(20),
+                                      bottomLeft: usersMessage
+                                          ? const Radius.circular(20)
+                                          : Radius.zero,
+                                      bottomRight: usersMessage
+                                          ? Radius.zero
+                                          : const Radius.circular(20),
                                     ),
-                                    child: Stack(
-                                      children: [
-                                        Center(
-                                          child: Text(
-                                            tcService
-                                                .messagesList[index].message,
-                                            style: usersMessage
-                                                ? TextStyle(color: cc.pureWhite)
-                                                : null,
-                                          ),
-                                        ),
-                                        Positioned(
-                                            child: Container(
-                                          decoration: const BoxDecoration(
-                                              // shape: BoxShape()
-                                              ),
-                                        ))
-                                      ],
-                                    ),
+                                    color: usersMessage
+                                        ? cc.primaryColor
+                                        : const Color(0xffEFEFEF),
                                   ),
-                                ],
-                              );
-                            })),
-                      ),
-                      SizedBox(
-                        height: screenHight / 7,
-                        // margin: const EdgeInsets.symmetric(horizontal: 15),
+                                  child: Stack(
+                                    children: [
+                                      Center(
+                                        child: Text(
+                                          tcService.messagesList[index].message,
+                                          style: usersMessage
+                                              ? TextStyle(color: cc.pureWhite)
+                                              : null,
+                                        ),
+                                      ),
+                                      Positioned(
+                                          child: Container(
+                                        decoration: const BoxDecoration(
+                                            // shape: BoxShape()
+                                            ),
+                                      ))
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            );
+                          })),
+                    ),
+                    SizedBox(
+                      height: screenHight / 7,
+                      // margin: const EdgeInsets.symmetric(horizontal: 15),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 15),
                         child: TextField(
                           maxLines: 4,
                           controller: _controller,
@@ -130,69 +130,74 @@ class TicketChat extends StatelessWidget {
                           },
                         ),
                       ),
-                      // Container(
-                      //   color: cc.pureWhite,
-                      //   height: 60,
-                      //   child: Row(
-                      //     children: [
-                      //       // Expanded(
-                      //       //   child: TextField(
-                      //       //     decoration: InputDecoration(
-                      //       //       hintText: 'Write message',
-                      //       //       hintStyle: TextStyle(color: cc.greyHint),
-                      //       //       enabledBorder: OutlineInputBorder(
-                      //       //         borderSide: BorderSide(color: cc.pureWhite),
-                      //       //       ),
-                      //       //       focusedBorder: OutlineInputBorder(
-                      //       //         borderSide: BorderSide(color: cc.pureWhite),
-                      //       //       ),
-                      //       //       errorBorder: OutlineInputBorder(
-                      //       //         borderSide: BorderSide(color: cc.pureWhite),
-                      //       //       ),
-                      //       //     ),
-                      //       //     onChanged: (value) {
-                      //       //       tcService.setMessage(value);
-                      //       //     },
-                      //       //   ),
-                      //       // ),
-                      //       if (tcService.pickedImage != null)
-                      //         SizedBox(
-                      //           height: 55,
-                      //           width: 55,
-                      //           child: Image.file(
-                      //             tcService.pickedImage as File,
-                      //             fit: BoxFit.cover,
-                      //           ),
-                      //         ),
-                      //       IconButton(
-                      //           onPressed: (() {
-                      //             imageSelector(context);
-                      //           }),
-                      //           icon: const Icon(
-                      //             Icons.attach_file,
-                      //           )),
-                      //       IconButton(
-                      //           onPressed: tcService.message.isEmpty
-                      //               ? null
-                      //               : (() {
-                      //                   tcService.sendMessage(
-                      //                       tcService.ticketDetails.id);
-                      //                 }),
-                      //           icon: Icon(
-                      //             Icons.send_rounded,
-                      //             color: tcService.message.isEmpty
-                      //                 ? cc.greyDots
-                      //                 : cc.primaryColor,
-                      //           )),
-                      //     ],
-                      //   ),
-                      // ),
+                    ),
+                    // Container(
+                    //   color: cc.pureWhite,
+                    //   height: 60,
+                    //   child: Row(
+                    //     children: [
+                    //       // Expanded(
+                    //       //   child: TextField(
+                    //       //     decoration: InputDecoration(
+                    //       //       hintText: 'Write message',
+                    //       //       hintStyle: TextStyle(color: cc.greyHint),
+                    //       //       enabledBorder: OutlineInputBorder(
+                    //       //         borderSide: BorderSide(color: cc.pureWhite),
+                    //       //       ),
+                    //       //       focusedBorder: OutlineInputBorder(
+                    //       //         borderSide: BorderSide(color: cc.pureWhite),
+                    //       //       ),
+                    //       //       errorBorder: OutlineInputBorder(
+                    //       //         borderSide: BorderSide(color: cc.pureWhite),
+                    //       //       ),
+                    //       //     ),
+                    //       //     onChanged: (value) {
+                    //       //       tcService.setMessage(value);
+                    //       //     },
+                    //       //   ),
+                    //       // ),
+                    //       if (tcService.pickedImage != null)
+                    //         SizedBox(
+                    //           height: 55,
+                    //           width: 55,
+                    //           child: Image.file(
+                    //             tcService.pickedImage as File,
+                    //             fit: BoxFit.cover,
+                    //           ),
+                    //         ),
+                    //       IconButton(
+                    //           onPressed: (() {
+                    //             imageSelector(context);
+                    //           }),
+                    //           icon: const Icon(
+                    //             Icons.attach_file,
+                    //           )),
+                    //       IconButton(
+                    //           onPressed: tcService.message.isEmpty
+                    //               ? null
+                    //               : (() {
+                    //                   tcService.sendMessage(
+                    //                       tcService.ticketDetails.id);
+                    //                 }),
+                    //           icon: Icon(
+                    //             Icons.send_rounded,
+                    //             color: tcService.message.isEmpty
+                    //                 ? cc.greyDots
+                    //                 : cc.primaryColor,
+                    //           )),
+                    //     ],
+                    //   ),
+                    // ),
 
-                      Row(
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 15),
+                      child: Row(
                         children: [
-                          const Text(
+                          Text(
                             'File',
-                            style: TextStyle(fontWeight: FontWeight.w600),
+                            style: TextStyle(
+                                color: cc.greyHint,
+                                fontWeight: FontWeight.w600),
                           ),
                           const SizedBox(width: 10),
                           GestureDetector(
@@ -225,8 +230,11 @@ class TicketChat extends StatelessWidget {
                           ),
                         ],
                       ),
-                      const SizedBox(height: 15),
-                      Row(
+                    ),
+                    const SizedBox(height: 15),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8),
+                      child: Row(
                         children: [
                           Transform.scale(
                             scale: 1.3,
@@ -263,8 +271,11 @@ class TicketChat extends StatelessWidget {
                           ),
                         ],
                       ),
-                      const SizedBox(height: 15),
-                      customContainerButton(
+                    ),
+                    const SizedBox(height: 15),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 15),
+                      child: customContainerButton(
                         'Add new address',
                         double.infinity,
                         tcService.message.isEmpty &&
@@ -281,9 +292,9 @@ class TicketChat extends StatelessWidget {
                             ? cc.greyDots
                             : cc.primaryColor,
                       ),
-                      const SizedBox(height: 25),
-                    ],
-                  ),
+                    ),
+                    const SizedBox(height: 25),
+                  ],
                 );
               }),
       );
