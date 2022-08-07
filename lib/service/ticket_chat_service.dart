@@ -14,6 +14,7 @@ class TicketChatService with ChangeNotifier {
   bool isLoading = false;
   String message = '';
   File? pickedImage;
+  bool notifyViaMail = false;
 
   setIsLoading(value) {
     isLoading = value;
@@ -28,10 +29,17 @@ class TicketChatService with ChangeNotifier {
   clearAllMessages() {
     messagesList = [];
     pickedImage = null;
+    notifyViaMail = false;
+    notifyListeners();
   }
 
   setPickedImage(value) {
     pickedImage = value;
+    notifyListeners();
+  }
+
+  toggleNotifyViaMail(value) {
+    notifyViaMail = !notifyViaMail;
     notifyListeners();
   }
 
@@ -114,6 +122,7 @@ class TicketChatService with ChangeNotifier {
 
       if (response.statusCode == 200) {
         message = '';
+        fetchSingleTickets(id);
         // var data = TicketChatModel.fromJson(jsonDecode(response.body));
 
         // setNoProduct(resultMeta!.total == 0);
@@ -125,5 +134,110 @@ class TicketChatService with ChangeNotifier {
 
       rethrow;
     }
+  }
+
+  Future fetchOnlyMessages(id) async {
+    var header = {
+      //if header type is application/json then the data should be in jsonEncode method
+      "Accept": "application/json",
+      "Authorization": "Bearer $globalUserToken",
+    };
+    print('searching in progress');
+    final url = Uri.parse('$baseApiUrl/user/ticket/chat/$id');
+    print(url);
+    try {
+      final response = await http.get(url, headers: header);
+
+      if (response.statusCode == 200) {
+        var data = onlyMessagesModelFromJson(response.body);
+
+        print(isLoading);
+        print(messagesList.toString() + '-------------------');
+        setIsLoading(false);
+        // setNoProduct(resultMeta!.total == 0);
+
+        notifyListeners();
+      } else {}
+    } catch (error) {
+      print(error);
+
+      rethrow;
+    }
+  }
+}
+
+// To parse this JSON data, do
+//
+//     final onlyMessagesModel = onlyMessagesModelFromJson(jsonString);
+
+List<OnlyMessagesModel> onlyMessagesModelFromJson(String str) =>
+    List<OnlyMessagesModel>.from(
+        json.decode(str).map((x) => OnlyMessagesModel.fromJson(x)));
+
+String onlyMessagesModelToJson(List<OnlyMessagesModel> data) =>
+    json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
+
+class OnlyMessagesModel {
+  OnlyMessagesModel({
+    required this.id,
+    required this.message,
+    this.notify,
+    this.attachment,
+    this.type,
+    required this.supportTicketId,
+    required this.createdAt,
+    required this.updatedAt,
+  });
+
+  int id;
+  String message;
+  Notify? notify;
+  String? attachment;
+  Type? type;
+  int supportTicketId;
+  DateTime createdAt;
+  DateTime updatedAt;
+
+  factory OnlyMessagesModel.fromJson(Map<String, dynamic> json) =>
+      OnlyMessagesModel(
+        id: json["id"],
+        message: json["message"],
+        notify: notifyValues.map[json["notify"]],
+        attachment: json["attachment"],
+        type: typeValues.map[json["type"]],
+        supportTicketId: json["support_ticket_id"],
+        createdAt: DateTime.parse(json["created_at"]),
+        updatedAt: DateTime.parse(json["updated_at"]),
+      );
+
+  Map<String, dynamic> toJson() => {
+        "id": id,
+        "message": message,
+        "notify": notifyValues.reverse![notify],
+        "attachment": attachment,
+        "type": typeValues.reverse![type],
+        "support_ticket_id": supportTicketId,
+        "created_at": createdAt.toIso8601String(),
+        "updated_at": updatedAt.toIso8601String(),
+      };
+}
+
+enum Notify { ON, OFF }
+
+final notifyValues = EnumValues({"off": Notify.OFF, "on": Notify.ON});
+
+enum Type { MOBILE, ADMIN }
+
+final typeValues = EnumValues({"admin": Type.ADMIN, "mobile": Type.MOBILE});
+
+class EnumValues<T> {
+  Map<String, T> map;
+  Map<T, String>? reverseMap;
+
+  EnumValues(this.map);
+
+  Map<T, String>? get reverse {
+    reverseMap ??= map.map((k, v) => MapEntry(v, k));
+    return reverseMap;
   }
 }

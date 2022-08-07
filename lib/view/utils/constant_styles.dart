@@ -22,7 +22,8 @@ Widget textFieldTitle(String title, {double fontSize = 15}) {
 }
 
 Widget customContainerButton(
-    String buttonTitle, double? buttonWidth, Function ontapFunction) {
+    String buttonTitle, double? buttonWidth, Function ontapFunction,
+    {Color? color}) {
   return GestureDetector(
       onTap: () {
         ontapFunction();
@@ -35,7 +36,7 @@ Widget customContainerButton(
         alignment: Alignment.center,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
-          color: ConstantColors().primaryColor,
+          color: color ?? ConstantColors().primaryColor,
         ),
         child: Text(
           buttonTitle,
