@@ -98,7 +98,7 @@ class Home extends StatelessWidget {
             child: Consumer<PosterCampaignSliderService>(
                 builder: (context, posterData, child) {
               return posterData.posterDataList.isEmpty
-                  ? loadingProgressBar()
+                  ? const SizedBox()
                   : Swiper(
                       itemBuilder: (BuildContext context, int index) {
                         return PosterCard(
@@ -117,10 +117,13 @@ class Home extends StatelessWidget {
             }),
           ),
           const SizedBox(height: 10),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: seeAllTitle('Fetured products'),
-          ),
+          if (Provider.of<ProductCardDataService>(context)
+              .featuredCardProductsList
+              .isNotEmpty)
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: seeAllTitle(context, 'Fetured products'),
+            ),
           const SizedBox(height: 10),
           SizedBox(
             height: screenHight / 3.7,
@@ -146,7 +149,7 @@ class Home extends StatelessWidget {
                         products.featuredCardProductsList[index].isCartAble,
                       ),
                     )
-                  : loadingProgressBar();
+                  : const SizedBox();
             }),
           ),
           const SizedBox(height: 20),
@@ -157,7 +160,7 @@ class Home extends StatelessWidget {
             child: Consumer<PosterCampaignSliderService>(
                 builder: (context, pcData, child) {
               return pcData.campaignDataList.isEmpty
-                  ? loadingProgressBar()
+                  ? const SizedBox()
                   : Row(
                       children: [
                         const SizedBox(width: 20),
@@ -171,37 +174,40 @@ class Home extends StatelessWidget {
           ),
           const SizedBox(height: 20),
           Consumer<ProductCardDataService>(builder: (context, campInfo, child) {
-            return Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: campInfo.campaignInfo != null
-                    ? Row(
-                        children: [
-                          // const SizedBox(width: 18),
-                          Text(
-                            campInfo.campaignInfo!.title,
-                            style: const TextStyle(
-                                fontSize: 19, fontWeight: FontWeight.w600),
-                          ),
+            return campInfo.campaignCardProductList.isEmpty
+                ? loadingProgressBar()
+                : Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: campInfo.campaignInfo != null
+                        ? Row(
+                            children: [
+                              // const SizedBox(width: 18),
+                              Text(
+                                campInfo.campaignInfo!.title,
+                                style: const TextStyle(
+                                    fontSize: 19, fontWeight: FontWeight.w600),
+                              ),
 
-                          const Spacer(),
-                          SlideCountdown(
-                            showZeroValue: true,
-                            textStyle: TextStyle(
-                                color: cc.orange, fontWeight: FontWeight.w500),
-                            decoration: BoxDecoration(
-                                color: cc.pureWhite,
-                                borderRadius:
-                                    const BorderRadius.all(Radius.circular(10)),
-                                border: Border.all(
-                                  width: .7,
-                                  color: cc.orange,
-                                )),
-                            duration: DateTime.now()
-                                .difference(campInfo.campaignInfo!.endDate),
-                          ),
-                        ],
-                      )
-                    : null);
+                              const Spacer(),
+                              SlideCountdown(
+                                showZeroValue: true,
+                                textStyle: TextStyle(
+                                    color: cc.orange,
+                                    fontWeight: FontWeight.w500),
+                                decoration: BoxDecoration(
+                                    color: cc.pureWhite,
+                                    borderRadius: const BorderRadius.all(
+                                        Radius.circular(10)),
+                                    border: Border.all(
+                                      width: .7,
+                                      color: cc.orange,
+                                    )),
+                                duration: DateTime.now()
+                                    .difference(campInfo.campaignInfo!.endDate),
+                              ),
+                            ],
+                          )
+                        : null);
           }),
           const SizedBox(height: 20),
           SizedBox(

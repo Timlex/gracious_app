@@ -65,7 +65,7 @@ class AllTicketsView extends StatelessWidget {
                   Provider.of<AddNewTicketService>(context, listen: false)
                       .fetchDepartments()
                       .onError((error, stackTrace) =>
-                          snackBar(context, 'Message loading failed!'));
+                          snackBar(context, 'Could not load department data!'));
                   Navigator.of(context)
                       .pushNamed(AddNewTicket.routeName)
                       .then((value) {

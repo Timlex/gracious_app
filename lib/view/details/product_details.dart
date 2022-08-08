@@ -183,7 +183,7 @@ class ProductDetails extends StatelessWidget {
                       const SizedBox(height: 10),
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 20),
-                        child: seeAllTitle('Fetured products'),
+                        child: seeAllTitle(context, 'Fetured products'),
                       ),
                       const SizedBox(height: 10),
                       SizedBox(

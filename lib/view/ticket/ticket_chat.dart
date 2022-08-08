@@ -1,10 +1,13 @@
 import 'dart:io';
 
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:gren_mart/service/ticket_chat_service.dart';
+import 'package:gren_mart/view/ticket/image_view.dart';
 import 'package:gren_mart/view/utils/app_bars.dart';
 import 'package:gren_mart/view/utils/constant_name.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
 import '../utils/constant_styles.dart';
@@ -19,10 +22,12 @@ class TicketChat extends StatelessWidget {
     BuildContext context,
   ) async {
     try {
-      final pickedImage =
-          await ImagePicker.platform.pickImage(source: ImageSource.gallery);
+      FilePickerResult? file = await FilePicker.platform.pickFiles(
+        type: FileType.custom,
+        allowedExtensions: ['jpg', 'zip', 'png', 'jpeg'],
+      );
       Provider.of<TicketChatService>(context, listen: false)
-          .setPickedImage(File(pickedImage!.path));
+          .setPickedImage(File(file!.files.single.path as String));
     } catch (error) {
       print(error);
     }
@@ -40,67 +45,13 @@ class TicketChat extends StatelessWidget {
           },
           centerTitle: true,
         ),
-        body: tcService.messagesList.isEmpty
+        body: tcService.ticketDetails == null
             ? loadingProgressBar()
             : Consumer<TicketChatService>(builder: (context, tcService, child) {
                 return Column(
                   children: [
                     Expanded(
-                      child: ListView.builder(
-                          padding: const EdgeInsets.symmetric(horizontal: 15),
-                          reverse: true,
-                          itemCount: tcService.messagesList.length,
-                          itemBuilder: ((context, index) {
-                            final element = tcService.messagesList[index];
-                            final usersMessage = element.type != 'admin';
-                            return Row(
-                              mainAxisAlignment: usersMessage
-                                  ? MainAxisAlignment.end
-                                  : MainAxisAlignment.start,
-                              children: [
-                                Container(
-                                  // height: 60,
-                                  margin:
-                                      const EdgeInsets.symmetric(vertical: 10),
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 15, vertical: 15),
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.only(
-                                      topLeft: const Radius.circular(20),
-                                      topRight: const Radius.circular(20),
-                                      bottomLeft: usersMessage
-                                          ? const Radius.circular(20)
-                                          : Radius.zero,
-                                      bottomRight: usersMessage
-                                          ? Radius.zero
-                                          : const Radius.circular(20),
-                                    ),
-                                    color: usersMessage
-                                        ? cc.primaryColor
-                                        : const Color(0xffEFEFEF),
-                                  ),
-                                  child: Stack(
-                                    children: [
-                                      Center(
-                                        child: Text(
-                                          tcService.messagesList[index].message,
-                                          style: usersMessage
-                                              ? TextStyle(color: cc.pureWhite)
-                                              : null,
-                                        ),
-                                      ),
-                                      Positioned(
-                                          child: Container(
-                                        decoration: const BoxDecoration(
-                                            // shape: BoxShape()
-                                            ),
-                                      ))
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            );
-                          })),
+                      child: messageListView(tcService),
                     ),
                     SizedBox(
                       height: screenHight / 7,
@@ -275,22 +226,35 @@ class TicketChat extends StatelessWidget {
                     const SizedBox(height: 15),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 15),
-                      child: customContainerButton(
-                        'Add new address',
-                        double.infinity,
-                        tcService.message.isEmpty &&
-                                tcService.pickedImage == null
-                            ? () {}
-                            : () {
-                                tcService
-                                    .sendMessage(tcService.ticketDetails.id);
-                                _controller.clear();
-                                FocusScope.of(context).unfocus();
-                              },
-                        color: tcService.message.isEmpty &&
-                                tcService.pickedImage == null
-                            ? cc.greyDots
-                            : cc.primaryColor,
+                      child: Stack(
+                        children: [
+                          customContainerButton(
+                            tcService.isLoading ? '' : 'Add new address',
+                            double.infinity,
+                            tcService.message.isEmpty &&
+                                    tcService.pickedImage == null
+                                ? () {}
+                                : () async {
+                                    tcService.setIsLoading(true);
+                                    await tcService.sendMessage(
+                                        tcService.ticketDetails!.id);
+                                    _controller.clear();
+                                    tcService.setIsLoading(false);
+                                    FocusScope.of(context).unfocus();
+                                  },
+                            color: tcService.message.isEmpty &&
+                                    tcService.pickedImage == null
+                                ? cc.greyDots
+                                : cc.primaryColor,
+                          ),
+                          if (tcService.isLoading)
+                            SizedBox(
+                                height: 50,
+                                width: double.infinity,
+                                child: Center(
+                                    child: loadingProgressBar(
+                                        size: 30, color: cc.pureWhite)))
+                        ],
                       ),
                     ),
                     const SizedBox(height: 25),
@@ -299,5 +263,115 @@ class TicketChat extends StatelessWidget {
               }),
       );
     });
+  }
+
+  Widget messageListView(TicketChatService tcService) {
+    if (tcService.noMessage) {
+      return Center(
+        child: Text(
+          'No Message has been found!',
+          style: TextStyle(color: cc.greyHint),
+        ),
+      );
+    } else {
+      return ListView.builder(
+          padding: const EdgeInsets.symmetric(horizontal: 15),
+          reverse: true,
+          itemCount: tcService.messagesList.length,
+          itemBuilder: ((context, index) {
+            final element = tcService.messagesList[index];
+            final usersMessage = element.type != 'admin';
+            return SizedBox(
+              width: screenWidth / 1.7,
+              child: Column(
+                crossAxisAlignment: usersMessage
+                    ? CrossAxisAlignment.end
+                    : CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: usersMessage
+                        ? MainAxisAlignment.end
+                        : MainAxisAlignment.start,
+                    children: [
+                      Container(
+                        // height: 60,
+                        margin:
+                            const EdgeInsets.only(top: 10, right: 10, left: 10),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 15, vertical: 15),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.only(
+                            topLeft: const Radius.circular(20),
+                            topRight: const Radius.circular(20),
+                            bottomLeft: usersMessage
+                                ? const Radius.circular(20)
+                                : Radius.zero,
+                            bottomRight: usersMessage
+                                ? Radius.zero
+                                : const Radius.circular(20),
+                          ),
+                          color: usersMessage
+                              ? cc.primaryColor
+                              : const Color(0xffEFEFEF),
+                        ),
+                        child: Column(
+                          crossAxisAlignment: usersMessage
+                              ? CrossAxisAlignment.start
+                              : CrossAxisAlignment.end,
+                          children: [
+                            Center(
+                              child: Text(
+                                tcService.messagesList[index].message,
+                                style: usersMessage
+                                    ? TextStyle(color: cc.pureWhite)
+                                    : null,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                  if (tcService.messagesList[index].attachment != null)
+                    const SizedBox(height: 5),
+                  if (tcService.messagesList[index].attachment != null)
+                    showFile(context, tcService.messagesList[index].attachment)
+                ],
+              ),
+            );
+          }));
+    }
+  }
+
+  Widget showFile(BuildContext context, String url) {
+    if (url.contains('.zip')) {
+      return SizedBox(
+        height: 50,
+        width: 50,
+        child: SvgPicture.asset('assets/images/icons/zip_icon.svg'),
+      );
+    }
+    return GestureDetector(
+      onTap: () {
+        Navigator.of(context).push(
+          MaterialPageRoute<void>(
+            builder: (BuildContext context) => ImageView(title),
+          ),
+        );
+      },
+      child: SizedBox(
+        height: 200,
+        width: 200,
+        child: CachedNetworkImage(
+          placeholder: (context, url) {
+            return Image.asset('assets/images/skelleton.png');
+          },
+          imageUrl: url,
+          errorWidget: (context, str, some) {
+            return Image.asset('assets/images/skelleton.png');
+          },
+        ),
+      ),
+    );
   }
 }

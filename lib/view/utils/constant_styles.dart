@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:gren_mart/view/home/all_products.dart';
 import 'package:gren_mart/view/utils/constant_colors.dart';
 import 'package:gren_mart/view/utils/constant_name.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:provider/provider.dart';
+
+import '../../service/search_result_data_service.dart';
 
 ConstantColors cc = ConstantColors();
 
@@ -179,7 +183,7 @@ Widget favoriteIcon(bool isFavorite,
   );
 }
 
-Widget seeAllTitle(String title) {
+Widget seeAllTitle(BuildContext context, String title) {
   return Container(
     margin: const EdgeInsets.only(left: 5),
     child: Row(
@@ -192,7 +196,17 @@ Widget seeAllTitle(String title) {
         SizedBox(
             child: Row(children: [
           TextButton(
-            onPressed: () {},
+            onPressed: () {
+              Provider.of<SearchResultDataService>(context, listen: false)
+                  .resetSerch();
+              Provider.of<SearchResultDataService>(context, listen: false)
+                  .fetchProductsBy(pageNo: '1');
+              Navigator.of(context).push(
+                MaterialPageRoute<void>(
+                  builder: (BuildContext context) => AllProducts(),
+                ),
+              );
+            },
             child: Text('See All',
                 textAlign: TextAlign.end,
                 style: TextStyle(color: cc.primaryColor, fontSize: 14)),

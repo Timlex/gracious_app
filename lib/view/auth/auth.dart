@@ -231,10 +231,12 @@ class Auth extends StatelessWidget {
                         double.infinity,
                         ssData.login
                             ? () {
+                                FocusScope.of(context).unfocus();
                                 _onSubmit(
                                     context, ssData.login, _formKeySignin);
                               }
                             : () {
+                                FocusScope.of(context).unfocus();
                                 _onSubmit(
                                     context, ssData.login, _formKeySignup);
 

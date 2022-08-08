@@ -21,7 +21,7 @@ class FilterBottomSheet extends StatelessWidget {
 
     return Consumer<CategoriesDataService>(builder: (context, catData, chaild) {
       return catData.subCategorydataList.isEmpty
-          ? loadingProgressBar()
+          ? SizedBox(height: 150, child: Center(child: loadingProgressBar()))
           : Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               const Padding(
                 padding: EdgeInsets.only(left: 25.0, top: 15),

@@ -130,3 +130,67 @@ class PosterCard extends StatelessWidget {
     );
   }
 }
+
+class PosterCartSkelleton extends StatelessWidget {
+  PosterCartSkelleton({Key? key}) : super(key: key);
+  ConstantColors cc = ConstantColors();
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: screenWidth / 5,
+      child: Row(
+        children: [
+          Column(
+            children: [
+              Container(
+                height: 45,
+                width: screenWidth / 2.9,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  color: cc.greyDots,
+                ),
+              ),
+              const SizedBox(height: 15),
+              Container(
+                height: 35,
+                width: screenWidth / 3,
+                margin: const EdgeInsets.only(bottom: 5),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  color: cc.greyDots,
+                ),
+              ),
+              Container(
+                height: 35,
+                width: screenWidth / 3,
+                margin: const EdgeInsets.only(bottom: 5),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  color: cc.greyDots,
+                ),
+              ),
+              Container(
+                height: 35,
+                width: screenWidth / 3,
+                margin: const EdgeInsets.only(bottom: 5),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  color: cc.greyDots,
+                ),
+              ),
+            ],
+          ),
+          Container(
+            height: screenHight / 7,
+            width: screenWidth / 3.7,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10),
+              color: cc.greyDots,
+            ),
+          )
+        ],
+      ),
+    );
+  }
+}

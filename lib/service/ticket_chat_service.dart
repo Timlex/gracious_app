@@ -10,11 +10,12 @@ import '../view/utils/constant_name.dart';
 
 class TicketChatService with ChangeNotifier {
   List<AllMessage> messagesList = [];
-  late TicketDetails ticketDetails;
+  TicketDetails? ticketDetails;
   bool isLoading = false;
   String message = '';
   File? pickedImage;
   bool notifyViaMail = false;
+  bool noMessage = false;
 
   setIsLoading(value) {
     isLoading = value;
@@ -30,6 +31,8 @@ class TicketChatService with ChangeNotifier {
     messagesList = [];
     pickedImage = null;
     notifyViaMail = false;
+    noMessage = false;
+    ticketDetails = null;
     notifyListeners();
   }
 
@@ -60,6 +63,7 @@ class TicketChatService with ChangeNotifier {
         var data = TicketChatModel.fromJson(jsonDecode(response.body));
         messagesList = data.allMessages.reversed.toList();
         ticketDetails = data.ticketDetails;
+        noMessage = data.allMessages.isEmpty;
 
         print(isLoading);
         print(messagesList.toString() + '-------------------');
@@ -67,7 +71,9 @@ class TicketChatService with ChangeNotifier {
         // setNoProduct(resultMeta!.total == 0);
 
         notifyListeners();
-      } else {}
+      } else {
+        return jsonDecode(response.body)['message'];
+      }
     } catch (error) {
       print(error);
 

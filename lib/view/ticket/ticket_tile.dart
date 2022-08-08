@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gren_mart/service/ticket_service.dart';
 import 'package:gren_mart/view/utils/constant_colors.dart';
+import 'package:gren_mart/view/utils/constant_name.dart';
+import 'package:gren_mart/view/utils/constant_styles.dart';
 import 'package:provider/provider.dart';
 
 import '../../service/ticket_chat_service.dart';
@@ -77,73 +79,97 @@ class TicketTile extends StatelessWidget {
           //   thickness: 1.5,
           // ),
           Row(
-            // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Text('Priority:'),
-              const SizedBox(width: 5),
-              PopupMenuButton(
-                  child: Container(
-                    padding: const EdgeInsets.only(left: 7, top: 3, bottom: 3),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      color: const Color(0xffBFB55A),
-                    ),
-                    child: Row(
-                      children: [
-                        Text(
-                          priority,
-                          style: TextStyle(
-                              color: cc.pureWhite,
-                              fontSize: 13,
-                              fontWeight: FontWeight.w600),
+              SizedBox(
+                width: (screenWidth - 40) / 3,
+                child: Row(
+                  children: [
+                    const Text('Priority:'),
+                    const SizedBox(width: 5),
+                    PopupMenuButton(
+                        child: Container(
+                          padding:
+                              const EdgeInsets.only(left: 7, top: 3, bottom: 3),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            color: const Color(0xffBFB55A),
+                          ),
+                          child: Row(
+                            children: [
+                              Text(
+                                priority,
+                                style: TextStyle(
+                                    color: cc.pureWhite,
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.w600),
+                              ),
+                              Icon(
+                                Icons.arrow_drop_down_rounded,
+                                color: cc.pureWhite,
+                              )
+                            ],
+                          ),
                         ),
-                        Icon(
-                          Icons.arrow_drop_down_rounded,
-                          color: cc.pureWhite,
-                        )
-                      ],
-                    ),
-                  ),
-                  itemBuilder: (context) =>
-                      [const PopupMenuItem(child: Text('priority'))]),
-              const SizedBox(width: 25),
-              const Text('Status:'),
-              const SizedBox(width: 5),
-              PopupMenuButton(
-                  child: Container(
-                    padding: const EdgeInsets.only(left: 7, top: 3, bottom: 3),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      color: const Color(0xff6BB17B),
-                    ),
-                    child: Row(
-                      children: [
-                        Text(
-                          ticketItem.status,
-                          style: TextStyle(
-                              color: cc.pureWhite,
-                              fontSize: 13,
-                              fontWeight: FontWeight.w600),
+                        itemBuilder: (context) =>
+                            [const PopupMenuItem(child: Text('priority'))]),
+                  ],
+                ),
+              ),
+              SizedBox(
+                width: (screenWidth - 40) / 3,
+                child: Row(
+                  children: [
+                    const Text('Status:'),
+                    const SizedBox(width: 5),
+                    PopupMenuButton(
+                        child: Container(
+                          padding:
+                              const EdgeInsets.only(left: 7, top: 3, bottom: 3),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            color: const Color(0xff6BB17B),
+                          ),
+                          child: Row(
+                            children: [
+                              Text(
+                                ticketItem.status,
+                                style: TextStyle(
+                                    color: cc.pureWhite,
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.w600),
+                              ),
+                              Icon(
+                                Icons.arrow_drop_down_rounded,
+                                color: cc.pureWhite,
+                              )
+                            ],
+                          ),
                         ),
-                        Icon(
-                          Icons.arrow_drop_down_rounded,
-                          color: cc.pureWhite,
-                        )
-                      ],
-                    ),
-                  ),
-                  itemBuilder: (context) =>
-                      [const PopupMenuItem(child: Text('priority'))]),
-              const Spacer(),
+                        itemBuilder: (context) =>
+                            [const PopupMenuItem(child: Text('priority'))]),
+                  ],
+                ),
+              ),
+              // const Spacer(),
               GestureDetector(
                 onTap: (() {
                   Provider.of<TicketChatService>(context, listen: false)
-                      .fetchSingleTickets(ticketId);
+                      .fetchSingleTickets(ticketId)
+                      .then((value) {
+                    if (value != null) {
+                      snackBar(context, value);
+                    }
+                  }).onError((error, stackTrace) {
+                    snackBar(context, 'Could not load any messages');
+                  });
                   Navigator.of(context).push(MaterialPageRoute<void>(
                     builder: (BuildContext context) => TicketChat(title),
                   ));
                 }),
                 child: Container(
+                  height: 30,
+                  width: 40,
                   padding:
                       const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                   decoration: BoxDecoration(
@@ -153,6 +179,7 @@ class TicketTile extends StatelessWidget {
                   child: SvgPicture.asset(
                     'assets/images/icons/chat_view.svg',
                     height: 20,
+                    width: 30,
                   ),
                 ),
               ),

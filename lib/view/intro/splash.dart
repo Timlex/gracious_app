@@ -67,9 +67,9 @@ class SplashScreen extends StatelessWidget {
         await Provider.of<UserProfileService>(context, listen: false)
             .fetchProfileService(value)
             .then((value) async {
-          await Provider.of<PosterCampaignSliderService>(context, listen: false)
+          Provider.of<PosterCampaignSliderService>(context, listen: false)
               .fetchPosters();
-          await Provider.of<PosterCampaignSliderService>(context, listen: false)
+          Provider.of<PosterCampaignSliderService>(context, listen: false)
               .fetchCampaigns();
 
           Navigator.of(context).pushReplacementNamed(HomeFront.routeName);
