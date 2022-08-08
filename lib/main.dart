@@ -10,6 +10,7 @@ import 'package:gren_mart/service/favorite_data_service.dart';
 import 'package:gren_mart/service/manage_account_service.dart';
 import 'package:gren_mart/service/poster_campaign_slider_service.dart';
 import 'package:gren_mart/service/product_card_data_service.dart';
+import 'package:gren_mart/service/product_details_service.dart';
 import 'package:gren_mart/service/reset_pass_otp_service.dart';
 import 'package:gren_mart/service/search_result_data_service.dart';
 import 'package:gren_mart/service/shipping_addresses_service.dart';
@@ -80,6 +81,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => TicketService()),
         ChangeNotifierProvider(create: (_) => TicketChatService()),
         ChangeNotifierProvider(create: (_) => AddNewTicketService()),
+        ChangeNotifierProvider(create: (_) => ProductDetailsService()),
       ],
       child: Consumer<Products>(
         builder: (context, value, child) => MaterialApp(
@@ -107,7 +109,6 @@ class MyApp extends StatelessWidget {
             ProductDetails.routeName: (context) => ProductDetails(),
             CartView.routeName: (context) => CartView(),
             Checkout.routeName: (context) => Checkout(),
-            // SearchView.routeName: (context) => SearchView(),
             AddNewAddress.routeName: (context) => AddNewAddress(),
             ManageAccount.routeName: (context) => ManageAccount(),
             ChangePassword.routeName: (context) => const ChangePassword(),

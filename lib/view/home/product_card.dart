@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:gren_mart/service/cart_data_service.dart';
 import 'package:gren_mart/service/favorite_data_service.dart';
+import 'package:gren_mart/service/product_details_service.dart';
 import 'package:gren_mart/view/details/product_details.dart';
 import 'package:gren_mart/view/utils/constant_colors.dart';
 import 'package:gren_mart/view/utils/constant_name.dart';
@@ -37,8 +38,13 @@ class ProductCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
+        Provider.of<ProductDetailsService>(context, listen: false)
+            .fetchProductDetails(_id);
         Navigator.of(context)
-            .pushNamed(ProductDetails.routeName, arguments: [_id]);
+            .pushNamed(ProductDetails.routeName, arguments: [_id]).then(
+                (value) =>
+                    Provider.of<ProductDetailsService>(context, listen: false)
+                        .clearProdcutDetails());
       },
       child: Container(
         width: screenWidth / 2.57,
@@ -172,7 +178,17 @@ class ProductCard extends StatelessWidget {
                                       1,
                                       imgUrl);
                                 }
-                              : (() {}),
+                              : (() {
+                                  Provider.of<ProductDetailsService>(context,
+                                          listen: false)
+                                      .fetchProductDetails(_id);
+                                  Navigator.of(context).pushNamed(
+                                      ProductDetails.routeName,
+                                      arguments: [_id]).then((value) => Provider
+                                          .of<ProductDetailsService>(context,
+                                              listen: false)
+                                      .clearProdcutDetails());
+                                }),
                           child: child,
                         );
                       },
@@ -184,14 +200,14 @@ class ProductCard extends StatelessWidget {
                             borderRadius: BorderRadius.circular(10),
                             border: Border.all(
                               width: 1,
-                              color: ConstantColors().primaryColor,
+                              color: cc.primaryColor,
                             ),
                           ),
                           child: Text(
-                            'Add to cart',
+                            isCartable ? 'Add to cart' : 'View details',
                             textAlign: TextAlign.center,
                             style: TextStyle(
-                                color: ConstantColors().primaryColor,
+                                color: cc.primaryColor,
                                 fontWeight: FontWeight.w600),
                           )),
                     ),

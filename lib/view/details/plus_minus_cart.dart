@@ -7,8 +7,8 @@ import 'package:gren_mart/view/utils/constant_name.dart';
 
 class PlusMinusCart extends StatefulWidget {
   int count = 0;
-  double amount;
-  double totalAmount;
+  int amount;
+  int totalAmount;
   PlusMinusCart(this.count, this.amount, this.totalAmount, {Key? key})
       : super(key: key);
 
@@ -19,20 +19,20 @@ class PlusMinusCart extends StatefulWidget {
 class _PlusMinusCartState extends State<PlusMinusCart> {
   ConstantColors cc = ConstantColors();
 
-  void addItem(double totalSum) {
+  void addItem(int totalSum) {
     setState(() {
       widget.count++;
-      widget.totalAmount = widget.count.toDouble() * widget.amount;
+      widget.totalAmount = widget.count * widget.amount;
     });
   }
 
-  void minusItem(double totalSum) {
+  void minusItem(int totalSum) {
     if (widget.count == 1) {
       return;
     }
     setState(() {
       widget.count--;
-      widget.totalAmount = widget.count.toDouble() * widget.amount;
+      widget.totalAmount = widget.count * widget.amount;
     });
   }
 
@@ -53,7 +53,7 @@ class _PlusMinusCartState extends State<PlusMinusCart> {
               Container(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
-                  color: Color.fromARGB(33, 208, 47, 68),
+                  color: const Color.fromARGB(33, 208, 47, 68),
                 ),
                 child: IconButton(
                     onPressed: () => minusItem(widget.totalAmount),
@@ -74,7 +74,7 @@ class _PlusMinusCartState extends State<PlusMinusCart> {
               Container(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
-                  color: Color.fromARGB(39, 0, 177, 6),
+                  color: const Color.fromARGB(39, 0, 177, 6),
                 ),
                 child: IconButton(
                     onPressed: () => addItem(widget.totalAmount),
@@ -86,7 +86,7 @@ class _PlusMinusCartState extends State<PlusMinusCart> {
             ],
           ),
         ),
-        Spacer(),
+        const Spacer(),
         Stack(children: [
           Container(
             alignment: Alignment.center,
@@ -118,7 +118,7 @@ class _PlusMinusCartState extends State<PlusMinusCart> {
             child: Container(
               height: 50,
               width: 80,
-              color: Color.fromARGB(24, 0, 0, 0),
+              color: const Color.fromARGB(24, 0, 0, 0),
               child: Center(
                 child: Text(
                   '\$' + widget.totalAmount.toStringAsFixed(2),

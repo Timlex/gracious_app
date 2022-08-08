@@ -105,8 +105,8 @@ class AddNewTicketService with ChangeNotifier {
 
   Future fetchDepartments() async {
     final url = Uri.parse('$baseApiUrl/user/get-department');
-    print(
-        '$title, $selectedDepartment, ${selectedDepartment.id}, $subject, $description');
+    // print(
+    //     '$title, $selectedDepartment, ${selectedDepartment.id}, $subject, $description');
     try {
       final response = await http.get(url, headers: header);
       print(response.statusCode);

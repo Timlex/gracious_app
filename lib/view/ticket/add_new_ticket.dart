@@ -81,6 +81,7 @@ class AddNewTicket extends StatelessWidget {
                         // const SizedBox(height: 8),
                         CustomTextField(
                           'Enter a subject',
+                          focusNode: _subjectFN,
                           onChanged: (value) {
                             ntService.setSubject(value);
                           },
@@ -129,14 +130,14 @@ class AddNewTicket extends StatelessWidget {
                           },
                           validator: (address) {
                             if (address == null) {
-                              return 'You have to give an address';
+                              return 'You have to give some description';
                             }
-                            if (address.length < 5) {
-                              return 'Enter a valid address';
-                            }
+
                             return null;
                           },
-                          onFieldSubmitted: (_) {},
+                          onFieldSubmitted: (_) {
+                            _onSubmit(context, ntService);
+                          },
                         ),
                       ]),
                 ),
