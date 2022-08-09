@@ -20,6 +20,7 @@ class Home extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print(screenHight);
     Provider.of<PosterCampaignSliderService>(context, listen: false)
         .fetchPosters();
     Provider.of<PosterCampaignSliderService>(context, listen: false)
@@ -93,7 +94,7 @@ class Home extends StatelessWidget {
           ),
           const SizedBox(height: 20),
           SizedBox(
-            height: 170,
+            height: screenHight / 4.8,
             width: double.infinity,
             child: Consumer<PosterCampaignSliderService>(
                 builder: (context, posterData, child) {
@@ -126,7 +127,7 @@ class Home extends StatelessWidget {
             ),
           const SizedBox(height: 10),
           SizedBox(
-            height: screenHight / 3.7,
+            height: screenHight / 3.7 < 221 ? 170 : screenHight / 3.7,
             child: Consumer<ProductCardDataService>(
                 builder: (context, products, child) {
               return products.featuredCardProductsList.isNotEmpty
@@ -211,7 +212,7 @@ class Home extends StatelessWidget {
           }),
           const SizedBox(height: 20),
           SizedBox(
-            height: screenHight / 3.7,
+            height: screenHight / 3.7 < 221 ? 170 : screenHight / 3.7,
             child: Consumer<ProductCardDataService>(
                 builder: (context, products, child) {
               return products.campaignCardProductList.isNotEmpty

@@ -8,6 +8,12 @@ void initiateDeviceSize(BuildContext context) {
   screenWidth = MediaQuery.of(context).size.width;
 }
 
+extension StringExtension on String {
+  String capitalize() {
+    return "${this[0].toUpperCase()}${substring(1)}";
+  }
+}
+
 void setToken(value) {
   globalUserToken = value;
 }

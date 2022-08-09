@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:gren_mart/view/utils/constant_colors.dart';
@@ -47,10 +45,11 @@ class _PlusMinusCartState extends State<PlusMinusCart> {
             color: cc.pureWhite,
           ),
           height: 48,
-          width: 135,
+          width: screenWidth / 3,
           child: Row(
             children: [
               Container(
+                width: screenWidth / 8,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
                   color: const Color.fromARGB(33, 208, 47, 68),
@@ -72,6 +71,7 @@ class _PlusMinusCartState extends State<PlusMinusCart> {
                     fontWeight: FontWeight.w600),
               )),
               Container(
+                width: screenWidth / 8,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
                   color: const Color.fromARGB(39, 0, 177, 6),
@@ -101,13 +101,16 @@ class _PlusMinusCartState extends State<PlusMinusCart> {
               children: [
                 SvgPicture.asset('assets/images/icons/bag.svg'),
                 const SizedBox(width: 4),
-                Text(
-                  'Add to cart',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 13,
-                    color: cc.pureWhite,
-                    fontWeight: FontWeight.w600,
+                SizedBox(
+                  width: screenWidth / 5,
+                  child: Text(
+                    'Add to cart',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                        fontSize: 13,
+                        color: cc.pureWhite,
+                        fontWeight: FontWeight.w600,
+                        overflow: TextOverflow.ellipsis),
                   ),
                 ),
               ],
@@ -117,7 +120,7 @@ class _PlusMinusCartState extends State<PlusMinusCart> {
             right: 0,
             child: Container(
               height: 50,
-              width: 80,
+              width: screenWidth / 5,
               color: const Color.fromARGB(24, 0, 0, 0),
               child: Center(
                 child: Text(

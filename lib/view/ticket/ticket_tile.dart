@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gren_mart/service/ticket_service.dart';
 import 'package:gren_mart/view/utils/constant_colors.dart';
-import 'package:gren_mart/view/utils/constant_name.dart';
 import 'package:gren_mart/view/utils/constant_styles.dart';
 import 'package:provider/provider.dart';
 
 import '../../service/ticket_chat_service.dart';
 import 'ticket_chat.dart';
+import '../utils/constant_name.dart';
 
 class TicketTile extends StatelessWidget {
   final String title;
@@ -32,7 +32,7 @@ class TicketTile extends StatelessWidget {
         .firstWhere((element) => element.id == ticketId);
     return Container(
       // height: screenHight / 10,
-      margin: const EdgeInsets.all(8),
+      margin: const EdgeInsets.symmetric(vertical: 10),
       padding: const EdgeInsets.all(10),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(8),
@@ -68,13 +68,13 @@ class TicketTile extends StatelessWidget {
               ,
 
               const Spacer(),
-              PopupMenuButton(
-                  icon: const Icon(Icons.more_vert),
-                  itemBuilder: (context) =>
-                      [const PopupMenuItem(child: Text(''))])
+              // PopupMenuButton(
+              //     icon: const Icon(Icons.more_vert),
+              //     itemBuilder: (context) =>
+              //         [const PopupMenuItem(child: Text(''))])
             ],
           )),
-          const SizedBox(height: 30),
+          const SizedBox(height: 45),
           // const Divider(
           //   thickness: 1.5,
           // ),
@@ -83,171 +83,148 @@ class TicketTile extends StatelessWidget {
             children: [
               SizedBox(
                 width: (screenWidth - 40) / 3,
-                child: Row(
-                  children: [
-                    const Text('Priority:'),
-                    const SizedBox(width: 5),
-                    PopupMenuButton(
-                        child: Container(
-                          padding:
-                              const EdgeInsets.only(left: 7, top: 3, bottom: 3),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                            color: const Color(0xffBFB55A),
-                          ),
-                          child: Row(
-                            children: [
-                              Text(
-                                priority,
-                                style: TextStyle(
-                                    color: cc.pureWhite,
-                                    fontSize: 13,
-                                    fontWeight: FontWeight.w600),
+                child: Consumer<TicketService>(
+                    builder: (context, tService, child) {
+                  return FittedBox(
+                    child: Row(
+                      children: [
+                        const Text('Priority:'),
+                        const SizedBox(width: 5),
+                        PopupMenuButton(
+                            child: Container(
+                              padding: const EdgeInsets.only(
+                                  left: 7, top: 3, bottom: 3),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10),
+                                color: manageColor(priority),
                               ),
-                              Icon(
-                                Icons.arrow_drop_down_rounded,
-                                color: cc.pureWhite,
-                              )
-                            ],
-                          ),
-                        ),
-                        itemBuilder: (context) =>
-                            [const PopupMenuItem(child: Text('priority'))]),
-                  ],
-                ),
+                              child: Row(
+                                children: [
+                                  Text(
+                                    priority.capitalize(),
+                                    style: TextStyle(
+                                        color: cc.pureWhite,
+                                        fontSize: 13,
+                                        fontWeight: FontWeight.w600),
+                                  ),
+                                  Icon(
+                                    Icons.arrow_drop_down_rounded,
+                                    color: cc.pureWhite,
+                                  )
+                                ],
+                              ),
+                            ),
+                            onSelected: (value) {
+                              // tService.setPriority(value);
+                            },
+                            itemBuilder: (context) => tService.priorityList
+                                .map((e) => PopupMenuItem(
+                                      child: Text(e),
+                                      value: e,
+                                    ))
+                                .toList()),
+                      ],
+                    ),
+                  );
+                }),
               ),
+              const SizedBox(width: 5),
               SizedBox(
                 width: (screenWidth - 40) / 3,
-                child: Row(
-                  children: [
-                    const Text('Status:'),
-                    const SizedBox(width: 5),
-                    PopupMenuButton(
-                        child: Container(
-                          padding:
-                              const EdgeInsets.only(left: 7, top: 3, bottom: 3),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                            color: const Color(0xff6BB17B),
+                child: FittedBox(
+                  child: Row(
+                    children: [
+                      const Text('Status:'),
+                      const SizedBox(width: 5),
+                      PopupMenuButton(
+                          child: Container(
+                            padding: const EdgeInsets.only(
+                                left: 7, top: 3, bottom: 3),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              color: ticketItem.status == 'open'
+                                  ? const Color(0xff6BB17B)
+                                  : const Color(0xffC66060),
+                            ),
+                            child: Row(
+                              children: [
+                                Text(
+                                  ticketItem.status.capitalize(),
+                                  style: TextStyle(
+                                      color: cc.pureWhite,
+                                      fontSize: 13,
+                                      fontWeight: FontWeight.w600),
+                                ),
+                                Icon(
+                                  Icons.arrow_drop_down_rounded,
+                                  color: cc.pureWhite,
+                                )
+                              ],
+                            ),
                           ),
-                          child: Row(
-                            children: [
-                              Text(
-                                ticketItem.status,
-                                style: TextStyle(
-                                    color: cc.pureWhite,
-                                    fontSize: 13,
-                                    fontWeight: FontWeight.w600),
-                              ),
-                              Icon(
-                                Icons.arrow_drop_down_rounded,
-                                color: cc.pureWhite,
-                              )
-                            ],
-                          ),
-                        ),
-                        itemBuilder: (context) =>
-                            [const PopupMenuItem(child: Text('priority'))]),
-                  ],
+                          itemBuilder: (context) => [
+                                const PopupMenuItem(
+                                  child: Text('Open'),
+                                  value: 'open',
+                                ),
+                                const PopupMenuItem(
+                                    child: Text('Close'), value: 'close'),
+                              ]),
+                    ],
+                  ),
                 ),
               ),
-              // const Spacer(),
-              GestureDetector(
-                onTap: (() {
-                  Provider.of<TicketChatService>(context, listen: false)
-                      .fetchSingleTickets(ticketId)
-                      .then((value) {
-                    if (value != null) {
-                      snackBar(context, value);
-                    }
-                  }).onError((error, stackTrace) {
-                    snackBar(context, 'Could not load any messages');
-                  });
-                  Navigator.of(context).push(MaterialPageRoute<void>(
-                    builder: (BuildContext context) => TicketChat(title),
-                  ));
-                }),
-                child: Container(
-                  height: 30,
-                  width: 40,
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    color: const Color(0xff17A2B8),
-                  ),
-                  child: SvgPicture.asset(
-                    'assets/images/icons/chat_view.svg',
-                    height: 20,
-                    width: 30,
+              const Spacer(),
+              SizedBox(
+                child: GestureDetector(
+                  onTap: (() {
+                    Provider.of<TicketChatService>(context, listen: false)
+                        .fetchSingleTickets(ticketId)
+                        .then((value) {
+                      if (value != null) {
+                        snackBar(context, value);
+                      }
+                    }).onError((error, stackTrace) {
+                      snackBar(context, 'Could not load any messages');
+                    });
+                    Navigator.of(context).push(MaterialPageRoute<void>(
+                      builder: (BuildContext context) => TicketChat(title),
+                    ));
+                  }),
+                  child: Container(
+                    height: 30,
+                    width: 40,
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      color: const Color(0xff17A2B8),
+                    ),
+                    child: SvgPicture.asset(
+                      'assets/images/icons/chat_view.svg',
+                      height: 20,
+                      width: 30,
+                    ),
                   ),
                 ),
               ),
             ],
           )
-
-          // ListTile(
-          //   dense: true,
-          //   visualDensity: const VisualDensity(vertical: -3),
-          //   onTap: () {
-          //     Provider.of<TicketChatService>(context, listen: false)
-          //         .fetchSingleTickets(ticketId);
-          //     Navigator.of(context).push(MaterialPageRoute<void>(
-          //       builder: (BuildContext context) => TicketChat(title),
-          //     ));
-          //   },
-          //   title: Text(
-          //     title,
-          //     style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
-          //   ),
-          //   subtitle: Row(
-          //     children: [
-          //       Text(
-          //         '#$ticketId',
-          //         style: TextStyle(
-          //             color: cc.primaryColor, fontWeight: FontWeight.w600),
-          //       ),
-          //       const SizedBox(width: 10),
-          //       Text(
-          //         DateFormat.yMMMd().format(submitDate),
-          //         style: TextStyle(color: cc.greyHint),
-          //       )
-          //     ],
-          //   ),
-          //   trailing: SizedBox(
-          //     width: screenWidth / 2.5,
-          //     child: Row(
-          //       mainAxisAlignment: MainAxisAlignment.end,
-          //       children: [
-          //         Container(
-          //           width: screenWidth / 4,
-          //           padding:
-          //               const EdgeInsets.symmetric(horizontal: 10, vertical: 3),
-          //           decoration: BoxDecoration(
-          //             borderRadius: BorderRadius.circular(10),
-          //             color: cc.whiteGrey,
-          //           ),
-          //           child: Text(
-          //             priority,
-          //             style: TextStyle(
-          //                 color: cc.blackColor, fontWeight: FontWeight.w600),
-          //             textAlign: TextAlign.center,
-          //           ),
-          //         ),
-          //         const SizedBox(width: 15),
-          //         Badge(
-          //           child: const Icon(
-          //             Icons.arrow_forward_ios,
-          //             size: 20,
-          //           ),
-          //         )
-          //       ],
-          //     ),
-          //   ),
-          // ),
-          // if (divider) const Divider()
         ],
       ),
     );
+  }
+
+  Color manageColor(value) {
+    if (value == 'low') {
+      return const Color(0xff6BB17B);
+    }
+    if (value == 'medium') {
+      return const Color(0xff70B9AE);
+    }
+    if (value == 'high') {
+      return const Color(0xffC66060);
+    }
+    return const Color(0xffBFB55A);
   }
 }

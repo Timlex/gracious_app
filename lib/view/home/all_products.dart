@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gren_mart/service/product_card_data_service.dart';
 import 'package:gren_mart/service/search_result_data_service.dart';
 import 'package:gren_mart/view/utils/app_bars.dart';
 import 'package:provider/provider.dart';
@@ -17,18 +18,17 @@ class AllProducts extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     double cardWidth = screenWidth / 3.3;
-    double cardHeight = screenHight / 4.9;
+    double cardHeight = screenHight / 4.9 < 165 ? 130 : screenHight / 4.9;
     controller.addListener((() => scrollListener(context)));
     return Scaffold(
       appBar: AppBars().appBarTitled('All Products', () {
         Navigator.of(context).pop();
       }),
-      body:
-          Consumer<SearchResultDataService>(builder: (context, srData, child) {
+      body: Consumer<ProductCardDataService>(builder: (context, srData, child) {
         return Column(
           children: [
             Expanded(
-              child: srData.resultMeta != null
+              child: srData.featuredCardProductsList != null
                   ? newMethod(cardWidth, cardHeight, srData)
                   : FutureBuilder(
                       future: showTimout(),
@@ -47,7 +47,7 @@ class AllProducts extends StatelessWidget {
                       }),
                     ),
             ),
-            if (srData.isLoading) loadingProgressBar()
+            if (srData.featuredCardProductsList.isEmpty) loadingProgressBar()
           ],
         );
       }),
@@ -55,32 +55,33 @@ class AllProducts extends StatelessWidget {
   }
 
   Widget newMethod(
-      double cardWidth, double cardHeight, SearchResultDataService srData) {
-    if (srData.noProduct) {
+      double cardWidth, double cardHeight, ProductCardDataService srData) {
+    if (srData.featuredCardProductsList.isEmpty) {
       return Center(
         child: Text(
-          'No data has been found!',
+          // 'No data has been found!',
+          '',
           style: TextStyle(color: cc.greyHint),
         ),
       );
     } else {
       return GridView.builder(
-        controller: controller,
+        // controller: controller,
         physics: const BouncingScrollPhysics(
             parent: AlwaysScrollableScrollPhysics()),
-        padding: const EdgeInsets.only(left: 20),
+        padding: const EdgeInsets.only(left: 20, top: 15),
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 2,
           childAspectRatio: cardWidth / cardHeight,
           crossAxisSpacing: 12,
           // mainAxisSpacing: 12
         ),
-        itemCount: srData.searchResult.length,
+        itemCount: srData.featuredCardProductsList.length,
         itemBuilder: (context, index) {
-          final e = srData.searchResult[index];
+          final e = srData.featuredCardProductsList[index];
           // if (srData.resultMeta!.lastPage >= pageNo) {
           return ProductCard(e.prdId, e.title, e.price, e.discountPrice,
-              e.campaignPercentage, e.imgUrl, e.isCartAble);
+              e.campaignPercentage.toDouble(), e.imgUrl, e.isCartAble);
           // }
           // else {
           //   return const Center(

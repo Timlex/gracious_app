@@ -193,7 +193,7 @@ class ProductCard extends StatelessWidget {
                         );
                       },
                       child: Container(
-                          height: 40,
+                          height: screenWidth / 10,
                           width: double.infinity,
                           alignment: Alignment.center,
                           decoration: BoxDecoration(

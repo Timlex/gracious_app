@@ -23,11 +23,14 @@ class OrderTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: screenHight / 10,
+      height: screenHight / 10 < 82 ? 82 : screenHight / 10,
       child: Column(
         children: [
           ListTile(
             dense: true,
+            contentPadding:
+                const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+            style: ListTileStyle.drawer,
             visualDensity: const VisualDensity(vertical: -3),
             onTap: () {
               Navigator.of(context).push(MaterialPageRoute<void>(

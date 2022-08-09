@@ -97,8 +97,8 @@ class ManageAccount extends StatelessWidget {
                     borderRadius: BorderRadius.circular(150),
                     child: maData.pickeImage == null
                         ? CachedNetworkImage(
-                            height: 150,
-                            width: 150,
+                            height: screenHight / 5.5,
+                            width: screenHight / 5.5,
                             fit: BoxFit.cover,
                             alignment: Alignment.topCenter,
                             imageUrl: maData.imgUrl ?? '',

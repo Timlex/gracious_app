@@ -54,6 +54,8 @@ dependencies:
   focused_menu:
   # lottie:
   file_picker:
+  flutter_facebook_auth: 
+  google_sign_in:
   
   provider: ^6.0.3
 

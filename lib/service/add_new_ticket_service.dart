@@ -79,7 +79,7 @@ class AddNewTicketService with ChangeNotifier {
       final response = await http.post(url, headers: header, body: {
         'title': title,
         'subject': subject,
-        'priority': selectedPriority,
+        'priority': selectedPriority!.toLowerCase(),
         'description': description,
         'departments': selectedDepartment.id.toString(),
       });

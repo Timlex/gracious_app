@@ -31,7 +31,7 @@ class SearchView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     double cardWidth = screenWidth / 3.3;
-    double cardHeight = screenHight / 4.9;
+    double cardHeight = screenHight / 4.9 < 165 ? 130 : screenHight / 4.9;
     controller.addListener((() => scrollListener(context)));
 
     // final routeData =

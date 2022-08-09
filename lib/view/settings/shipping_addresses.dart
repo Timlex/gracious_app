@@ -101,11 +101,7 @@ class _ShippingAdressesState extends State<ShippingAdresses> {
                           .map(((e) => Padding(
                                 padding:
                                     const EdgeInsets.symmetric(horizontal: 20),
-                                child: Dismissible(
-                                    key: Key(e.id.toString()),
-                                    direction: DismissDirection.endToStart,
-                                    onDismissed: (direction) {},
-                                    child: addressBox(e.name, e.address, e.id)),
+                                child: addressBox(e.name, e.address, e.id),
                               ))),
                     ],
                   ),

@@ -5,7 +5,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:gren_mart/service/ticket_chat_service.dart';
-import 'package:gren_mart/view/ticket/image_view.dart';
+import 'package:gren_mart/view/utils/image_view.dart';
 import 'package:gren_mart/view/utils/app_bars.dart';
 import 'package:gren_mart/view/utils/constant_name.dart';
 import 'package:provider/provider.dart';
@@ -355,7 +355,7 @@ class TicketChat extends StatelessWidget {
       onTap: () {
         Navigator.of(context).push(
           MaterialPageRoute<void>(
-            builder: (BuildContext context) => ImageView(title),
+            builder: (BuildContext context) => ImageView(url),
           ),
         );
       },

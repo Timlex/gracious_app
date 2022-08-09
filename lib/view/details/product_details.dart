@@ -13,8 +13,10 @@ import 'package:gren_mart/view/utils/constant_styles.dart';
 import 'package:provider/provider.dart';
 
 import '../../service/product_card_data_service.dart';
+import '../home/home_front.dart';
 import '../home/product_card.dart';
 import '../utils/constant_name.dart';
+import '../utils/image_view.dart';
 
 class ProductDetails extends StatelessWidget {
   static const routeName = 'product details screen';
@@ -44,18 +46,35 @@ class ProductDetails extends StatelessWidget {
                           flexibleSpace: FlexibleSpaceBar(
                             background: Swiper(
                               itemBuilder: (BuildContext context, int index) {
-                                return CachedNetworkImage(
-                                  placeholder: (context, url) => Image.asset(
-                                      'assets/images/skelleton.png'),
-                                  imageUrl: product.productGalleryImage.isEmpty
-                                      ? ''
-                                      : product.productGalleryImage[index],
-                                  errorWidget: (context, errorText, error) =>
-                                      Image.network(product.image),
+                                return GestureDetector(
+                                  onTap: () {
+                                    Navigator.of(context).push(
+                                      MaterialPageRoute<void>(
+                                        builder: (BuildContext context) =>
+                                            ImageView(
+                                          product.productGalleryImage.isEmpty
+                                              ? product.image
+                                              : product
+                                                  .productGalleryImage[index],
+                                          id: product.id,
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                  child: CachedNetworkImage(
+                                    placeholder: (context, url) => Image.asset(
+                                        'assets/images/skelleton.png'),
+                                    imageUrl: product
+                                            .productGalleryImage.isEmpty
+                                        ? ''
+                                        : product.productGalleryImage[index],
+                                    errorWidget: (context, errorText, error) =>
+                                        Image.network(product.image),
+                                  ),
                                 );
                               },
                               itemCount: product.productGalleryImage.isEmpty
-                                  ? 3
+                                  ? 1
                                   : product.productGalleryImage.length,
                               pagination: SwiperCustomPagination(
                                 builder: (BuildContext context,
@@ -72,7 +91,7 @@ class ProductDetails extends StatelessWidget {
                                                   i <
                                                       (product.productGalleryImage
                                                               .isEmpty
-                                                          ? 3
+                                                          ? 1
                                                           : product
                                                               .productGalleryImage
                                                               .length);
@@ -87,7 +106,8 @@ class ProductDetails extends StatelessWidget {
                             ),
                           ),
                           leading: GestureDetector(
-                            onTap: (() => Navigator.of(context).pop()),
+                            onTap: (() => Navigator.of(context)
+                                .pushReplacementNamed(HomeFront.routeName)),
                             child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
@@ -106,8 +126,15 @@ class ProductDetails extends StatelessWidget {
                                   child: favoriteIcon(
                                       favoriteData
                                           .isfavorite(product.id.toString()),
-                                      size: 18,
-                                      onPressed: () {}
+                                      size: 18, onPressed: () {
+                                    favoriteData.toggleFavorite(
+                                      product.id,
+                                      product.title,
+                                      product.price,
+                                      product.salePrice,
+                                      product.image,
+                                    );
+                                  }
                                       // => favoriteData.toggleFavorite(
                                       //     product.id,
                                       //     product: product)
@@ -134,11 +161,16 @@ class ProductDetails extends StatelessWidget {
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
                                         children: [
-                                          Text(
-                                            product.title,
-                                            style: const TextStyle(
-                                                fontSize: 19,
-                                                fontWeight: FontWeight.w600),
+                                          SizedBox(
+                                            width: screenWidth / 2,
+                                            child: Text(
+                                              product.title,
+                                              style: const TextStyle(
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                  fontSize: 19,
+                                                  fontWeight: FontWeight.w600),
+                                            ),
                                           ),
                                           const SizedBox(height: 17),
                                           discAmountRow(
@@ -147,6 +179,7 @@ class ProductDetails extends StatelessWidget {
                                       ),
                                     ),
                                     SizedBox(
+                                      width: screenWidth / 3,
                                       height: 60,
                                       child: Column(
                                         crossAxisAlignment:
@@ -154,7 +187,10 @@ class ProductDetails extends StatelessWidget {
                                         children: [
                                           RatingBar.builder(
                                             itemSize: 17,
-                                            initialRating: 3,
+                                            initialRating: pdService
+                                                    .productDetails!
+                                                    .avgRating ??
+                                                0,
                                             minRating: 1,
                                             direction: Axis.horizontal,
                                             allowHalfRating: false,
@@ -173,7 +209,7 @@ class ProductDetails extends StatelessWidget {
                                           ),
                                           const SizedBox(height: 17),
                                           Text(
-                                            'In Stock (232)',
+                                            'In Stock (${product.inventory.stockCount.toString()})',
                                             style: TextStyle(
                                                 color: cc.primaryColor,
                                                 fontWeight: FontWeight.w600,
@@ -188,11 +224,22 @@ class ProductDetails extends StatelessWidget {
 
                               const SizedBox(height: 20),
 
-                              AnimatedBox('Description', product.description),
-                              const AnimatedBox('Additional Informationn',
-                                  'Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numqum eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem.'),
-                              const AnimatedBox('Review',
-                                  'Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numqum eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem.'),
+                              AnimatedBox(
+                                'Description',
+                                {'1': product.description},
+                                pdService.descriptionExpand,
+                                onPressed: pdService.toggleDescriptionExpande,
+                              ),
+                              AnimatedBox(
+                                'Additional Informationn',
+                                pdService.setAditionalInfo(),
+                                pdService.aDescriptionExpand,
+                                onPressed: pdService.toggleADescriptionExpande,
+                              ),
+                              // const AnimatedBox('Additional Informationn',
+                              //     'Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numqum eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem.'),
+                              // const AnimatedBox('Review',
+                              //     'Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numqum eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem.'),
 
                               const SizedBox(height: 10),
                               Padding(
@@ -202,7 +249,9 @@ class ProductDetails extends StatelessWidget {
                               ),
                               const SizedBox(height: 10),
                               SizedBox(
-                                height: screenHight / 3.7,
+                                height: screenHight / 3.7 < 221
+                                    ? 170
+                                    : screenHight / 3.7,
                                 child: Consumer<ProductCardDataService>(
                                     builder: (context, products, child) {
                                   return products
@@ -269,7 +318,7 @@ class ProductDetails extends StatelessWidget {
                         color: cc.blackColor,
                       ),
                       child: PlusMinusCart(
-                          itemCount, product.price, product.price))
+                          itemCount, product.salePrice, product.salePrice))
                 ],
               );
             }),

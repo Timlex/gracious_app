@@ -33,7 +33,7 @@ class SettingView extends StatelessWidget {
         padding: const EdgeInsets.all(0),
         children: [
           SettingScreenAppBar(uData.userProfileData.profileImageUrl),
-          const SizedBox(height: 10),
+          const SizedBox(height: 20),
           Center(
             child: Text(
               uData.userProfileData.name,
@@ -118,7 +118,15 @@ class SettingView extends StatelessWidget {
                   (Route<dynamic> route) => false);
             }),
           ),
-          const SizedBox(height: 40),
+          const SizedBox(height: 20),
+          const Text(
+            'v1.0',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+                color: Color.fromARGB(127, 158, 158, 158),
+                fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 20),
         ],
       );
     });

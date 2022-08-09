@@ -59,7 +59,7 @@ class AllTicketsView extends StatelessWidget {
               ),
               if (ticketsService.isLoading) loadingProgressBar(),
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 25),
+                padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: customContainerButton('Add new address', double.infinity,
                     () {
                   Provider.of<AddNewTicketService>(context, listen: false)
@@ -98,7 +98,10 @@ class AllTicketsView extends StatelessWidget {
       );
     } else {
       return ListView.builder(
-          controller: controller,
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+          // controller: controller,
+          physics: const BouncingScrollPhysics(
+              parent: AlwaysScrollableScrollPhysics()),
           itemCount: ticketsService.ticketsList.length,
           itemBuilder: (context, index) {
             return TicketTile(

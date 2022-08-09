@@ -17,9 +17,9 @@ class ProductDetailsModel {
     this.userHasItem,
     required this.ratings,
     this.avgRating,
-    required this.availableAttributes,
+    this.availableAttributes,
     required this.productInventorySet,
-    required this.additionalInfoStore,
+    this.additionalInfoStore,
     required this.productColors,
     required this.productSizes,
     required this.settingText,
@@ -31,37 +31,42 @@ class ProductDetailsModel {
   dynamic userHasItem;
   List<dynamic> ratings;
   dynamic avgRating;
-  AvailableAttributes availableAttributes;
+  AvailableAttributes? availableAttributes;
   List<ProductInventorySet> productInventorySet;
-  Map<String, AdditionalInfoStore> additionalInfoStore;
+  Map<String, AdditionalInfoStore>? additionalInfoStore;
   List<ProductColorElement> productColors;
   List<ProductColorElement> productSizes;
   SettingText settingText;
   bool userRatedAlready;
 
-  factory ProductDetailsModel.fromJson(Map<String, dynamic> json) =>
-      ProductDetailsModel(
-        product: Product.fromJson(json["product"]),
-        relatedProducts:
-            List<dynamic>.from(json["related_products"].map((x) => x)),
-        userHasItem: json["user_has_item"],
-        ratings: List<dynamic>.from(json["ratings"].map((x) => x)),
-        avgRating: json["avg_rating"],
-        availableAttributes:
-            AvailableAttributes.fromJson(json["available_attributes"]),
-        productInventorySet: List<ProductInventorySet>.from(
-            json["product_inventory_set"]
-                .map((x) => ProductInventorySet.fromJson(x))),
-        additionalInfoStore: Map.from(json["additional_info_store"]).map(
-            (k, v) => MapEntry<String, AdditionalInfoStore>(
-                k, AdditionalInfoStore.fromJson(v))),
-        productColors: List<ProductColorElement>.from(
-            json["productColors"].map((x) => ProductColorElement.fromJson(x))),
-        productSizes: List<ProductColorElement>.from(
-            json["productSizes"].map((x) => ProductColorElement.fromJson(x))),
-        settingText: SettingText.fromJson(json["setting_text"]),
-        userRatedAlready: json["user_rated_already"],
-      );
+  factory ProductDetailsModel.fromJson(Map<String, dynamic> json) {
+    print(json["additional_info_store"]);
+    return ProductDetailsModel(
+      product: Product.fromJson(json["product"]),
+      relatedProducts:
+          List<dynamic>.from(json["related_products"].map((x) => x)),
+      userHasItem: json["user_has_item"],
+      ratings: List<dynamic>.from(json["ratings"].map((x) => x)),
+      avgRating: json["avg_rating"],
+      availableAttributes: json["available_attributes"] != []
+          ? null
+          : AvailableAttributes.fromJson(json["available_attributes"]),
+      productInventorySet: List<ProductInventorySet>.from(
+          json["product_inventory_set"]
+              .map((x) => ProductInventorySet.fromJson(x))),
+      additionalInfoStore: json["additional_info_store"] != []
+          ? null
+          : Map.from(json["additional_info_store"]).map((k, v) =>
+              MapEntry<String, AdditionalInfoStore>(
+                  k, AdditionalInfoStore.fromJson(v))),
+      productColors: List<ProductColorElement>.from(
+          json["productColors"].map((x) => ProductColorElement.fromJson(x))),
+      productSizes: List<ProductColorElement>.from(
+          json["productSizes"].map((x) => ProductColorElement.fromJson(x))),
+      settingText: SettingText.fromJson(json["setting_text"]),
+      userRatedAlready: json["user_rated_already"],
+    );
+  }
 
   Map<String, dynamic> toJson() => {
         "product": product.toJson(),
@@ -69,10 +74,11 @@ class ProductDetailsModel {
         "user_has_item": userHasItem,
         "ratings": List<dynamic>.from(ratings.map((x) => x)),
         "avg_rating": avgRating,
-        "available_attributes": availableAttributes.toJson(),
+        "available_attributes":
+            availableAttributes == null ? null : availableAttributes!.toJson(),
         "product_inventory_set":
             List<dynamic>.from(productInventorySet.map((x) => x.toJson())),
-        "additional_info_store": Map.from(additionalInfoStore)
+        "additional_info_store": Map.from(additionalInfoStore!)
             .map((k, v) => MapEntry<String, dynamic>(k, v.toJson())),
         "productColors":
             List<dynamic>.from(productColors.map((x) => x.toJson())),
@@ -109,26 +115,32 @@ class AdditionalInfoStore {
 
 class AvailableAttributes {
   AvailableAttributes({
-    required this.sauce,
-    required this.mayo,
-    required this.cheese,
+    this.sauce,
+    this.mayo,
+    this.cheese,
   });
 
-  List<String> sauce;
-  List<String> mayo;
-  List<String> cheese;
+  List<String>? sauce;
+  List<String>? mayo;
+  List<String>? cheese;
 
   factory AvailableAttributes.fromJson(Map<String, dynamic> json) =>
       AvailableAttributes(
-        sauce: List<String>.from(json["Sauce"].map((x) => x)),
-        mayo: List<String>.from(json["Mayo"].map((x) => x)),
-        cheese: List<String>.from(json["Cheese"].map((x) => x)),
+        sauce: json["Sauce"] == null
+            ? null
+            : List<String>.from(json["Sauce"].map((x) => x)),
+        mayo: json["Mayo"] == null
+            ? null
+            : List<String>.from(json["Mayo"].map((x) => x)),
+        cheese: json["Cheese"] == null
+            ? null
+            : List<String>.from(json["Cheese"].map((x) => x)),
       );
 
   Map<String, dynamic> toJson() => {
-        "Sauce": List<dynamic>.from(sauce.map((x) => x)),
-        "Mayo": List<dynamic>.from(mayo.map((x) => x)),
-        "Cheese": List<dynamic>.from(cheese.map((x) => x)),
+        "Sauce": List<dynamic>.from(sauce!.map((x) => x)),
+        "Mayo": List<dynamic>.from(mayo!.map((x) => x)),
+        "Cheese": List<dynamic>.from(cheese!.map((x) => x)),
       };
 }
 
@@ -158,10 +170,10 @@ class Product {
     required this.inventoryDetailsCount,
     required this.productGalleryImage,
     required this.inventory,
-    required this.campaign,
+    this.campaign,
     this.category,
     required this.rating,
-    required this.campaignProduct,
+    this.campaignProduct,
     required this.additionalInfo,
     required this.tags,
     required this.inventoryDetails,
@@ -191,10 +203,10 @@ class Product {
   int inventoryDetailsCount;
   List<dynamic> productGalleryImage;
   Inventory inventory;
-  Campaign campaign;
+  Campaign? campaign;
   dynamic category;
   List<dynamic> rating;
-  Campaign campaignProduct;
+  Campaign? campaignProduct;
   List<AdditionalInfo> additionalInfo;
   List<Tag> tags;
   List<InventoryDetail> inventoryDetails;
@@ -225,10 +237,14 @@ class Product {
         productGalleryImage:
             List<dynamic>.from(json["product_gallery_image"].map((x) => x)),
         inventory: Inventory.fromJson(json["inventory"]),
-        campaign: Campaign.fromJson(json["campaign"]),
+        campaign: json["campaign"] != null
+            ? Campaign.fromJson(json["campaign"])
+            : null,
         category: json["category"],
         rating: List<dynamic>.from(json["rating"].map((x) => x)),
-        campaignProduct: Campaign.fromJson(json["campaign_product"]),
+        campaignProduct: json["campaign_product"] != null
+            ? Campaign.fromJson(json["campaign_product"])
+            : null,
         additionalInfo: List<AdditionalInfo>.from(
             json["additional_info"].map((x) => AdditionalInfo.fromJson(x))),
         tags: List<Tag>.from(json["tags"].map((x) => Tag.fromJson(x))),
@@ -262,10 +278,10 @@ class Product {
         "product_gallery_image":
             List<dynamic>.from(productGalleryImage.map((x) => x)),
         "inventory": inventory.toJson(),
-        "campaign": campaign.toJson(),
+        "campaign": campaign!.toJson(),
         "category": category,
         "rating": List<dynamic>.from(rating.map((x) => x)),
-        "campaign_product": campaignProduct.toJson(),
+        "campaign_product": campaignProduct!.toJson(),
         "additional_info":
             List<dynamic>.from(additionalInfo.map((x) => x.toJson())),
         "tags": List<dynamic>.from(tags.map((x) => x.toJson())),
@@ -481,8 +497,8 @@ class IncludedAttribute {
     required this.inventoryDetailsId,
     required this.attributeName,
     required this.attributeValue,
-    required this.createdAt,
-    required this.updatedAt,
+    this.createdAt,
+    this.updatedAt,
   });
 
   int id;
@@ -490,8 +506,8 @@ class IncludedAttribute {
   int inventoryDetailsId;
   String attributeName;
   String attributeValue;
-  DateTime createdAt;
-  DateTime updatedAt;
+  DateTime? createdAt;
+  DateTime? updatedAt;
 
   factory IncludedAttribute.fromJson(Map<String, dynamic> json) =>
       IncludedAttribute(
@@ -500,8 +516,12 @@ class IncludedAttribute {
         inventoryDetailsId: json["inventory_details_id"],
         attributeName: json["attribute_name"],
         attributeValue: json["attribute_value"],
-        createdAt: DateTime.parse(json["created_at"]),
-        updatedAt: DateTime.parse(json["updated_at"]),
+        createdAt: json["created_at"] == null
+            ? null
+            : DateTime.parse(json["created_at"]),
+        updatedAt: json["updated_at"] == null
+            ? null
+            : DateTime.parse(json["updated_at"]),
       );
 
   Map<String, dynamic> toJson() => {
@@ -510,8 +530,8 @@ class IncludedAttribute {
         "inventory_details_id": inventoryDetailsId,
         "attribute_name": attributeName,
         "attribute_value": attributeValue,
-        "created_at": createdAt.toIso8601String(),
-        "updated_at": updatedAt.toIso8601String(),
+        "created_at": createdAt!.toIso8601String(),
+        "updated_at": updatedAt!.toIso8601String(),
       };
 }
 
@@ -590,18 +610,18 @@ class Tag {
 
 class ProductInventorySet {
   ProductInventorySet({
-    required this.sauce,
-    required this.color,
-    required this.size,
-    required this.mayo,
-    required this.cheese,
+    this.sauce,
+    this.color,
+    this.size,
+    this.mayo,
+    this.cheese,
   });
 
-  String sauce;
-  String color;
-  String size;
-  String mayo;
-  String cheese;
+  String? sauce;
+  String? color;
+  String? size;
+  String? mayo;
+  String? cheese;
 
   factory ProductInventorySet.fromJson(Map<String, dynamic> json) =>
       ProductInventorySet(
