@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:gren_mart/service/categories_data_service.dart';
-import 'package:gren_mart/service/search_result_data_service.dart';
-import 'package:gren_mart/view/utils/constant_styles.dart';
+import '../../service/categories_data_service.dart';
+import '../../service/search_result_data_service.dart';
+import '../../view/utils/constant_styles.dart';
 import 'package:money_formatter/money_formatter.dart';
 import 'package:provider/provider.dart';
 

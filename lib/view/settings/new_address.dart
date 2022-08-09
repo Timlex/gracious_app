@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:gren_mart/service/shipping_addresses_service.dart';
-import 'package:gren_mart/view/utils/app_bars.dart';
-import 'package:gren_mart/view/utils/constant_colors.dart';
+import '../../service/shipping_addresses_service.dart';
+import '../../view/utils/app_bars.dart';
+import '../../view/utils/constant_colors.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:provider/provider.dart';
 

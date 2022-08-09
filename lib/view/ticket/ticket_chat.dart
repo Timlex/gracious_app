@@ -4,10 +4,10 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:gren_mart/service/ticket_chat_service.dart';
-import 'package:gren_mart/view/utils/image_view.dart';
-import 'package:gren_mart/view/utils/app_bars.dart';
-import 'package:gren_mart/view/utils/constant_name.dart';
+import '../../service/ticket_chat_service.dart';
+import '../../view/utils/image_view.dart';
+import '../../view/utils/app_bars.dart';
+import '../../view/utils/constant_name.dart';
 import 'package:provider/provider.dart';
 
 import '../utils/constant_styles.dart';

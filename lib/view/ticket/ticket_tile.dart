@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:gren_mart/service/ticket_service.dart';
-import 'package:gren_mart/view/utils/constant_colors.dart';
-import 'package:gren_mart/view/utils/constant_styles.dart';
+import '../../service/ticket_service.dart';
+import '../../view/utils/constant_colors.dart';
+import '../../view/utils/constant_styles.dart';
 import 'package:provider/provider.dart';
 
 import '../../service/ticket_chat_service.dart';

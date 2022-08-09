@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:gren_mart/view/utils/constant_colors.dart';
-import 'package:gren_mart/view/utils/constant_name.dart';
+import '../../view/utils/constant_colors.dart';
+import '../../view/utils/constant_name.dart';
 
 class CustomDropdown extends StatelessWidget {
   String hintText;

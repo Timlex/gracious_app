@@ -3,9 +3,9 @@
 import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
-import 'package:gren_mart/model/campaign_product_model.dart';
-import 'package:gren_mart/model/featured_product_model.dart';
-import 'package:gren_mart/service/common_service.dart';
+import '../../model/campaign_product_model.dart';
+import '../../model/featured_product_model.dart';
+import '../../service/common_service.dart';
 import 'package:http/http.dart' as http;
 
 class ProductCardDataService with ChangeNotifier {

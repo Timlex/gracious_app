@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:gren_mart/view/favorite/favorite_tile.dart';
-import 'package:gren_mart/view/utils/constant_colors.dart';
+import '../../view/favorite/favorite_tile.dart';
+import '../../view/utils/constant_colors.dart';
 import 'package:provider/provider.dart';
 
 import '../../service/favorite_data_service.dart';

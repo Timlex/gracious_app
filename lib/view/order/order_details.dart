@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:gren_mart/view/auth/order_data.dart';
-import 'package:gren_mart/view/order/order_details_tile.dart';
+import '../../view/auth/order_data.dart';
+import '../../view/order/order_details_tile.dart';
 import 'package:provider/provider.dart';
 
 import '../utils/app_bars.dart';

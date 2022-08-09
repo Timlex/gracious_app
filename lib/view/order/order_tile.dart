@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:gren_mart/view/order/order_details.dart';
-import 'package:gren_mart/view/utils/constant_colors.dart';
-import 'package:gren_mart/view/utils/constant_name.dart';
+import '../../view/order/order_details.dart';
+import '../../view/utils/constant_colors.dart';
+import '../../view/utils/constant_name.dart';
 import 'package:intl/intl.dart';
 
 class OrderTile extends StatelessWidget {

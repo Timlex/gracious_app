@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:gren_mart/service/auth_text_controller_service.dart';
-import 'package:gren_mart/service/navigation_bar_helper_service.dart';
-import 'package:gren_mart/service/signin_signup_service.dart';
-import 'package:gren_mart/service/user_profile_service.dart';
-import 'package:gren_mart/view/auth/horizontal_devider.dart';
-import 'package:gren_mart/view/auth/login.dart';
-import 'package:gren_mart/view/auth/remember.dart';
-import 'package:gren_mart/view/auth/enter_email_reset_pass.dart';
-import 'package:gren_mart/view/auth/signup.dart';
-import 'package:gren_mart/view/home/home_front.dart';
-import 'package:gren_mart/view/utils/constant_colors.dart';
+import '../../service/auth_text_controller_service.dart';
+import '../../service/navigation_bar_helper_service.dart';
+import '../../service/signin_signup_service.dart';
+import '../../service/user_profile_service.dart';
+import '../../view/auth/horizontal_devider.dart';
+import '../../view/auth/login.dart';
+import '../../view/auth/remember.dart';
+import '../../view/auth/enter_email_reset_pass.dart';
+import '../../view/auth/signup.dart';
+import '../../view/home/home_front.dart';
+import '../../view/utils/constant_colors.dart';
 import 'package:provider/provider.dart';
 
 import '../../service/country_dropdown_service.dart';

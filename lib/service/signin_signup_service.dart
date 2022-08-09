@@ -1,10 +1,10 @@
 import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
-import 'package:gren_mart/model/signin_model.dart';
-import 'package:gren_mart/model/signup_model.dart';
-import 'package:gren_mart/service/common_service.dart';
-import 'package:gren_mart/view/utils/constant_name.dart';
+import '../../model/signin_model.dart';
+import '../../model/signup_model.dart';
+import '../../service/common_service.dart';
+import '../../view/utils/constant_name.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 

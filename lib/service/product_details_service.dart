@@ -1,8 +1,8 @@
 import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
-import 'package:gren_mart/model/product_details_model.dart';
-import 'package:gren_mart/service/common_service.dart';
+import '../../model/product_details_model.dart';
+import '../../service/common_service.dart';
 import 'package:http/http.dart' as http;
 
 class ProductDetailsService with ChangeNotifier {

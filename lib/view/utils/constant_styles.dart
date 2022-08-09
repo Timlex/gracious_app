@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:gren_mart/view/home/all_products.dart';
-import 'package:gren_mart/view/utils/constant_colors.dart';
-import 'package:gren_mart/view/utils/constant_name.dart';
+import '../../view/home/all_products.dart';
+import '../../view/utils/constant_colors.dart';
+import '../../view/utils/constant_name.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:provider/provider.dart';
 

@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:gren_mart/service/common_service.dart';
+import '../../service/common_service.dart';
 import 'package:http/http.dart' as http;
 
 class ManageAccountService with ChangeNotifier {

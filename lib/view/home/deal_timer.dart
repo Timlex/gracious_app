@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:gren_mart/view/utils/constant_colors.dart';
+import '../../view/utils/constant_colors.dart';
 
 class DealTimer extends StatefulWidget {
   final DateTime? deadLine;
@@ -61,7 +61,7 @@ class _DealTimerState extends State<DealTimer> {
       widget.fristInit = false;
     }
 
-    timer = Timer.periodic(Duration(seconds: 1), (timer) {
+    timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       setState(() {
         if (h == 0 && m == 0 && s == 0) {
           s = 0;

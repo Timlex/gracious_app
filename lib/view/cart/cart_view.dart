@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:gren_mart/service/cart_data_service.dart';
-import 'package:gren_mart/view/cart/cart_tile.dart';
-import 'package:gren_mart/view/cart/checkout.dart';
-import 'package:gren_mart/view/utils/constant_colors.dart';
-import 'package:gren_mart/view/utils/constant_name.dart';
-import 'package:gren_mart/view/utils/constant_styles.dart';
+import '../../service/cart_data_service.dart';
+import '../../view/cart/cart_tile.dart';
+import '../../view/cart/checkout.dart';
+import '../../view/utils/constant_colors.dart';
+import '../../view/utils/constant_name.dart';
+import '../../view/utils/constant_styles.dart';
 import 'package:provider/provider.dart';
 
 import '../../service/shipping_addresses_service.dart';

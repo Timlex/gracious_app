@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:gren_mart/service/auth_text_controller_service.dart';
-import 'package:gren_mart/service/reset_pass_otp_service.dart';
-import 'package:gren_mart/view/auth/auth.dart';
-import 'package:gren_mart/view/utils/app_bars.dart';
-import 'package:gren_mart/view/utils/constant_colors.dart';
+import '../../service/auth_text_controller_service.dart';
+import '../../service/reset_pass_otp_service.dart';
+import '../../view/auth/auth.dart';
+import '../../view/utils/app_bars.dart';
+import '../../view/utils/constant_colors.dart';
 import 'package:provider/provider.dart';
 
 import '../auth/custom_text_field.dart';

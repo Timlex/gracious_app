@@ -1,9 +1,9 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:gren_mart/model/category_model.dart';
-import 'package:gren_mart/model/sub_category_model.dart';
-import 'package:gren_mart/service/common_service.dart';
+import '../../model/category_model.dart';
+import '../../model/sub_category_model.dart';
+import '../../service/common_service.dart';
 import 'package:http/http.dart' as http;
 
 class CategoriesDataService with ChangeNotifier {

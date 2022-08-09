@@ -1,12 +1,12 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:gren_mart/service/cart_data_service.dart';
-import 'package:gren_mart/service/favorite_data_service.dart';
-import 'package:gren_mart/service/product_details_service.dart';
-import 'package:gren_mart/view/details/product_details.dart';
-import 'package:gren_mart/view/utils/constant_colors.dart';
-import 'package:gren_mart/view/utils/constant_name.dart';
-import 'package:gren_mart/view/utils/constant_styles.dart';
+import '../../service/cart_data_service.dart';
+import '../../service/favorite_data_service.dart';
+import '../../service/product_details_service.dart';
+import '../../view/details/product_details.dart';
+import '../../view/utils/constant_colors.dart';
+import '../../view/utils/constant_name.dart';
+import '../../view/utils/constant_styles.dart';
 import 'package:provider/provider.dart';
 
 class ProductCard extends StatelessWidget {

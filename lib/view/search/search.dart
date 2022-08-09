@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:gren_mart/service/search_result_data_service.dart';
-import 'package:gren_mart/view/auth/custom_text_field.dart';
-import 'package:gren_mart/view/home/product_card.dart';
-import 'package:gren_mart/view/utils/constant_name.dart';
-import 'package:gren_mart/view/utils/constant_styles.dart';
+import '../../service/search_result_data_service.dart';
+import '../../view/auth/custom_text_field.dart';
+import '../../view/home/product_card.dart';
+import '../../view/utils/constant_name.dart';
+import '../../view/utils/constant_styles.dart';
 import 'package:provider/provider.dart';
 
 import '../utils/constant_colors.dart';

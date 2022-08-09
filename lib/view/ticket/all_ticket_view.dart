@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:gren_mart/service/add_new_ticket_service.dart';
-import 'package:gren_mart/service/search_result_data_service.dart';
-import 'package:gren_mart/view/ticket/add_new_ticket.dart';
-import 'package:gren_mart/view/ticket/ticket_tile.dart';
-import 'package:gren_mart/view/utils/app_bars.dart';
-import 'package:gren_mart/view/utils/constant_name.dart';
-import 'package:gren_mart/view/utils/constant_styles.dart';
+import '../../service/add_new_ticket_service.dart';
+import '../../service/search_result_data_service.dart';
+import '../../view/ticket/add_new_ticket.dart';
+import '../../view/ticket/ticket_tile.dart';
+import '../../view/utils/app_bars.dart';
+import '../../view/utils/constant_name.dart';
+import '../../view/utils/constant_styles.dart';
 import 'package:provider/provider.dart';
 
 import '../../service/ticket_service.dart';

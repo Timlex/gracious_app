@@ -2,8 +2,8 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
-import 'package:gren_mart/model/ticket_chat_model.dart';
-import 'package:gren_mart/service/common_service.dart';
+import '../../model/ticket_chat_model.dart';
+import '../../service/common_service.dart';
 import 'package:http/http.dart' as http;
 
 import '../view/utils/constant_name.dart';

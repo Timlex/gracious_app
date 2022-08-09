@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:gren_mart/service/change_password_service.dart';
-import 'package:gren_mart/service/signin_signup_service.dart';
-import 'package:gren_mart/view/utils/app_bars.dart';
-import 'package:gren_mart/view/utils/constant_colors.dart';
+import '../../service/change_password_service.dart';
+import '../../service/signin_signup_service.dart';
+import '../../view/utils/app_bars.dart';
+import '../../view/utils/constant_colors.dart';
 import 'package:provider/provider.dart';
 
 import '../auth/custom_text_field.dart';

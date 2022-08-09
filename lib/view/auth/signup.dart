@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:gren_mart/service/auth_text_controller_service.dart';
-import 'package:gren_mart/service/country_dropdown_service.dart';
-import 'package:gren_mart/service/signin_signup_service.dart';
-import 'package:gren_mart/view/intro/custom_dropdown.dart';
-import 'package:gren_mart/view/utils/constant_name.dart';
+import '../../service/auth_text_controller_service.dart';
+import '../../service/country_dropdown_service.dart';
+import '../../service/signin_signup_service.dart';
+import '../../view/intro/custom_dropdown.dart';
+import '../../view/utils/constant_name.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:provider/provider.dart';
 

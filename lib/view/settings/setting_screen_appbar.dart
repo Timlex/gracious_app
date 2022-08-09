@@ -1,8 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:gren_mart/view/settings/manage_account.dart';
-import 'package:gren_mart/view/utils/constant_colors.dart';
-import 'package:gren_mart/view/utils/constant_name.dart';
+import '../../view/settings/manage_account.dart';
+import '../../view/utils/constant_colors.dart';
+import '../../view/utils/constant_name.dart';
 
 class SettingScreenAppBar extends StatelessWidget {
   String? image;

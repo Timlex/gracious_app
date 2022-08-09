@@ -1,8 +1,8 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:gren_mart/model/state_dropdown_model.dart';
-import 'package:gren_mart/service/common_service.dart';
+import '../../model/state_dropdown_model.dart';
+import '../../service/common_service.dart';
 import 'package:http/http.dart' as http;
 
 class StateDropdownService with ChangeNotifier {

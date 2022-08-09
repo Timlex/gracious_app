@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:gren_mart/db/database_helper.dart';
-import 'package:gren_mart/service/shipping_addresses_service.dart';
+import '../../db/database_helper.dart';
+import '../../service/shipping_addresses_service.dart';
 
-import 'package:gren_mart/view/cart/cart_grid_tile.dart';
-import 'package:gren_mart/view/cart/payment_status.dart';
-import 'package:gren_mart/view/settings/new_address.dart';
-import 'package:gren_mart/view/utils/app_bars.dart';
-import 'package:gren_mart/view/utils/constant_colors.dart';
-import 'package:gren_mart/view/utils/constant_name.dart';
-import 'package:gren_mart/view/utils/constant_styles.dart';
+import '../../view/cart/cart_grid_tile.dart';
+import '../../view/cart/payment_status.dart';
+import '../../view/settings/new_address.dart';
+import '../../view/utils/app_bars.dart';
+import '../../view/utils/constant_colors.dart';
+import '../../view/utils/constant_name.dart';
+import '../../view/utils/constant_styles.dart';
 import 'package:provider/provider.dart';
 
 class Checkout extends StatelessWidget {

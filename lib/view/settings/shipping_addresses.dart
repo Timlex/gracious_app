@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:gren_mart/view/settings/new_address.dart';
-import 'package:gren_mart/view/utils/app_bars.dart';
-import 'package:gren_mart/view/utils/constant_colors.dart';
-import 'package:gren_mart/view/utils/constant_styles.dart';
+import '../../view/settings/new_address.dart';
+import '../../view/utils/app_bars.dart';
+import '../../view/utils/constant_colors.dart';
+import '../../view/utils/constant_styles.dart';
 import 'package:provider/provider.dart';
 
 import '../../service/shipping_addresses_service.dart';

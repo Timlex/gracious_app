@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:gren_mart/view/utils/constant_name.dart';
+import '../../view/utils/constant_name.dart';
 
 import '../auth/custom_text_field.dart';
 import '../search/filter_option.dart';

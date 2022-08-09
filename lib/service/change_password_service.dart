@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:convert';
 
-import 'package:gren_mart/service/common_service.dart';
+import '../../service/common_service.dart';
 import 'package:http/http.dart' as http;
 
 class ChangePasswordService with ChangeNotifier {

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:gren_mart/service/auth_text_controller_service.dart';
-import 'package:gren_mart/view/auth/custom_text_field.dart';
+import '../../service/auth_text_controller_service.dart';
+import '../../view/auth/custom_text_field.dart';
 import 'package:provider/provider.dart';
 
 import '../utils/constant_styles.dart';

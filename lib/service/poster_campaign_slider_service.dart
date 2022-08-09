@@ -1,9 +1,9 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:gren_mart/model/Campaign_slider_model.dart' as camp;
-import 'package:gren_mart/model/poster_slider_model.dart' as post;
-import 'package:gren_mart/service/common_service.dart';
+import '../../model/Campaign_slider_model.dart' as camp;
+import '../../model/poster_slider_model.dart' as post;
+import '../../service/common_service.dart';
 import 'package:http/http.dart' as http;
 
 class PosterCampaignSliderService with ChangeNotifier {

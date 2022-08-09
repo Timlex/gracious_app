@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:gren_mart/view/utils/constant_colors.dart';
+import '../../view/utils/constant_colors.dart';
 
 class CustomTextField extends StatefulWidget {
   final String levelText;

@@ -1,9 +1,9 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:gren_mart/model/tickets_model.dart';
-import 'package:gren_mart/service/common_service.dart';
-import 'package:gren_mart/view/utils/constant_name.dart';
+import '../../model/tickets_model.dart';
+import '../../service/common_service.dart';
+import '../../view/utils/constant_name.dart';
 import 'package:http/http.dart' as http;
 
 class TicketService with ChangeNotifier {

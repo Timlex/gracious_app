@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:gren_mart/view/auth/order_data.dart';
-import 'package:gren_mart/view/order/order_tile.dart';
-import 'package:gren_mart/view/utils/app_bars.dart';
-import 'package:gren_mart/view/utils/constant_colors.dart';
+import '../../view/auth/order_data.dart';
+import '../../view/order/order_tile.dart';
+import '../../view/utils/app_bars.dart';
+import '../../view/utils/constant_colors.dart';
 import 'package:provider/provider.dart';
 
 class MyOrders extends StatelessWidget {

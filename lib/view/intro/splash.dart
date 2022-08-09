@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:gren_mart/db/database_helper.dart';
-import 'package:gren_mart/service/cart_data_service.dart';
-import 'package:gren_mart/service/favorite_data_service.dart';
-import 'package:gren_mart/service/poster_campaign_slider_service.dart';
-import 'package:gren_mart/service/signin_signup_service.dart';
-import 'package:gren_mart/service/user_profile_service.dart';
-import 'package:gren_mart/view/auth/auth.dart';
-import 'package:gren_mart/view/home/home_front.dart';
+import '../../db/database_helper.dart';
+import '../../service/cart_data_service.dart';
+import '../../service/favorite_data_service.dart';
+import '../../service/poster_campaign_slider_service.dart';
+import '../../service/signin_signup_service.dart';
+import '../../service/user_profile_service.dart';
+import '../../view/auth/auth.dart';
+import '../../view/home/home_front.dart';
 import 'package:provider/provider.dart';
 
 import '../../service/auth_text_controller_service.dart';

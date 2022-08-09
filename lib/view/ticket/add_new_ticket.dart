@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:gren_mart/service/add_new_ticket_service.dart';
-import 'package:gren_mart/view/auth/custom_text_field.dart';
-import 'package:gren_mart/view/intro/custom_dropdown.dart';
+import '../../service/add_new_ticket_service.dart';
+import '../../view/auth/custom_text_field.dart';
+import '../../view/intro/custom_dropdown.dart';
 import 'package:provider/provider.dart';
 
 import '../utils/app_bars.dart';

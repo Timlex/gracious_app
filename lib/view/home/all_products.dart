@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:gren_mart/service/product_card_data_service.dart';
-import 'package:gren_mart/service/search_result_data_service.dart';
-import 'package:gren_mart/view/utils/app_bars.dart';
+import '../../service/product_card_data_service.dart';
+import '../../service/search_result_data_service.dart';
+import '../../view/utils/app_bars.dart';
 import 'package:provider/provider.dart';
 
 import '../utils/constant_colors.dart';

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:gren_mart/service/state_dropdown_service.dart';
-import 'package:gren_mart/view/auth/auth.dart';
-import 'package:gren_mart/view/intro/dot_indicator.dart';
-import 'package:gren_mart/view/utils/constant_colors.dart';
-import 'package:gren_mart/view/utils/constant_name.dart';
-import 'package:gren_mart/view/utils/constant_styles.dart';
+import '../../service/state_dropdown_service.dart';
+import '../../view/auth/auth.dart';
+import '../../view/intro/dot_indicator.dart';
+import '../../view/utils/constant_colors.dart';
+import '../../view/utils/constant_name.dart';
+import '../../view/utils/constant_styles.dart';
 import 'package:provider/provider.dart';
 
 import './intro_helper.dart';

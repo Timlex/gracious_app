@@ -1,8 +1,8 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:gren_mart/model/user_profile_model.dart';
-import 'package:gren_mart/service/common_service.dart';
+import '../../model/user_profile_model.dart';
+import '../../service/common_service.dart';
 import 'package:http/http.dart' as http;
 
 class UserProfileService with ChangeNotifier {
