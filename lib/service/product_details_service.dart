@@ -73,9 +73,14 @@ class ProductDetailsService with ChangeNotifier {
       // selectedMayo = '';
       // selectedChese = '';
     }
-    if (!selectedInventorySetIndex.isNotEmpty &&
-        selectedInventorySetIndex.length != 1) {
+    if (selectedInventorySetIndex.isEmpty) {
       selectedInventorySetIndex = value ?? [];
+      notifyListeners();
+      return;
+    }
+    if (selectedInventorySetIndex.isNotEmpty &&
+        selectedInventorySetIndex.length > value!.length) {
+      selectedInventorySetIndex = value;
       notifyListeners();
       return;
     }
