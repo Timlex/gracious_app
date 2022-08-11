@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import '../../service/auth_text_controller_service.dart';
 import '../../service/navigation_bar_helper_service.dart';
 import '../../service/signin_signup_service.dart';
@@ -298,19 +300,29 @@ class Auth extends StatelessWidget {
                 const SizedBox(height: 25),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                  child: containerBorder(
-                      'assets/images/icons/google.png',
-                      ssData.login
-                          ? 'Log in with Google'
-                          : 'Signup with Google'),
+                  child: GestureDetector(
+                    onTap: (() async {
+                      await GoogleSignIn().signIn();
+                    }),
+                    child: containerBorder(
+                        'assets/images/icons/google.png',
+                        ssData.login
+                            ? 'Log in with Google'
+                            : 'Signup with Google'),
+                  ),
                 ),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                  child: containerBorder(
-                      'assets/images/icons/facebook.png',
-                      ssData.login
-                          ? 'Log in with Facebook'
-                          : 'Signup with Facebook'),
+                  child: GestureDetector(
+                    onTap: () async {
+                      FacebookAuth.i.login();
+                    },
+                    child: containerBorder(
+                        'assets/images/icons/facebook.png',
+                        ssData.login
+                            ? 'Log in with Facebook'
+                            : 'Signup with Facebook'),
+                  ),
                 ),
                 const SizedBox(
                   height: 25,

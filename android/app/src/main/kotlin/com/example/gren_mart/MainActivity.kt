@@ -1,4 +1,4 @@
-package com.example.gren_mart
+package com.xgenious.grenmart
 
 import io.flutter.embedding.android.FlutterActivity
 

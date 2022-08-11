@@ -128,7 +128,7 @@ class FilterBottomSheet extends StatelessWidget {
                     builder: (context, srData, child) {
                   return RatingBar.builder(
                     itemSize: 24,
-                    initialRating: 0,
+                    initialRating: double.parse(srData.ratingPoint),
                     minRating: 1,
                     direction: Axis.horizontal,
                     allowHalfRating: false,

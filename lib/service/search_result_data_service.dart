@@ -14,7 +14,7 @@ class SearchResultDataService with ChangeNotifier {
   RangeValues rangevalue = const RangeValues(0, 3500);
   String maxPrice = '';
   String minPrice = '';
-  String ratingPoint = '';
+  String ratingPoint = '0';
   bool isLoading = false;
   bool? lastPage;
   String categoryId = '';
@@ -104,7 +104,7 @@ class SearchResultDataService with ChangeNotifier {
     maxPrice = '';
     categoryId = '';
     subCategoryId = '';
-    ratingPoint = '';
+    ratingPoint = '0';
     sortBy = '';
     finterOn = false;
 

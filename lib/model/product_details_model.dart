@@ -48,7 +48,7 @@ class ProductDetailsModel {
       userHasItem: json["user_has_item"],
       ratings: List<dynamic>.from(json["ratings"].map((x) => x)),
       avgRating: json["avg_rating"],
-      availableAttributes: json["available_attributes"] != []
+      availableAttributes: json["available_attributes"] is List
           ? null
           : AvailableAttributes.fromJson(json["available_attributes"]),
       productInventorySet: List<ProductInventorySet>.from(
@@ -75,7 +75,7 @@ class ProductDetailsModel {
         "ratings": List<dynamic>.from(ratings.map((x) => x)),
         "avg_rating": avgRating,
         "available_attributes":
-            availableAttributes == null ? null : availableAttributes!.toJson(),
+            availableAttributes == [] ? null : availableAttributes!.toJson(),
         "product_inventory_set":
             List<dynamic>.from(productInventorySet.map((x) => x.toJson())),
         "additional_info_store": Map.from(additionalInfoStore!)

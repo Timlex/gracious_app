@@ -29,16 +29,26 @@ class CartView extends StatelessWidget {
             parent: AlwaysScrollableScrollPhysics()),
         children: [
           const SizedBox(height: 10),
-          ...cartData.cartList.values
-              .map((e) => CartTile(
+          Container(
+            constraints: BoxConstraints(minHeight: screenHight / (3)),
+            child: Column(children: [
+              ...cartData.cartList.values.map((e) => CartTile(
                     e.id,
                     e.title,
                     e.imgUrl,
                     e.quantity,
                     e.price,
                     e.discountPrice,
-                  ))
-              .toList(),
+                  )),
+              if (cartData.cartList.isEmpty)
+                SizedBox(
+                  height: (screenHight / (3)),
+                  child: Center(
+                      child: Text('Add item to cart!',
+                          style: TextStyle(color: cc.greyHint))),
+                ),
+            ]),
+          ),
           Container(
             // height: 300,
             padding: const EdgeInsets.all(20),

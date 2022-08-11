@@ -38,8 +38,6 @@ class ProductCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Provider.of<ProductDetailsService>(context, listen: false)
-            .fetchProductDetails(_id);
         Navigator.of(context)
             .pushNamed(ProductDetails.routeName, arguments: [_id]).then(
                 (value) =>
