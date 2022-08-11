@@ -40,7 +40,7 @@ class FavoriteDataService with ChangeNotifier {
   }
 
   void fetchFavorites() async {
-    final dbData = await DbHelper.fetchDb('cart');
+    final dbData = await DbHelper.fetchDb('favorite');
     Map<String, Favorites> dataList = {};
     for (var element in dbData) {
       dataList.putIfAbsent(
@@ -55,8 +55,7 @@ class FavoriteDataService with ChangeNotifier {
     }
     _favoriteItems = dataList;
     notifyListeners();
-    print('fetching carts');
-    // _cartList = dataList;
+    print('fetching favorite');
   }
 
   void deleteFavoriteItem(int id) async {

@@ -56,6 +56,7 @@ class SplashScreen extends StatelessWidget {
     databases.map((e) => DbHelper.database(e));
     Provider.of<CartDataService>(context, listen: false).fetchCarts();
     Provider.of<FavoriteDataService>(context, listen: false).fetchFavorites();
+    Provider.of<CartDataService>(context, listen: false).fetchCarts();
   }
 
   initiateAutoSignIn(BuildContext context) {

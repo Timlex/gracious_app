@@ -59,10 +59,6 @@ class ProductDetails extends StatelessWidget {
                 .productDetails!
                 .productInventorySet
                 .isNotEmpty;
-        print(Provider.of<ProductDetailsService>(context, listen: false)
-            .productDetails!
-            .availableAttributes);
-        print('=============================');
 
         return Column(
           children: [
@@ -99,7 +95,7 @@ class ProductDetails extends StatelessWidget {
                                 placeholder: (context, url) =>
                                     Image.asset('assets/images/skelleton.png'),
                                 imageUrl: product.productGalleryImage.isEmpty
-                                    ? ''
+                                    ? product.image
                                     : product.productGalleryImage[index],
                                 errorWidget: (context, errorText, error) =>
                                     Image.network(product.image),
