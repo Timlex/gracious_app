@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gren_mart/view/home/all_products.dart';
 import '../../model/other_data.dart';
 import '../../service/add_new_ticket_service.dart';
 import '../../service/auth_text_controller_service.dart';
@@ -116,6 +117,7 @@ class MyApp extends StatelessWidget {
             ResetPassword.routeName: (context) => const ResetPassword(),
             AllTicketsView.routeName: (context) => AllTicketsView(),
             AddNewTicket.routeName: (context) => AddNewTicket(),
+            AllProducts.routeName: (context) => AllProducts(),
           },
         ),
       ),

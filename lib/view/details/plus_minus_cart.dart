@@ -7,7 +7,9 @@ class PlusMinusCart extends StatefulWidget {
   int count = 0;
   int amount;
   int totalAmount;
-  PlusMinusCart(this.count, this.amount, this.totalAmount, {Key? key})
+  void Function()? onTap;
+  PlusMinusCart(this.count, this.amount, this.totalAmount,
+      {this.onTap, Key? key})
       : super(key: key);
 
   @override
@@ -87,54 +89,57 @@ class _PlusMinusCartState extends State<PlusMinusCart> {
           ),
         ),
         const Spacer(),
-        Stack(children: [
-          Container(
-            alignment: Alignment.center,
-            padding: const EdgeInsets.symmetric(horizontal: 15),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(7),
-              color: cc.primaryColor,
-            ),
-            height: 48,
-            width: screenWidth / 2.1,
-            child: Row(
-              children: [
-                SvgPicture.asset('assets/images/icons/bag.svg'),
-                const SizedBox(width: 4),
-                SizedBox(
-                  width: screenWidth / 5,
-                  child: Text(
-                    'Add to cart',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                        fontSize: 13,
-                        color: cc.pureWhite,
-                        fontWeight: FontWeight.w600,
-                        overflow: TextOverflow.ellipsis),
+        GestureDetector(
+          onTap: widget.onTap,
+          child: Stack(children: [
+            Container(
+              alignment: Alignment.center,
+              padding: const EdgeInsets.symmetric(horizontal: 15),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(7),
+                color: cc.primaryColor,
+              ),
+              height: 48,
+              width: screenWidth / 2.1,
+              child: Row(
+                children: [
+                  SvgPicture.asset('assets/images/icons/bag.svg'),
+                  // const SizedBox(width: 4),
+                  SizedBox(
+                    width: screenWidth / 5.2,
+                    child: Text(
+                      'Add to cart',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          fontSize: 13,
+                          color: cc.pureWhite,
+                          fontWeight: FontWeight.w600,
+                          overflow: TextOverflow.ellipsis),
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-          Positioned(
-            right: 0,
-            child: Container(
-              height: 50,
-              width: screenWidth / 5,
-              color: const Color.fromARGB(24, 0, 0, 0),
-              child: Center(
-                child: Text(
-                  '\$' + widget.totalAmount.toStringAsFixed(2),
-                  style: TextStyle(
-                    fontSize: 13,
-                    color: cc.pureWhite,
-                    fontWeight: FontWeight.w600,
+            Positioned(
+              right: 0,
+              child: Container(
+                height: 50,
+                width: screenWidth / 5.3,
+                color: const Color.fromARGB(24, 0, 0, 0),
+                child: Center(
+                  child: Text(
+                    '\$' + widget.totalAmount.toStringAsFixed(2),
+                    style: TextStyle(
+                      fontSize: 13,
+                      color: cc.pureWhite,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                 ),
               ),
-            ),
-          )
-        ])
+            )
+          ]),
+        )
       ],
     );
   }

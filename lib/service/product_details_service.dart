@@ -11,7 +11,10 @@ class ProductDetailsService with ChangeNotifier {
   late Map<String, AdditionalInfoStore> additionalInventoryInfo;
   bool descriptionExpand = false;
   bool aDescriptionExpand = false;
+  bool reviewExpand = false;
+  bool cartAble = false;
   int productSalePrice = 0;
+  String? additionalInfoImage;
   List<String> selectedInventorySetIndex = [];
   String? selectedSize;
   String? selectedColor;
@@ -100,48 +103,42 @@ class ProductDetailsService with ChangeNotifier {
   }
 
   addAdditionalPrice() {
-    print('came here------1');
-    if (selectedInventorySetIndex.length != 1) {
-      return;
-    }
-    print('came here');
-    final selectedProduct = productDetails!
-        .productInventorySet[int.parse(selectedInventorySetIndex[0])];
+    for (int i = 0; i < selectedInventorySetIndex.length; i++) {
+      final selectedProduct = productDetails!
+          .productInventorySet[int.parse(selectedInventorySetIndex[i])];
 
-    if (selectedSize == selectedProduct.size &&
-        selectedColor == selectedProduct.color &&
-        selectedSauce == selectedProduct.sauce &&
-        selectedMayo == selectedProduct.mayo &&
-        selectedChese == selectedProduct.cheese &&
-        additionalInventoryInfo.isNotEmpty) {
-      final mapData = {};
-      if (selectedChese != null) {
-        mapData.putIfAbsent('Cheese', () => selectedChese);
+      if (selectedSize == selectedProduct.size &&
+          selectedColor == selectedProduct.color &&
+          selectedSauce == selectedProduct.sauce &&
+          selectedMayo == selectedProduct.mayo &&
+          selectedChese == selectedProduct.cheese &&
+          additionalInventoryInfo.isNotEmpty) {
+        final mapData = {};
+        if (selectedChese != null) {
+          mapData.putIfAbsent('Cheese', () => selectedChese);
+        }
+        if (selectedColor != null) {
+          mapData.putIfAbsent('Color', () => selectedColor);
+          mapData.putIfAbsent('Color_name', () => selectedProduct.colorName);
+        }
+        if (selectedMayo != null) {
+          mapData.putIfAbsent('Mayo', () => selectedMayo);
+        }
+        if (selectedSauce != null) {
+          mapData.putIfAbsent('Sauce', () => selectedSauce);
+        }
+        if (selectedSize != null) {
+          mapData.putIfAbsent('Size', () => selectedSize);
+        }
+        final key = md5.convert(utf8.encode(json.encode(mapData))).toString();
+        productSalePrice +=
+            productDetails!.additionalInfoStore![key]!.additionalPrice;
+        additionalInfoImage = productDetails!.additionalInfoStore![key]!.image;
+        cartAble = true;
+        notifyListeners();
+        return;
       }
-      if (selectedColor != null) {
-        mapData.putIfAbsent('Color', () => selectedColor);
-        mapData.putIfAbsent('Color_name', () => selectedProduct.colorName);
-      }
-      if (selectedMayo != null) {
-        mapData.putIfAbsent('Mayo', () => selectedMayo);
-      }
-      if (selectedSauce != null) {
-        mapData.putIfAbsent('Sauce', () => selectedSauce);
-      }
-      if (selectedSize != null) {
-        mapData.putIfAbsent('Size', () => selectedSize);
-      }
-      final key = md5.convert(utf8.encode(json.encode(mapData))).toString();
-      print(key);
-      productSalePrice +=
-          productDetails!.additionalInfoStore![key]!.additionalPrice;
-      print('came here for a mom');
-      notifyListeners();
-      return;
     }
-    productSalePrice = productDetails!.product.salePrice;
-
-    notifyListeners();
   }
 
   bool isInSet(List<String>? list) {
@@ -163,7 +160,11 @@ class ProductDetailsService with ChangeNotifier {
     selectedSauce = null;
     selectedMayo = null;
     selectedChese = null;
+    additionalInfoImage = null;
+    cartAble = false;
+    productSalePrice = productDetails!.product.salePrice;
     selectedInventorySetIndex = [];
+    notifyListeners();
   }
 
   setSelectedSauce(value) {
@@ -202,6 +203,11 @@ class ProductDetailsService with ChangeNotifier {
     notifyListeners();
   }
 
+  toggleReviewExpand() {
+    reviewExpand = !reviewExpand;
+    notifyListeners();
+  }
+
   // addToList(List list, value) {
   //   if (list.contains(value)) {
   //     return;
@@ -235,7 +241,8 @@ class ProductDetailsService with ChangeNotifier {
   clearProdcutDetails() {
     productDetails = null;
     descriptionExpand = false;
-    bool aDescriptionExpand = false;
+    aDescriptionExpand = false;
+    reviewExpand = false;
     sizeAttributes = {};
     colorAttributes = {};
     sauceAttributes = {};
@@ -246,9 +253,9 @@ class ProductDetailsService with ChangeNotifier {
     selectedSauce = null;
     selectedMayo = null;
     selectedChese = null;
+    additionalInfoImage = null;
     selectedInventorySetIndex = [];
     print(mayoAttributes);
-
     notifyListeners();
   }
 

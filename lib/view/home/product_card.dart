@@ -39,10 +39,7 @@ class ProductCard extends StatelessWidget {
     return GestureDetector(
       onTap: () {
         Navigator.of(context)
-            .pushNamed(ProductDetails.routeName, arguments: [_id]).then(
-                (value) =>
-                    Provider.of<ProductDetailsService>(context, listen: false)
-                        .clearProdcutDetails());
+            .pushNamed(ProductDetails.routeName, arguments: [_id]);
       },
       child: Container(
         width: screenWidth / 2.57,

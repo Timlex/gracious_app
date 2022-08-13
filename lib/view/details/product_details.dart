@@ -12,7 +12,6 @@ import '../../view/utils/constant_colors.dart';
 import '../../view/utils/constant_styles.dart';
 import 'package:provider/provider.dart';
 
-import '../../service/product_card_data_service.dart';
 import '../home/home_front.dart';
 import '../home/product_card.dart';
 import '../utils/constant_name.dart';
@@ -54,6 +53,7 @@ class ProductDetails extends StatelessWidget {
                 .productDetails!
                 .product;
         final pService = Provider.of<ProductDetailsService>(context);
+
         bool showAttribute =
             Provider.of<ProductDetailsService>(context, listen: false)
                 .productDetails!
@@ -78,9 +78,11 @@ class ProductDetails extends StatelessWidget {
                               Navigator.of(context).push(
                                 MaterialPageRoute<void>(
                                   builder: (BuildContext context) => ImageView(
-                                    product.productGalleryImage.isEmpty
-                                        ? product.image
-                                        : product.productGalleryImage[index],
+                                    pService.additionalInfoImage ??
+                                        (product.productGalleryImage.isEmpty
+                                            ? product.image
+                                            : product
+                                                .productGalleryImage[index]),
                                     id: product.id,
                                   ),
                                 ),
@@ -94,18 +96,21 @@ class ProductDetails extends StatelessWidget {
                               child: CachedNetworkImage(
                                 placeholder: (context, url) =>
                                     Image.asset('assets/images/skelleton.png'),
-                                imageUrl: product.productGalleryImage.isEmpty
-                                    ? product.image
-                                    : product.productGalleryImage[index],
+                                imageUrl: pService.additionalInfoImage ??
+                                    (product.productGalleryImage.isEmpty
+                                        ? product.image
+                                        : product.productGalleryImage[index]),
                                 errorWidget: (context, errorText, error) =>
                                     Image.network(product.image),
                               ),
                             ),
                           );
                         },
-                        itemCount: product.productGalleryImage.isEmpty
+                        itemCount: pService.additionalInfoImage != null
                             ? 1
-                            : product.productGalleryImage.length,
+                            : (product.productGalleryImage.isEmpty
+                                ? 1
+                                : product.productGalleryImage.length),
                         pagination: SwiperCustomPagination(
                           builder: (BuildContext context,
                               SwiperPluginConfig config) {
@@ -119,12 +124,16 @@ class ProductDetails extends StatelessWidget {
                                       children: [
                                         for (int i = 0;
                                             i <
-                                                (product.productGalleryImage
-                                                        .isEmpty
+                                                (pService.additionalInfoImage !=
+                                                        null
                                                     ? 1
-                                                    : product
-                                                        .productGalleryImage
-                                                        .length);
+                                                    : (product
+                                                            .productGalleryImage
+                                                            .isEmpty
+                                                        ? 1
+                                                        : product
+                                                            .productGalleryImage
+                                                            .length));
                                             i++)
                                           (i == config.activeIndex
                                               ? DotIndicator(true)
@@ -136,8 +145,13 @@ class ProductDetails extends StatelessWidget {
                       ),
                     ),
                     leading: GestureDetector(
-                      onTap: (() => Navigator.of(context)
-                          .pushReplacementNamed(HomeFront.routeName)),
+                      onTap: (() {
+                        Provider.of<ProductDetailsService>(context,
+                                listen: false)
+                            .clearProdcutDetails();
+                        Navigator.of(context)
+                            .pushReplacementNamed(HomeFront.routeName);
+                      }),
                       child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
@@ -359,6 +373,12 @@ class ProductDetails extends StatelessWidget {
                           pService.aDescriptionExpand,
                           onPressed: pService.toggleADescriptionExpande,
                         ),
+                        AnimatedBox(
+                          'Review',
+                          pService.setAditionalInfo(),
+                          pService.reviewExpand,
+                          onPressed: pService.toggleReviewExpand,
+                        ),
                         // const AnimatedBox('Additional Informationn',
                         //     'Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numqum eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem.'),
                         // const AnimatedBox('Review',
@@ -367,46 +387,36 @@ class ProductDetails extends StatelessWidget {
                         const SizedBox(height: 10),
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 20),
-                          child: seeAllTitle(context, 'Fetured products'),
+                          child: seeAllTitle(context, 'Related products',
+                              pService.productDetails!.relatedProducts),
                         ),
                         const SizedBox(height: 10),
                         SizedBox(
-                          height:
-                              screenHight / 3.7 < 221 ? 170 : screenHight / 3.7,
-                          child: Consumer<ProductCardDataService>(
-                              builder: (context, products, child) {
-                            return products.featuredCardProductsList.isNotEmpty
-                                ? ListView.builder(
-                                    physics: const BouncingScrollPhysics(
-                                        parent:
-                                            AlwaysScrollableScrollPhysics()),
-                                    padding: const EdgeInsets.only(left: 20),
-                                    shrinkWrap: true,
-                                    scrollDirection: Axis.horizontal,
-                                    itemCount: products
-                                        .featuredCardProductsList.length,
-                                    itemBuilder: (context, index) =>
-                                        ProductCard(
-                                      products.featuredCardProductsList[index]
-                                          .prdId,
-                                      products.featuredCardProductsList[index]
-                                          .title,
-                                      products.featuredCardProductsList[index]
-                                          .price,
-                                      products.featuredCardProductsList[index]
-                                          .discountPrice,
-                                      products.featuredCardProductsList[index]
-                                          .campaignPercentage
-                                          .toDouble(),
-                                      products.featuredCardProductsList[index]
-                                          .imgUrl,
-                                      products.featuredCardProductsList[index]
-                                          .isCartAble,
-                                    ),
-                                  )
-                                : loadingProgressBar();
-                          }),
-                        ),
+                            height: screenHight / 3.7 < 221
+                                ? 170
+                                : screenHight / 3.7,
+                            child: ListView.builder(
+                              physics: const BouncingScrollPhysics(
+                                  parent: AlwaysScrollableScrollPhysics()),
+                              padding: const EdgeInsets.only(left: 20),
+                              shrinkWrap: true,
+                              scrollDirection: Axis.horizontal,
+                              itemCount: pService
+                                  .productDetails!.relatedProducts.length,
+                              itemBuilder: (context, index) {
+                                final products = pService
+                                    .productDetails!.relatedProducts[index];
+                                return ProductCard(
+                                  products.prdId,
+                                  products.title,
+                                  products.price,
+                                  products.discountPrice as int,
+                                  (products.campaignPercentage).toDouble(),
+                                  products.imgUrl,
+                                  false,
+                                );
+                              },
+                            )),
                         const SizedBox(height: 70),
                       ],
                     ),
@@ -429,8 +439,16 @@ class ProductDetails extends StatelessWidget {
                   ),
                   color: cc.blackColor,
                 ),
-                child: PlusMinusCart(itemCount, pService.productSalePrice,
-                    pService.productSalePrice))
+                child: PlusMinusCart(
+                  itemCount,
+                  pService.productSalePrice,
+                  pService.productSalePrice,
+                  onTap: pService.cartAble
+                      ? () {
+                          snackBar(context, 'Product added to cart!');
+                        }
+                      : () {},
+                ))
           ],
         );
       },

@@ -27,7 +27,7 @@ class ProductDetailsModel {
   });
 
   Product product;
-  List<dynamic> relatedProducts;
+  List<RelatedProduct> relatedProducts;
   dynamic userHasItem;
   List<dynamic> ratings;
   dynamic avgRating;
@@ -42,8 +42,16 @@ class ProductDetailsModel {
   factory ProductDetailsModel.fromJson(Map<String, dynamic> json) {
     return ProductDetailsModel(
       product: Product.fromJson(json["product"]),
-      relatedProducts:
-          List<dynamic>.from(json["related_products"].map((x) => x)),
+      relatedProducts: List<RelatedProduct>.from(
+          json["related_products"].map((x) => RelatedProduct(
+                prdId: x['prd_id'],
+                title: x['title'],
+                price: x['price'],
+                imgUrl: x['img_url'],
+                discountPrice: x['discount_price'],
+                campaignPercentage: x['campaign_percentage'],
+                isCartAble: x['is_cart_able'],
+              ))),
       userHasItem: json["user_has_item"],
       ratings: List<dynamic>.from(json["ratings"].map((x) => x)),
       avgRating: json["avg_rating"],
@@ -684,4 +692,24 @@ class SettingText {
         "write_your_feedback_text": writeYourFeedbackText,
         "post_your_feedback_text": postYourFeedbackText,
       };
+}
+
+class RelatedProduct {
+  int prdId;
+  String title;
+  String imgUrl;
+  int price;
+  int? discountPrice;
+  dynamic? campaignPercentage;
+  bool? isCartAble;
+
+  RelatedProduct({
+    required this.prdId,
+    required this.title,
+    required this.price,
+    this.discountPrice,
+    this.campaignPercentage,
+    required this.imgUrl,
+    this.isCartAble,
+  });
 }

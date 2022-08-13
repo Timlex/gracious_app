@@ -8,7 +8,7 @@ import 'package:http/http.dart' as http;
 class UserProfileService with ChangeNotifier {
   late UserDetails userProfileData;
 
-  Future<UserDetails> fetchProfileService(var token) async {
+  Future<UserDetails?> fetchProfileService(var token) async {
     print('fetching profile data');
     print(token);
 
@@ -38,7 +38,8 @@ class UserProfileService with ChangeNotifier {
       notifyListeners();
       return userProfileData;
     }
-    return userProfileData;
+
+    return null;
     // throw '';
   }
   //   //  catch (error) {

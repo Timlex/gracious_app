@@ -183,7 +183,7 @@ Widget favoriteIcon(bool isFavorite,
   );
 }
 
-Widget seeAllTitle(BuildContext context, String title) {
+Widget seeAllTitle(BuildContext context, String title, List<dynamic> data) {
   return Container(
     margin: const EdgeInsets.only(left: 5),
     child: Row(
@@ -201,11 +201,8 @@ Widget seeAllTitle(BuildContext context, String title) {
                   .resetSerch();
               Provider.of<SearchResultDataService>(context, listen: false)
                   .fetchProductsBy(pageNo: '1');
-              Navigator.of(context).push(
-                MaterialPageRoute<void>(
-                  builder: (BuildContext context) => AllProducts(),
-                ),
-              );
+              Navigator.of(context)
+                  .pushNamed(AllProducts.routeName, arguments: [data]);
             },
             child: Text('See All',
                 textAlign: TextAlign.end,

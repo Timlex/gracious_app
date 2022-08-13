@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gren_mart/view/utils/constant_styles.dart';
 import '../../db/database_helper.dart';
 import '../../service/cart_data_service.dart';
 import '../../service/favorite_data_service.dart';
@@ -68,6 +69,9 @@ class SplashScreen extends StatelessWidget {
         await Provider.of<UserProfileService>(context, listen: false)
             .fetchProfileService(value)
             .then((value) async {
+          if (value == null) {
+            snackBar(context, 'Failed to load!');
+          }
           Provider.of<PosterCampaignSliderService>(context, listen: false)
               .fetchPosters();
           Provider.of<PosterCampaignSliderService>(context, listen: false)

@@ -10,6 +10,7 @@ import '../utils/constant_styles.dart';
 import 'product_card.dart';
 
 class AllProducts extends StatelessWidget {
+  static const routeName = 'all product screen';
   AllProducts({Key? key}) : super(key: key);
   ConstantColors cc = ConstantColors();
 
@@ -17,11 +18,15 @@ class AllProducts extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final routeData =
+        ModalRoute.of(context)!.settings.arguments as List<dynamic>;
+    final data = routeData[0];
     double cardWidth = screenWidth / 3.3;
     double cardHeight = screenHight / 4.9 < 165 ? 130 : screenHight / 4.9;
     controller.addListener((() => scrollListener(context)));
     return Scaffold(
       appBar: AppBars().appBarTitled('All Products', () {
+        controller.dispose();
         Navigator.of(context).pop();
       }),
       body: Consumer<ProductCardDataService>(builder: (context, srData, child) {
@@ -29,7 +34,7 @@ class AllProducts extends StatelessWidget {
           children: [
             Expanded(
               child: srData.featuredCardProductsList != null
-                  ? newMethod(cardWidth, cardHeight, srData)
+                  ? newMethod(cardWidth, cardHeight, data)
                   : FutureBuilder(
                       future: showTimout(),
                       builder: ((context, snapshot) {
@@ -54,9 +59,8 @@ class AllProducts extends StatelessWidget {
     );
   }
 
-  Widget newMethod(
-      double cardWidth, double cardHeight, ProductCardDataService srData) {
-    if (srData.featuredCardProductsList.isEmpty) {
+  Widget newMethod(double cardWidth, double cardHeight, List<dynamic> data) {
+    if (data.isEmpty) {
       return Center(
         child: Text(
           // 'No data has been found!',
@@ -76,9 +80,9 @@ class AllProducts extends StatelessWidget {
           crossAxisSpacing: 12,
           // mainAxisSpacing: 12
         ),
-        itemCount: srData.featuredCardProductsList.length,
+        itemCount: data.length,
         itemBuilder: (context, index) {
-          final e = srData.featuredCardProductsList[index];
+          final e = data[index];
           // if (srData.resultMeta!.lastPage >= pageNo) {
           return ProductCard(e.prdId, e.title, e.price, e.discountPrice,
               e.campaignPercentage.toDouble(), e.imgUrl, e.isCartAble);

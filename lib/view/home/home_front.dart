@@ -177,6 +177,11 @@ class HomeFront extends StatelessWidget {
     if (nData.navigationIndex == 1) {
       Provider.of<SearchResultDataService>(context, listen: false).resetSerch();
       Provider.of<SearchResultDataService>(context, listen: false)
+          .resetSerchFilters();
+      Provider.of<SearchResultDataService>(context, listen: false)
+          .setSearchText('');
+      nData.setSearchText('');
+      Provider.of<SearchResultDataService>(context, listen: false)
           .fetchProductsBy(pageNo: '1');
       navigationWidget = SearchView();
       return;
@@ -202,8 +207,18 @@ class HomeFront extends StatelessWidget {
       countryStateInitiate(context);
       productsGetter(context);
       navigationWidget = const Home();
-    } else if (_navigationIndex == 1) {
+    }
+    if (_navigationIndex == 1) {
       navigationWidget = SearchView();
+    }
+    if (_navigationIndex == 2) {
+      navigationWidget = CartView();
+    }
+    if (_navigationIndex == 3) {
+      navigationWidget = FavoriteView();
+    }
+    if (_navigationIndex == 4) {
+      navigationWidget = SettingView();
     }
   }
 

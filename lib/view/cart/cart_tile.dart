@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:gren_mart/view/details/product_details.dart';
 import '../../view/utils/constant_name.dart';
 import 'package:provider/provider.dart';
 
@@ -61,6 +62,10 @@ class CartTile extends StatelessWidget {
         child: Column(
           children: [
             ListTile(
+              onTap: () {
+                Navigator.of(context)
+                    .pushNamed(ProductDetails.routeName, arguments: [id]);
+              },
               leading: Container(
                   height: screenWidth / 4.3,
                   width: screenWidth / 7,

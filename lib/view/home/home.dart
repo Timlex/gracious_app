@@ -123,7 +123,11 @@ class Home extends StatelessWidget {
               .isNotEmpty)
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: seeAllTitle(context, 'Fetured products'),
+              child: seeAllTitle(
+                  context,
+                  'Fetured products',
+                  Provider.of<ProductCardDataService>(context)
+                      .featuredCardProductsList),
             ),
           const SizedBox(height: 10),
           Consumer<ProductCardDataService>(builder: (context, products, child) {
