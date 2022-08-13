@@ -25,8 +25,9 @@ class CartView extends StatelessWidget {
         totalPrice += (element.price * element.quantity);
       }
       return ListView(
-        physics: const BouncingScrollPhysics(
-            parent: AlwaysScrollableScrollPhysics()),
+        physics: Provider.of<CartDataService>(context).cartList.isEmpty
+            ? const NeverScrollableScrollPhysics()
+            : null,
         children: [
           const SizedBox(height: 10),
           Container(

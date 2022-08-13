@@ -40,7 +40,6 @@ class ProductDetailsModel {
   bool userRatedAlready;
 
   factory ProductDetailsModel.fromJson(Map<String, dynamic> json) {
-    print(json["additional_info_store"]);
     return ProductDetailsModel(
       product: Product.fromJson(json["product"]),
       relatedProducts:
@@ -54,7 +53,7 @@ class ProductDetailsModel {
       productInventorySet: List<ProductInventorySet>.from(
           json["product_inventory_set"]
               .map((x) => ProductInventorySet.fromJson(x))),
-      additionalInfoStore: json["additional_info_store"] != []
+      additionalInfoStore: json["additional_info_store"] is List
           ? null
           : Map.from(json["additional_info_store"]).map((k, v) =>
               MapEntry<String, AdditionalInfoStore>(
@@ -75,11 +74,13 @@ class ProductDetailsModel {
         "ratings": List<dynamic>.from(ratings.map((x) => x)),
         "avg_rating": avgRating,
         "available_attributes":
-            availableAttributes == [] ? null : availableAttributes!.toJson(),
+            availableAttributes is List ? null : availableAttributes!.toJson(),
         "product_inventory_set":
             List<dynamic>.from(productInventorySet.map((x) => x.toJson())),
-        "additional_info_store": Map.from(additionalInfoStore!)
-            .map((k, v) => MapEntry<String, dynamic>(k, v.toJson())),
+        "additional_info_store": additionalInfoStore == null
+            ? null
+            : Map.from(additionalInfoStore!)
+                .map((k, v) => MapEntry<String, dynamic>(k, v.toJson())),
         "productColors":
             List<dynamic>.from(productColors.map((x) => x.toJson())),
         "productSizes": List<dynamic>.from(productSizes.map((x) => x.toJson())),
@@ -612,6 +613,7 @@ class ProductInventorySet {
   ProductInventorySet({
     this.sauce,
     this.color,
+    this.colorName,
     this.size,
     this.mayo,
     this.cheese,
@@ -619,6 +621,7 @@ class ProductInventorySet {
 
   String? sauce;
   String? color;
+  String? colorName;
   String? size;
   String? mayo;
   String? cheese;
@@ -627,6 +630,7 @@ class ProductInventorySet {
       ProductInventorySet(
         sauce: json["Sauce"],
         color: json["Color"],
+        colorName: json["Color_name"],
         size: json["Size"],
         mayo: json["Mayo"],
         cheese: json["Cheese"],
@@ -635,6 +639,7 @@ class ProductInventorySet {
   Map<String, dynamic> toJson() => {
         "Sauce": sauce,
         "Color": color,
+        "Color_name": colorName,
         "Size": size,
         "Mayo": mayo,
         "Cheese": cheese,

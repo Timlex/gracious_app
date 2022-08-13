@@ -160,7 +160,7 @@ class ProductDetails extends StatelessWidget {
                                 product.id,
                                 product.title,
                                 product.price,
-                                product.salePrice,
+                                pService.productSalePrice,
                                 product.image,
                               );
                             }
@@ -198,8 +198,8 @@ class ProductDetails extends StatelessWidget {
                                       ),
                                     ),
                                     const SizedBox(height: 17),
-                                    discAmountRow(
-                                        product.salePrice, product.price),
+                                    discAmountRow(pService.productSalePrice,
+                                        product.price),
                                   ],
                                 ),
                               ),
@@ -266,7 +266,7 @@ class ProductDetails extends StatelessWidget {
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceBetween,
                                       children: [
-                                        if (pService.sizeAttributes != {})
+                                        if (sizes.isNotEmpty)
                                           Row(
                                             crossAxisAlignment:
                                                 CrossAxisAlignment.center,
@@ -280,8 +280,9 @@ class ProductDetails extends StatelessWidget {
                                               ...sizes,
                                             ],
                                           ),
-                                        const SizedBox(height: 15),
-                                        if (pService.colorAttributes != {})
+                                        if (colors.isNotEmpty)
+                                          const SizedBox(height: 15),
+                                        if (colors.isNotEmpty)
                                           Row(
                                             crossAxisAlignment:
                                                 CrossAxisAlignment.center,
@@ -295,8 +296,9 @@ class ProductDetails extends StatelessWidget {
                                               ...colors,
                                             ],
                                           ),
-                                        const SizedBox(height: 15),
-                                        if (pdService.sauceAttributes != {})
+                                        if (sauces.isNotEmpty)
+                                          const SizedBox(height: 15),
+                                        if (sauces.isNotEmpty)
                                           Row(
                                             crossAxisAlignment:
                                                 CrossAxisAlignment.center,
@@ -311,8 +313,9 @@ class ProductDetails extends StatelessWidget {
                                               ...sauces,
                                             ],
                                           ),
-                                        const SizedBox(height: 15),
-                                        if (pdService.mayoAttributes != {})
+                                        if (mayoes.isNotEmpty)
+                                          const SizedBox(height: 15),
+                                        if (mayoes.isNotEmpty)
                                           Row(
                                             children: [
                                               if (showAttribute)
@@ -325,8 +328,9 @@ class ProductDetails extends StatelessWidget {
                                               ...mayoes,
                                             ],
                                           ),
-                                        const SizedBox(height: 15),
-                                        if (pdService.cheeseAttributes != {})
+                                        if (cheeses.isNotEmpty)
+                                          const SizedBox(height: 15),
+                                        if (cheeses.isNotEmpty)
                                           Row(
                                             children: [
                                               if (showAttribute)
@@ -425,8 +429,8 @@ class ProductDetails extends StatelessWidget {
                   ),
                   color: cc.blackColor,
                 ),
-                child: PlusMinusCart(
-                    itemCount, product.salePrice, product.salePrice))
+                child: PlusMinusCart(itemCount, pService.productSalePrice,
+                    pService.productSalePrice))
           ],
         );
       },
@@ -504,6 +508,7 @@ class ProductDetails extends StatelessWidget {
             print(pdService.sauceAttributes[elemnt]);
             pdService.setProductInventorySet(pdService.sauceAttributes[elemnt]);
             pdService.setSelectedSauce(elemnt);
+            pdService.addAdditionalPrice();
           },
           child: Stack(
             children: [
@@ -551,6 +556,7 @@ class ProductDetails extends StatelessWidget {
             print(pdService.mayoAttributes[key]);
             pdService.setProductInventorySet(pdService.mayoAttributes[key]);
             pdService.setSelectedMayo(key);
+            pdService.addAdditionalPrice();
           },
           child: Stack(
             children: [
@@ -597,6 +603,7 @@ class ProductDetails extends StatelessWidget {
             }
             pdService.setProductInventorySet(pdService.cheeseAttributes[key]);
             pdService.setSelectedCheese(key);
+            pdService.addAdditionalPrice();
           },
           child: Stack(
             children: [
@@ -644,6 +651,7 @@ class ProductDetails extends StatelessWidget {
             }
             pdService.setProductInventorySet(pdService.colorAttributes[key]);
             pdService.setSelectedColor(key);
+            pdService.addAdditionalPrice();
           },
           child: Stack(
             children: [
@@ -692,6 +700,7 @@ class ProductDetails extends StatelessWidget {
             }
             pdService.setProductInventorySet(pdService.sizeAttributes[element]);
             pdService.setSelectedSize(element);
+            pdService.addAdditionalPrice();
           },
           child: Stack(
             children: [
@@ -732,5 +741,6 @@ class ProductDetails extends StatelessWidget {
     cheeses = list2;
     colors = list3;
     sizes = list4;
+    print(sauces);
   }
 }

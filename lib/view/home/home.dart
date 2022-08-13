@@ -93,14 +93,14 @@ class Home extends StatelessWidget {
             // ),
           ),
           const SizedBox(height: 20),
-          SizedBox(
-            height: screenHight / 4.8,
-            width: double.infinity,
-            child: Consumer<PosterCampaignSliderService>(
-                builder: (context, posterData, child) {
-              return posterData.posterDataList.isEmpty
-                  ? const SizedBox()
-                  : Swiper(
+          Consumer<PosterCampaignSliderService>(
+              builder: (context, posterData, child) {
+            return posterData.posterDataList.isEmpty
+                ? const SizedBox()
+                : SizedBox(
+                    height: screenHight / 4.8,
+                    width: double.infinity,
+                    child: Swiper(
                       itemBuilder: (BuildContext context, int index) {
                         return PosterCard(
                           posterData.posterDataList[index].title,
@@ -114,9 +114,9 @@ class Home extends StatelessWidget {
                       viewportFraction: 0.8,
                       scale: 0.9,
                       autoplay: true,
-                    );
-            }),
-          ),
+                    ),
+                  );
+          }),
           const SizedBox(height: 10),
           if (Provider.of<ProductCardDataService>(context)
               .featuredCardProductsList
@@ -126,12 +126,11 @@ class Home extends StatelessWidget {
               child: seeAllTitle(context, 'Fetured products'),
             ),
           const SizedBox(height: 10),
-          SizedBox(
-            height: screenHight / 3.7 < 221 ? 170 : screenHight / 3.7,
-            child: Consumer<ProductCardDataService>(
-                builder: (context, products, child) {
-              return products.featuredCardProductsList.isNotEmpty
-                  ? ListView.builder(
+          Consumer<ProductCardDataService>(builder: (context, products, child) {
+            return products.featuredCardProductsList.isNotEmpty
+                ? SizedBox(
+                    height: screenHight / 3.7 < 221 ? 170 : screenHight / 3.7,
+                    child: ListView.builder(
                       physics: const BouncingScrollPhysics(
                           parent: AlwaysScrollableScrollPhysics()),
                       padding: const EdgeInsets.only(left: 20),
@@ -149,34 +148,37 @@ class Home extends StatelessWidget {
                         products.featuredCardProductsList[index].imgUrl,
                         products.featuredCardProductsList[index].isCartAble,
                       ),
-                    )
-                  : const SizedBox();
-            }),
-          ),
+                    ))
+                : const SizedBox();
+          }),
           const SizedBox(height: 20),
-          SingleChildScrollView(
-            physics: const BouncingScrollPhysics(
-                parent: AlwaysScrollableScrollPhysics()),
-            scrollDirection: Axis.horizontal,
-            child: Consumer<PosterCampaignSliderService>(
-                builder: (context, pcData, child) {
-              return pcData.campaignDataList.isEmpty
-                  ? const SizedBox()
-                  : Row(
-                      children: [
-                        const SizedBox(width: 20),
-                        ...pcData.campaignDataList.map((e) {
-                          print(e.title);
-                          return DODCard(e.title, e.buttonText, () {}, e.image);
-                        }).toList()
-                      ],
-                    );
-            }),
-          ),
+          if (Provider.of<ProductCardDataService>(context)
+              .featuredCardProductsList
+              .isNotEmpty)
+            SingleChildScrollView(
+              physics: const BouncingScrollPhysics(
+                  parent: AlwaysScrollableScrollPhysics()),
+              scrollDirection: Axis.horizontal,
+              child: Consumer<PosterCampaignSliderService>(
+                  builder: (context, pcData, child) {
+                return pcData.campaignDataList.isEmpty
+                    ? const SizedBox()
+                    : Row(
+                        children: [
+                          const SizedBox(width: 20),
+                          ...pcData.campaignDataList.map((e) {
+                            print(e.title);
+                            return DODCard(
+                                e.title, e.buttonText, () {}, e.image);
+                          }).toList()
+                        ],
+                      );
+              }),
+            ),
           const SizedBox(height: 20),
           Consumer<ProductCardDataService>(builder: (context, campInfo, child) {
             return campInfo.campaignCardProductList.isEmpty
-                ? loadingProgressBar()
+                ? const SizedBox()
                 : Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20),
                     child: campInfo.campaignInfo != null

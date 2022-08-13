@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:crypto/crypto.dart';
 
 import 'package:flutter/cupertino.dart';
 import '../../model/product_details_model.dart';
@@ -7,14 +8,16 @@ import 'package:http/http.dart' as http;
 
 class ProductDetailsService with ChangeNotifier {
   ProductDetailsModel? productDetails;
+  late Map<String, AdditionalInfoStore> additionalInventoryInfo;
   bool descriptionExpand = false;
   bool aDescriptionExpand = false;
+  int productSalePrice = 0;
   List<String> selectedInventorySetIndex = [];
-  String? selectedSize = '';
-  String? selectedColor = '';
-  String? selectedSauce = '';
-  String? selectedMayo = '';
-  String? selectedChese = '';
+  String? selectedSize;
+  String? selectedColor;
+  String? selectedSauce;
+  String? selectedMayo;
+  String? selectedChese;
   List sizeList = [];
   List colorList = [];
   List sauceList = [];
@@ -40,28 +43,28 @@ class ProductDetailsService with ChangeNotifier {
       // if (value!.length == 1) {
       //   selectedInventorySetIndex = value;
       // print(selectedInventorySetIndex);
-      if (selectedSize != '') {
+      if (selectedSize != null) {
         selectedSize =
-            deselect(value, sizeAttributes[selectedSize]) ? selectedSize : '';
+            deselect(value, sizeAttributes[selectedSize]) ? selectedSize : null;
       }
-      if (selectedColor != '') {
+      if (selectedColor != null) {
         selectedColor = deselect(value, colorAttributes[selectedColor])
             ? selectedColor
-            : '';
+            : null;
       }
-      if (selectedSauce != '') {
+      if (selectedSauce != null) {
         selectedSauce = deselect(value, sauceAttributes[selectedSauce])
             ? selectedSauce
-            : '';
+            : null;
       }
-      if (selectedMayo != '') {
+      if (selectedMayo != null) {
         selectedMayo =
-            deselect(value, mayoAttributes[selectedMayo]) ? selectedMayo : '';
+            deselect(value, mayoAttributes[selectedMayo]) ? selectedMayo : null;
       }
-      if ((selectedChese != '')) {
+      if ((selectedChese != null)) {
         selectedChese = deselect(value, cheeseAttributes[selectedChese])
             ? selectedChese
-            : '';
+            : null;
       }
       //   print('Its here');
       //   return;
@@ -96,6 +99,51 @@ class ProductDetailsService with ChangeNotifier {
     return result;
   }
 
+  addAdditionalPrice() {
+    print('came here------1');
+    if (selectedInventorySetIndex.length != 1) {
+      return;
+    }
+    print('came here');
+    final selectedProduct = productDetails!
+        .productInventorySet[int.parse(selectedInventorySetIndex[0])];
+
+    if (selectedSize == selectedProduct.size &&
+        selectedColor == selectedProduct.color &&
+        selectedSauce == selectedProduct.sauce &&
+        selectedMayo == selectedProduct.mayo &&
+        selectedChese == selectedProduct.cheese &&
+        additionalInventoryInfo.isNotEmpty) {
+      final mapData = {};
+      if (selectedChese != null) {
+        mapData.putIfAbsent('Cheese', () => selectedChese);
+      }
+      if (selectedColor != null) {
+        mapData.putIfAbsent('Color', () => selectedColor);
+        mapData.putIfAbsent('Color_name', () => selectedProduct.colorName);
+      }
+      if (selectedMayo != null) {
+        mapData.putIfAbsent('Mayo', () => selectedMayo);
+      }
+      if (selectedSauce != null) {
+        mapData.putIfAbsent('Sauce', () => selectedSauce);
+      }
+      if (selectedSize != null) {
+        mapData.putIfAbsent('Size', () => selectedSize);
+      }
+      final key = md5.convert(utf8.encode(json.encode(mapData))).toString();
+      print(key);
+      productSalePrice +=
+          productDetails!.additionalInfoStore![key]!.additionalPrice;
+      print('came here for a mom');
+      notifyListeners();
+      return;
+    }
+    productSalePrice = productDetails!.product.salePrice;
+
+    notifyListeners();
+  }
+
   bool isInSet(List<String>? list) {
     bool result = false;
     if (selectedInventorySetIndex.isEmpty) {
@@ -110,11 +158,11 @@ class ProductDetailsService with ChangeNotifier {
   }
 
   clearSelection() {
-    selectedSize = '';
-    selectedColor = '';
-    selectedSauce = '';
-    selectedMayo = '';
-    selectedChese = '';
+    selectedSize = null;
+    selectedColor = null;
+    selectedSauce = null;
+    selectedMayo = null;
+    selectedChese = null;
     selectedInventorySetIndex = [];
   }
 
@@ -165,6 +213,7 @@ class ProductDetailsService with ChangeNotifier {
     if (value == null || map == {}) {
       return;
     }
+
     if (!map.containsKey(value)) {
       map.putIfAbsent(value, () => [index.toString()]);
       return;
@@ -192,11 +241,11 @@ class ProductDetailsService with ChangeNotifier {
     sauceAttributes = {};
     mayoAttributes = {};
     cheeseAttributes = {};
-    selectedSize = '';
-    selectedColor = '';
-    selectedSauce = '';
-    selectedMayo = '';
-    selectedChese = '';
+    selectedSize = null;
+    selectedColor = null;
+    selectedSauce = null;
+    selectedMayo = null;
+    selectedChese = null;
     selectedInventorySetIndex = [];
     print(mayoAttributes);
 
@@ -209,11 +258,13 @@ class ProductDetailsService with ChangeNotifier {
 
     // try {
     final response = await http.get(url);
-    print(response.statusCode);
     if (response.statusCode == 200) {
       var data = ProductDetailsModel.fromJson(jsonDecode(response.body));
+      print(data.additionalInfoStore);
+
       productDetails = data;
       int index = 0;
+      productSalePrice = productDetails!.product.price;
       for (var element in productDetails!.productInventorySet) {
         addToMap(productDetails!.productInventorySet[index].size, index,
             sizeAttributes);
@@ -225,26 +276,10 @@ class ProductDetailsService with ChangeNotifier {
             mayoAttributes);
         addToMap(productDetails!.productInventorySet[index].cheese, index,
             cheeseAttributes);
-        // addToList(sizeList, element.size);
-        // addToList(colorList, element.color);
-        // addToList(sauceList, element.sauce);
-        // addToList(mayoList, element.mayo);
         // addToList(cheeseList, element.cheese);
         index++;
       }
-      // showSize = productDetails!.productInventorySet[0].size != null;
-      // showColor = productDetails!.productInventorySet[0].color != null;
-      // showSauce = productDetails!.productInventorySet[0].sauce != null;
-      // showMayo = productDetails!.productInventorySet[0].mayo != null;
-      // showCheese = productDetails!.productInventorySet[0].cheese != null;
-      // // setSelectedSauce(productDetails!.productInventorySet[0].sauce);
-      // setSelectedCheese(productDetails!.productInventorySet[0].cheese);
-      print(productDetails!.productInventorySet[0].mayo);
-
-      print(productDetails!.product.title);
-      // print(productDetails!.availableAttributes!.mayo);
-      // print(productDetails!.availableAttributes!.sauce);
-      // print(productDetails!.availableAttributes!.cheese);
+      additionalInventoryInfo = productDetails!.additionalInfoStore ?? {};
 
       notifyListeners();
     } else {

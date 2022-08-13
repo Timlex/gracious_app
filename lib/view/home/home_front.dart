@@ -65,8 +65,8 @@ class HomeFront extends StatelessWidget {
                     .setSortBy(value);
                 Provider.of<SearchResultDataService>(context, listen: false)
                     .resetSerch();
-                Provider.of<SearchResultDataService>(context, listen: false)
-                    .fetchProductsBy(pageNo: '1');
+                // Provider.of<SearchResultDataService>(context, listen: false)
+                //     .fetchProductsBy(pageNo: '1');
               },
               itemBuilder: (context) => [
                     PopupMenuItem(
