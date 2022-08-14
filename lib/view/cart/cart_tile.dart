@@ -54,6 +54,7 @@ class CartTile extends StatelessWidget {
         ),
       ),
       onDismissed: (direction) {
+        snackBar(context, 'Item removed from cart.');
         carts.deleteCartItem(id);
       },
       key: Key(id.toString()),
@@ -179,6 +180,7 @@ class CartTile extends StatelessWidget {
                   ),
                   GestureDetector(
                     onTap: (() {
+                      snackBar(context, 'Item removed from cart.');
                       carts.deleteCartItem(id);
                     }),
                     child: Padding(

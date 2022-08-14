@@ -14,6 +14,7 @@ class ProductDetailsService with ChangeNotifier {
   bool reviewExpand = false;
   bool cartAble = false;
   int productSalePrice = 0;
+  int quantity = 1;
   String? additionalInfoImage;
   List<String> selectedInventorySetIndex = [];
   String? selectedSize;
@@ -133,12 +134,32 @@ class ProductDetailsService with ChangeNotifier {
         final key = md5.convert(utf8.encode(json.encode(mapData))).toString();
         productSalePrice +=
             productDetails!.additionalInfoStore![key]!.additionalPrice;
+
         additionalInfoImage = productDetails!.additionalInfoStore![key]!.image;
+        additionalInfoImage =
+            additionalInfoImage == '' ? null : additionalInfoImage;
         cartAble = true;
         notifyListeners();
-        return;
+        break;
       }
+
+      cartAble = false;
+      productSalePrice = productDetails!.product.salePrice;
+      notifyListeners();
     }
+  }
+
+  setQuantity({bool plus = true}) {
+    if (plus) {
+      quantity++;
+      notifyListeners();
+      return;
+    }
+    if (quantity == 1) {
+      return;
+    }
+    quantity--;
+    notifyListeners();
   }
 
   bool isInSet(List<String>? list) {
@@ -254,6 +275,7 @@ class ProductDetailsService with ChangeNotifier {
     selectedMayo = null;
     selectedChese = null;
     additionalInfoImage = null;
+    quantity = 1;
     selectedInventorySetIndex = [];
     print(mayoAttributes);
     notifyListeners();
@@ -267,7 +289,6 @@ class ProductDetailsService with ChangeNotifier {
     final response = await http.get(url);
     if (response.statusCode == 200) {
       var data = ProductDetailsModel.fromJson(jsonDecode(response.body));
-      print(data.additionalInfoStore);
 
       productDetails = data;
       int index = 0;
@@ -287,6 +308,9 @@ class ProductDetailsService with ChangeNotifier {
         index++;
       }
       additionalInventoryInfo = productDetails!.additionalInfoStore ?? {};
+      if (productDetails!.additionalInfoStore == null) {
+        cartAble = true;
+      }
 
       notifyListeners();
     } else {

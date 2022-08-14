@@ -12,14 +12,15 @@ class CartDataService with ChangeNotifier {
       // Cart(id: '05', quantity: 1),
       // Cart('06', 1),
       ;
+  var subTotal = 0;
 
   Map<String, Cart> get cartList {
     return _cartItems;
   }
 
-  void addItem(int id) async {
+  void addItem(int id, {int? extraQuantity}) async {
     _cartItems.update(id.toString(), (value) {
-      int sum = value.quantity + 1;
+      int sum = value.quantity + (extraQuantity ?? 1);
       DbHelper.updateQuantity(
         'cart',
         id,
@@ -41,6 +42,11 @@ class CartDataService with ChangeNotifier {
         value.campaignPercentage,
         sum,
         value.imgUrl,
+        size: value.size,
+        color: value.color,
+        sauce: value.sauce,
+        mayo: value.mayo,
+        cheese: value.cheese,
       );
     });
 
@@ -66,6 +72,7 @@ class CartDataService with ChangeNotifier {
           // 'imgUrl': value.imgUrl,
         },
       );
+      subTotal -= value.price;
       return Cart(
         value.id,
         value.title,
@@ -74,6 +81,11 @@ class CartDataService with ChangeNotifier {
         value.campaignPercentage,
         sum,
         value.imgUrl,
+        size: value.size,
+        color: value.color,
+        sauce: value.sauce,
+        mayo: value.mayo,
+        cheese: value.cheese,
       );
     });
 
@@ -94,10 +106,16 @@ class CartDataService with ChangeNotifier {
     int discountPrice,
     double campaignPercentage,
     int quantity,
-    String imgUrl,
-  ) async {
+    String imgUrl, {
+    String? size,
+    String? color,
+    String? sauce,
+    String? mayo,
+    String? cheese,
+  }) async {
     if (_cartItems.containsKey(id.toString())) {
-      addItem(id);
+      addItem(id, extraQuantity: quantity);
+      subTotal += price * quantity;
       notifyListeners();
       return;
     }
@@ -111,14 +129,33 @@ class CartDataService with ChangeNotifier {
           'price': price,
           'discountPrice': discountPrice,
           'campaignPercentage': campaignPercentage,
-          'quantity': 1,
+          'quantity': quantity,
           'imgUrl': imgUrl,
+          'size': size,
+          'color': color,
+          'sauce': sauce,
+          'mayo': mayo,
+          'cheese': cheese,
         },
       );
+      subTotal += price * quantity;
       _cartItems.putIfAbsent(
           id.toString(),
           (() => Cart(
-              id, title, price, discountPrice, campaignPercentage, 1, imgUrl)));
+                id,
+                title,
+                price,
+                discountPrice,
+                campaignPercentage,
+                quantity,
+                imgUrl,
+                size: size,
+                color: color,
+                sauce: sauce,
+                mayo: mayo,
+                cheese: cheese,
+              )));
+
       notifyListeners();
     } catch (error) {
       return;
@@ -129,18 +166,26 @@ class CartDataService with ChangeNotifier {
     final dbData = await DbHelper.fetchDb('cart');
     Map<String, Cart> dataList = {};
     for (var element in dbData) {
-      dataList.putIfAbsent(
-          element['productId'].toString(),
-          () => Cart(
-                element['productId'],
-                element['title'],
-                element['price'],
-                element['discountPrice'],
-                element['campaignPercentage'],
-                element['quantuty'] ?? 1,
-                element['imgUrl'],
-              ));
+      dataList.putIfAbsent(element['productId'].toString(), () {
+        return Cart(
+          element['productId'],
+          element['title'],
+          element['price'],
+          element['discountPrice'],
+          element['campaignPercentage'],
+          element['quantity'],
+          element['imgUrl'],
+          size: element['size'],
+          color: element['color'],
+          sauce: element['sauce'],
+          mayo: element['mayo'],
+          cheese: element['cheese'],
+        );
+      });
     }
+    dataList.forEach((key, value) {
+      subTotal += value.price * value.quantity;
+    });
     _cartItems = dataList;
     notifyListeners();
     print('fetching carts');
@@ -149,6 +194,8 @@ class CartDataService with ChangeNotifier {
 
   void deleteCartItem(int id) async {
     await DbHelper.deleteDbSI('cart', id);
+    subTotal -=
+        _cartItems[id.toString()]!.price * _cartItems[id.toString()]!.quantity;
     _cartItems.remove(id.toString());
     notifyListeners();
   }

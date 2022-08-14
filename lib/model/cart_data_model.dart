@@ -6,6 +6,11 @@ class Cart {
   double campaignPercentage;
   int quantity;
   String imgUrl;
+  String? size;
+  String? color;
+  String? sauce;
+  String? mayo;
+  String? cheese;
 
   Cart(
     this.id,
@@ -14,6 +19,11 @@ class Cart {
     this.discountPrice,
     this.campaignPercentage,
     this.quantity,
-    this.imgUrl,
-  );
+    this.imgUrl, {
+    this.size,
+    this.color,
+    this.sauce,
+    this.mayo,
+    this.cheese,
+  });
 }

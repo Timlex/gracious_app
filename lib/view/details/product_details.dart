@@ -3,6 +3,7 @@ import 'package:card_swiper/card_swiper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:gren_mart/service/cart_data_service.dart';
 import '../../service/favorite_data_service.dart';
 import '../../service/product_details_service.dart';
 import '../../view/details/animated_box.dart';
@@ -385,39 +386,40 @@ class ProductDetails extends StatelessWidget {
                         //     'Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numqum eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem.'),
 
                         const SizedBox(height: 10),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 20),
-                          child: seeAllTitle(context, 'Related products',
-                              pService.productDetails!.relatedProducts),
-                        ),
+                        if (pService.productDetails!.relatedProducts.isNotEmpty)
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 20),
+                            child: seeAllTitle(context, 'Related products',
+                                pService.productDetails!.relatedProducts),
+                          ),
                         const SizedBox(height: 10),
-                        SizedBox(
-                            height: screenHight / 3.7 < 221
-                                ? 170
-                                : screenHight / 3.7,
-                            child: ListView.builder(
-                              physics: const BouncingScrollPhysics(
-                                  parent: AlwaysScrollableScrollPhysics()),
-                              padding: const EdgeInsets.only(left: 20),
-                              shrinkWrap: true,
-                              scrollDirection: Axis.horizontal,
-                              itemCount: pService
-                                  .productDetails!.relatedProducts.length,
-                              itemBuilder: (context, index) {
-                                final products = pService
-                                    .productDetails!.relatedProducts[index];
-                                return ProductCard(
-                                  products.prdId,
-                                  products.title,
-                                  products.price,
-                                  products.discountPrice as int,
-                                  (products.campaignPercentage).toDouble(),
-                                  products.imgUrl,
-                                  false,
-                                );
-                              },
-                            )),
-                        const SizedBox(height: 70),
+                        if (pService.productDetails!.relatedProducts.isNotEmpty)
+                          SizedBox(
+                              height: screenHight / 3.7 < 221
+                                  ? 170
+                                  : screenHight / 3.7,
+                              child: ListView.builder(
+                                physics: const BouncingScrollPhysics(
+                                    parent: AlwaysScrollableScrollPhysics()),
+                                padding: const EdgeInsets.only(left: 20),
+                                shrinkWrap: true,
+                                scrollDirection: Axis.horizontal,
+                                itemCount: pService
+                                    .productDetails!.relatedProducts.length,
+                                itemBuilder: (context, index) {
+                                  final products = pService
+                                      .productDetails!.relatedProducts[index];
+                                  return ProductCard(
+                                    products.prdId,
+                                    products.title,
+                                    products.price,
+                                    products.discountPrice as int,
+                                    (products.campaignPercentage).toDouble(),
+                                    products.imgUrl,
+                                    false,
+                                  );
+                                },
+                              )),
                       ],
                     ),
                   ),
@@ -440,14 +442,28 @@ class ProductDetails extends StatelessWidget {
                   color: cc.blackColor,
                 ),
                 child: PlusMinusCart(
-                  itemCount,
-                  pService.productSalePrice,
-                  pService.productSalePrice,
                   onTap: pService.cartAble
                       ? () {
-                          snackBar(context, 'Product added to cart!');
+                          Provider.of<CartDataService>(context, listen: false)
+                              .addCartItem(
+                            product.id,
+                            product.title,
+                            product.price,
+                            pService.productSalePrice,
+                            0.0,
+                            pService.quantity,
+                            pService.additionalInfoImage ?? product.image,
+                            size: pService.selectedSize,
+                            color: pService.selectedColor,
+                            sauce: pService.selectedSauce,
+                            mayo: pService.selectedMayo,
+                            cheese: pService.selectedChese,
+                          );
+                          snackBar(context, 'Product added to cart.');
                         }
-                      : () {},
+                      : () {
+                          snackBar(context, 'Please select a set.');
+                        },
                 ))
           ],
         );

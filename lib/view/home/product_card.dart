@@ -38,6 +38,8 @@ class ProductCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
+        Provider.of<ProductDetailsService>(context, listen: false)
+            .clearProdcutDetails();
         Navigator.of(context)
             .pushNamed(ProductDetails.routeName, arguments: [_id]);
       },
@@ -172,8 +174,12 @@ class ProductCard extends StatelessWidget {
                                       campaignPercentage,
                                       1,
                                       imgUrl);
+                                  snackBar(context, 'Product added to cart.');
                                 }
                               : (() {
+                                  Provider.of<ProductDetailsService>(context,
+                                          listen: false)
+                                      .clearProdcutDetails();
                                   Provider.of<ProductDetailsService>(context,
                                           listen: false)
                                       .fetchProductDetails(_id);

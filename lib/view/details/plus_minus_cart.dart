@@ -1,40 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:gren_mart/service/product_details_service.dart';
+import 'package:provider/provider.dart';
 import '../../view/utils/constant_colors.dart';
 import '../../view/utils/constant_name.dart';
 
-class PlusMinusCart extends StatefulWidget {
-  int count = 0;
-  int amount;
-  int totalAmount;
+class PlusMinusCart extends StatelessWidget {
   void Function()? onTap;
-  PlusMinusCart(this.count, this.amount, this.totalAmount,
-      {this.onTap, Key? key})
-      : super(key: key);
+  PlusMinusCart({this.onTap, Key? key}) : super(key: key);
 
-  @override
-  State<PlusMinusCart> createState() => _PlusMinusCartState();
-}
-
-class _PlusMinusCartState extends State<PlusMinusCart> {
   ConstantColors cc = ConstantColors();
-
-  void addItem(int totalSum) {
-    setState(() {
-      widget.count++;
-      widget.totalAmount = widget.count * widget.amount;
-    });
-  }
-
-  void minusItem(int totalSum) {
-    if (widget.count == 1) {
-      return;
-    }
-    setState(() {
-      widget.count--;
-      widget.totalAmount = widget.count * widget.amount;
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -57,7 +32,10 @@ class _PlusMinusCartState extends State<PlusMinusCart> {
                   color: const Color.fromARGB(33, 208, 47, 68),
                 ),
                 child: IconButton(
-                    onPressed: () => minusItem(widget.totalAmount),
+                    onPressed: () {
+                      Provider.of<ProductDetailsService>(context, listen: false)
+                          .setQuantity(plus: false);
+                    },
                     icon: SvgPicture.asset(
                       'assets/images/icons/minus.svg',
                       color: const Color.fromARGB(255, 208, 47, 68),
@@ -65,7 +43,7 @@ class _PlusMinusCartState extends State<PlusMinusCart> {
               ),
               Expanded(
                   child: Text(
-                widget.count.toString(),
+                Provider.of<ProductDetailsService>(context).quantity.toString(),
                 textAlign: TextAlign.center,
                 style: const TextStyle(
                     fontSize: 15,
@@ -79,7 +57,10 @@ class _PlusMinusCartState extends State<PlusMinusCart> {
                   color: const Color.fromARGB(39, 0, 177, 6),
                 ),
                 child: IconButton(
-                    onPressed: () => addItem(widget.totalAmount),
+                    onPressed: () {
+                      Provider.of<ProductDetailsService>(context, listen: false)
+                          .setQuantity();
+                    },
                     icon: SvgPicture.asset(
                       'assets/images/icons/add.svg',
                       color: cc.primaryColor,
@@ -90,7 +71,7 @@ class _PlusMinusCartState extends State<PlusMinusCart> {
         ),
         const Spacer(),
         GestureDetector(
-          onTap: widget.onTap,
+          onTap: onTap,
           child: Stack(children: [
             Container(
               alignment: Alignment.center,
@@ -128,7 +109,7 @@ class _PlusMinusCartState extends State<PlusMinusCart> {
                 color: const Color.fromARGB(24, 0, 0, 0),
                 child: Center(
                   child: Text(
-                    '\$' + widget.totalAmount.toStringAsFixed(2),
+                    '\$${Provider.of<ProductDetailsService>(context, listen: false).productSalePrice * Provider.of<ProductDetailsService>(context).quantity}',
                     style: TextStyle(
                       fontSize: 13,
                       color: cc.pureWhite,
