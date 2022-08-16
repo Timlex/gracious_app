@@ -31,6 +31,8 @@ class AddNewAddress extends StatelessWidget {
       if (value == null) {
         saData.fetchUsersShippingAddress();
         Navigator.of(context).pop();
+        saData.setIsLoading(false);
+        return;
       }
       snackBar(context, value);
       saData.setIsLoading(false);
@@ -105,6 +107,9 @@ class AddNewAddress extends StatelessWidget {
                             return 'Enter your email';
                           }
                           if (emailText.length <= 5) {
+                            return 'Enter a valid email';
+                          }
+                          if (!emailText.contains('@')) {
                             return 'Enter a valid email';
                           }
                           return null;
@@ -234,6 +239,7 @@ class AddNewAddress extends StatelessWidget {
                       // const SizedBox(height: 8),
                       CustomTextField(
                         'Enter zip code',
+                        keyboardType: TextInputType.number,
                         // validator: (zipCode) {
                         //   return null;
 

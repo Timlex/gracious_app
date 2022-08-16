@@ -106,7 +106,7 @@ class ShippingAddressesService with ChangeNotifier {
         if (data.data.isEmpty) {
           setNoData(true);
           notifyListeners();
-          return;
+          return 'No shipping address found.';
         }
         selectedAddress ??= shippingAddresseList[0];
 
@@ -179,6 +179,9 @@ class ShippingAddressesService with ChangeNotifier {
     if (response.statusCode == 200) {
       print(response.body);
       shippingAddresseList.removeWhere((element) => element.id == id);
+      if (shippingAddresseList.isEmpty) {
+        noData = true;
+      }
       notifyListeners();
       return;
     }

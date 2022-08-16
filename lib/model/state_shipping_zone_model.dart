@@ -1,20 +1,21 @@
 // To parse this JSON data, do
 //
-//     final countryShippingZoneModel = countryShippingZoneModelFromJson(jsonString);
+//     final stateShippingZoneModel = stateShippingZoneModelFromJson(jsonString);
 
 import 'dart:convert';
 
-CountryShippingZoneModel countryShippingZoneModelFromJson(String str) =>
-    CountryShippingZoneModel.fromJson(json.decode(str));
+import 'country_shipping_zone_model.dart';
 
-String countryShippingZoneModelToJson(CountryShippingZoneModel data) =>
+StateShippingZoneModel stateShippingZoneModelFromJson(String str) =>
+    StateShippingZoneModel.fromJson(json.decode(str));
+
+String stateShippingZoneModelToJson(StateShippingZoneModel data) =>
     json.encode(data.toJson());
 
-class CountryShippingZoneModel {
-  CountryShippingZoneModel({
+class StateShippingZoneModel {
+  StateShippingZoneModel({
     required this.tax,
     this.taxPercentage,
-    required this.states,
     required this.shippingOptions,
     required this.defaultShipping,
     required this.defaultShippingCost,
@@ -22,16 +23,14 @@ class CountryShippingZoneModel {
 
   int tax;
   int? taxPercentage;
-  List<State> states;
   List<DefaultShipping> shippingOptions;
   DefaultShipping defaultShipping;
   int defaultShippingCost;
 
-  factory CountryShippingZoneModel.fromJson(Map<String, dynamic> json) =>
-      CountryShippingZoneModel(
+  factory StateShippingZoneModel.fromJson(Map<String, dynamic> json) =>
+      StateShippingZoneModel(
         tax: json["tax"],
         taxPercentage: json["tax_percentage"],
-        states: List<State>.from(json["states"].map((x) => State.fromJson(x))),
         shippingOptions: List<DefaultShipping>.from(
             json["shipping_options"].map((x) => DefaultShipping.fromJson(x))),
         defaultShipping: DefaultShipping.fromJson(json["default_shipping"]),
@@ -41,7 +40,6 @@ class CountryShippingZoneModel {
   Map<String, dynamic> toJson() => {
         "tax": tax,
         "tax_percentage": taxPercentage,
-        "states": List<dynamic>.from(states.map((x) => x.toJson())),
         "shipping_options":
             List<dynamic>.from(shippingOptions.map((x) => x.toJson())),
         "default_shipping": defaultShipping.toJson(),
@@ -49,50 +47,50 @@ class CountryShippingZoneModel {
       };
 }
 
-class DefaultShipping {
-  DefaultShipping({
-    required this.id,
-    required this.name,
-    required this.zoneId,
-    required this.isDefault,
-    required this.createdAt,
-    required this.updatedAt,
-    required this.options,
-    required this.availableOptions,
-  });
+// class DefaultShipping {
+//   DefaultShipping({
+//     required this.id,
+//     required this.name,
+//     required this.zoneId,
+//     required this.isDefault,
+//     required this.createdAt,
+//     required this.updatedAt,
+//     required this.options,
+//     required this.availableOptions,
+//   });
 
-  int id;
-  String name;
-  int zoneId;
-  int isDefault;
-  DateTime createdAt;
-  DateTime updatedAt;
-  Options options;
-  Options availableOptions;
+//   int id;
+//   String name;
+//   int zoneId;
+//   int isDefault;
+//   DateTime createdAt;
+//   DateTime updatedAt;
+//   Options options;
+//   Options availableOptions;
 
-  factory DefaultShipping.fromJson(Map<String, dynamic> json) =>
-      DefaultShipping(
-        id: json["id"],
-        name: json["name"],
-        zoneId: json["zone_id"],
-        isDefault: json["is_default"],
-        createdAt: DateTime.parse(json["created_at"]),
-        updatedAt: DateTime.parse(json["updated_at"]),
-        options: Options.fromJson(json["options"]),
-        availableOptions: Options.fromJson(json["available_options"]),
-      );
+//   factory DefaultShipping.fromJson(Map<String, dynamic> json) =>
+//       DefaultShipping(
+//         id: json["id"],
+//         name: json["name"],
+//         zoneId: json["zone_id"],
+//         isDefault: json["is_default"],
+//         createdAt: DateTime.parse(json["created_at"]),
+//         updatedAt: DateTime.parse(json["updated_at"]),
+//         options: Options.fromJson(json["options"]),
+//         availableOptions: Options.fromJson(json["available_options"]),
+//       );
 
-  Map<String, dynamic> toJson() => {
-        "id": id,
-        "name": name,
-        "zone_id": zoneId,
-        "is_default": isDefault,
-        "created_at": createdAt.toIso8601String(),
-        "updated_at": updatedAt.toIso8601String(),
-        "options": options.toJson(),
-        "available_options": availableOptions.toJson(),
-      };
-}
+//   Map<String, dynamic> toJson() => {
+//         "id": id,
+//         "name": name,
+//         "zone_id": zoneId,
+//         "is_default": isDefault,
+//         "created_at": createdAt.toIso8601String(),
+//         "updated_at": updatedAt.toIso8601String(),
+//         "options": options.toJson(),
+//         "available_options": availableOptions.toJson(),
+//       };
+// }
 
 class Options {
   Options({
@@ -147,25 +145,5 @@ class Options {
         "coupon": coupon,
         "created_at": createdAt.toIso8601String(),
         "updated_at": updatedAt.toIso8601String(),
-      };
-}
-
-class State {
-  State({
-    required this.id,
-    required this.name,
-  });
-
-  int id;
-  String name;
-
-  factory State.fromJson(Map<String, dynamic> json) => State(
-        id: json["id"],
-        name: json["name"],
-      );
-
-  Map<String, dynamic> toJson() => {
-        "id": id,
-        "name": name,
       };
 }

@@ -13,7 +13,7 @@ class UserChatBubble extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     Path path_0 = Path();
-    path_0.moveTo(0, size.height);
+    path_0.moveTo(size.width, 0);
     // path_0.cubicTo(
     //     size.width * 1.000678,
     //     size.height * 0.03201855,
@@ -21,30 +21,26 @@ class UserChatBubble extends CustomPainter {
     //     size.height * 0.01876919,
     //     size.width * 0.9944724,
     //     size.height * 0.01865210);
-    path_0.lineTo(size.width, 0);
-    path_0.lineTo(size.width * 0.8842663, size.height * 0.01527729);
+    // path_0.lineTo(size.width, 0);
+    path_0.lineTo(size.width * 0.8842663, 0);
+    path_0.cubicTo(size.width * 0.8836683, 0, size.width * 0.8831005, 0,
+        size.width * 0.8825829, 0);
+    path_0.lineTo(size.width * 0.04020101, 0);
     path_0.cubicTo(
-        size.width * 0.8836683,
-        size.height * 0.01525897,
-        size.width * 0.8831005,
-        size.height * 0.01556274,
-        size.width * 0.8825829,
-        size.height * 0.01612919);
-    path_0.lineTo(size.width * 0.04020101, size.height * 0.01612919);
-    path_0.cubicTo(size.width * 0.01799859, size.height * 0.01612919, 0,
-        size.height * 0.07389903, 0, size.height * 0.1451616);
+        size.width * 0.01799859, 0, 0, 0, 0, size.height * 0.1451616);
     path_0.lineTo(0, size.height * 0.8709677);
     path_0.cubicTo(0, size.height * 0.9422306, size.width * 0.01799864,
         size.height, size.width * 0.04020101, size.height);
-    path_0.lineTo(size.width * 0.9095477, size.height);
+    path_0.lineTo(size.width - 17, size.height);
     path_0.cubicTo(
-        size.width * 0.9317487,
-        size.height,
-        size.width * 0.9497487,
-        size.height * 0.9422306,
-        size.width * 0.9497487,
-        size.height * 0.8709677);
-    path_0.lineTo(size.width * 0.9497487, /*size.height * 0.3215032*/ 15);
+      size.width - 10,
+      size.height,
+      size.width - 10,
+      size.height * 0.9422306,
+      size.width - 10,
+      size.height * 0.8709677,
+    );
+    path_0.lineTo(size.width - 10, /*size.height * 0.3215032*/ 15);
     path_0.lineTo(size.width, 0);
     path_0.close();
 
@@ -101,5 +97,34 @@ class AdminChatBubble extends CustomPainter {
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) {
     return false;
+  }
+}
+
+class RPSCustomPainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    Paint paint0 = Paint()
+      ..color = const Color.fromARGB(255, 33, 150, 243)
+      ..style = PaintingStyle.fill
+      ..strokeWidth = 1.0;
+
+    Path path0 = Path();
+    path0.moveTo(99.0, 100.0);
+    path0.quadraticBezierTo(50.38, 100.29, 50.0, 151.0);
+    path0.quadraticBezierTo(50.25, 301.75, 50.0, 352.0);
+    path0.cubicTo(49.85, 370.26, 50.81, 399.53, 100.9, 399.8);
+    path0.cubicTo(238.4, 400.3, 510.84, 398.68, 650.0, 400.0);
+    path0.cubicTo(689.77, 399.66, 699.83, 379.61, 700.0, 350.0);
+    path0.quadraticBezierTo(699.25, 312.0, 700.0, 198.0);
+    path0.lineTo(798.0, 99.0);
+    path0.quadraticBezierTo(623.25, 99.25, 99.0, 100.0);
+    path0.close();
+
+    canvas.drawPath(path0, paint0);
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) {
+    return true;
   }
 }

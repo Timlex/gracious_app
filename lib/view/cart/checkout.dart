@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gren_mart/service/cart_data_service.dart';
+import 'package:gren_mart/service/cupon_discount_service.dart';
+import 'package:gren_mart/service/shipping_zone_service.dart';
 import '../../db/database_helper.dart';
 import '../../service/shipping_addresses_service.dart';
 
@@ -20,7 +22,6 @@ class Checkout extends StatelessWidget {
   String selectedName = 'payp';
   bool error = false;
   String selectedId = '01';
-  int subTotal = 0;
 
   List gridImages = [
     'cod',
@@ -40,303 +41,349 @@ class Checkout extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final sService = Provider.of<ShippingZoneService>(context);
+    final cService = Provider.of<CartDataService>(context, listen: false);
+    final cdService = Provider.of<CuponDiscountService>(context);
+    final subTotal = cService.subTotal;
+    final shippingCost = sService.shippingCost;
+    final taxMoney = sService.taxParcentage * cService.subTotal;
+    final discount = cdService.cuponDiscount;
+    final totalAmount = subTotal + taxMoney + shippingCost - discount;
     return Scaffold(
       appBar: AppBars().appBarTitled('Checkout', () {
         Navigator.of(context).pop();
       }, hasButton: true, hasElevation: true),
-      body: Padding(
+      body: ListView(
         padding: const EdgeInsets.all(20),
-        child: ListView(
-          physics: const BouncingScrollPhysics(
-              parent: AlwaysScrollableScrollPhysics()),
-          children: [
-            // CustomTextField(
-            //   'enter new address',
-            //   controller: TextEditingController(),
-            //   leadingImage: 'assets/images/icons/location.png',
-            // ),
-            // const SizedBox(height: 10),
-            if (Provider.of<ShippingAddressesService>(context)
-                    .shippingAddresseList
-                    .isEmpty &&
-                !(Provider.of<ShippingAddressesService>(context).noData))
-              loadingProgressBar(),
-            ...Provider.of<ShippingAddressesService>(context)
-                .shippingAddresseList
-                .map(((e) {
-              final saService =
-                  Provider.of<ShippingAddressesService>(context, listen: false);
-              return GestureDetector(
-                onTap: () {
-                  if (saService.selectedAddress!.id == e.id) {
-                    return;
-                  }
-                  saService.setSelectedAddress(e);
-                },
-                child: addressBox(e.id),
-              );
-            })).toList(),
-            GestureDetector(
+        physics: const BouncingScrollPhysics(
+            parent: AlwaysScrollableScrollPhysics()),
+        children: [
+          // CustomTextField(
+          //   'enter new address',
+          //   controller: TextEditingController(),
+          //   leadingImage: 'assets/images/icons/location.png',
+          // ),
+          // const SizedBox(height: 10),
+          if (Provider.of<ShippingAddressesService>(context)
+                  .shippingAddresseList
+                  .isEmpty &&
+              !(Provider.of<ShippingAddressesService>(context).noData))
+            loadingProgressBar(),
+          ...Provider.of<ShippingAddressesService>(context)
+              .shippingAddresseList
+              .map(((e) {
+            final saService =
+                Provider.of<ShippingAddressesService>(context, listen: false);
+            return GestureDetector(
               onTap: () {
-                Navigator.of(context).pushNamed(AddNewAddress.routeName);
+                if (saService.selectedAddress!.id == e.id) {
+                  return;
+                }
+                saService.setSelectedAddress(e);
+                Provider.of<ShippingZoneService>(context, listen: false)
+                    .resetChecout();
+                saService.setSelectedAddress(e);
+                Provider.of<ShippingZoneService>(context, listen: false)
+                    .fetchContriesZone(e.countryId)
+                    .then((value) =>
+                        Provider.of<ShippingZoneService>(context, listen: false)
+                            .fetchSatesZone(e.stateId));
               },
-              child: Container(
-                  // margin: const EdgeInsets.all(8),
-                  height: 50,
-                  width: double.infinity,
-                  alignment: Alignment.center,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    border: Border.all(
-                      width: 1,
-                      color: ConstantColors().primaryColor,
-                    ),
+              child: addressBox(e.id),
+            );
+          })).toList(),
+          GestureDetector(
+            onTap: () {
+              Navigator.of(context).pushNamed(AddNewAddress.routeName);
+            },
+            child: Container(
+                // margin: const EdgeInsets.all(8),
+                height: 50,
+                width: double.infinity,
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(
+                    width: 1,
+                    color: ConstantColors().primaryColor,
                   ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Image.asset(
-                        'assets/images/icons/location.png',
-                        height: 30,
-                        color: cc.primaryColor,
-                      ),
-                      const SizedBox(width: 10),
-                      Text(
-                        'Add new address',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                            color: ConstantColors().primaryColor,
-                            fontWeight: FontWeight.w700),
-                      ),
-                    ],
-                  )),
-            ),
-            const SizedBox(height: 20),
-            Container(
-              // height: 300,
-              padding: const EdgeInsets.all(20),
-              decoration: BoxDecoration(
-                borderRadius: const BorderRadius.only(
-                  topLeft: Radius.circular(15),
-                  topRight: Radius.circular(15),
-                  bottomLeft: Radius.circular(15),
-                  bottomRight: Radius.circular(15),
                 ),
-                color: cc.whiteGrey,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Image.asset(
+                      'assets/images/icons/location.png',
+                      height: 30,
+                      color: cc.primaryColor,
+                    ),
+                    const SizedBox(width: 10),
+                    Text(
+                      'Add new address',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          color: ConstantColors().primaryColor,
+                          fontWeight: FontWeight.w700),
+                    ),
+                  ],
+                )),
+          ),
+          const SizedBox(height: 20),
+          Container(
+            // height: 300,
+            padding: const EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              borderRadius: const BorderRadius.only(
+                topLeft: Radius.circular(15),
+                topRight: Radius.circular(15),
+                bottomLeft: Radius.circular(15),
+                bottomRight: Radius.circular(15),
               ),
-              child: Column(children: [
-                rows('Product', trailing: '\$Subtotal'),
-                const SizedBox(height: 15),
-                SizedBox(
-                  child: Consumer<CartDataService>(
-                      builder: (context, cService, child) {
-                    return Column(
-                      children: cService.cartList.values.toList().map((e) {
-                        final showAdditionlInfo = e.size != null ||
-                            e.color != null ||
-                            e.sauce != null ||
-                            e.mayo != null ||
-                            e.cheese != null;
-                        subTotal += e.price;
-                        return Container(
-                          margin: const EdgeInsets.only(bottom: 10),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              SizedBox(
-                                width: screenWidth / 1.7,
-                                child: RichText(
-                                  text: TextSpan(
-                                      text: e.title,
-                                      style: TextStyle(
-                                          overflow: TextOverflow.ellipsis,
-                                          fontSize: 13,
-                                          color: cc.greyHint),
-                                      children: [
-                                        if (showAdditionlInfo)
-                                          TextSpan(
-                                              text: ' (' +
-                                                  (e.size == null
-                                                      ? ''
-                                                      : 'Size: ${e.size!.capitalize()}. ') +
-                                                  (e.cheese == null
-                                                      ? ''
-                                                      : 'Color: ${e.color!.capitalize()}. ') +
-                                                  (e.sauce == null
-                                                      ? ''
-                                                      : 'Sauce: ${e.sauce!.capitalize()}. ') +
-                                                  (e.mayo == null
-                                                      ? ''
-                                                      : 'Mayo: ${e.mayo!.capitalize()}. ') +
-                                                  (e.cheese == null
-                                                      ? ''
-                                                      : 'Cheese: ${e.cheese!.capitalize()}.'
-                                                          '') +
-                                                  ') '),
-                                        const TextSpan(text: 'X'),
+              color: cc.whiteGrey,
+            ),
+            child: Column(children: [
+              rows('Product', trailing: '\$Subtotal'),
+              const SizedBox(height: 15),
+              SizedBox(
+                child: Consumer<CartDataService>(
+                    builder: (context, cService, child) {
+                  return Column(
+                    children: cService.cartList.values.toList().map((e) {
+                      final showAdditionlInfo = e.size != null ||
+                          e.color != null ||
+                          e.sauce != null ||
+                          e.mayo != null ||
+                          e.cheese != null;
+                      // subTotal += e.price;
+                      return Container(
+                        margin: const EdgeInsets.only(bottom: 10),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            SizedBox(
+                              width: screenWidth / 1.7,
+                              child: RichText(
+                                text: TextSpan(
+                                    text: e.title,
+                                    style: TextStyle(
+                                        overflow: TextOverflow.ellipsis,
+                                        fontSize: 13,
+                                        color: cc.greyHint),
+                                    children: [
+                                      if (showAdditionlInfo)
                                         TextSpan(
-                                            text: '${e.quantity}',
-                                            style: const TextStyle(
-                                                fontWeight: FontWeight.w600))
-                                      ]),
-                                ),
+                                            text: ' (' +
+                                                (e.size == null
+                                                    ? ''
+                                                    : 'Size: ${e.size!.capitalize()}. ') +
+                                                (e.cheese == null
+                                                    ? ''
+                                                    : 'Color: ${e.color!.capitalize()}. ') +
+                                                (e.sauce == null
+                                                    ? ''
+                                                    : 'Sauce: ${e.sauce!.capitalize()}. ') +
+                                                (e.mayo == null
+                                                    ? ''
+                                                    : 'Mayo: ${e.mayo!.capitalize()}. ') +
+                                                (e.cheese == null
+                                                    ? ''
+                                                    : 'Cheese: ${e.cheese!.capitalize()}.'
+                                                        '') +
+                                                ') '),
+                                      const TextSpan(text: 'X'),
+                                      TextSpan(
+                                          text: '${e.quantity}',
+                                          style: const TextStyle(
+                                              fontWeight: FontWeight.w600))
+                                    ]),
                               ),
-                              Text(
-                                '\$${e.price * e.quantity}',
-                                style: TextStyle(
-                                  overflow: TextOverflow.ellipsis,
-                                  fontSize: 13,
-                                  color: cc.greyHint,
-                                ),
-                              )
-                            ],
-                          ),
-                        );
-                      }).toList(),
-                    );
-                  }),
-                ),
-                const SizedBox(height: 15),
-                rows('Subtotal',
-                    trailing:
-                        '\$${Provider.of<CartDataService>(context, listen: false).subTotal}'),
-                const SizedBox(height: 15),
-                rows('Shipping', trailing: '\$shippingCos'),
-                const SizedBox(height: 15),
-                rows('Discount', trailing: '-\$discount'),
-                const SizedBox(height: 15),
-                const Divider(),
-                const SizedBox(height: 25),
-                rows('Total', trailing: '\${totalPrice}'),
-                const SizedBox(height: 25),
-                rows('Cupon code'),
-                const SizedBox(height: 15),
-                Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      SizedBox(
-                          width: screenWidth / 2,
-                          child: Container(
-                            decoration: BoxDecoration(
+                            ),
+                            Text(
+                              '\$${e.price * e.quantity}',
+                              style: TextStyle(
+                                overflow: TextOverflow.ellipsis,
+                                fontSize: 13,
+                                color: cc.greyHint,
+                              ),
+                            )
+                          ],
+                        ),
+                      );
+                    }).toList(),
+                  );
+                }),
+              ),
+              const SizedBox(height: 15),
+              rows('Subtotal', trailing: '\$${cService.subTotal}'),
+              const SizedBox(height: 15),
+              rows('Shipping cost', trailing: ''),
+              const SizedBox(height: 15),
+              ...shippingOption(context),
+              const SizedBox(height: 15),
+              rows('Tax', trailing: '\$${taxMoney.toStringAsFixed(2)}'),
+              const SizedBox(height: 15),
+              rows('Coupon discount',
+                  trailing: '-\$${discount.toStringAsFixed(2)}'),
+              const SizedBox(height: 15),
+              const Divider(),
+              const SizedBox(height: 25),
+              rows('Total', trailing: '\$${totalAmount.toStringAsFixed(2)}'),
+              const SizedBox(height: 25),
+              rows('Cupon code'),
+              const SizedBox(height: 15),
+              Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                SizedBox(
+                    width: screenWidth / 2,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        color: Colors.white,
+                      ),
+                      child: TextField(
+                        style: TextStyle(
+                          color: cc.greyHint,
+                          fontSize: 13,
+                        ),
+                        decoration: InputDecoration(
+                            hintText: 'Enter Coupon code',
+                            hintStyle: TextStyle(
+                              color: cc.greyHint,
+                              fontSize: 13,
+                            ),
+                            enabledBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(10),
-                              color: Colors.white,
+                              borderSide: BorderSide(
+                                  color: ConstantColors().greyBorder, width: 1),
                             ),
-                            child: TextField(
-                              decoration: InputDecoration(
-                                  hintText: 'Enter Cupon code',
-                                  hintStyle: TextStyle(
-                                    color: cc.greyHint,
-                                    fontSize: 13,
-                                  ),
-                                  enabledBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(10),
-                                    borderSide: BorderSide(
-                                        color: ConstantColors().greyBorder,
-                                        width: 1),
-                                  ),
-                                  focusedBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(10),
-                                    borderSide: BorderSide(
-                                        color: ConstantColors().greyBorder,
-                                        width: 1),
-                                  ),
-                                  errorBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(10),
-                                    borderSide: BorderSide(
-                                        color: ConstantColors().orange,
-                                        width: 1),
-                                  ),
-                                  focusedErrorBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(10),
-                                    borderSide: BorderSide(
-                                        color: ConstantColors().orange,
-                                        width: 1),
-                                  ),
-                                  contentPadding: const EdgeInsets.all(15)),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                              borderSide: BorderSide(
+                                  color: ConstantColors().greyBorder, width: 1),
                             ),
-                          )
-                          //  CustomTextField(
-                          //     'Enter promo code', TextEditingController()),
-                          ),
-                      GestureDetector(
-                        onTap: () {
-                          print('something!');
+                            errorBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                              borderSide: BorderSide(
+                                  color: ConstantColors().orange, width: 1),
+                            ),
+                            focusedErrorBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                              borderSide: BorderSide(
+                                  color: ConstantColors().orange, width: 1),
+                            ),
+                            contentPadding: const EdgeInsets.all(15)),
+                        onChanged: (value) {
+                          Provider.of<CuponDiscountService>(context,
+                                  listen: false)
+                              .setCuponText(value.trim());
                         },
-                        child: Padding(
-                          padding: const EdgeInsets.only(left: 10),
-                          child: SizedBox(
-                            width: screenWidth / 4,
-                            child: FittedBox(
-                              child: Text(
-                                'Apply Promo code',
-                                style: TextStyle(
-                                  color: Colors.transparent,
-                                  shadows: [
-                                    Shadow(
-                                        offset: const Offset(0, -5),
-                                        color: cc.primaryColor)
-                                  ],
-                                  decoration: TextDecoration.underline,
-                                  decorationColor: cc.primaryColor,
-                                  decorationThickness: 1.5,
-                                  // fontWeight: FontWeight.w600,
-                                ),
+                      ),
+                    )
+                    //  CustomTextField(
+                    //     'Enter promo code', TextEditingController()),
+                    ),
+                GestureDetector(
+                  onTap: cdService.isLoading
+                      ? () {}
+                      : () {
+                          Provider.of<CuponDiscountService>(context,
+                                  listen: false)
+                              .setTotalAmount(
+                                  subTotal + taxMoney + shippingCost);
+                          Provider.of<CuponDiscountService>(context,
+                                  listen: false)
+                              .getCuponDiscontAmount()
+                              .then((value) {
+                            if (value != null) {
+                              snackBar(context, value);
+                            }
+                          });
+                          FocusScope.of(context).unfocus();
+                        },
+                  child: Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(left: 10),
+                        child: SizedBox(
+                          width: screenWidth / 4,
+                          child: FittedBox(
+                            child: Text(
+                              'Apply Cupon code',
+                              style: TextStyle(
+                                color: Colors.transparent,
+                                shadows: [
+                                  Shadow(
+                                      offset: const Offset(0, -5),
+                                      color: cc.primaryColor)
+                                ],
+                                decoration: TextDecoration.underline,
+                                decorationColor: cc.primaryColor,
+                                decorationThickness: 1.5,
+                                // fontWeight: FontWeight.w600,
                               ),
                             ),
                           ),
                         ),
                       ),
-                    ]),
-                const SizedBox(height: 15),
-                Text(
-                  'Chose a payment method',
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w600,
-                    color: cc.titleTexts,
+                      if (cdService.isLoading)
+                        Container(
+                            width: screenWidth / 4,
+                            color: Colors.white60,
+                            alignment: Alignment.center,
+                            margin: const EdgeInsets.only(left: 10),
+                            child: loadingProgressBar(size: 20))
+                    ],
                   ),
                 ),
-                const SizedBox(height: 10),
-                SizedBox(
-                    height: screenHight / 2.74,
-                    child: GridView(
-                      physics: const NeverScrollableScrollPhysics(),
-                      gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 3,
-                              childAspectRatio: 3 / 1.2,
-                              crossAxisSpacing: 8,
-                              mainAxisSpacing: 12),
-                      children: gridImages
-                          .map((e) => GestureDetector(
-                              onTap: () => selectedName = e,
-                              child: GestureDetector(
-                                  onTap: () {
-                                    if (selectedName == e) {
-                                      return;
-                                    }
-                                    // setState(() {
-                                    //   selectedName = e;
-                                    // });
-                                  },
-                                  child: CartGridTile(e, e == selectedName))))
-                          .toList(),
-                    )),
-                const SizedBox(height: 20),
-                customContainerButton('Pay & Confirm', double.maxFinite, () {
-                  DbHelper.deleteDbTable('cart');
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => PaymentStatusView(error)),
-                  );
-                  error = true;
-                }),
-                const SizedBox(height: 30),
               ]),
-            ),
-          ],
-        ),
+              const SizedBox(height: 15),
+              Text(
+                'Chose a payment method',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w600,
+                  color: cc.titleTexts,
+                ),
+              ),
+              const SizedBox(height: 20),
+              SizedBox(
+                  height: screenHight / 2.74,
+                  child: GridView(
+                    physics: const NeverScrollableScrollPhysics(),
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 3,
+                            childAspectRatio: 3 / 1.2,
+                            crossAxisSpacing: 8,
+                            mainAxisSpacing: 12),
+                    children: gridImages
+                        .map((e) => GestureDetector(
+                            onTap: () => selectedName = e,
+                            child: GestureDetector(
+                                onTap: () {
+                                  if (selectedName == e) {
+                                    return;
+                                  }
+                                  // setState(() {
+                                  //   selectedName = e;
+                                  // });
+                                },
+                                child: CartGridTile(e, e == selectedName))))
+                        .toList(),
+                  )),
+              const SizedBox(height: 20),
+              customContainerButton('Pay & Confirm', double.maxFinite, () {
+                DbHelper.deleteDbTable('cart');
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => PaymentStatusView(error)),
+                );
+                error = true;
+              }),
+              const SizedBox(height: 30),
+            ]),
+          ),
+        ],
       ),
     );
   }
@@ -400,5 +447,38 @@ class Checkout extends StatelessWidget {
           ),
       ],
     );
+  }
+
+  List<Widget> shippingOption(BuildContext context) {
+    final sService = Provider.of<ShippingZoneService>(context);
+    return sService.isLoading
+        ? [loadingProgressBar(size: 20)]
+        : (sService.shippingOptionsList!.map((element) {
+            print(element.name);
+            return Row(
+              children: [
+                Transform.scale(
+                  scale: 1.3,
+                  child: Checkbox(
+                      // splashRadius: 30,
+                      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      activeColor: ConstantColors().primaryColor,
+                      value: sService.selectedOption!.id == element.id,
+                      shape: const CircleBorder(),
+                      side: BorderSide(
+                        width: 1.5,
+                        color: ConstantColors().greyBorder,
+                      ),
+                      onChanged: (v) {
+                        print(element.name);
+                        sService.setSelectedOption(element);
+                      }),
+                ),
+                Text(element.name),
+                const Spacer(),
+                Text('\$${element.availableOptions.cost}')
+              ],
+            );
+          }).toList());
   }
 }

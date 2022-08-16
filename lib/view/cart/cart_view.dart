@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:gren_mart/service/cupon_discount_service.dart';
+import 'package:gren_mart/service/shipping_zone_service.dart';
 import '../../service/cart_data_service.dart';
 import '../../view/cart/cart_tile.dart';
 import '../../view/cart/checkout.dart';
@@ -17,13 +19,13 @@ class CartView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    List<String> cuponData = [];
     return Consumer<CartDataService>(builder: (context, cartData, child) {
-      double shippingCos = 0;
-      double discount = 0;
-      double totalPrice = 0;
       for (var element in cartData.cartList.values) {
-        totalPrice += (element.price * element.quantity);
+        cuponData.add(
+            '{"id":${element.id},"price":${element.price * element.quantity}}');
       }
+      print(cuponData);
       return Column(
         children: [
           const SizedBox(height: 10),
@@ -56,11 +58,43 @@ class CartView extends StatelessWidget {
             child: customContainerButton(
               'Checkout',
               double.infinity,
-              () {
-                Provider.of<ShippingAddressesService>(context, listen: false)
-                    .fetchUsersShippingAddress();
-                Navigator.of(context).pushNamed(Checkout.routeName);
-              },
+              cuponData.isEmpty
+                  ? () {
+                      snackBar(context, 'Add Items to cart.');
+                    }
+                  : () {
+                      Provider.of<ShippingAddressesService>(context,
+                              listen: false)
+                          .fetchUsersShippingAddress()
+                          .then((value) {
+                        if (value == null) {
+                          final countryId =
+                              Provider.of<ShippingAddressesService>(context,
+                                      listen: false)
+                                  .selectedAddress!
+                                  .countryId;
+                          final stateId = Provider.of<ShippingAddressesService>(
+                                  context,
+                                  listen: false)
+                              .selectedAddress!
+                              .stateId;
+                          Provider.of<ShippingZoneService>(context,
+                                  listen: false)
+                              .fetchContriesZone(countryId)
+                              .then((value) => Provider.of<ShippingZoneService>(
+                                      context,
+                                      listen: false)
+                                  .fetchSatesZone(stateId));
+                        }
+                      });
+                      print(cuponData.toString());
+                      Provider.of<CuponDiscountService>(context, listen: false)
+                          .setCarData(cuponData.toString().replaceAll(' ', ''));
+                      Navigator.of(context).pushNamed(Checkout.routeName).then(
+                          (value) => Provider.of<ShippingZoneService>(context,
+                                  listen: false)
+                              .resetChecout());
+                    },
             ),
           ),
         ],

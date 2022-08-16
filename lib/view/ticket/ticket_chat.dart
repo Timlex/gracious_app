@@ -4,7 +4,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:gren_mart/view/utils/custom_painters.dart';
 import '../../service/ticket_chat_service.dart';
 import '../../view/utils/image_view.dart';
 import '../../view/utils/app_bars.dart';
@@ -277,7 +276,7 @@ class TicketChat extends StatelessWidget {
       );
     } else {
       return ListView.builder(
-          // padding: const EdgeInsets.symmetric(horizontal: 15),
+          padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
           reverse: true,
           itemCount: tcService.messagesList.length,
           itemBuilder: ((context, index) {
@@ -296,49 +295,59 @@ class TicketChat extends StatelessWidget {
                         : MainAxisAlignment.start,
                     children: [
                       Container(
-                        width: screenWidth / 1.7,
-                        constraints: const BoxConstraints(minHeight: 70),
-                        // margin:
-                        //     const EdgeInsets.only(top: 10, right: 10, left: 10),
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 15, vertical: 15),
-                        // decoration: BoxDecoration(
-                        //   borderRadius: BorderRadius.only(
-                        //     topLeft: const Radius.circular(20),
-                        //     topRight: const Radius.circular(20),
-                        //     bottomLeft: usersMessage
-                        //         ? const Radius.circular(20)
-                        //         : Radius.zero,
-                        //     bottomRight: usersMessage
-                        //         ? Radius.zero
-                        //         : const Radius.circular(20),
-                        //   ),
-                        //   color: usersMessage
-                        //       ? cc.primaryColor
-                        //       : const Color(0xffEFEFEF),
-                        // ),
-                        child: CustomPaint(
-                          painter: usersMessage
-                              ? UserChatBubble()
-                              : AdminChatBubble(),
-                          child: Padding(
-                            padding: EdgeInsets.only(
-                                right: usersMessage ? 30 : 10,
-                                top: 10,
-                                bottom: 10,
-                                left: usersMessage ? 10 : 30),
-                            child: Text(
-                              tcService.messagesList[index].message,
-                              style: TextStyle(
-                                  color: usersMessage ? cc.pureWhite : null,
-                                  fontSize: 15),
-                              textAlign: usersMessage
-                                  ? TextAlign.right
-                                  : TextAlign.left,
+                          // width: screenWidth / 1.7,
+                          constraints:
+                              BoxConstraints(maxWidth: screenWidth / 1.7),
+                          // alignment: Alignment.center,
+                          margin: const EdgeInsets.only(
+                              top: 10, right: 10, left: 10),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 15, vertical: 15),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.only(
+                              topLeft: const Radius.circular(20),
+                              topRight: const Radius.circular(20),
+                              bottomLeft: usersMessage
+                                  ? const Radius.circular(20)
+                                  : Radius.zero,
+                              bottomRight: usersMessage
+                                  ? Radius.zero
+                                  : const Radius.circular(20),
                             ),
+                            color: usersMessage
+                                ? cc.primaryColor
+                                : const Color(0xffEFEFEF),
                           ),
-                        ),
-                      ),
+                          // child:
+                          //  CustomPaint(
+                          //   painter: usersMessage
+                          //       ? UserChatBubble()
+                          //       : AdminChatBubble(),
+                          // child:
+                          //  Padding(
+                          //   padding: EdgeInsets.only(
+                          //       right: usersMessage ? 20 : 10,
+                          //       top: 10,
+                          //       bottom: 10,
+                          //       left: usersMessage ? 10 : 20),
+                          //   child:
+                          //   Text(
+                          //     tcService.messagesList[index].message,
+                          //     style: TextStyle(
+                          //         color: usersMessage ? cc.pureWhite : null,
+                          //         fontSize: 15),
+                          //     // textAlign: usersMessage
+                          //     //     ? TextAlign.right
+                          //     //     : TextAlign.left,
+                          //   ),
+                          // ),
+                          child: Text(
+                            tcService.messagesList[index].message,
+                            style: usersMessage
+                                ? TextStyle(color: cc.pureWhite)
+                                : null,
+                          )),
+                      // ),
                     ],
                   ),
                   if (tcService.messagesList[index].attachment != null)

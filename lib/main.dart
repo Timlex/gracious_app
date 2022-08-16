@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:gren_mart/service/cupon_discount_service.dart';
+import 'package:gren_mart/service/shipping_zone_service.dart';
 import 'package:gren_mart/view/home/all_products.dart';
 import '../../model/other_data.dart';
 import '../../service/add_new_ticket_service.dart';
@@ -83,6 +85,8 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => TicketChatService()),
         ChangeNotifierProvider(create: (_) => AddNewTicketService()),
         ChangeNotifierProvider(create: (_) => ProductDetailsService()),
+        ChangeNotifierProvider(create: (_) => ShippingZoneService()),
+        ChangeNotifierProvider(create: (_) => CuponDiscountService()),
       ],
       child: Consumer<Products>(
         builder: (context, value, child) => MaterialApp(
