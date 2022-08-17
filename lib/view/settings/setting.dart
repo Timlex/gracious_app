@@ -15,8 +15,6 @@ import '../../view/utils/constant_styles.dart';
 import 'package:provider/provider.dart';
 
 import '../../service/auth_text_controller_service.dart';
-import '../../service/country_dropdown_service.dart';
-import '../../service/state_dropdown_service.dart';
 import '../../service/ticket_service.dart';
 
 class SettingView extends StatelessWidget {
@@ -78,7 +76,7 @@ class SettingView extends StatelessWidget {
           settingItem(
               'assets/images/icons/manage_profile.svg', 'Manage Account',
               onTap: () async {
-            setData(context);
+            // setData(context);
             Navigator.of(context).pushNamed(ManageAccount.routeName);
           }),
           settingItem(
@@ -168,25 +166,26 @@ class SettingView extends StatelessWidget {
     );
   }
 
-  Future<void> setData(BuildContext context) async {
-    final uData =
-        Provider.of<UserProfileService>(context, listen: false).userProfileData;
-    final controllers =
-        Provider.of<AuthTextControllerService>(context, listen: false);
-    await controllers.setEmail(uData.email);
-    await controllers.setName(uData.name);
-    await controllers.setUserName(uData.username);
-    await controllers.setEmail(uData.email);
-    await Provider.of<CountryDropdownService>(context, listen: false)
-        .setCountryIdAndValue(uData.country.name);
-    if (uData.state != null) {
-      await Provider.of<StateDropdownService>(context, listen: false)
-          .setStateIdAndValue(uData.state!.name);
-    }
-    if (uData.state == null) {
-      print('state is null');
-      Provider.of<StateDropdownService>(context, listen: false)
-          .setStateIdAndValueDefault();
-    }
-  }
+//   Future<void> setData(BuildContext context) async {
+//     final uData =
+//         Provider.of<UserProfileService>(context, listen: false).userProfileData;
+//     final controllers =
+//         Provider.of<AuthTextControllerService>(context, listen: false);
+//     await controllers.setEmail(uData.email);
+//     await controllers.setName(uData.name);
+//     await controllers.setUserName(uData.username);
+//     await controllers.setEmail(uData.email);
+//     await controllers.setZipCode(uData.zipcode);
+//     await Provider.of<CountryDropdownService>(context, listen: false)
+//         .setCountryIdAndValue(uData.country.name);
+//     if (uData.state != null) {
+//       await Provider.of<StateDropdownService>(context, listen: false)
+//           .setStateIdAndValue(uData.state!.name);
+//     }
+//     if (uData.state == null) {
+//       print('state is null');
+//       Provider.of<StateDropdownService>(context, listen: false)
+//           .setStateIdAndValueDefault();
+//     }
+//   }
 }

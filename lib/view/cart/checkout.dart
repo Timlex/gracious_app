@@ -51,6 +51,8 @@ class Checkout extends StatelessWidget {
     final totalAmount = subTotal + taxMoney + shippingCost - discount;
     return Scaffold(
       appBar: AppBars().appBarTitled('Checkout', () {
+        Provider.of<ShippingAddressesService>(context, listen: false)
+            .clearSelectedAddress();
         Navigator.of(context).pop();
       }, hasButton: true, hasElevation: true),
       body: ListView(
@@ -69,6 +71,12 @@ class Checkout extends StatelessWidget {
                   .isEmpty &&
               !(Provider.of<ShippingAddressesService>(context).noData))
             loadingProgressBar(),
+          if ((Provider.of<ShippingAddressesService>(context).noData))
+            SizedBox(
+                height: 50,
+                child: Center(
+                    child: Text('No address found.',
+                        style: TextStyle(color: cc.greyHint, fontSize: 14)))),
           ...Provider.of<ShippingAddressesService>(context)
               .shippingAddresseList
               .map(((e) {
@@ -140,7 +148,8 @@ class Checkout extends StatelessWidget {
               ),
               color: cc.whiteGrey,
             ),
-            child: Column(children: [
+            child:
+                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               rows('Product', trailing: '\$Subtotal'),
               const SizedBox(height: 15),
               SizedBox(
@@ -175,9 +184,9 @@ class Checkout extends StatelessWidget {
                                                 (e.size == null
                                                     ? ''
                                                     : 'Size: ${e.size!.capitalize()}. ') +
-                                                (e.cheese == null
+                                                (e.colorName == null
                                                     ? ''
-                                                    : 'Color: ${e.color!.capitalize()}. ') +
+                                                    : 'Color: ${e.colorName!.capitalize()}. ') +
                                                 (e.sauce == null
                                                     ? ''
                                                     : 'Sauce: ${e.sauce!.capitalize()}. ') +
@@ -217,7 +226,11 @@ class Checkout extends StatelessWidget {
               const SizedBox(height: 15),
               rows('Shipping cost', trailing: ''),
               const SizedBox(height: 15),
-              ...shippingOption(context),
+              if (!(Provider.of<ShippingAddressesService>(context).noData))
+                ...shippingOption(context),
+              if ((Provider.of<ShippingAddressesService>(context).noData))
+                Text('Select a shipping address.',
+                    style: TextStyle(color: cc.greyHint, fontSize: 14)),
               const SizedBox(height: 15),
               rows('Tax', trailing: '\$${taxMoney.toStringAsFixed(2)}'),
               const SizedBox(height: 15),
@@ -453,32 +466,35 @@ class Checkout extends StatelessWidget {
     final sService = Provider.of<ShippingZoneService>(context);
     return sService.isLoading
         ? [loadingProgressBar(size: 20)]
-        : (sService.shippingOptionsList!.map((element) {
-            print(element.name);
-            return Row(
-              children: [
-                Transform.scale(
-                  scale: 1.3,
-                  child: Checkbox(
-                      // splashRadius: 30,
-                      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                      activeColor: ConstantColors().primaryColor,
-                      value: sService.selectedOption!.id == element.id,
-                      shape: const CircleBorder(),
-                      side: BorderSide(
-                        width: 1.5,
-                        color: ConstantColors().greyBorder,
-                      ),
-                      onChanged: (v) {
-                        print(element.name);
-                        sService.setSelectedOption(element);
-                      }),
-                ),
-                Text(element.name),
-                const Spacer(),
-                Text('\$${element.availableOptions.cost}')
-              ],
-            );
-          }).toList());
+        : (sService.shippingOptionsList!
+            .map((element) {
+              return Row(
+                children: [
+                  Transform.scale(
+                    scale: 1.3,
+                    child: Checkbox(
+                        // splashRadius: 30,
+                        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        activeColor: ConstantColors().primaryColor,
+                        value: sService.selectedOption!.id == element.id,
+                        shape: const CircleBorder(),
+                        side: BorderSide(
+                          width: 1.5,
+                          color: ConstantColors().greyBorder,
+                        ),
+                        onChanged: (v) {
+                          print(element.name);
+                          sService.setSelectedOption(element);
+                        }),
+                  ),
+                  Text(element.name),
+                  const Spacer(),
+                  Text('\$${element.availableOptions.cost}')
+                ],
+              );
+            })
+            .toList()
+            .reversed
+            .toList());
   }
 }

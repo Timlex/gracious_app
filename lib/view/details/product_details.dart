@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:gren_mart/service/cart_data_service.dart';
+import 'package:gren_mart/view/details/review_box.dart';
 import '../../service/favorite_data_service.dart';
 import '../../service/product_details_service.dart';
 import '../../view/details/animated_box.dart';
@@ -374,9 +375,7 @@ class ProductDetails extends StatelessWidget {
                           pService.aDescriptionExpand,
                           onPressed: pService.toggleADescriptionExpande,
                         ),
-                        AnimatedBox(
-                          'Review',
-                          pService.setAditionalInfo(),
+                        ReviewBox(
                           pService.reviewExpand,
                           onPressed: pService.toggleReviewExpand,
                         ),
@@ -455,6 +454,7 @@ class ProductDetails extends StatelessWidget {
                             pService.additionalInfoImage ?? product.image,
                             size: pService.selectedSize,
                             color: pService.selectedColor,
+                            colorName: pService.selectedColorName,
                             sauce: pService.selectedSauce,
                             mayo: pService.selectedMayo,
                             cheese: pService.selectedChese,
@@ -671,7 +671,6 @@ class ProductDetails extends StatelessWidget {
         ),
       );
     }
-
     for (var key in colorKeys) {
       final color = key.replaceAll('#', '0xff');
       list3.add(
@@ -684,7 +683,9 @@ class ProductDetails extends StatelessWidget {
               pdService.clearSelection();
             }
             pdService.setProductInventorySet(pdService.colorAttributes[key]);
-            pdService.setSelectedColor(key);
+            pdService.setSelectedColor(
+              key,
+            );
             pdService.addAdditionalPrice();
           },
           child: Stack(

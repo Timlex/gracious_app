@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 
 class ImageView extends StatelessWidget {
@@ -8,16 +10,18 @@ class ImageView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: Hero(
-            tag: id as int,
-            child: Image.network(
-              imageUrl,
-              errorBuilder: (context, exception, stackTrace) {
-                return const Text('Your error widget...');
-              },
-            )),
+        body: Center(
+      child: Hero(
+        tag: id ?? '',
+        child: imageUrl.contains('http')
+            ? Image.network(
+                imageUrl,
+                errorBuilder: (context, exception, stackTrace) {
+                  return const Text('Your error widget...');
+                },
+              )
+            : Image.file(File(imageUrl)),
       ),
-    );
+    ));
   }
 }

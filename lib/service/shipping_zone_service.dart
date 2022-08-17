@@ -70,7 +70,6 @@ class ShippingZoneService with ChangeNotifier {
       if (response.statusCode == 201) {
         var data = CountryShippingZoneModel.fromJson(jsonDecode(response.body));
         countryShippingZoneData = data;
-        print(data.shippingOptions);
         notifyListeners();
         return;
       } else {
@@ -85,27 +84,20 @@ class ShippingZoneService with ChangeNotifier {
 
   Future fetchSatesZone(id) async {
     final url = Uri.parse('$baseApiUrl/state-info?id=$id');
-    print(id);
 
     // try {
     final response = await http.get(url);
-
     if (response.statusCode == 200) {
       var data = StateShippingZoneModel.fromJson(jsonDecode(response.body));
       stateShippingZoneData = data;
-      print(stateShippingZoneData!.defaultShippingCost);
       if (stateShippingZoneData!.defaultShippingCost != 0) {
         shippingCost = stateShippingZoneData!.defaultShippingCost;
         setShippingOptionList();
-        print(countryShippingZoneData!.shippingOptions);
-        print(shippingOptionsList);
         setTaxPercentage();
         isLoading = false;
         notifyListeners();
         return;
       }
-      print(stateShippingZoneData!.shippingOptions);
-      print('inSide');
       shippingCost = countryShippingZoneData!.defaultShippingCost;
       setShippingOptionList();
 

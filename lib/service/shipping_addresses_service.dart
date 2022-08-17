@@ -28,6 +28,29 @@ class ShippingAddressesService with ChangeNotifier {
     notifyListeners();
   }
 
+  clearSelectedAddress() {
+    selectedAddress =
+        shippingAddresseList.isNotEmpty ? shippingAddresseList[0] : null;
+    noData = false;
+    isLoading = false;
+    notifyListeners();
+  }
+
+  clearAll() {
+    noData = false;
+    isLoading = false;
+    name = null;
+    email = null;
+    phone = null;
+    countryCode = null;
+    zipCode = null;
+    countryId = '1';
+    stateID = '1';
+    address = null;
+    city = null;
+    notifyListeners();
+  }
+
   setCity(value) {
     city = value;
     notifyListeners();

@@ -13,7 +13,7 @@ class ManageAccountService with ChangeNotifier {
   String countryId = '1';
   String stateId = '1';
   String? city = '';
-  String zipCode = '';
+  String? zipCode = '';
   String? address = '';
   String? imgUrl;
   File? pickeImage;
@@ -21,6 +21,7 @@ class ManageAccountService with ChangeNotifier {
 
   setInitialValue(nameValue, emailValue, phoneValue, countryIdValue,
       stateIdValue, cityValue, zipCodeValue, addressValue, imageUrl) {
+    print(zipCodeValue.toString() + '==================');
     name = nameValue;
     email = emailValue;
     phoneNumber = phoneValue;
@@ -34,6 +35,11 @@ class ManageAccountService with ChangeNotifier {
 
   setName(value) {
     name = value;
+    notifyListeners();
+  }
+
+  clearPickedImage() {
+    pickeImage = null;
     notifyListeners();
   }
 
@@ -90,6 +96,7 @@ class ManageAccountService with ChangeNotifier {
   Future updateProfile(var token) async {
     print('Edit in proccess');
     print(token);
+    print(zipCode);
     Map<String, String> fieldss = {
       'name': name,
       'email': email,
@@ -98,7 +105,7 @@ class ManageAccountService with ChangeNotifier {
       'country': countryId,
       'state': stateId,
       'city': city ?? '',
-      'zip_code': zipCode,
+      'zipcode': zipCode ?? '',
       'address': address ?? '',
     };
 

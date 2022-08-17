@@ -27,8 +27,8 @@ class UserProfileService with ChangeNotifier {
     if (response.statusCode == 200) {
       print(response.statusCode);
       final data = UserProfileModel.fromJson(jsonDecode(response.body));
-      print(data.userDetails.name);
       userProfileData = data.userDetails;
+      print(data.userDetails.zipcode);
 
       // posterDataList = data.data;
       print(userProfileData.name +

@@ -19,14 +19,15 @@ class ProductDetailsService with ChangeNotifier {
   List<String> selectedInventorySetIndex = [];
   String? selectedSize;
   String? selectedColor;
+  String? selectedColorName;
   String? selectedSauce;
   String? selectedMayo;
   String? selectedChese;
-  List sizeList = [];
-  List colorList = [];
-  List sauceList = [];
-  List mayoList = [];
-  List cheeseList = [];
+  // List sizeList = [];
+  // List colorList = [];
+  // List sauceList = [];
+  // List mayoList = [];
+  // List cheeseList = [];
   // bool showSize = false;
   // bool showColor = false;
   // bool showSauce = false;
@@ -205,6 +206,9 @@ class ProductDetailsService with ChangeNotifier {
 
   setSelectedColor(value) {
     selectedColor = value;
+    selectedColorName = productDetails!.productInventorySet
+        .firstWhere((element) => element.color == value)
+        .colorName;
     print(selectedColor);
     notifyListeners();
   }

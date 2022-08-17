@@ -8,6 +8,7 @@ class Cart {
   String imgUrl;
   String? size;
   String? color;
+  String? colorName;
   String? sauce;
   String? mayo;
   String? cheese;
@@ -22,6 +23,7 @@ class Cart {
     this.imgUrl, {
     this.size,
     this.color,
+    this.colorName,
     this.sauce,
     this.mayo,
     this.cheese,

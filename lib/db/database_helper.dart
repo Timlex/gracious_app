@@ -9,7 +9,7 @@ class DbHelper {
     return sql.openDatabase(path.join(dbpath, '$dbName.db'), version: 1,
         onCreate: (db, version) {
       db.execute(
-          'CREATE TABLE $dbName(id INTEGER PRIMARY KEY, productId INTEGER, title TEXT NOT NULL, price INTEGER, discountPrice INTEGER, ${dbName == 'cart' ? 'campaignPercentage REAL,' : ''}  ${dbName == 'cart' ? 'quantity INTEGER,' : ''} imgUrl TEXT${dbName == 'cart' ? ', size TEXT' : ''}${dbName == 'cart' ? ', color TEXT' : ''}${dbName == 'cart' ? ', sauce TEXT' : ''}${dbName == 'cart' ? ', mayo TEXT' : ''}${dbName == 'cart' ? ', cheese TEXT' : ''})');
+          'CREATE TABLE $dbName(id INTEGER PRIMARY KEY, productId INTEGER, title TEXT NOT NULL, price INTEGER, discountPrice INTEGER, ${dbName == 'cart' ? 'campaignPercentage REAL,' : ''}  ${dbName == 'cart' ? 'quantity INTEGER,' : ''} imgUrl TEXT${dbName == 'cart' ? ', size TEXT' : ''}${dbName == 'cart' ? ', color TEXT' : ''}${dbName == 'cart' ? ', colorName TEXT' : ''}${dbName == 'cart' ? ', sauce TEXT' : ''}${dbName == 'cart' ? ', mayo TEXT' : ''}${dbName == 'cart' ? ', cheese TEXT' : ''})');
     });
   }
 

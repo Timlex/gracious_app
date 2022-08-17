@@ -18,6 +18,7 @@ import '../../service/state_dropdown_service.dart';
 import '../auth/custom_text_field.dart';
 import '../intro/custom_dropdown.dart';
 import '../utils/constant_styles.dart';
+import '../utils/image_view.dart';
 
 class ManageAccount extends StatelessWidget {
   static const routeName = 'manage account';
@@ -73,12 +74,14 @@ class ManageAccount extends StatelessWidget {
       userData.country.id.toString(),
       userData.state == null ? '1' : userData.state!.id.toString(),
       userData.city,
-      userData.zipcode ?? '',
+      userData.zipcode,
       userData.address,
       userData.profileImageUrl,
     );
     return Scaffold(
       appBar: AppBars().appBarTitled('Manage Account', () {
+        Provider.of<ManageAccountService>(context, listen: false)
+            .clearPickedImage();
         Navigator.of(context).pop();
       }, hasButton: true),
       body: Consumer<ManageAccountService>(builder: (context, maData, child) {
@@ -93,28 +96,39 @@ class ManageAccount extends StatelessWidget {
               child: SizedBox(
                 width: screenWidth / 2.7,
                 child: Stack(alignment: Alignment.center, children: [
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(150),
-                    child: maData.pickeImage == null
-                        ? CachedNetworkImage(
-                            height: screenHight / 5.5,
-                            width: screenHight / 5.5,
-                            fit: BoxFit.cover,
-                            alignment: Alignment.topCenter,
-                            imageUrl: maData.imgUrl ?? '',
-                            placeholder: (context, url) => Image.asset(
-                              'assets/images/skelleton.png',
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.of(context).push(MaterialPageRoute<void>(
+                        builder: (BuildContext context) => ImageView(
+                          maData.pickeImage != null
+                              ? maData.pickeImage!.path
+                              : maData.imgUrl as String,
+                        ),
+                      ));
+                    },
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(150),
+                      child: maData.pickeImage == null
+                          ? CachedNetworkImage(
+                              height: screenHight / 5.5,
+                              width: screenHight / 5.5,
+                              fit: BoxFit.cover,
+                              alignment: Alignment.topCenter,
+                              imageUrl: maData.imgUrl ?? '',
+                              placeholder: (context, url) => Image.asset(
+                                'assets/images/skelleton.png',
+                              ),
+                              errorWidget: (context, url, error) => Image.asset(
+                                'assets/images/skelleton.png',
+                              ),
+                            )
+                          : Image.file(
+                              maData.pickeImage!,
+                              height: 150,
+                              width: 150,
+                              fit: BoxFit.cover,
                             ),
-                            errorWidget: (context, url, error) => Image.asset(
-                              'assets/images/skelleton.png',
-                            ),
-                          )
-                        : Image.file(
-                            maData.pickeImage!,
-                            height: 150,
-                            width: 150,
-                            fit: BoxFit.cover,
-                          ),
+                    ),
                   ),
                   // CircleAvatar(
                   //   backgroundColor: cc.greyYellow,
@@ -306,7 +320,7 @@ class ManageAccount extends StatelessWidget {
                         ),
                         onChanged: (phone) {
                           maData.setPhoneNumber(phone.number);
-                          print(phone.number);
+                          print(phone.completeNumber);
                         },
                         onCountryChanged: (country) {
                           maData.setCountryCode(country.code);
@@ -396,6 +410,7 @@ class ManageAccount extends StatelessWidget {
                       CustomTextField(
                         'Enter zip code',
                         initialValue: maData.zipCode,
+                        keyboardType: TextInputType.number,
                         // validator: (zipCode) {
                         //   return null;
 

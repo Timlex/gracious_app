@@ -6,9 +6,11 @@ class AuthTextControllerService with ChangeNotifier {
   var _name;
   var _userName;
   var _cityAddress;
+  var city;
   var _phoneNumber;
   var _country;
   var _state;
+  var zipCode;
   var _countryCode = 'BD';
 
   setEmail(value) {
@@ -23,6 +25,16 @@ class AuthTextControllerService with ChangeNotifier {
 
   setName(value) {
     _name = value;
+    notifyListeners();
+  }
+
+  setZipCode(value) {
+    zipCode = value;
+    notifyListeners();
+  }
+
+  setCity(value) {
+    city = value;
     notifyListeners();
   }
 

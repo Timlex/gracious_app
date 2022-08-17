@@ -19,6 +19,10 @@ class AddNewAddress extends StatelessWidget {
 
   final GlobalKey<FormState> _formKey = GlobalKey();
   final _emailFN = FocusNode();
+  final _phonelFN = FocusNode();
+  final _cityFN = FocusNode();
+  final _zipCodeFN = FocusNode();
+  final _addressFN = FocusNode();
 
   Future _onSubmit(
       BuildContext context, ShippingAddressesService saData) async {
@@ -58,6 +62,8 @@ class AddNewAddress extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBars().appBarTitled('Add New Address', () {
+        Provider.of<ShippingAddressesService>(context, listen: false)
+            .clearAll();
         Navigator.of(context).pop();
       }, hasButton: true),
       body:
@@ -117,10 +123,14 @@ class AddNewAddress extends StatelessWidget {
                         onChanged: (value) {
                           saData.setEmail(value);
                         },
+                        onFieldSubmitted: (_) {
+                          FocusScope.of(context).requestFocus(_phonelFN);
+                        },
                         // imagePath: 'assets/images/icons/mail.png',
                       ),
                       textFieldTitle('Phone Number'),
                       IntlPhoneField(
+                        focusNode: _phonelFN,
                         style: TextStyle(color: cc.greyHint, fontSize: 13),
                         keyboardType: TextInputType.number,
                         initialCountryCode: 'BD',
@@ -157,6 +167,9 @@ class AddNewAddress extends StatelessWidget {
                           saData.setCountryCode(country.code);
                           print('Country changed to: ' + country.code);
                         },
+                        onSubmitted: (_) {
+                          FocusScope.of(context).requestFocus(_cityFN);
+                        },
                       ),
 
                       textFieldTitle('Country'),
@@ -173,7 +186,15 @@ class AddNewAddress extends StatelessWidget {
                                       cProvider.selectedCountryId.toString());
                                   Provider.of<StateDropdownService>(context,
                                           listen: false)
-                                      .getStates(cProvider.selectedCountryId);
+                                      .getStates(cProvider.selectedCountryId)
+                                      .then((value) {
+                                    saData.setStateId(
+                                        Provider.of<StateDropdownService>(
+                                                context,
+                                                listen: false)
+                                            .selectedStateId
+                                            .toString());
+                                  });
                                 },
                                 value: cProvider.selectedCountry,
                               )
@@ -230,8 +251,12 @@ class AddNewAddress extends StatelessWidget {
                         //   }
                         //   return null;
                         // },
+                        focusNode: _cityFN,
                         onChanged: (value) {
                           saData.setCity(value);
+                        },
+                        onFieldSubmitted: (_) {
+                          FocusScope.of(context).requestFocus(_zipCodeFN);
                         },
                         // imagePath: 'assets/images/icons/mail.png',
                       ),
@@ -239,6 +264,7 @@ class AddNewAddress extends StatelessWidget {
                       // const SizedBox(height: 8),
                       CustomTextField(
                         'Enter zip code',
+                        focusNode: _zipCodeFN,
                         keyboardType: TextInputType.number,
                         // validator: (zipCode) {
                         //   return null;
@@ -254,13 +280,16 @@ class AddNewAddress extends StatelessWidget {
                         onChanged: (value) {
                           saData.setZipCode(value);
                         },
+                        onFieldSubmitted: (_) {
+                          FocusScope.of(context).requestFocus(_addressFN);
+                        },
                         // imagePath: 'assets/images/icons/mail.png',
                       ),
                       textFieldTitle('Address'),
                       // const SizedBox(height: 8),
                       CustomTextField(
                         'Enter your address',
-
+                        focusNode: _addressFN,
                         onChanged: (value) {
                           saData.setAddress(value);
                         },
@@ -283,6 +312,7 @@ class AddNewAddress extends StatelessWidget {
                         saData.isLoading
                             ? () {}
                             : () {
+                                FocusScope.of(context).unfocus();
                                 _onSubmit(context, saData);
                               }),
                     if (saData.isLoading)
