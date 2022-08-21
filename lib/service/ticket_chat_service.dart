@@ -125,13 +125,14 @@ class TicketChatService with ChangeNotifier {
       var streamedResponse = await request.send();
 
       var response = await http.Response.fromStream(streamedResponse);
-
+      print(response.statusCode);
       if (response.statusCode == 200) {
         message = '';
         fetchSingleTickets(id);
         // var data = TicketChatModel.fromJson(jsonDecode(response.body));
 
         // setNoProduct(resultMeta!.total == 0);
+        message = '';
 
         notifyListeners();
       } else {}

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gren_mart/view/utils/constant_name.dart';
 import '../../view/auth/order_data.dart';
 import '../../view/order/order_details_tile.dart';
 import 'package:provider/provider.dart';
@@ -29,12 +30,16 @@ class OrderDetails extends StatelessWidget {
             parent: AlwaysScrollableScrollPhysics()),
         children: [
           const SizedBox(height: 10),
-          ...orderData.productInfos.map((e) {
-            return OrderDetailsTile(e['title'], e['price'], e['quantity'],
-                e['image'], orderData.productInfos.last['id'] == e['id']);
-          }).toList(),
           Container(
-            // height: 300,
+            constraints: BoxConstraints(minHeight: screenHight - 3258),
+            child: Column(
+                children: orderData.productInfos.map((e) {
+              return OrderDetailsTile(e['title'], e['price'], e['quantity'],
+                  e['image'], orderData.productInfos.last['id'] == e['id']);
+            }).toList()),
+          ),
+          Container(
+            // height: 200,
             padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
               borderRadius: const BorderRadius.only(

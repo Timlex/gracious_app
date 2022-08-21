@@ -17,7 +17,7 @@ class OrderData with ChangeNotifier {
         '#384956',
         3748,
         DateTime.now().subtract(const Duration(
-          days: 3,
+          days: 10,
         )),
         true,
         [
@@ -45,9 +45,33 @@ class OrderData with ChangeNotifier {
             'quantity': 3,
             'image': 'assets/images/product1.png',
           },
+          {
+            'id': '06',
+            'title': 'Fresh fruits',
+            'price': 260.00,
+            'discount': 19.7,
+            'quantity': 3,
+            'image': 'assets/images/product1.png',
+          },
+          {
+            'id': '05',
+            'title': 'Fresh fruits',
+            'price': 260.00,
+            'discount': 19.7,
+            'quantity': 3,
+            'image': 'assets/images/product1.png',
+          },
+          {
+            'id': '04',
+            'title': 'Fresh fruits',
+            'price': 260.00,
+            'discount': 19.7,
+            'quantity': 3,
+            'image': 'assets/images/product1.png',
+          },
         ]),
     Orders(
-        '#384956',
+        '#384955',
         3748,
         DateTime.now().subtract(const Duration(
           days: 3,
@@ -80,7 +104,7 @@ class OrderData with ChangeNotifier {
           },
         ]),
     Orders(
-        '#384956',
+        '#384959',
         3748,
         DateTime.now().subtract(const Duration(
           days: 5,
@@ -113,7 +137,7 @@ class OrderData with ChangeNotifier {
           },
         ]),
     Orders(
-        '#384956',
+        '#384954',
         3748,
         DateTime.now().subtract(const Duration(
           days: 7,

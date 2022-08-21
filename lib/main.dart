@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:flutter/services.dart';
 import 'package:gren_mart/service/cupon_discount_service.dart';
+import 'package:gren_mart/service/payment_getter_service.dart';
 import 'package:gren_mart/service/shipping_zone_service.dart';
 import 'package:gren_mart/view/home/all_products.dart';
 import '../../model/other_data.dart';
@@ -27,8 +30,6 @@ import '../../view/auth/reset_password.dart';
 import '../../view/settings/shipping_addresses.dart';
 import '../../view/ticket/add_new_ticket.dart';
 import '../../view/ticket/all_ticket_view.dart';
-import 'package:provider/provider.dart';
-import 'package:flutter/services.dart';
 import '../../view/auth/auth.dart';
 import '../../view/auth/enter_otp.dart';
 import '../../view/auth/enter_email_reset_pass.dart';
@@ -43,8 +44,6 @@ import '../../view/settings/manage_account.dart';
 import '../../view/settings/new_address.dart';
 import '../../view/utils/constant_colors.dart';
 import './service/navigation_bar_helper_service.dart';
-
-import 'model/product_data.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -63,7 +62,6 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => OtherData()),
-        ChangeNotifierProvider(create: (_) => Products()),
         ChangeNotifierProvider(create: (_) => CartDataService()),
         ChangeNotifierProvider(create: (_) => FavoriteDataService()),
         ChangeNotifierProvider(create: (_) => OrderData()),
@@ -87,43 +85,41 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => ProductDetailsService()),
         ChangeNotifierProvider(create: (_) => ShippingZoneService()),
         ChangeNotifierProvider(create: (_) => CuponDiscountService()),
+        ChangeNotifierProvider(create: (_) => PaymentGetterService()),
       ],
-      child: Consumer<Products>(
-        builder: (context, value, child) => MaterialApp(
-          debugShowCheckedModeBanner: false,
-          title: 'GrenMart',
-          theme: ThemeData(
-            primarySwatch: Colors.blue,
-            scaffoldBackgroundColor: ConstantColors().pureWhite,
-            appBarTheme:
-                AppBarTheme(backgroundColor: ConstantColors().pureWhite),
-            // bottomNavigationBarTheme: BottomNavigationBarThemeData(
-            //     backgroundColor: ConstantColors().blackColor),
-            buttonTheme:
-                ButtonThemeData(buttonColor: ConstantColors().primaryColor),
-            textSelectionTheme: TextSelectionThemeData(
-                cursorColor: ConstantColors().primaryColor),
-          ),
-          home: const SplashScreen(),
-          routes: {
-            Intro.routeName: (context) => Intro(),
-            Auth.routeName: (context) => Auth(),
-            ResetPassEmail.routeName: (context) => ResetPassEmail(),
-            EnterOTP.routeName: (context) => EnterOTP(),
-            HomeFront.routeName: (context) => HomeFront(),
-            ProductDetails.routeName: (context) => ProductDetails(),
-            CartView.routeName: (context) => CartView(),
-            Checkout.routeName: (context) => Checkout(),
-            AddNewAddress.routeName: (context) => AddNewAddress(),
-            ManageAccount.routeName: (context) => ManageAccount(),
-            ChangePassword.routeName: (context) => const ChangePassword(),
-            ShippingAdresses.routeName: (context) => const ShippingAdresses(),
-            ResetPassword.routeName: (context) => const ResetPassword(),
-            AllTicketsView.routeName: (context) => AllTicketsView(),
-            AddNewTicket.routeName: (context) => AddNewTicket(),
-            AllProducts.routeName: (context) => AllProducts(),
-          },
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        title: 'GrenMart',
+        theme: ThemeData(
+          primarySwatch: Colors.blue,
+          scaffoldBackgroundColor: ConstantColors().pureWhite,
+          appBarTheme: AppBarTheme(backgroundColor: ConstantColors().pureWhite),
+          // bottomNavigationBarTheme: BottomNavigationBarThemeData(
+          //     backgroundColor: ConstantColors().blackColor),
+          buttonTheme:
+              ButtonThemeData(buttonColor: ConstantColors().primaryColor),
+          textSelectionTheme: TextSelectionThemeData(
+              cursorColor: ConstantColors().primaryColor),
         ),
+        home: const SplashScreen(),
+        routes: {
+          Intro.routeName: (context) => Intro(),
+          Auth.routeName: (context) => Auth(),
+          ResetPassEmail.routeName: (context) => ResetPassEmail(),
+          EnterOTP.routeName: (context) => EnterOTP(),
+          HomeFront.routeName: (context) => HomeFront(),
+          ProductDetails.routeName: (context) => ProductDetails(),
+          CartView.routeName: (context) => CartView(),
+          Checkout.routeName: (context) => Checkout(),
+          AddNewAddress.routeName: (context) => AddNewAddress(),
+          ManageAccount.routeName: (context) => ManageAccount(),
+          ChangePassword.routeName: (context) => const ChangePassword(),
+          ShippingAdresses.routeName: (context) => const ShippingAdresses(),
+          ResetPassword.routeName: (context) => const ResetPassword(),
+          AllTicketsView.routeName: (context) => AllTicketsView(),
+          AddNewTicket.routeName: (context) => AddNewTicket(),
+          AllProducts.routeName: (context) => AllProducts(),
+        },
       ),
     );
   }

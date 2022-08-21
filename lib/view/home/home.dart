@@ -133,7 +133,7 @@ class Home extends StatelessWidget {
           Consumer<ProductCardDataService>(builder: (context, products, child) {
             return products.featuredCardProductsList.isNotEmpty
                 ? SizedBox(
-                    height: screenHight / 3.7 < 221 ? 170 : screenHight / 3.7,
+                    height: screenHight / 3.7 < 221 ? 185 : screenHight / 3.7,
                     child: ListView.builder(
                       physics: const BouncingScrollPhysics(
                           parent: AlwaysScrollableScrollPhysics()),
@@ -218,7 +218,7 @@ class Home extends StatelessWidget {
           }),
           const SizedBox(height: 20),
           SizedBox(
-            height: screenHight / 3.7 < 221 ? 170 : screenHight / 3.7,
+            height: screenHight / 3.7 < 221 ? 185 : screenHight / 3.7,
             child: Consumer<ProductCardDataService>(
                 builder: (context, products, child) {
               return products.campaignCardProductList.isNotEmpty

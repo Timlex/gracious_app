@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:gren_mart/service/product_details_service.dart';
+import 'package:provider/provider.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 import '../utils/constant_name.dart';
@@ -11,27 +13,27 @@ class ReviewBox extends StatelessWidget {
   void Function()? onPressed;
   ReviewBox(this.expanded, {this.onPressed, Key? key}) : super(key: key);
 
-  final reviewData = [
-    {
-      'username': 'Jack',
-      'rating': 2,
-      'comment': 'afasd sfdghfg hf hsfsjfkh',
-      'date': DateTime(2022, 7, 15)
-    },
-    {
-      'username': 'James',
-      'rating': 5,
-      'comment': 'afasd sfdghfg hf hsfsjfkh ha fhbfs shfsajf hsfjh;hsjfh',
-      'date': DateTime(2022, 5, 15)
-    },
-    {
-      'username': 'Joe',
-      'rating': 3,
-      'comment':
-          'afasd sfdghfg hf hsfsjfkh ha fhbfs shfsajf hsfjh;hsjfhafasd sfdghfg hf hsfsjfkh ha fhbfs shfsajf hsfjh;hsjfh',
-      'date': DateTime(2022, 3, 15)
-    },
-  ];
+  // final reviewData = [
+  //   {
+  //     'username': 'Jack',
+  //     'rating': 2,
+  //     'comment': 'afasd sfdghfg hf hsfsjfkh',
+  //     'date': DateTime(2022, 7, 15)
+  //   },
+  //   {
+  //     'username': 'James',
+  //     'rating': 5,
+  //     'comment': 'afasd sfdghfg hf hsfsjfkh ha fhbfs shfsajf hsfjh;hsjfh',
+  //     'date': DateTime(2022, 5, 15)
+  //   },
+  //   {
+  //     'username': 'Joe',
+  //     'rating': 3,
+  //     'comment':
+  //         'afasd sfdghfg hf hsfsjfkh ha fhbfs shfsajf hsfjh;hsjfhafasd sfdghfg hf hsfsjfkh ha fhbfs shfsajf hsfjh;hsjfh',
+  //     'date': DateTime(2022, 3, 15)
+  //   },
+  // ];
   final TextEditingController _controller = TextEditingController();
 
   @override
@@ -52,16 +54,25 @@ class ReviewBox extends StatelessWidget {
                 ),
                 onPressed: onPressed),
           ),
-          if (expanded) submitReview(),
-          if (expanded) ...descriptions()
+          if (expanded &&
+              Provider.of<ProductDetailsService>(context)
+                  .productDetails!
+                  .userRatedAlready &&
+              Provider.of<ProductDetailsService>(context)
+                      .productDetails!
+                      .userHasItem !=
+                  null)
+            submitReview(),
+          if (expanded)
+            ...descriptions(Provider.of<ProductDetailsService>(context))
         ],
       ),
     );
   }
 
-  List<Widget> descriptions() {
+  List<Widget> descriptions(ProductDetailsService pService) {
     List<Widget> reviewList = [];
-    for (var element in reviewData) {
+    for (var element in pService.productDetails!.product.rating!) {
       reviewList.add(Card(
         // color: cc.greyBorder,
         margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
@@ -71,7 +82,7 @@ class ReviewBox extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(element['username'] as String,
+              Text(element.userId.toString(),
                   style: TextStyle(
                       fontSize: 17,
                       fontWeight: FontWeight.bold,
@@ -80,7 +91,7 @@ class ReviewBox extends StatelessWidget {
               RatingBar.builder(
                 ignoreGestures: true,
                 itemSize: 15,
-                initialRating: (element['rating'] as int).toDouble(),
+                initialRating: (element.rating).toDouble(),
                 direction: Axis.horizontal,
                 allowHalfRating: false,
                 itemCount: 5,
@@ -94,7 +105,7 @@ class ReviewBox extends StatelessWidget {
                 },
               ),
               const SizedBox(height: 10),
-              Text(element['comment'] as String,
+              Text(element.reviewMsg,
                   overflow: TextOverflow.ellipsis,
                   maxLines: 3,
                   style: TextStyle(
@@ -102,7 +113,7 @@ class ReviewBox extends StatelessWidget {
                     fontSize: 14,
                   )),
               const SizedBox(height: 10),
-              Text(timeago.format(element['date'] as DateTime),
+              Text(timeago.format(element.createdAt),
                   style: TextStyle(color: cc.greyHint, fontSize: 12)),
               // const Divider(),
             ],
@@ -110,6 +121,9 @@ class ReviewBox extends StatelessWidget {
         ),
       ));
     }
+    // for (var element in pService.productDetails!.ratings ?? []) {
+
+    // }
     return reviewList;
   }
 
@@ -186,6 +200,7 @@ class ReviewBox extends StatelessWidget {
               },
             ),
           ),
+          const SizedBox(height: 30),
           customBorderButton('Submit', () {}, width: double.infinity),
           const SizedBox(height: 20),
         ],

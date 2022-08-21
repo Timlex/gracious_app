@@ -260,7 +260,7 @@ class ProductDetailsService with ChangeNotifier {
     for (var element in productDetails!.product.additionalInfo) {
       data.putIfAbsent(element.title, () => element.text);
     }
-    return data;
+    return data.isEmpty ? {'1': 'No additional information available.'} : data;
   }
 
   clearProdcutDetails() {
@@ -293,7 +293,7 @@ class ProductDetailsService with ChangeNotifier {
     final response = await http.get(url);
     if (response.statusCode == 200) {
       var data = ProductDetailsModel.fromJson(jsonDecode(response.body));
-
+      print(data.product.rating);
       productDetails = data;
       int index = 0;
       productSalePrice = productDetails!.product.price;

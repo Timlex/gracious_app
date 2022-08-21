@@ -125,12 +125,7 @@ class ShippingAddressesService with ChangeNotifier {
       if (response.statusCode == 200) {
         final data = ShippingAddressesModel.fromJson(jsonDecode(response.body));
         shippingAddresseList = data.data;
-
-        if (data.data.isEmpty) {
-          setNoData(true);
-          notifyListeners();
-          return 'No shipping address found.';
-        }
+        noData = shippingAddresseList.isEmpty;
         selectedAddress ??= shippingAddresseList[0];
 
         notifyListeners();

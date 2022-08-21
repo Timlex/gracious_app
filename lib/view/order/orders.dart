@@ -24,7 +24,7 @@ class MyOrders extends StatelessWidget {
             .map((e) => OrderTile(
                   e.totalAmount,
                   e.trackingCode,
-                  DateTime.now(),
+                  e.orderedDate,
                   e.delivered,
                   !(random.last == e),
                 ))

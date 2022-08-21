@@ -1,49 +1,33 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:gren_mart/service/cart_data_service.dart';
 import 'package:gren_mart/service/cupon_discount_service.dart';
+import 'package:gren_mart/service/payment_getter_service.dart';
 import 'package:gren_mart/service/shipping_zone_service.dart';
+
+import 'payment_grid_tile.dart';
 import '../../db/database_helper.dart';
 import '../../service/shipping_addresses_service.dart';
-
-import '../../view/cart/cart_grid_tile.dart';
 import '../../view/cart/payment_status.dart';
 import '../../view/settings/new_address.dart';
 import '../../view/utils/app_bars.dart';
 import '../../view/utils/constant_colors.dart';
 import '../../view/utils/constant_name.dart';
 import '../../view/utils/constant_styles.dart';
-import 'package:provider/provider.dart';
 
 class Checkout extends StatelessWidget {
   static const routeName = 'checkout';
 
   ConstantColors cc = ConstantColors();
 
-  String selectedName = 'payp';
   bool error = false;
-  String selectedId = '01';
-
-  List gridImages = [
-    'cod',
-    'payp',
-    'razor',
-    'mollie',
-    'payt',
-    'stripe',
-    'pays',
-    'wave',
-    'mid',
-    'payfast',
-    'mercado',
-    'insta',
-    'cash',
-  ];
 
   @override
   Widget build(BuildContext context) {
-    final sService = Provider.of<ShippingZoneService>(context);
+    print('kenooooooooooooo');
+    final sService = Provider.of<ShippingZoneService>(context, listen: false);
     final cService = Provider.of<CartDataService>(context, listen: false);
-    final cdService = Provider.of<CuponDiscountService>(context);
+    final cdService = Provider.of<CuponDiscountService>(context, listen: false);
     final subTotal = cService.subTotal;
     final shippingCost = sService.shippingCost;
     final taxMoney = sService.taxParcentage * cService.subTotal;
@@ -97,7 +81,7 @@ class Checkout extends StatelessWidget {
                         Provider.of<ShippingZoneService>(context, listen: false)
                             .fetchSatesZone(e.stateId));
               },
-              child: addressBox(e.id),
+              child: addressBox(context, e.id),
             );
           })).toList(),
           GestureDetector(
@@ -358,31 +342,43 @@ class Checkout extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 20),
-              SizedBox(
-                  height: screenHight / 2.74,
-                  child: GridView(
-                    physics: const NeverScrollableScrollPhysics(),
-                    gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 3,
-                            childAspectRatio: 3 / 1.2,
-                            crossAxisSpacing: 8,
-                            mainAxisSpacing: 12),
-                    children: gridImages
-                        .map((e) => GestureDetector(
-                            onTap: () => selectedName = e,
-                            child: GestureDetector(
-                                onTap: () {
-                                  if (selectedName == e) {
-                                    return;
-                                  }
-                                  // setState(() {
-                                  //   selectedName = e;
-                                  // });
-                                },
-                                child: CartGridTile(e, e == selectedName))))
-                        .toList(),
-                  )),
+              Consumer<PaymentGetterService>(
+                  builder: (context, pgService, child) {
+                return FutureBuilder(
+                    future: pgService.fetchPaymentGetterData(),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return loadingProgressBar();
+                      }
+                      if (snapshot.hasError) {
+                        snackBar(context, 'An error occured');
+                        return Text(snapshot.error.toString());
+                      }
+                      return SizedBox(
+                          height: 270,
+                          child: GridView(
+                            physics: const NeverScrollableScrollPhysics(),
+                            gridDelegate:
+                                const SliverGridDelegateWithFixedCrossAxisCount(
+                                    crossAxisCount: 3,
+                                    childAspectRatio: 3 / 1.2,
+                                    crossAxisSpacing: 8,
+                                    mainAxisSpacing: 12),
+                            children: pgService.logoList
+                                .map((e) => GestureDetector(
+                                    onTap: () {
+                                      // if (selectedName == e) {
+                                      //   return;
+                                      // }
+                                      // setState(() {
+                                      //   selectedName = e;
+                                      // });
+                                    },
+                                    child: CartGridTile(e, false)))
+                                .toList(),
+                          ));
+                    });
+              }),
               const SizedBox(height: 20),
               customContainerButton('Pay & Confirm', double.maxFinite, () {
                 DbHelper.deleteDbTable('cart');
@@ -401,7 +397,7 @@ class Checkout extends StatelessWidget {
     );
   }
 
-  Widget addressBox(int id) {
+  Widget addressBox(BuildContext context, int id) {
     return Consumer<ShippingAddressesService>(
         builder: (context, saService, child) {
       final shippingAddress = saService.shippingAddresseList

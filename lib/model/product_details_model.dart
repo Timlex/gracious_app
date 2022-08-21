@@ -181,7 +181,7 @@ class Product {
     required this.inventory,
     this.campaign,
     this.category,
-    required this.rating,
+    this.rating,
     this.campaignProduct,
     required this.additionalInfo,
     required this.tags,
@@ -214,7 +214,7 @@ class Product {
   Inventory inventory;
   Campaign? campaign;
   dynamic category;
-  List<dynamic> rating;
+  List<Rating>? rating;
   Campaign? campaignProduct;
   List<AdditionalInfo> additionalInfo;
   List<Tag> tags;
@@ -250,7 +250,8 @@ class Product {
             ? Campaign.fromJson(json["campaign"])
             : null,
         category: json["category"],
-        rating: List<dynamic>.from(json["rating"].map((x) => x)),
+        rating:
+            List<Rating>.from(json["rating"].map((x) => Rating.fromJson(x))),
         campaignProduct: json["campaign_product"] != null
             ? Campaign.fromJson(json["campaign_product"])
             : null,
@@ -289,7 +290,7 @@ class Product {
         "inventory": inventory.toJson(),
         "campaign": campaign!.toJson(),
         "category": category,
-        "rating": List<dynamic>.from(rating.map((x) => x)),
+        "rating": List<dynamic>.from(rating!.map((x) => x.toJson())),
         "campaign_product": campaignProduct!.toJson(),
         "additional_info":
             List<dynamic>.from(additionalInfo.map((x) => x.toJson())),
@@ -712,4 +713,48 @@ class RelatedProduct {
     required this.imgUrl,
     this.isCartAble,
   });
+}
+
+class Rating {
+  Rating({
+    required this.id,
+    required this.productId,
+    required this.userId,
+    required this.status,
+    required this.rating,
+    required this.reviewMsg,
+    required this.createdAt,
+    required this.updatedAt,
+  });
+
+  int id;
+  int productId;
+  int userId;
+  int status;
+  int rating;
+  String reviewMsg;
+  DateTime createdAt;
+  DateTime updatedAt;
+
+  factory Rating.fromJson(Map<String, dynamic> json) => Rating(
+        id: json["id"],
+        productId: json["product_id"],
+        userId: json["user_id"],
+        status: json["status"],
+        rating: json["rating"],
+        reviewMsg: json["review_msg"],
+        createdAt: DateTime.parse(json["created_at"]),
+        updatedAt: DateTime.parse(json["updated_at"]),
+      );
+
+  Map<String, dynamic> toJson() => {
+        "id": id,
+        "product_id": productId,
+        "user_id": userId,
+        "status": status,
+        "rating": rating,
+        "review_msg": reviewMsg,
+        "created_at": createdAt.toIso8601String(),
+        "updated_at": updatedAt.toIso8601String(),
+      };
 }

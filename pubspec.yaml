@@ -52,11 +52,12 @@ dependencies:
   intl_phone_field:
   cached_network_image:
   focused_menu:
-  # lottie:
+  lottie:
   file_picker:
   flutter_facebook_auth: 
   google_sign_in:
   timeago:
+  photo_view:
   
   provider: ^6.0.3
 

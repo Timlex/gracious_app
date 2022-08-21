@@ -21,7 +21,7 @@ class FavoriteDataService with ChangeNotifier {
     int discountPrice,
     String imgUrl,
   ) async {
-    if (_favoriteItems.containsKey(id)) {
+    if (_favoriteItems.containsKey(id.toString())) {
       deleteFavoriteItem(id);
       _favoriteItems.remove(id);
       notifyListeners();
