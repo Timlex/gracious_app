@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gren_mart/view/utils/constant_name.dart';
 import '../../view/utils/constant_colors.dart';
 
 class OrderDetailsTile extends StatelessWidget {
@@ -18,13 +19,13 @@ class OrderDetailsTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 75,
+      // height: 75,
       child: Column(
         children: [
           ListTile(
             leading: Container(
-              height: 80,
-              width: 80,
+              // height: 80,
+              // width: 80,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(15),
               ),
@@ -36,10 +37,28 @@ class OrderDetailsTile extends StatelessWidget {
             title: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  title,
-                  style: const TextStyle(
-                      fontSize: 15, fontWeight: FontWeight.w600),
+                SizedBox(
+                  width: screenWidth / 4,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        title,
+                        style: const TextStyle(
+                            fontSize: 15, fontWeight: FontWeight.w600),
+                      ),
+                      const SizedBox(height: 5),
+                      Text(
+                        '(Sauce: Tartar, Mayo: Lime, Cheese: mozzarella)',
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 45,
+                        style: TextStyle(
+                          fontSize: 11,
+                          color: cc.greyParagraph,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
                 Text(
                   'x$quantity',

@@ -181,7 +181,7 @@ class Home extends StatelessWidget {
             ),
           const SizedBox(height: 20),
           Consumer<ProductCardDataService>(builder: (context, campInfo, child) {
-            return !(campInfo.campaignCardProductList.isNotEmpty &&
+            return (campInfo.campaignCardProductList.isNotEmpty &&
                     campInfo.featuredCardProductsList.isNotEmpty)
                 ? Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20),

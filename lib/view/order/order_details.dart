@@ -31,7 +31,7 @@ class OrderDetails extends StatelessWidget {
         children: [
           const SizedBox(height: 10),
           Container(
-            constraints: BoxConstraints(minHeight: screenHight - 3258),
+            constraints: BoxConstraints(minHeight: screenHight - 350),
             child: Column(
                 children: orderData.productInfos.map((e) {
               return OrderDetailsTile(e['title'], e['price'], e['quantity'],
@@ -52,6 +52,8 @@ class OrderDetails extends StatelessWidget {
               rows('Subtotal', trailing: '\$$totalPrice'),
               const SizedBox(height: 15),
               rows('Shipping', trailing: '\$$shippingCos'),
+              const SizedBox(height: 15),
+              rows('Tax', trailing: '\$0'),
               const SizedBox(height: 15),
               rows('Discount', trailing: '-\$$discount'),
               const SizedBox(height: 15),

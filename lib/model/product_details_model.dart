@@ -29,7 +29,7 @@ class ProductDetailsModel {
   Product product;
   List<RelatedProduct> relatedProducts;
   dynamic userHasItem;
-  List<dynamic> ratings;
+  List<Rating> ratings;
   dynamic avgRating;
   AvailableAttributes? availableAttributes;
   List<ProductInventorySet> productInventorySet;
@@ -53,7 +53,8 @@ class ProductDetailsModel {
                 isCartAble: x['is_cart_able'],
               ))),
       userHasItem: json["user_has_item"],
-      ratings: List<dynamic>.from(json["ratings"].map((x) => x)),
+      ratings:
+          List<Rating>.from(json["ratings"].map((x) => Rating.fromJson(x))),
       avgRating: json["avg_rating"],
       availableAttributes: json["available_attributes"] is List
           ? null
@@ -79,7 +80,7 @@ class ProductDetailsModel {
         "product": product.toJson(),
         "related_products": List<dynamic>.from(relatedProducts.map((x) => x)),
         "user_has_item": userHasItem,
-        "ratings": List<dynamic>.from(ratings.map((x) => x)),
+        "ratings": List<dynamic>.from(ratings.map((x) => x.toJson())),
         "avg_rating": avgRating,
         "available_attributes":
             availableAttributes is List ? null : availableAttributes!.toJson(),
@@ -181,7 +182,6 @@ class Product {
     required this.inventory,
     this.campaign,
     this.category,
-    this.rating,
     this.campaignProduct,
     required this.additionalInfo,
     required this.tags,
@@ -214,7 +214,6 @@ class Product {
   Inventory inventory;
   Campaign? campaign;
   dynamic category;
-  List<Rating>? rating;
   Campaign? campaignProduct;
   List<AdditionalInfo> additionalInfo;
   List<Tag> tags;
@@ -250,8 +249,6 @@ class Product {
             ? Campaign.fromJson(json["campaign"])
             : null,
         category: json["category"],
-        rating:
-            List<Rating>.from(json["rating"].map((x) => Rating.fromJson(x))),
         campaignProduct: json["campaign_product"] != null
             ? Campaign.fromJson(json["campaign_product"])
             : null,
@@ -290,7 +287,6 @@ class Product {
         "inventory": inventory.toJson(),
         "campaign": campaign!.toJson(),
         "category": category,
-        "rating": List<dynamic>.from(rating!.map((x) => x.toJson())),
         "campaign_product": campaignProduct!.toJson(),
         "additional_info":
             List<dynamic>.from(additionalInfo.map((x) => x.toJson())),
@@ -725,6 +721,7 @@ class Rating {
     required this.reviewMsg,
     required this.createdAt,
     required this.updatedAt,
+    required this.user,
   });
 
   int id;
@@ -735,6 +732,7 @@ class Rating {
   String reviewMsg;
   DateTime createdAt;
   DateTime updatedAt;
+  User user;
 
   factory Rating.fromJson(Map<String, dynamic> json) => Rating(
         id: json["id"],
@@ -745,6 +743,7 @@ class Rating {
         reviewMsg: json["review_msg"],
         createdAt: DateTime.parse(json["created_at"]),
         updatedAt: DateTime.parse(json["updated_at"]),
+        user: User.fromJson(json["user"]),
       );
 
   Map<String, dynamic> toJson() => {
@@ -756,5 +755,26 @@ class Rating {
         "review_msg": reviewMsg,
         "created_at": createdAt.toIso8601String(),
         "updated_at": updatedAt.toIso8601String(),
+        "user": user.toJson(),
+      };
+}
+
+class User {
+  User({
+    required this.id,
+    required this.name,
+  });
+
+  int id;
+  String name;
+
+  factory User.fromJson(Map<String, dynamic> json) => User(
+        id: json["id"],
+        name: json["name"],
+      );
+
+  Map<String, dynamic> toJson() => {
+        "id": id,
+        "name": name,
       };
 }

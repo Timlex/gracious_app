@@ -13,13 +13,15 @@ class TicketTile extends StatelessWidget {
   final String title;
   final int ticketId;
   final DateTime submitDate;
-  final String priority;
+  String priority;
+  String status;
   final bool divider;
   TicketTile(
     this.title,
     this.ticketId,
     this.submitDate,
     this.priority,
+    this.status,
     this.divider, {
     Key? key,
   }) : super(key: key);
@@ -85,44 +87,64 @@ class TicketTile extends StatelessWidget {
                 width: (screenWidth - 40) / 3,
                 child: Consumer<TicketService>(
                     builder: (context, tService, child) {
+                  // Color manageColor(value) {
+                  //   print(value);
+                  //   if (value == 'low') {
+                  //     return const Color(0xff6BB17B);
+                  //   }
+                  //   if (value == 'medium') {
+                  //     return const Color(0xff70B9AE);
+                  //   }
+                  //   if (value == 'high') {
+                  //     return const Color(0xffC66060);
+                  //   }
+                  //   return const Color(0xffBFB55A);
+                  // }
+
                   return FittedBox(
                     child: Row(
                       children: [
                         const Text('Priority:'),
                         const SizedBox(width: 5),
-                        PopupMenuButton(
-                            child: Container(
-                              padding: const EdgeInsets.only(
-                                  left: 7, top: 3, bottom: 3),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
-                                color: manageColor(priority),
+                        Consumer<TicketService>(
+                            builder: (context, tServicem, child) {
+                          return PopupMenuButton(
+                              child: Container(
+                                padding: const EdgeInsets.only(
+                                    left: 7, top: 3, bottom: 3),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(10),
+                                  color: tService.priorityColor[priority],
+                                ),
+                                child: Row(
+                                  children: [
+                                    Text(
+                                      priority.capitalize(),
+                                      style: TextStyle(
+                                          color: cc.pureWhite,
+                                          fontSize: 13,
+                                          fontWeight: FontWeight.w600),
+                                    ),
+                                    Icon(
+                                      Icons.arrow_drop_down_rounded,
+                                      color: cc.pureWhite,
+                                    )
+                                  ],
+                                ),
                               ),
-                              child: Row(
-                                children: [
-                                  Text(
-                                    priority.capitalize(),
-                                    style: TextStyle(
-                                        color: cc.pureWhite,
-                                        fontSize: 13,
-                                        fontWeight: FontWeight.w600),
-                                  ),
-                                  Icon(
-                                    Icons.arrow_drop_down_rounded,
-                                    color: cc.pureWhite,
-                                  )
-                                ],
-                              ),
-                            ),
-                            onSelected: (value) {
-                              // tService.setPriority(value);
-                            },
-                            itemBuilder: (context) => tService.priorityList
-                                .map((e) => PopupMenuItem(
-                                      child: Text(e),
-                                      value: e,
-                                    ))
-                                .toList()),
+                              onSelected: (value) {
+                                if (value != priority.capitalize()) {
+                                  tService.priorityChange(
+                                      ticketId, value.toString());
+                                }
+                              },
+                              itemBuilder: (context) => tService.priorityList
+                                  .map((e) => PopupMenuItem(
+                                        child: Text(e.capitalize()),
+                                        value: e,
+                                      ))
+                                  .toList());
+                        }),
                       ],
                     ),
                   );
@@ -131,12 +153,14 @@ class TicketTile extends StatelessWidget {
               const SizedBox(width: 5),
               SizedBox(
                 width: (screenWidth - 40) / 3,
-                child: FittedBox(
-                  child: Row(
-                    children: [
-                      const Text('Status:'),
-                      const SizedBox(width: 5),
-                      PopupMenuButton(
+                child: Consumer<TicketService>(
+                    builder: (context, tService, child) {
+                  return FittedBox(
+                    child: Row(
+                      children: [
+                        const Text('Status:'),
+                        const SizedBox(width: 5),
+                        PopupMenuButton(
                           child: Container(
                             padding: const EdgeInsets.only(
                                 left: 7, top: 3, bottom: 3),
@@ -162,17 +186,25 @@ class TicketTile extends StatelessWidget {
                               ],
                             ),
                           ),
-                          itemBuilder: (context) => [
-                                const PopupMenuItem(
-                                  child: Text('Open'),
-                                  value: 'open',
+                          onSelected: (value) {
+                            print(value.toString() + status);
+                            if (value != status) {
+                              tService.statusChange(ticketId, value.toString());
+                            }
+                          },
+                          itemBuilder: (context) => ['open', 'close']
+                              .map(
+                                (e) => PopupMenuItem(
+                                  child: Text(e.capitalize()),
+                                  value: e,
                                 ),
-                                const PopupMenuItem(
-                                    child: Text('Close'), value: 'close'),
-                              ]),
-                    ],
-                  ),
-                ),
+                              )
+                              .toList(),
+                        ),
+                      ],
+                    ),
+                  );
+                }),
               ),
               const Spacer(),
               SizedBox(
@@ -213,18 +245,5 @@ class TicketTile extends StatelessWidget {
         ],
       ),
     );
-  }
-
-  Color manageColor(value) {
-    if (value == 'low') {
-      return const Color(0xff6BB17B);
-    }
-    if (value == 'medium') {
-      return const Color(0xff70B9AE);
-    }
-    if (value == 'high') {
-      return const Color(0xffC66060);
-    }
-    return const Color(0xffBFB55A);
   }
 }

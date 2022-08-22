@@ -70,9 +70,9 @@ class ReviewBox extends StatelessWidget {
 
   List<Widget> descriptions(ProductDetailsService pService) {
     List<Widget> reviewList = [];
-    for (var element in pService.productDetails!.product.rating!) {
+    for (var element in pService.productDetails!.ratings) {
       reviewList.add(Card(
-        // color: cc.greyBorder,
+        elevation: 2,
         margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
         child: Container(
           width: double.infinity,
@@ -80,15 +80,15 @@ class ReviewBox extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(element.userId.toString(),
+              Text(element.user.name.toString(),
                   style: TextStyle(
-                      fontSize: 17,
+                      fontSize: 16,
                       fontWeight: FontWeight.bold,
                       color: cc.greyParagraph)),
-              const SizedBox(height: 10),
+              const SizedBox(height: 8),
               RatingBar.builder(
                 ignoreGestures: true,
-                itemSize: 15,
+                itemSize: 12,
                 initialRating: (element.rating).toDouble(),
                 direction: Axis.horizontal,
                 allowHalfRating: false,
@@ -102,17 +102,17 @@ class ReviewBox extends StatelessWidget {
                   print(rating);
                 },
               ),
-              const SizedBox(height: 10),
+              const SizedBox(height: 8),
               Text(element.reviewMsg,
                   overflow: TextOverflow.ellipsis,
                   maxLines: 3,
                   style: TextStyle(
                     color: cc.greyParagraph,
-                    fontSize: 14,
+                    fontSize: 12,
                   )),
               const SizedBox(height: 10),
               Text(timeago.format(element.createdAt),
-                  style: TextStyle(color: cc.greyHint, fontSize: 12)),
+                  style: TextStyle(color: cc.greyHint, fontSize: 11)),
               // const Divider(),
             ],
           ),

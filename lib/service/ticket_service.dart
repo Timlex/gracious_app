@@ -20,12 +20,18 @@ class TicketService with ChangeNotifier {
   String department = 'Product Delivery';
   int? departmentId;
   String? description;
+  Map<String, Color> priorityColor = {
+    'low': const Color(0xff6BB17B),
+    'medium': const Color(0xff70B9AE),
+    'high': const Color(0xffBFB55A),
+    'urgent': const Color(0xffC66060),
+  };
 
   List<String> priorityList = [
-    'Low',
-    'Medium',
-    'High',
-    'Urgent',
+    'low',
+    'medium',
+    'high',
+    'urgent',
   ];
   List<Ddata> departmentsList = [];
 
@@ -90,9 +96,7 @@ class TicketService with ChangeNotifier {
       'Content-Type': 'application/json',
       "Authorization": "Bearer $globalUserToken",
     };
-    print('searching in progress');
     final url = Uri.parse('$baseApiUrl/user/ticket');
-    print(url);
     try {
       final response = await http.get(url, headers: header);
 
@@ -101,10 +105,6 @@ class TicketService with ChangeNotifier {
 
         lastPage = data.lastPage == pageNo;
         ticketsList = data.data;
-        print(isLoading);
-        print(ticketsList.length);
-        print(data.lastPage.toString() + '-------------------');
-        print(data.total.toString() + '-------------------');
         setIsLoading(false);
         // setNoProduct(resultMeta!.total == 0);
 
@@ -143,6 +143,52 @@ class TicketService with ChangeNotifier {
 
       rethrow;
     }
+  }
+
+  Future statusChange(int id, String status) async {
+    print('sending------------------');
+    final url = Uri.parse('$baseApiUrl/user/ticket/status-change');
+
+    var header = {
+      "Accept": "application/json",
+      "Authorization": "Bearer $globalUserToken",
+    };
+
+    final response = await http.post(url, headers: header, body: {
+      'status': status.toLowerCase(),
+      'id': id.toString(),
+    });
+    print(response.statusCode);
+    if (response.statusCode == 200) {
+      ticketsList.firstWhere((element) => element.id == id).status =
+          status.toLowerCase();
+      notifyListeners();
+      return;
+    }
+    return 'Status change failed';
+  }
+
+  Future priorityChange(int id, String value) async {
+    print('sending------------------');
+    final url = Uri.parse('$baseApiUrl/user/ticket/priority-change');
+
+    var header = {
+      "Accept": "application/json",
+      "Authorization": "Bearer $globalUserToken",
+    };
+
+    final response = await http.post(url, headers: header, body: {
+      'priority': value.toLowerCase(),
+      'id': id.toString(),
+    });
+    print(response.statusCode);
+    if (response.statusCode == 200) {
+      ticketsList.firstWhere((element) => element.id == id).priority =
+          value.toLowerCase();
+      notifyListeners();
+      return;
+    }
+    return 'Status change failed';
   }
 }
 

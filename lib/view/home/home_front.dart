@@ -62,11 +62,9 @@ class HomeFront extends StatelessWidget {
               onSelected: (value) {
                 print(value);
                 Provider.of<SearchResultDataService>(context, listen: false)
-                    .setSortBy(value);
-                Provider.of<SearchResultDataService>(context, listen: false)
-                    .resetSerch();
-                Provider.of<SearchResultDataService>(context, listen: false)
-                    .fetchProductsBy();
+                  ..setSortBy(value)
+                  ..resetSerch()
+                  ..fetchProductsBy();
                 // Provider.of<SearchResultDataService>(context, listen: false)
                 //     .fetchProductsBy(pageNo: '1');
               },

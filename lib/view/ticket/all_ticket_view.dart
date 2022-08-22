@@ -109,6 +109,7 @@ class AllTicketsView extends StatelessWidget {
               ticketsService.ticketsList[index].id,
               ticketsService.ticketsList[index].createdAt,
               ticketsService.ticketsList[index].priority,
+              ticketsService.ticketsList[index].status,
               ticketsService.ticketsList[index].id !=
                   ticketsService.ticketsList.last.id,
             );
