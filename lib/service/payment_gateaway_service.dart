@@ -1,17 +1,34 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:gren_mart/model/payment_gateaway_model.dart';
 import 'package:gren_mart/view/utils/constant_name.dart';
 import 'package:http/http.dart' as http;
 
 import 'common_service.dart';
 
-class PaymentGetterService with ChangeNotifier {
-  List<String> logoList = [];
+class PaymentGateawayService with ChangeNotifier {
+  List<Gateway> gatawayList = [];
+  Gateway? selectedGateaway;
+  bool isLoading = false;
+
+  setSelectedGareaway(value) {
+    selectedGateaway = value;
+    notifyListeners();
+  }
+
+  bool itemSelected(value) {
+    if (selectedGateaway == null) {
+      return false;
+    }
+    return selectedGateaway == value;
+  }
+
   Future fetchPaymentGetterData() async {
-    if (logoList.isNotEmpty) {
+    if (isLoading) {
       return;
     }
+    isLoading = true;
     final url = Uri.parse('$baseApiUrl/user/payment-gateway-list');
     print(globalUserToken);
 
@@ -27,11 +44,8 @@ class PaymentGetterService with ChangeNotifier {
     print(response.body);
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
-      List<String> emptyList = [];
-      data['gateway_list'].forEach((e) {
-        emptyList.add(e['logo_link']);
-      });
-      logoList = emptyList;
+      gatawayList = PaymentGateAwayModel.fromJson(data).gatewayList;
+
       notifyListeners();
     }
   }

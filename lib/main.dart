@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/services.dart';
 import 'package:gren_mart/service/cupon_discount_service.dart';
-import 'package:gren_mart/service/payment_getter_service.dart';
+import 'package:gren_mart/service/payment_gateaway_service.dart';
 import 'package:gren_mart/service/shipping_zone_service.dart';
 import 'package:gren_mart/view/home/all_products.dart';
 import '../../model/other_data.dart';
@@ -85,7 +85,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => ProductDetailsService()),
         ChangeNotifierProvider(create: (_) => ShippingZoneService()),
         ChangeNotifierProvider(create: (_) => CuponDiscountService()),
-        ChangeNotifierProvider(create: (_) => PaymentGetterService()),
+        ChangeNotifierProvider(create: (_) => PaymentGateawayService()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,

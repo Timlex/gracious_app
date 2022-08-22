@@ -103,12 +103,6 @@ class TicketChatService with ChangeNotifier {
         "Authorization": "Bearer $globalUserToken",
       },
     );
-
-    // var header = {
-    //   //if header type is application/json then the data should be in jsonEncode method
-    //   "Accept": "application/json",
-    //   "Authorization": "Bearer $globalUserToken",
-    // };
     print('searching in progress');
 
     print(url);
@@ -127,15 +121,17 @@ class TicketChatService with ChangeNotifier {
       var response = await http.Response.fromStream(streamedResponse);
       print(response.statusCode);
       if (response.statusCode == 200) {
-        message = '';
         fetchSingleTickets(id);
         // var data = TicketChatModel.fromJson(jsonDecode(response.body));
 
         // setNoProduct(resultMeta!.total == 0);
         message = '';
+        pickedImage = null;
 
         notifyListeners();
-      } else {}
+      } else {
+        return jsonDecode(response.body);
+      }
     } catch (error) {
       print(error);
 

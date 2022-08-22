@@ -11,25 +11,49 @@ class CartGridTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      // height: 1,
-      width: screenWidth / 3,
-      padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
-      alignment: Alignment.center,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(
-          color:
-              isSelected ? ConstantColors().pink : ConstantColors().greyBorder2,
-          width: 1,
+    return Stack(
+      children: [
+        Container(
+          // height: 1,
+          width: screenWidth / 3,
+          padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+          alignment: Alignment.center,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10),
+            border: Border.all(
+              color: ConstantColors().greyBorder2,
+              width: 1,
+            ),
+            color: cc.pureWhite,
+          ),
+          child: Center(
+            child: Image.network(
+              imageUrl,
+            ),
+          ),
         ),
-        color: isSelected ? ConstantColors().lightpink : cc.pureWhite,
-      ),
-      child: Center(
-        child: Image.network(
-          imageUrl,
-        ),
-      ),
+        if (isSelected)
+          Container(
+            // height: 1,
+            width: screenWidth / 3,
+            padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10),
+              border: Border.all(
+                color: ConstantColors().primaryColor,
+                width: 1,
+              ),
+              color: const Color.fromARGB(43, 0, 177, 6),
+            ),
+            child: Center(
+              child: Image.network(
+                imageUrl,
+                color: Colors.transparent,
+              ),
+            ),
+          )
+      ],
     );
   }
 }

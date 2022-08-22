@@ -38,35 +38,33 @@ class ReviewBox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Column(
-        children: [
-          ListTile(
-            dense: false,
-            contentPadding: const EdgeInsets.symmetric(horizontal: 18),
-            title: const Text(
-              'Review',
-              style: TextStyle(fontSize: 19, fontWeight: FontWeight.w600),
-            ),
-            trailing: IconButton(
-                icon: Icon(
-                  expanded ? Icons.expand_less : Icons.expand_more,
-                ),
-                onPressed: onPressed),
+    return Column(
+      children: [
+        ListTile(
+          dense: false,
+          contentPadding: const EdgeInsets.symmetric(horizontal: 18),
+          title: const Text(
+            'Review',
+            style: TextStyle(fontSize: 19, fontWeight: FontWeight.w600),
           ),
-          if (expanded &&
-              Provider.of<ProductDetailsService>(context)
-                  .productDetails!
-                  .userRatedAlready &&
-              Provider.of<ProductDetailsService>(context)
-                      .productDetails!
-                      .userHasItem !=
-                  null)
-            submitReview(),
-          if (expanded)
-            ...descriptions(Provider.of<ProductDetailsService>(context))
-        ],
-      ),
+          trailing: IconButton(
+              icon: Icon(
+                expanded ? Icons.expand_less : Icons.expand_more,
+              ),
+              onPressed: onPressed),
+        ),
+        if (expanded &&
+            Provider.of<ProductDetailsService>(context)
+                .productDetails!
+                .userRatedAlready &&
+            Provider.of<ProductDetailsService>(context)
+                    .productDetails!
+                    .userHasItem !=
+                null)
+          submitReview(),
+        if (expanded)
+          ...descriptions(Provider.of<ProductDetailsService>(context))
+      ],
     );
   }
 

@@ -3,6 +3,9 @@ import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:gren_mart/model/country_shipping_zone_model.dart';
 import 'package:gren_mart/model/state_shipping_zone_model.dart';
+import 'package:gren_mart/service/cart_data_service.dart';
+import 'package:gren_mart/service/cupon_discount_service.dart';
+import 'package:provider/provider.dart';
 import '../../service/common_service.dart';
 import 'package:http/http.dart' as http;
 
@@ -80,6 +83,27 @@ class ShippingZoneService with ChangeNotifier {
 
       rethrow;
     }
+  }
+
+  double totalCounter(BuildContext context) {
+    final subTotal =
+        Provider.of<CartDataService>(context, listen: false).subTotal;
+    final discount = Provider.of<CuponDiscountService>(context).cuponDiscount;
+    final taxMoney = taxParcentage * subTotal;
+    return (subTotal + taxMoney + shippingCost - discount);
+  }
+
+  cuponTotal(BuildContext context) {
+    final subTotal =
+        Provider.of<CartDataService>(context, listen: false).subTotal;
+    final taxMoney = taxParcentage * subTotal;
+    return subTotal + taxMoney + shippingCost;
+  }
+
+  taxMoney(BuildContext context) {
+    final subTotal =
+        Provider.of<CartDataService>(context, listen: false).subTotal;
+    return taxParcentage * subTotal;
   }
 
   Future fetchSatesZone(id) async {

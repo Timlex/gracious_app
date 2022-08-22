@@ -181,9 +181,9 @@ class Home extends StatelessWidget {
             ),
           const SizedBox(height: 20),
           Consumer<ProductCardDataService>(builder: (context, campInfo, child) {
-            return campInfo.campaignCardProductList.isEmpty
-                ? const SizedBox()
-                : Padding(
+            return !(campInfo.campaignCardProductList.isNotEmpty &&
+                    campInfo.featuredCardProductsList.isNotEmpty)
+                ? Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20),
                     child: campInfo.campaignInfo != null
                         ? Row(
@@ -214,14 +214,16 @@ class Home extends StatelessWidget {
                               ),
                             ],
                           )
-                        : null);
+                        : null)
+                : const SizedBox();
           }),
           const SizedBox(height: 20),
           SizedBox(
             height: screenHight / 3.7 < 221 ? 185 : screenHight / 3.7,
             child: Consumer<ProductCardDataService>(
                 builder: (context, products, child) {
-              return products.campaignCardProductList.isNotEmpty
+              return (products.campaignCardProductList.isNotEmpty &&
+                      products.featuredCardProductsList.isNotEmpty)
                   ? ListView.builder(
                       physics: const BouncingScrollPhysics(
                           parent: AlwaysScrollableScrollPhysics()),

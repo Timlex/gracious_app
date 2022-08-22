@@ -232,18 +232,25 @@ class TicketChat extends StatelessWidget {
                           customContainerButton(
                             tcService.isLoading ? '' : 'Send',
                             double.infinity,
-                            tcService.message.isEmpty &&
+                            tcService.message == '' ||
                                     tcService.pickedImage == null
                                 ? () {}
                                 : () async {
                                     tcService.setIsLoading(true);
-                                    await tcService.sendMessage(
-                                        tcService.ticketDetails!.id);
-                                    _controller.clear();
-                                    tcService.setIsLoading(false);
                                     FocusScope.of(context).unfocus();
+                                    await tcService
+                                        .sendMessage(
+                                            tcService.ticketDetails!.id)
+                                        .then((value) {
+                                      if (value != null) {
+                                        snackBar(context, value);
+                                        return;
+                                      }
+                                      _controller.clear();
+                                    });
+                                    tcService.setIsLoading(false);
                                   },
-                            color: tcService.message.isEmpty &&
+                            color: tcService.message == '' ||
                                     tcService.pickedImage == null
                                 ? cc.greyDots
                                 : cc.primaryColor,
@@ -353,7 +360,8 @@ class TicketChat extends StatelessWidget {
                   if (tcService.messagesList[index].attachment != null)
                     const SizedBox(height: 5),
                   if (tcService.messagesList[index].attachment != null)
-                    showFile(context, tcService.messagesList[index].attachment)
+                    showFile(context, tcService.messagesList[index].attachment,
+                        tcService.messagesList[index].id)
                 ],
               ),
             );
@@ -361,7 +369,7 @@ class TicketChat extends StatelessWidget {
     }
   }
 
-  Widget showFile(BuildContext context, String url) {
+  Widget showFile(BuildContext context, String url, int id) {
     if (url.contains('.zip')) {
       return Container(
         margin: const EdgeInsets.only(
@@ -377,22 +385,25 @@ class TicketChat extends StatelessWidget {
       onTap: () {
         Navigator.of(context).push(
           MaterialPageRoute<void>(
-            builder: (BuildContext context) => ImageView(url),
+            builder: (BuildContext context) => ImageView(url, id: id),
           ),
         );
       },
-      child: Container(
-        height: 200,
-        width: 200,
-        margin: const EdgeInsets.symmetric(horizontal: 20),
-        child: CachedNetworkImage(
-          placeholder: (context, url) {
-            return Image.asset('assets/images/skelleton.png');
-          },
-          imageUrl: url,
-          errorWidget: (context, str, some) {
-            return Image.asset('assets/images/skelleton.png');
-          },
+      child: Hero(
+        tag: id,
+        child: Container(
+          height: 200,
+          // width: 200,
+          margin: const EdgeInsets.symmetric(horizontal: 20),
+          child: CachedNetworkImage(
+            placeholder: (context, url) {
+              return Image.asset('assets/images/skelleton.png');
+            },
+            imageUrl: url,
+            errorWidget: (context, str, some) {
+              return Image.asset('assets/images/skelleton.png');
+            },
+          ),
         ),
       ),
     );
