@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/services.dart';
-import 'package:gren_mart/service/cupon_discount_service.dart';
-import 'package:gren_mart/service/payment_gateaway_service.dart';
-import 'package:gren_mart/service/shipping_zone_service.dart';
-import 'package:gren_mart/view/home/all_products.dart';
+
+import '../../service/payment_gateaway_service.dart';
+import '../../service/shipping_zone_service.dart';
+import '../../view/home/all_products.dart';
+import '../../service/order_list_service.dart';
 import '../../model/other_data.dart';
 import '../../service/add_new_ticket_service.dart';
+import '../../service/cupon_discount_service.dart';
 import '../../service/auth_text_controller_service.dart';
 import '../../service/cart_data_service.dart';
 import '../../service/categories_data_service.dart';
@@ -43,7 +45,8 @@ import '../../view/settings/change_password.dart';
 import '../../view/settings/manage_account.dart';
 import '../../view/settings/new_address.dart';
 import '../../view/utils/constant_colors.dart';
-import './service/navigation_bar_helper_service.dart';
+import '../../service/navigation_bar_helper_service.dart';
+import '../../service/order_details_service.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -86,6 +89,8 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => ShippingZoneService()),
         ChangeNotifierProvider(create: (_) => CuponDiscountService()),
         ChangeNotifierProvider(create: (_) => PaymentGateawayService()),
+        ChangeNotifierProvider(create: (_) => OrderListService()),
+        ChangeNotifierProvider(create: (_) => OrderDetailsService()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
