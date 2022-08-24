@@ -1,6 +1,8 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:gren_mart/service/shipping_addresses_service.dart';
+import 'package:provider/provider.dart';
 import '../../model/state_dropdown_model.dart';
 import '../../service/common_service.dart';
 import 'package:http/http.dart' as http;
@@ -13,6 +15,11 @@ class StateDropdownService with ChangeNotifier {
   var selectedStateId;
 
   bool isLoading = false;
+
+  resetState() {
+    isLoading = true;
+    notifyListeners();
+  }
 
   setStateIdAndValue(value) {
     selectedState = value;
@@ -31,7 +38,7 @@ class StateDropdownService with ChangeNotifier {
     notifyListeners();
   }
 
-  Future getStates(selectedCountryId) async {
+  Future getStates(selectedCountryId, {BuildContext? context}) async {
     // print('getting state data____________' + selectedCountryId.toString());
     isLoading = true;
     notifyListeners();
@@ -56,7 +63,12 @@ class StateDropdownService with ChangeNotifier {
 
         // setStateIdAndValue(selectedCountryId);
         isLoading = false;
+
         notifyListeners();
+        if (context != null) {
+          Provider.of<ShippingAddressesService>(context, listen: false)
+              .setDefaultCountryState(context);
+        }
         return selectedCountryId;
       } else {
         // print('something went wrong');

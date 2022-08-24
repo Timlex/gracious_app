@@ -18,6 +18,14 @@ class CartDataService with ChangeNotifier {
     return _cartItems;
   }
 
+  int calculateSubtotal() {
+    int sum = 0;
+    cartList.forEach((key, value) {
+      sum += value.discountPrice * value.quantity;
+    });
+    return sum;
+  }
+
   void addItem(int id, {int? extraQuantity}) async {
     _cartItems.update(id.toString(), (value) {
       int sum = value.quantity + (extraQuantity ?? 1);
@@ -116,6 +124,7 @@ class CartDataService with ChangeNotifier {
     String? mayo,
     String? cheese,
   }) async {
+    print('adding to cart $subTotal');
     if (_cartItems.containsKey(id.toString())) {
       addItem(id, extraQuantity: quantity);
       subTotal += price * quantity;
@@ -190,7 +199,7 @@ class CartDataService with ChangeNotifier {
       });
     }
     dataList.forEach((key, value) {
-      subTotal += value.price * value.quantity;
+      subTotal += value.discountPrice * value.quantity;
     });
     _cartItems = dataList;
     notifyListeners();

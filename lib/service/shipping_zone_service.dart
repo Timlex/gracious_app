@@ -15,12 +15,18 @@ class ShippingZoneService with ChangeNotifier {
   int shippingCost = 0;
   double taxParcentage = 0;
   bool isLoading = true;
+  bool noData = false;
   List<DefaultShipping>? shippingOptionsList;
   DefaultShipping? selectedOption;
 
   setSelectedOption(DefaultShipping value) {
     selectedOption = value;
     shippingCost = selectedOption!.availableOptions.cost;
+    notifyListeners();
+  }
+
+  setNoData(value) {
+    noData = value;
     notifyListeners();
   }
 
@@ -63,31 +69,9 @@ class ShippingZoneService with ChangeNotifier {
     selectedOption = countryShippingZoneData!.defaultShipping;
   }
 
-  Future fetchContriesZone(id) async {
-    isLoading = true;
-    notifyListeners();
-    final url = Uri.parse('$baseApiUrl/country-info?id=$id');
-
-    try {
-      final response = await http.get(url);
-      if (response.statusCode == 201) {
-        var data = CountryShippingZoneModel.fromJson(jsonDecode(response.body));
-        countryShippingZoneData = data;
-        notifyListeners();
-        return;
-      } else {
-        //something went wrong
-      }
-    } catch (error) {
-      print(error);
-
-      rethrow;
-    }
-  }
-
   double totalCounter(BuildContext context) {
-    final subTotal =
-        Provider.of<CartDataService>(context, listen: false).subTotal;
+    final subTotal = Provider.of<CartDataService>(context, listen: false)
+        .calculateSubtotal();
     final discount = Provider.of<CuponDiscountService>(context).cuponDiscount;
     final taxMoney = taxParcentage * subTotal;
     return (subTotal + taxMoney + shippingCost - discount);
@@ -100,16 +84,37 @@ class ShippingZoneService with ChangeNotifier {
     return subTotal + taxMoney + shippingCost;
   }
 
-  taxMoney(BuildContext context) {
+  double taxMoney(BuildContext context) {
     final subTotal =
         Provider.of<CartDataService>(context, listen: false).subTotal;
     return taxParcentage * subTotal;
   }
 
-  Future fetchSatesZone(id) async {
-    final url = Uri.parse('$baseApiUrl/state-info?id=$id');
+  Future fetchContriesZone(id, stateId) async {
+    final url = Uri.parse('$baseApiUrl/country-info?id=$id');
 
+    try {
+      final response = await http.get(url);
+      if (response.statusCode == 201) {
+        var data = CountryShippingZoneModel.fromJson(jsonDecode(response.body));
+        countryShippingZoneData = data;
+        print('jsfasehfoiihewreljshdfhawf');
+        fetchStatesZone(stateId);
+        return;
+      } else {
+        //something went wrong
+      }
+    } catch (error) {
+      print(error);
+
+      rethrow;
+    }
+  }
+
+  Future fetchStatesZone(id) async {
+    final url = Uri.parse('$baseApiUrl/state-info?id=$id');
     // try {
+    print(url);
     final response = await http.get(url);
     if (response.statusCode == 200) {
       var data = StateShippingZoneModel.fromJson(jsonDecode(response.body));
@@ -120,6 +125,8 @@ class ShippingZoneService with ChangeNotifier {
         setTaxPercentage();
         isLoading = false;
         notifyListeners();
+        print('jsfasehfoiihewreljshdfhawf');
+        return;
         return;
       }
       shippingCost = countryShippingZoneData!.defaultShippingCost;
@@ -130,6 +137,7 @@ class ShippingZoneService with ChangeNotifier {
       notifyListeners();
       return;
     } else {
+      isLoading = false;
       //something went wrong
     }
     // } catch (error) {

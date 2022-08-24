@@ -58,6 +58,8 @@ dependencies:
   google_sign_in:
   timeago:
   photo_view:
+  http_auth: 
+  webview_flutter: 
   
   provider: ^6.0.3
 

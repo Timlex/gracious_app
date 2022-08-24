@@ -33,7 +33,7 @@ class AddNewAddress extends StatelessWidget {
     saData.setIsLoading(true);
     saData.addShippingAddress().then((value) {
       if (value == null) {
-        saData.fetchUsersShippingAddress();
+        saData.fetchUsersShippingAddress(context);
         Navigator.of(context).pop();
         saData.setIsLoading(false);
         return;
@@ -60,6 +60,8 @@ class AddNewAddress extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Provider.of<CountryDropdownService>(context, listen: false)
+        .getContries(context);
     return Scaffold(
       appBar: AppBars().appBarTitled('Add New Address', () {
         Provider.of<ShippingAddressesService>(context, listen: false)
@@ -242,15 +244,15 @@ class AddNewAddress extends StatelessWidget {
                       // const SizedBox(height: 8),
                       CustomTextField(
                         'Enter your city',
-                        // validator: (cityText) {
-                        //   if (cityText!.isEmpty) {
-                        //     return 'Enter your address';
-                        //   }
-                        //   if (cityText.length <= 5) {
-                        //     return 'Enter a valid address';
-                        //   }
-                        //   return null;
-                        // },
+                        validator: (cityText) {
+                          if (cityText!.isEmpty) {
+                            return 'Enter your city';
+                          }
+                          if (cityText.length <= 3) {
+                            return 'Enter a valid city';
+                          }
+                          return null;
+                        },
                         focusNode: _cityFN,
                         onChanged: (value) {
                           saData.setCity(value);
@@ -266,17 +268,15 @@ class AddNewAddress extends StatelessWidget {
                         'Enter zip code',
                         focusNode: _zipCodeFN,
                         keyboardType: TextInputType.number,
-                        // validator: (zipCode) {
-                        //   return null;
-
-                        //   // if (cityText!.isEmpty) {
-                        //   //   return 'Enter your address';
-                        //   // }
-                        //   // if (cityText.length <= 5) {
-                        //   //   return 'Enter a valid address';
-                        //   // }
-                        //   // return null;
-                        // },
+                        validator: (zipCode) {
+                          if (zipCode!.isEmpty) {
+                            return 'Enter your zip conde';
+                          }
+                          if (zipCode.length < 4) {
+                            return 'Enter a valid zip code';
+                          }
+                          return null;
+                        },
                         onChanged: (value) {
                           saData.setZipCode(value);
                         },
@@ -290,6 +290,15 @@ class AddNewAddress extends StatelessWidget {
                       CustomTextField(
                         'Enter your address',
                         focusNode: _addressFN,
+                        validator: (address) {
+                          if (address == null) {
+                            return 'Enter your address.';
+                          }
+                          if (address.length <= 5) {
+                            return 'Enter a valid address';
+                          }
+                          return null;
+                        },
                         onChanged: (value) {
                           saData.setAddress(value);
                         },

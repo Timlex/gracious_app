@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:gren_mart/service/user_profile_service.dart';
 import '../../view/home/all_products.dart';
 import '../../view/utils/constant_colors.dart';
 import '../../view/utils/constant_name.dart';
@@ -127,7 +128,7 @@ Widget customIconButton(String iconTitle, String iconName,
   );
 }
 
-PreferredSizeWidget helloAppBar(String name) {
+PreferredSizeWidget helloAppBar(BuildContext context) {
   return AppBar(
     elevation: 0,
     backgroundColor: ConstantColors().pureWhite,
@@ -144,13 +145,17 @@ PreferredSizeWidget helloAppBar(String name) {
               'Hello,',
               style: TextStyle(color: ConstantColors().greyHint, fontSize: 12),
             ),
-            Text(
-              name.isEmpty ? '' : name,
-              style: TextStyle(
-                  color: ConstantColors().titleTexts,
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold),
-            ),
+            Consumer<UserProfileService>(builder: (context, uService, child) {
+              return Text(
+                uService.userProfileData.name.isEmpty
+                    ? ''
+                    : uService.userProfileData.name,
+                style: TextStyle(
+                    color: ConstantColors().titleTexts,
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold),
+              );
+            }),
           ],
         ),
       ),

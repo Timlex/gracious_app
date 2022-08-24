@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:gren_mart/service/cart_data_service.dart';
 import 'package:gren_mart/service/cupon_discount_service.dart';
 import 'package:gren_mart/service/payment_gateaway_service.dart';
-import 'package:gren_mart/service/shipping_zone_service.dart';
 
+import '../../service/cart_data_service.dart';
+import '../../service/shipping_zone_service.dart';
+import '../payment/paypal_payment.dart';
+import '../settings/new_address.dart';
 import 'payment_grid_tile.dart';
-import '../../db/database_helper.dart';
 import '../../service/shipping_addresses_service.dart';
-import '../../view/cart/payment_status.dart';
-import '../../view/settings/new_address.dart';
 import '../../view/utils/app_bars.dart';
 import '../../view/utils/constant_colors.dart';
 import '../../view/utils/constant_name.dart';
@@ -29,6 +28,8 @@ class Checkout extends StatelessWidget {
       appBar: AppBars().appBarTitled('Checkout', () {
         Provider.of<ShippingAddressesService>(context, listen: false)
             .clearSelectedAddress();
+        Provider.of<PaymentGateawayService>(context, listen: false)
+            .resetGateaway();
         Navigator.of(context).pop();
       }, hasButton: true, hasElevation: true),
       body: ListView(
@@ -42,77 +43,71 @@ class Checkout extends StatelessWidget {
           //   leadingImage: 'assets/images/icons/location.png',
           // ),
           // const SizedBox(height: 10),
-          if (Provider.of<ShippingAddressesService>(context)
-                  .shippingAddresseList
-                  .isEmpty &&
-              !(Provider.of<ShippingAddressesService>(context).noData))
-            loadingProgressBar(),
-          if ((Provider.of<ShippingAddressesService>(context).noData))
-            SizedBox(
-                height: 50,
-                child: Center(
-                    child: Text('No address found.',
-                        style: TextStyle(color: cc.greyHint, fontSize: 14)))),
-          Consumer<ShippingAddressesService>(
-              builder: (context, saService, child) {
-            return Column(
-                children: Provider.of<ShippingAddressesService>(context)
-                    .shippingAddresseList
-                    .map(((e) {
-              final shippingAddress = saService.shippingAddresseList
-                  .firstWhere((element) => element.id == e.id);
-              final selected =
-                  shippingAddress.id == saService.selectedAddress!.id;
-              return GestureDetector(
-                  onTap: () {
-                    if (saService.selectedAddress!.id == e.id) {
-                      return;
-                    }
-                    saService.setSelectedAddress(e);
-                    Provider.of<ShippingZoneService>(context, listen: false)
-                        .resetChecout();
-                    saService.setSelectedAddress(e);
-                    Provider.of<ShippingZoneService>(context, listen: false)
-                        .fetchContriesZone(e.countryId)
-                        .then((value) => Provider.of<ShippingZoneService>(
-                                context,
-                                listen: false)
-                            .fetchSatesZone(e.stateId));
-                  },
-                  child: Container(
-                    margin: const EdgeInsets.only(bottom: 15),
-                    padding: const EdgeInsets.symmetric(vertical: 12),
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        color: selected ? cc.lightPrimery3 : cc.whiteGrey,
-                        border: Border.all(
-                            color: selected ? cc.primaryColor : cc.greyHint,
-                            width: .5)),
-                    child: Stack(children: [
-                      ListTile(
-                        title: Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 5, vertical: 5),
-                          child: Text(shippingAddress.name),
-                        ),
-                        subtitle: Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 5, vertical: 5),
-                          child: Text(shippingAddress.address),
-                        ),
-                      ),
-                      if (selected)
-                        Positioned(
-                            top: 10,
-                            right: 15,
-                            child: Icon(
-                              Icons.check_box,
-                              color: cc.primaryColor,
-                            ))
-                    ]),
-                  ));
-            })).toList());
-          }),
+
+          FutureBuilder(
+              future: Provider.of<ShippingAddressesService>(context,
+                      listen: false)
+                  .fetchUsersShippingAddress(context, loadShippingZone: true),
+              builder: (context, snapShot) {
+                if (snapShot.connectionState == ConnectionState.waiting) {
+                  return loadingProgressBar();
+                }
+                if (snapShot.hasData) {
+                  return Center(
+                    child: Text(snapShot.data.toString()),
+                  );
+                }
+                return Consumer<ShippingAddressesService>(
+                    builder: (context, saService, child) {
+                  return Column(
+                      children: saService.shippingAddresseList.map(((e) {
+                    final shippingAddress = saService.shippingAddresseList
+                        .firstWhere((element) => element.id == e.id);
+                    final selected =
+                        shippingAddress.id == saService.selectedAddress!.id;
+                    return GestureDetector(
+                        onTap: () {
+                          if (saService.selectedAddress!.id == e.id) {
+                            return;
+                          }
+                          saService.setSelectedAddress(e, context);
+                        },
+                        child: Container(
+                          margin: const EdgeInsets.only(bottom: 15),
+                          padding: const EdgeInsets.symmetric(vertical: 12),
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              color: selected ? cc.lightPrimery3 : cc.whiteGrey,
+                              border: Border.all(
+                                  color:
+                                      selected ? cc.primaryColor : cc.greyHint,
+                                  width: .5)),
+                          child: Stack(children: [
+                            ListTile(
+                              title: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 5, vertical: 5),
+                                child: Text(shippingAddress.name),
+                              ),
+                              subtitle: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 5, vertical: 5),
+                                child: Text(shippingAddress.address),
+                              ),
+                            ),
+                            if (selected)
+                              Positioned(
+                                  top: 10,
+                                  right: 15,
+                                  child: Icon(
+                                    Icons.check_box,
+                                    color: cc.primaryColor,
+                                  ))
+                          ]),
+                        ));
+                  })).toList());
+                });
+              }),
           GestureDetector(
             onTap: () {
               Navigator.of(context).pushNamed(AddNewAddress.routeName);
@@ -163,7 +158,7 @@ class Checkout extends StatelessWidget {
             ),
             child:
                 Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              rows('Product', trailing: '\$Subtotal'),
+              rows('Product', trailing: 'Subtotal'),
               const SizedBox(height: 15),
               SizedBox(
                 child: Consumer<CartDataService>(
@@ -237,72 +232,80 @@ class Checkout extends StatelessWidget {
               const SizedBox(height: 15),
               rows('Subtotal',
                   trailing:
-                      '\$${Provider.of<CartDataService>(context, listen: false).subTotal}'),
+                      '\$${Provider.of<CartDataService>(context, listen: false).calculateSubtotal()}'),
               const SizedBox(height: 15),
               rows('Shipping cost', trailing: ''),
               const SizedBox(height: 15),
-              if (!(Provider.of<ShippingAddressesService>(context).noData))
-                Consumer<ShippingZoneService>(
-                  builder: (context, sService, child) {
-                    return sService.isLoading
-                        ? loadingProgressBar()
-                        : Column(
-                            children: sService.shippingOptionsList!
-                                .map((element) {
-                                  return Row(
-                                    children: [
-                                      Transform.scale(
-                                        scale: 1.3,
-                                        child: Checkbox(
-                                            // splashRadius: 30,
-                                            materialTapTargetSize:
-                                                MaterialTapTargetSize
-                                                    .shrinkWrap,
-                                            activeColor:
-                                                ConstantColors().primaryColor,
-                                            value:
-                                                sService.selectedOption!.id ==
-                                                    element.id,
-                                            shape: const CircleBorder(),
-                                            side: BorderSide(
-                                              width: 1.5,
-                                              color:
-                                                  ConstantColors().greyBorder,
-                                            ),
-                                            onChanged: (v) {
-                                              sService
-                                                  .setSelectedOption(element);
-                                            }),
-                                      ),
-                                      Text(element.name),
-                                      const Spacer(),
-                                      Text('\$${element.availableOptions.cost}')
-                                    ],
-                                  );
-                                })
-                                .toList()
-                                .reversed
-                                .toList(),
-                          );
-                  },
-                ),
-              if ((Provider.of<ShippingAddressesService>(context).noData))
-                Text('Select a shipping address.',
-                    style: TextStyle(color: cc.greyHint, fontSize: 14)),
+              Consumer<ShippingZoneService>(
+                builder: (context, sService, child) {
+                  return sService.noData
+                      ? const Text('Select a shipping address.')
+                      : (sService.isLoading
+                          ? loadingProgressBar()
+                          : Column(
+                              children: sService.shippingOptionsList!
+                                  .map((element) {
+                                    return Row(
+                                      children: [
+                                        Transform.scale(
+                                          scale: 1.3,
+                                          child: Checkbox(
+                                              // splashRadius: 30,
+                                              materialTapTargetSize:
+                                                  MaterialTapTargetSize
+                                                      .shrinkWrap,
+                                              activeColor:
+                                                  ConstantColors().primaryColor,
+                                              value:
+                                                  sService.selectedOption!.id ==
+                                                      element.id,
+                                              shape: const CircleBorder(),
+                                              side: BorderSide(
+                                                width: 1.5,
+                                                color:
+                                                    ConstantColors().greyBorder,
+                                              ),
+                                              onChanged: (v) {
+                                                sService
+                                                    .setSelectedOption(element);
+                                              }),
+                                        ),
+                                        Text(element.name),
+                                        const Spacer(),
+                                        Text(
+                                            '\$${element.availableOptions.cost}')
+                                      ],
+                                    );
+                                  })
+                                  .toList()
+                                  .reversed
+                                  .toList(),
+                            ));
+                },
+              ),
               const SizedBox(height: 15),
-              rows('Tax',
-                  trailing:
-                      '\$${Provider.of<ShippingZoneService>(context).taxMoney(context).toStringAsFixed(2)}'),
+              Consumer<ShippingZoneService>(
+                  builder: (context, szService, child) {
+                return rows('Tax',
+                    trailing:
+                        '\$${szService.taxMoney(context).toStringAsFixed(2)}');
+              }),
               const SizedBox(height: 15),
-              rows('Coupon discount',
-                  trailing:
-                      '-\$${Provider.of<CuponDiscountService>(context).cuponDiscount.toStringAsFixed(2)}'),
+              Consumer<CuponDiscountService>(
+                  builder: (context, cupService, child) {
+                return rows('Coupon discount',
+                    trailing:
+                        '-\$${cupService.cuponDiscount.toStringAsFixed(2)}');
+              }),
               const SizedBox(height: 15),
               const Divider(),
               const SizedBox(height: 25),
-              rows('Total',
-                  trailing:
-                      '\$${Provider.of<ShippingZoneService>(context).totalCounter(context).toStringAsFixed(2)}'),
+              Consumer<ShippingZoneService>(
+                  builder: (context, szService, child) {
+                return rows('Total',
+                    trailing:
+                        '\$${szService.totalCounter(context).toStringAsFixed(2)}');
+              }),
               const SizedBox(height: 25),
               rows('Cupon code'),
               const SizedBox(height: 15),
@@ -418,18 +421,20 @@ class Checkout extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 20),
-              Consumer<PaymentGateawayService>(
-                  builder: (context, pgService, child) {
-                return FutureBuilder(
-                    future: pgService.fetchPaymentGetterData(),
-                    builder: (context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return loadingProgressBar();
-                      }
-                      if (snapshot.hasError) {
-                        snackBar(context, 'An error occured');
-                        return Text(snapshot.error.toString());
-                      }
+              FutureBuilder(
+                  future: Provider.of<PaymentGateawayService>(context,
+                          listen: false)
+                      .fetchPaymentGetterData(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const SizedBox();
+                    }
+                    if (snapshot.hasError) {
+                      snackBar(context, 'An error occured');
+                      return Text(snapshot.error.toString());
+                    }
+                    return Consumer<PaymentGateawayService>(
+                        builder: (context, pgService, child) {
                       return SizedBox(
                           height: 270,
                           child: GridView(
@@ -453,16 +458,17 @@ class Checkout extends StatelessWidget {
                                 .toList(),
                           ));
                     });
-              }),
+                  }),
               const SizedBox(height: 20),
               customContainerButton('Pay & Confirm', double.maxFinite, () {
-                DbHelper.deleteDbTable('cart');
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => PaymentStatusView(error)),
-                );
-                error = true;
+                startPayment(context);
+                // DbHelper.deleteDbTable('cart');
+                // Navigator.push(
+                //   context,
+                //   MaterialPageRoute(
+                //       builder: (context) => PaymentStatusView(error)),
+                // );
+                // error = true;
               }),
               const SizedBox(height: 30),
             ]),
@@ -493,5 +499,25 @@ class Checkout extends StatelessWidget {
           ),
       ],
     );
+  }
+
+  startPayment(BuildContext context) {
+    final selectedGateaway =
+        Provider.of<PaymentGateawayService>(context, listen: false)
+            .selectedGateaway;
+    if (selectedGateaway!.name.toLowerCase().contains('paypal')) {
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (BuildContext context) => PaypalPayment(
+            onFinish: (number) async {
+              // payment done
+              print('order id: ' + number);
+            },
+          ),
+        ),
+      );
+      return;
+    }
+    snackBar(context, 'Select a payment Gateaway');
   }
 }

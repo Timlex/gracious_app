@@ -24,11 +24,13 @@ class PaymentGateawayService with ChangeNotifier {
     return selectedGateaway == value;
   }
 
+  resetGateaway() {
+    gatawayList = [];
+    selectedGateaway = null;
+    notifyListeners();
+  }
+
   Future fetchPaymentGetterData() async {
-    if (isLoading) {
-      return;
-    }
-    isLoading = true;
     final url = Uri.parse('$baseApiUrl/user/payment-gateway-list');
     print(globalUserToken);
 
@@ -45,6 +47,7 @@ class PaymentGateawayService with ChangeNotifier {
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
       gatawayList = PaymentGateAwayModel.fromJson(data).gatewayList;
+      selectedGateaway = gatawayList.first;
 
       notifyListeners();
     }

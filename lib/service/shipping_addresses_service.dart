@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:gren_mart/service/country_dropdown_service.dart';
+import 'package:gren_mart/service/state_dropdown_service.dart';
+import 'package:provider/provider.dart';
 import '../../model/shipping_addresses_model.dart';
 import 'dart:convert';
 
 import '../../service/common_service.dart';
 import '../../view/utils/constant_name.dart';
 import 'package:http/http.dart' as http;
+
+import 'shipping_zone_service.dart';
 
 class ShippingAddressesService with ChangeNotifier {
   List<Datum> shippingAddresseList = [];
@@ -86,9 +91,21 @@ class ShippingAddressesService with ChangeNotifier {
     notifyListeners();
   }
 
-  setSelectedAddress(value) {
+  setSelectedAddress(value, BuildContext context) {
     selectedAddress = value;
+    Provider.of<ShippingZoneService>(context, listen: false)
+      ..resetChecout()
+      ..fetchContriesZone(selectedAddress!.countryId, selectedAddress!.stateId);
     notifyListeners();
+  }
+
+  setDefaultCountryState(BuildContext context) {
+    countryId = Provider.of<CountryDropdownService>(context, listen: false)
+        .selectedCountryId
+        .toString();
+    stateID = Provider.of<StateDropdownService>(context, listen: false)
+        .selectedStateId
+        .toString();
   }
 
   setCountryCode(value) {
@@ -111,7 +128,8 @@ class ShippingAddressesService with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<dynamic> fetchUsersShippingAddress() async {
+  Future<dynamic> fetchUsersShippingAddress(BuildContext context,
+      {bool loadShippingZone = false}) async {
     print('$globalUserToken --------------');
     final url = Uri.parse('$baseApiUrl/user/all-shipping-address');
     var header = {
@@ -120,29 +138,42 @@ class ShippingAddressesService with ChangeNotifier {
       'Content-Type': 'application/json',
       "Authorization": "Bearer $globalUserToken",
     };
-    try {
-      final response = await http.get(url, headers: header);
-      if (response.statusCode == 200) {
-        final data = ShippingAddressesModel.fromJson(jsonDecode(response.body));
-        shippingAddresseList = data.data;
-        noData = shippingAddresseList.isEmpty;
-        selectedAddress ??= shippingAddresseList[0];
-
+    // try {
+    final response = await http.get(url, headers: header);
+    if (response.statusCode == 200) {
+      final data = ShippingAddressesModel.fromJson(jsonDecode(response.body));
+      shippingAddresseList = data.data;
+      setNoData(shippingAddresseList.isEmpty);
+      Provider.of<ShippingZoneService>(context, listen: false)
+          .setNoData(shippingAddresseList.isEmpty);
+      if (shippingAddresseList.isEmpty) {
         notifyListeners();
-        return;
+        return 'Select a shipping address.';
       }
-      if (response.statusCode == 422) {
-        final data = json.decode(response.body);
-        print(data['message']);
-        return data['message'];
+      selectedAddress ??= shippingAddresseList[0];
+      if (loadShippingZone) {
+        Provider.of<ShippingZoneService>(
+          context,
+          listen: false,
+        ).fetchContriesZone(
+            selectedAddress!.countryId, selectedAddress!.stateId);
       }
 
-      return 'Someting went wrong';
-    } catch (error) {
-      print(error);
-
-      rethrow;
+      notifyListeners();
+      return;
     }
+    if (response.statusCode == 422) {
+      final data = json.decode(response.body);
+      print(data['message']);
+      return data['message'];
+    }
+
+    return 'Someting went wrong';
+    // } catch (error) {
+    //   print(error);
+
+    //   rethrow;
+    // }
   }
 
   Future<dynamic> addShippingAddress() async {
@@ -153,6 +184,9 @@ class ShippingAddressesService with ChangeNotifier {
       "Accept": "application/json",
       "Authorization": "Bearer $globalUserToken",
     };
+    if (stateID == 1) {
+      return 'Please select a state.';
+    }
     try {
       final response = await http.post(url, headers: header, body: {
         'name': name,

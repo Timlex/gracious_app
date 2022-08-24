@@ -9,8 +9,6 @@ import '../../view/utils/constant_name.dart';
 import '../../view/utils/constant_styles.dart';
 import 'package:provider/provider.dart';
 
-import '../../service/shipping_addresses_service.dart';
-
 class CartView extends StatelessWidget {
   static const routeName = 'cart';
   CartView({Key? key}) : super(key: key);
@@ -63,30 +61,6 @@ class CartView extends StatelessWidget {
                       snackBar(context, 'Add Items to cart.');
                     }
                   : () {
-                      Provider.of<ShippingAddressesService>(context,
-                              listen: false)
-                          .fetchUsersShippingAddress()
-                          .then((value) {
-                        if (value == null) {
-                          final countryId =
-                              Provider.of<ShippingAddressesService>(context,
-                                      listen: false)
-                                  .selectedAddress!
-                                  .countryId;
-                          final stateId = Provider.of<ShippingAddressesService>(
-                                  context,
-                                  listen: false)
-                              .selectedAddress!
-                              .stateId;
-                          Provider.of<ShippingZoneService>(context,
-                                  listen: false)
-                              .fetchContriesZone(countryId)
-                              .then((value) => Provider.of<ShippingZoneService>(
-                                      context,
-                                      listen: false)
-                                  .fetchSatesZone(stateId));
-                        }
-                      });
                       print(cuponData.toString());
                       Provider.of<CuponDiscountService>(context, listen: false)
                           .setCarData(cuponData.toString().replaceAll(' ', ''));

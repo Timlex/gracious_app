@@ -15,10 +15,7 @@ import '../../view/utils/constant_styles.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 
-import '../../service/country_dropdown_service.dart';
 import '../../service/search_result_data_service.dart';
-import '../../service/state_dropdown_service.dart';
-import '../../service/user_profile_service.dart';
 import '../search/filter_bottom_sheeet.dart';
 
 class HomeFront extends StatelessWidget {
@@ -29,30 +26,33 @@ class HomeFront extends StatelessWidget {
   final ConstantColors cc = ConstantColors();
   int _navigationIndex = 0;
 
-  PreferredSizeWidget? manageAppBar(BuildContext context, String name) {
+  PreferredSizeWidget? manageAppBar(
+    BuildContext context,
+  ) {
     final values = Provider.of<SearchResultDataService>(context, listen: false);
     if (_navigationIndex == 0) {
-      return helloAppBar(name);
+      return helloAppBar(context);
     }
     if (_navigationIndex == 1) {
       return AppBar(
         elevation: 0,
-        leading: IconButton(
-            onPressed: () {
-              showMaterialModalBottomSheet(
-                context: context,
-                builder: (context) => SingleChildScrollView(
-                  controller: ModalScrollController.of(context),
-                  child: const FilterBottomSheet(),
-                ),
-              );
-            },
-            icon: SvgPicture.asset(
-              'assets/images/icons/filter_setting.svg',
-              color: Provider.of<SearchResultDataService>(context).finterOn
-                  ? cc.primaryColor
-                  : null,
-            )),
+        leading: Consumer<SearchResultDataService>(
+            builder: (context, srService, child) {
+          return IconButton(
+              onPressed: () {
+                showMaterialModalBottomSheet(
+                  context: context,
+                  builder: (context) => SingleChildScrollView(
+                    controller: ModalScrollController.of(context),
+                    child: const FilterBottomSheet(),
+                  ),
+                );
+              },
+              icon: SvgPicture.asset(
+                'assets/images/icons/filter_setting.svg',
+                color: srService.finterOn ? cc.primaryColor : null,
+              ));
+        }),
         actions: [
           PopupMenuButton<String>(
               icon: Icon(
@@ -125,8 +125,7 @@ class HomeFront extends StatelessWidget {
     return Consumer<NavigationBarHelperService>(
         builder: (context, nData, child) {
       return Scaffold(
-        appBar: manageAppBar(context,
-            Provider.of<UserProfileService>(context).userProfileData.name),
+        appBar: manageAppBar(context),
         body: navigationWidget,
         bottomNavigationBar: BottomNavigationBar(
             onTap: (v) {
@@ -145,14 +144,6 @@ class HomeFront extends StatelessWidget {
             items: items),
       );
     });
-  }
-
-  countryStateInitiate(BuildContext context) {
-    Provider.of<CountryDropdownService>(context, listen: false)
-        .getContries()
-        .then((value) =>
-            Provider.of<StateDropdownService>(context, listen: false)
-                .getStates(value ?? 1));
   }
 
   productsGetter(BuildContext context) {
@@ -204,7 +195,6 @@ class HomeFront extends StatelessWidget {
     _navigationIndex =
         Provider.of<NavigationBarHelperService>(context).navigationIndex;
     if (_navigationIndex == 0) {
-      countryStateInitiate(context);
       productsGetter(context);
       navigationWidget = const Home();
     }

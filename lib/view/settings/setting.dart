@@ -67,7 +67,7 @@ class SettingView extends StatelessWidget {
               'assets/images/icons/shipping_address.svg', 'Shipping Address',
               onTap: () {
             Provider.of<ShippingAddressesService>(context, listen: false)
-                .fetchUsersShippingAddress();
+                .fetchUsersShippingAddress(context);
             Navigator.of(context).pushNamed(ShippingAdresses.routeName).then(
                 (value) => Provider.of<ShippingAddressesService>(context,
                         listen: false)

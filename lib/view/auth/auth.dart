@@ -15,7 +15,6 @@ import '../../view/utils/constant_colors.dart';
 import 'package:provider/provider.dart';
 
 import '../../service/country_dropdown_service.dart';
-import '../../service/state_dropdown_service.dart';
 import '../utils/constant_styles.dart';
 
 class Auth extends StatelessWidget {
@@ -335,15 +334,6 @@ class Auth extends StatelessWidget {
 
   countryStateInitiate(BuildContext context) {
     Provider.of<CountryDropdownService>(context, listen: false)
-        .getContries()
-        .then((value) {
-      Provider.of<AuthTextControllerService>(context, listen: false)
-          .setCountry(value ?? 1);
-      Provider.of<StateDropdownService>(context, listen: false)
-          .getStates(value ?? 1)
-          .then((value) =>
-              Provider.of<AuthTextControllerService>(context, listen: false)
-                  .setState(value ?? 1));
-    });
+        .getContries(context);
   }
 }
