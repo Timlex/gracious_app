@@ -48,7 +48,7 @@ android {
     }
 
     kotlinOptions {
-        jvmTarget = '1.8'
+        jvmTarget = '11'
     }
 
     sourceSets {
@@ -58,7 +58,7 @@ android {
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
         applicationId "com.xgenious.grenmart"
-        minSdkVersion 20
+        minSdkVersion 21
         targetSdkVersion flutter.targetSdkVersion
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
@@ -76,7 +76,10 @@ android {
    buildTypes {
        release {
            signingConfig signingConfigs.release
+
        }
+
+       
    }
 
     signingConfigs {

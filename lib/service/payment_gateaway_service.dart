@@ -40,10 +40,8 @@ class PaymentGateawayService with ChangeNotifier {
       "Authorization": "Bearer $globalUserToken",
       'x-api-key': 'b8f4a0ba4537ad6c3ee41ec0a43549d1'
     };
-    print(header);
 
     final response = await http.get(url, headers: header);
-    print(response.body);
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
       gatawayList = PaymentGateAwayModel.fromJson(data).gatewayList;

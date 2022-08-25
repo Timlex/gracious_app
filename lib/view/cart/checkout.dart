@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:gren_mart/view/payment/paystack_payment.dart';
+import 'package:gren_mart/view/payment/razorpay_payment.dart';
 import 'package:provider/provider.dart';
 import 'package:gren_mart/service/cupon_discount_service.dart';
 import 'package:gren_mart/service/payment_gateaway_service.dart';
@@ -6,6 +8,7 @@ import 'package:gren_mart/service/payment_gateaway_service.dart';
 import '../../service/cart_data_service.dart';
 import '../../service/shipping_zone_service.dart';
 import '../payment/paypal_payment.dart';
+import '../payment/stripe_payment.dart';
 import '../settings/new_address.dart';
 import 'payment_grid_tile.dart';
 import '../../service/shipping_addresses_service.dart';
@@ -501,7 +504,7 @@ class Checkout extends StatelessWidget {
     );
   }
 
-  startPayment(BuildContext context) {
+  startPayment(BuildContext context) async {
     final selectedGateaway =
         Provider.of<PaymentGateawayService>(context, listen: false)
             .selectedGateaway;
@@ -518,6 +521,24 @@ class Checkout extends StatelessWidget {
       );
       return;
     }
+    if (selectedGateaway.name.toLowerCase().contains('stripe')) {
+      await StripePayment().makePayment(context);
+      return;
+    }
+    if (selectedGateaway.name.toLowerCase().contains('razorpay')) {
+      Navigator.of(context).push(
+        MaterialPageRoute<void>(
+          builder: (BuildContext context) => RazorpayPayment(),
+        ),
+      );
+      return;
+    }
+    if (selectedGateaway.name.toLowerCase().contains('paystack')) {
+      PaystackPayment(ctx: context, price: 100, email: 'fake@gmail.com')
+          .chargeCardAndMakePayment();
+      return;
+    }
+
     snackBar(context, 'Select a payment Gateaway');
   }
 }
