@@ -136,7 +136,7 @@ PreferredSizeWidget helloAppBar(BuildContext context) {
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
       child: SizedBox(
         height: 100,
-        width: 100,
+        // width: 100,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -147,7 +147,7 @@ PreferredSizeWidget helloAppBar(BuildContext context) {
             ),
             Consumer<UserProfileService>(builder: (context, uService, child) {
               return Text(
-                uService.userProfileData.name.isEmpty
+                uService.userProfileData.name == null
                     ? ''
                     : uService.userProfileData.name,
                 style: TextStyle(

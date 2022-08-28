@@ -34,14 +34,14 @@ class UserDetails {
     required this.email,
     required this.username,
     required this.emailVerified,
-    required this.emailVerifyToken,
-    required this.phone,
-    required this.address,
-    required this.state,
+    this.emailVerifyToken,
+    this.phone,
+    this.address,
+    this.state,
     this.city,
-    required this.zipcode,
-    required this.country,
-    required this.image,
+    this.zipcode,
+    this.country,
+    this.image,
     required this.createdAt,
     required this.updatedAt,
     this.facebookId,
@@ -55,14 +55,14 @@ class UserDetails {
   String email;
   String username;
   String emailVerified;
-  String emailVerifyToken;
+  String? emailVerifyToken;
   dynamic phone;
   dynamic address;
   Country? state;
   String? city;
   dynamic zipcode;
-  Country country;
-  String image;
+  Country? country;
+  String? image;
   DateTime createdAt;
   DateTime updatedAt;
   dynamic facebookId;
@@ -82,7 +82,8 @@ class UserDetails {
         state: json["state"] != null ? Country.fromJson(json["state"]) : null,
         city: json["city"],
         zipcode: json["zipcode"],
-        country: Country.fromJson(json["country"]),
+        country:
+            json["country"] == null ? null : Country.fromJson(json["country"]),
         image: json["image"],
         createdAt: DateTime.parse(json["created_at"]),
         updatedAt: DateTime.parse(json["updated_at"]),
@@ -104,7 +105,7 @@ class UserDetails {
         "state": state!.toJson(),
         "city": city,
         "zipcode": zipcode,
-        "country": country.toJson(),
+        "country": country!.toJson(),
         "image": image,
         "created_at": createdAt.toIso8601String(),
         "updated_at": updatedAt.toIso8601String(),
@@ -117,19 +118,19 @@ class UserDetails {
 
 class Country {
   Country({
-    required this.id,
-    required this.name,
-    required this.status,
-    required this.createdAt,
-    required this.updatedAt,
+    this.id,
+    this.name,
+    this.status,
+    this.createdAt,
+    this.updatedAt,
     this.countryId,
   });
 
-  int id;
-  String name;
-  String status;
-  DateTime createdAt;
-  DateTime updatedAt;
+  int? id;
+  String? name;
+  String? status;
+  DateTime? createdAt;
+  DateTime? updatedAt;
   int? countryId;
 
   factory Country.fromJson(Map<String, dynamic> json) => Country(
@@ -145,8 +146,8 @@ class Country {
         "id": id,
         "name": name,
         "status": status,
-        "created_at": createdAt.toIso8601String(),
-        "updated_at": updatedAt.toIso8601String(),
+        "created_at": createdAt!.toIso8601String(),
+        "updated_at": updatedAt!.toIso8601String(),
         "country_id": countryId,
       };
 }

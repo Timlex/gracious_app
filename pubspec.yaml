@@ -64,6 +64,8 @@ dependencies:
   flutter_stripe: 
   razorpay_flutter: 
   flutterwave:
+  # mercado_pago_mobile_checkout:
+  instamojo:
   flutter_paystack: ^1.0.5+1
   
   provider: ^6.0.3
@@ -77,6 +79,11 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  flutter_native_splash:
+
+flutter_native_splash:
+  color: "#ffffff"
+  image: assets/images/splash_screen.png
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is

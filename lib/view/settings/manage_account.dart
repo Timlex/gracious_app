@@ -70,8 +70,8 @@ class ManageAccount extends StatelessWidget {
     Provider.of<ManageAccountService>(context, listen: false).setInitialValue(
       userData.name,
       userData.email,
-      userData.phone,
-      userData.country.id.toString(),
+      userData.phone ?? '',
+      userData.country == null ? '1' : userData.country!.id.toString(),
       userData.state == null ? '1' : userData.state!.id.toString(),
       userData.city,
       userData.zipcode,

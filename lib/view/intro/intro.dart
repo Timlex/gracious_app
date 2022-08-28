@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../service/state_dropdown_service.dart';
 import '../../view/auth/auth.dart';
 import '../../view/intro/dot_indicator.dart';
@@ -91,11 +92,13 @@ class _IntroState extends State<Intro> {
               children: _dotIdicators(),
             ),
             Expanded(child: Container()),
-            customRowButton('Skip', 'Continue', () {
+            customRowButton('Skip', 'Continue', () async {
               Provider.of<StateDropdownService>(context, listen: false)
                   .getStates(1);
+              final ref = await SharedPreferences.getInstance();
+              ref.setBool('intro', true);
               Navigator.of(context).pushReplacementNamed(Auth.routeName);
-            }, () {
+            }, () async {
               if (selectedindex < 2) {
                 setState(() {
                   _controller.nextPage(
@@ -106,6 +109,8 @@ class _IntroState extends State<Intro> {
                 return;
               }
               if (selectedindex == 2) {
+                final ref = await SharedPreferences.getInstance();
+                ref.setBool('intro', true);
                 Navigator.of(context).pushReplacementNamed(Auth.routeName);
               }
             }),

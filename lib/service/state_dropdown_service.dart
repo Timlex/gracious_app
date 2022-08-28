@@ -18,7 +18,7 @@ class StateDropdownService with ChangeNotifier {
 
   resetState() {
     isLoading = true;
-    notifyListeners();
+    // notifyListeners();
   }
 
   setStateIdAndValue(value) {

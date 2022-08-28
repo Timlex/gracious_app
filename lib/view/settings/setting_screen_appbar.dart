@@ -52,8 +52,9 @@ class SettingScreenAppBar extends StatelessWidget {
                     placeholder: (context, url) => Image.asset(
                       'assets/images/skelleton.png',
                     ),
-                    errorWidget: (context, url, error) =>
-                        const Icon(Icons.error),
+                    errorWidget: (context, url, error) => Image.asset(
+                      'assets/images/skelleton.png',
+                    ),
                   ),
                 )
                 // CircleAvatar(

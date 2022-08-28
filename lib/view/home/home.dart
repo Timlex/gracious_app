@@ -133,7 +133,7 @@ class Home extends StatelessWidget {
           Consumer<ProductCardDataService>(builder: (context, products, child) {
             return products.featuredCardProductsList.isNotEmpty
                 ? SizedBox(
-                    height: screenHight / 3.7 < 221 ? 185 : screenHight / 3.7,
+                    height: screenHight / 3.4 < 221 ? 185 : screenHight / 3.4,
                     child: ListView.builder(
                       physics: const BouncingScrollPhysics(
                           parent: AlwaysScrollableScrollPhysics()),
@@ -155,7 +155,7 @@ class Home extends StatelessWidget {
                     ))
                 : const SizedBox();
           }),
-          const SizedBox(height: 20),
+          // const SizedBox(height: 20),
           if (Provider.of<ProductCardDataService>(context)
               .featuredCardProductsList
               .isNotEmpty)
@@ -219,7 +219,7 @@ class Home extends StatelessWidget {
           }),
           const SizedBox(height: 20),
           SizedBox(
-            height: screenHight / 3.7 < 221 ? 185 : screenHight / 3.7,
+            height: screenHight / 3.4 < 221 ? 185 : screenHight / 3.4,
             child: Consumer<ProductCardDataService>(
                 builder: (context, products, child) {
               return (products.campaignCardProductList.isNotEmpty &&
@@ -245,7 +245,7 @@ class Home extends StatelessWidget {
                   : loadingProgressBar();
             }),
           ),
-          const SizedBox(height: 40),
+          // const SizedBox(height: 40),
         ],
       ),
     );

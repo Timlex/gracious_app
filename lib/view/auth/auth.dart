@@ -1,8 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:gren_mart/service/social_login_service.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
+import 'package:provider/provider.dart';
+
+import '../../db/database_helper.dart';
 import '../../service/auth_text_controller_service.dart';
+import '../../service/cart_data_service.dart';
+import '../../service/favorite_data_service.dart';
 import '../../service/navigation_bar_helper_service.dart';
+import '../../service/poster_campaign_slider_service.dart';
 import '../../service/signin_signup_service.dart';
 import '../../service/user_profile_service.dart';
 import '../../view/auth/horizontal_devider.dart';
@@ -12,18 +20,26 @@ import '../../view/auth/enter_email_reset_pass.dart';
 import '../../view/auth/signup.dart';
 import '../../view/home/home_front.dart';
 import '../../view/utils/constant_colors.dart';
-import 'package:provider/provider.dart';
-
 import '../../service/country_dropdown_service.dart';
+import '../utils/constant_name.dart';
 import '../utils/constant_styles.dart';
 
-class Auth extends StatelessWidget {
+class Auth extends StatefulWidget {
   static const routeName = 'auth';
 
   Auth({Key? key}) : super(key: key);
+
+  @override
+  State<Auth> createState() => _AuthState();
+}
+
+class _AuthState extends State<Auth> {
   ConstantColors cc = ConstantColors();
+
   final GlobalKey<FormState> _formKeySignin = GlobalKey();
+
   final GlobalKey<FormState> _formKeySignup = GlobalKey();
+
   List<String> contries = [];
 
   Future<void> _onSubmit(
@@ -301,12 +317,32 @@ class Auth extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(horizontal: 20.0),
                   child: GestureDetector(
                     onTap: (() async {
-                      await GoogleSignIn().signIn();
+                      Provider.of<SocialLoginService>(context, listen: false)
+                          .googleLogin()
+                          .then((value) async {
+                        await Provider.of<UserProfileService>(context,
+                                listen: false)
+                            .fetchProfileService(value)
+                            .then((value) async {
+                          if (value == null) {
+                            snackBar(context, 'Failed to load!');
+                          }
+                          Provider.of<PosterCampaignSliderService>(context,
+                                  listen: false)
+                              .fetchPosters();
+                          Provider.of<PosterCampaignSliderService>(context,
+                                  listen: false)
+                              .fetchCampaigns();
+
+                          Navigator.of(context)
+                              .pushReplacementNamed(HomeFront.routeName);
+                        });
+                      });
                     }),
                     child: containerBorder(
                         'assets/images/icons/google.png',
                         ssData.login
-                            ? 'Log in with Google'
+                            ? 'Register with Google'
                             : 'Signup with Google'),
                   ),
                 ),
@@ -314,12 +350,32 @@ class Auth extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(horizontal: 20.0),
                   child: GestureDetector(
                     onTap: () async {
-                      FacebookAuth.i.login();
+                      Provider.of<SocialLoginService>(context, listen: false)
+                          .facebookLogin()
+                          .then((value) async {
+                        await Provider.of<UserProfileService>(context,
+                                listen: false)
+                            .fetchProfileService(value)
+                            .then((value) async {
+                          if (value == null) {
+                            snackBar(context, 'Failed to load!');
+                          }
+                          Provider.of<PosterCampaignSliderService>(context,
+                                  listen: false)
+                              .fetchPosters();
+                          Provider.of<PosterCampaignSliderService>(context,
+                                  listen: false)
+                              .fetchCampaigns();
+
+                          Navigator.of(context)
+                              .pushReplacementNamed(HomeFront.routeName);
+                        });
+                      });
                     },
                     child: containerBorder(
                         'assets/images/icons/facebook.png',
                         ssData.login
-                            ? 'Log in with Facebook'
+                            ? 'Register with Facebook'
                             : 'Signup with Facebook'),
                   ),
                 ),
@@ -335,5 +391,51 @@ class Auth extends StatelessWidget {
   countryStateInitiate(BuildContext context) {
     Provider.of<CountryDropdownService>(context, listen: false)
         .getContries(context);
+  }
+
+  getDatabegeData(BuildContext context) {
+    List databases = ['cart', 'favorite'];
+    databases.map((e) => DbHelper.database(e));
+    Provider.of<CartDataService>(context, listen: false).fetchCarts();
+    Provider.of<FavoriteDataService>(context, listen: false).fetchFavorites();
+    Provider.of<CartDataService>(context, listen: false).fetchCarts();
+  }
+
+  initiateAutoSignIn(BuildContext context) async {
+    await Provider.of<SignInSignUpService>(context, listen: false)
+        .getToken()
+        .then((value) async {
+      if (value != null) {
+        // try {
+        await Provider.of<UserProfileService>(context, listen: false)
+            .fetchProfileService(value)
+            .then((value) async {
+          if (value == null) {
+            snackBar(context, 'Failed to load!');
+          }
+          Provider.of<PosterCampaignSliderService>(context, listen: false)
+              .fetchPosters();
+          Provider.of<PosterCampaignSliderService>(context, listen: false)
+              .fetchCampaigns();
+          Navigator.of(context).pushReplacementNamed(HomeFront.routeName);
+        });
+        //   .onError((error, stackTrace) =>
+        //           Navigator.of(context).pushReplacementNamed(Intro.routeName));
+        // } catch (error) {
+        //   print(error);
+        // }
+        await Provider.of<SignInSignUpService>(context, listen: false)
+            .getUserData();
+
+        // setData(Provider.of<UserProfileService>(context, listen: false)
+        //     .userProfileData);
+        return;
+      }
+
+      Provider.of<AuthTextControllerService>(context, listen: false).setEmail(
+          Provider.of<SignInSignUpService>(context, listen: false).email);
+      Provider.of<AuthTextControllerService>(context, listen: false).setPass(
+          Provider.of<SignInSignUpService>(context, listen: false).password);
+    });
   }
 }

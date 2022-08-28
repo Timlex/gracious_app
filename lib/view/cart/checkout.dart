@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:gren_mart/service/menual_payment_service.dart';
 import 'package:gren_mart/view/payment/flutter_wave_payment.dart';
+import 'package:gren_mart/view/payment/mercado_pago/mercado_pago_mobile_checkout.dart';
 import 'package:gren_mart/view/payment/paystack_payment.dart';
 import 'package:gren_mart/view/payment/razorpay_payment.dart';
 import 'package:image_picker/image_picker.dart';
@@ -544,6 +545,10 @@ class Checkout extends StatelessWidget {
       FlutterWavePayment().makePayment(context, 'email', '200');
       return;
     }
+    // if (selectedGateaway.name.toLowerCase().contains('marcadopago')) {
+    //   MercadoPagoMobileCheckout.startCheckout(context);
+    //   return;
+    // }
     if (selectedGateaway.name.toLowerCase().contains('manual_payment')) {
       showDialog(
           context: context,

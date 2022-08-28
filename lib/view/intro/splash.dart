@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:gren_mart/view/utils/constant_styles.dart';
+import 'package:provider/provider.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
 import '../../db/database_helper.dart';
 import '../../service/cart_data_service.dart';
 import '../../service/favorite_data_service.dart';
@@ -8,46 +12,58 @@ import '../../service/signin_signup_service.dart';
 import '../../service/user_profile_service.dart';
 import '../../view/auth/auth.dart';
 import '../../view/home/home_front.dart';
-import 'package:provider/provider.dart';
-
 import '../../service/auth_text_controller_service.dart';
 import '../utils/constant_name.dart';
+import 'intro.dart';
 
-class SplashScreen extends StatelessWidget {
+class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    getDatabegeData(context);
+  State<SplashScreen> createState() => _SplashScreenState();
+}
+
+class _SplashScreenState extends State<SplashScreen> {
+  Future<void> initialize() async {
+    await getDatabegeData(context);
     initiateDeviceSize(context);
 
-    initiateAutoSignIn(context);
+    await initiateAutoSignIn(context);
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    initialize();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    // getDatabegeData(context);
+    // initiateDeviceSize(context);
+
+    // initiateAutoSignIn(context);
 
     return Scaffold(
-      body: Center(
-        child: Container(
-          height: 150,
-          width: 300,
-          padding: const EdgeInsets.all(8.0),
-          child: Column(
-              mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Image.asset(
-                  'assets/images/grenmart.png',
-                  // fit: BoxFit.cover,
-                ),
-                const SizedBox(
-                  height: 15,
-                ),
-                const Text(
-                  'v1.00',
-                  style: TextStyle(
-                      color: Color.fromARGB(127, 158, 158, 158),
-                      fontWeight: FontWeight.bold),
-                )
-              ]),
-        ),
+      body: Stack(
+        children: [
+          Center(
+            child: Container(
+              padding: const EdgeInsets.all(8.0),
+              child: Image.asset(
+                'assets/images/splash_screen.png',
+                fit: BoxFit.fill,
+              ),
+            ),
+          ),
+          // Expanded(
+          //   child: Container(
+          //     color: Color.fromARGB(61, 0, 0, 0),
+          //     child: loadingProgressBar(),
+          //   ),
+          // )
+        ],
       ),
     );
   }
@@ -77,10 +93,28 @@ class SplashScreen extends StatelessWidget {
           Provider.of<PosterCampaignSliderService>(context, listen: false)
               .fetchCampaigns();
 
+          FlutterNativeSplash.remove();
           Navigator.of(context).pushReplacementNamed(HomeFront.routeName);
+
+          return;
+        }).onError((error, stackTrace) async {
+          final ref = await SharedPreferences.getInstance();
+          if (ref.containsKey('intro')) {
+            FlutterNativeSplash.remove();
+            Navigator.of(context).pushReplacementNamed(Auth.routeName);
+            Provider.of<AuthTextControllerService>(context, listen: false)
+                .setEmail(
+                    Provider.of<SignInSignUpService>(context, listen: false)
+                        .email);
+            Provider.of<AuthTextControllerService>(context, listen: false)
+                .setPass(
+                    Provider.of<SignInSignUpService>(context, listen: false)
+                        .password);
+            return;
+          }
+          Navigator.of(context).pushReplacementNamed(Intro.routeName);
+          return;
         });
-        //   .onError((error, stackTrace) =>
-        //           Navigator.of(context).pushReplacementNamed(Intro.routeName));
         // } catch (error) {
         //   print(error);
         // }
@@ -92,7 +126,9 @@ class SplashScreen extends StatelessWidget {
         return;
       }
 
-      Future.delayed(const Duration(seconds: 1));
+      // Future.delayed(const Duration(seconds: 1));
+
+      FlutterNativeSplash.remove();
       Navigator.of(context).pushReplacementNamed(Auth.routeName);
       Provider.of<AuthTextControllerService>(context, listen: false).setEmail(
           Provider.of<SignInSignUpService>(context, listen: false).email);

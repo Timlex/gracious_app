@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:gren_mart/service/menual_payment_service.dart';
+import 'package:gren_mart/service/social_login_service.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 
 import '../../service/payment_gateaway_service.dart';
 import '../../service/shipping_zone_service.dart';
@@ -49,19 +51,28 @@ import '../../view/settings/new_address.dart';
 import '../../view/utils/constant_colors.dart';
 import '../../service/navigation_bar_helper_service.dart';
 import '../../service/order_details_service.dart';
+import 'db/database_helper.dart';
+import 'view/utils/constant_name.dart';
+import 'view/utils/constant_styles.dart';
 
 void main() {
-  WidgetsFlutterBinding.ensureInitialized();
+  WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+  FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
+
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
     statusBarColor: Colors.transparent, // transparent status bar
   ));
   runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({Key? key}) : super(key: key);
 
-  // This widget is the root of your application.
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
@@ -94,6 +105,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => OrderListService()),
         ChangeNotifierProvider(create: (_) => OrderDetailsService()),
         ChangeNotifierProvider(create: (_) => MenualPaymentService()),
+        ChangeNotifierProvider(create: (_) => SocialLoginService()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
@@ -109,7 +121,7 @@ class MyApp extends StatelessWidget {
           textSelectionTheme: TextSelectionThemeData(
               cursorColor: ConstantColors().primaryColor),
         ),
-        home: const SplashScreen(),
+        home: SplashScreen(),
         routes: {
           Intro.routeName: (context) => Intro(),
           Auth.routeName: (context) => Auth(),
