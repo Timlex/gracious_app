@@ -16,6 +16,8 @@ class StripePayment {
   Map<String, dynamic>? paymentIntent;
 
   Future<void> makePayment(BuildContext context) async {
+    Stripe.publishableKey =
+        "pk_test_51LbdwFBfDAMfsX2WsDHQ0DafWeg3THiNveRBQFvjS2jqZUeClSFLglEx2s9VZUFTJzcWxF32vbz3n64v3fkSzN2i00dpADItrN";
     // Stripe.publishableKey =
     //     Provider.of<PaymentGateawayService>(context, listen: false)
     //         .selectedGateaway!
@@ -100,7 +102,8 @@ class StripePayment {
               shippingZone.shippingCost +
               cartData.calculateSubtotal() -
               cuponData.cuponDiscount)
-          .toStringAsFixed(2),
+          .toInt()
+          .toString(),
       'currency': currency,
       'payment_method_types[]': 'card'
     };
@@ -108,13 +111,15 @@ class StripePayment {
     var response = await http.post(
       Uri.parse('https://api.stripe.com/v1/payment_intents'),
       headers: {
-        'Authorization': 'Bearer ${selectrdGateaway.secretKey}',
+        // 'Authorization': 'Bearer ${selectrdGateaway.secretKey}',
+        'Authorization':
+            'Bearer sk_test_51LbdwFBfDAMfsX2W42YBqv6juzNaqZwB6Lh9BD65lg6oquPFzxWQoyztuh3SZr9AEyg0eZAugnfPPVJa1iQGKFGx00AET5nhhr',
         'Content-Type': 'application/x-www-form-urlencoded'
       },
       body: body,
     );
     // ignore: avoid_print
-    print('Payment Intent Body->>> ${response.statusCode}');
+    print('Payment Intent Body->>> ${response.body}');
     return jsonDecode(response.body);
     // } catch (err) {
     //   // ignore: avoid_print

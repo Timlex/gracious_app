@@ -1,6 +1,11 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:gren_mart/service/menual_payment_service.dart';
+import 'package:gren_mart/view/payment/flutter_wave_payment.dart';
 import 'package:gren_mart/view/payment/paystack_payment.dart';
 import 'package:gren_mart/view/payment/razorpay_payment.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:gren_mart/service/cupon_discount_service.dart';
 import 'package:gren_mart/service/payment_gateaway_service.dart';
@@ -538,7 +543,67 @@ class Checkout extends StatelessWidget {
           .chargeCardAndMakePayment();
       return;
     }
+    if (selectedGateaway.name.toLowerCase().contains('flutterwave')) {
+      FlutterWavePayment().makePayment(context, 'email', '200');
+      return;
+    }
+    if (selectedGateaway.name.toLowerCase().contains('manual_payment')) {
+      showDialog(
+          context: context,
+          builder: (context) {
+            return Consumer<MenualPaymentService>(
+                builder: (context, mService, child) {
+              return AlertDialog(
+                content: Padding(
+                  padding: const EdgeInsets.all(10),
+                  child: Container(
+                      padding: EdgeInsets.all(15),
+                      height: 300,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(15),
+                          border: Border.all(
+                            color: cc.primaryColor,
+                          )),
+                      child: GestureDetector(
+                        onTap: (() {
+                          imageSelector(context);
+                        }),
+                        child: mService.pickedImage == null
+                            ? Center(
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Icon(Icons.camera_alt_outlined),
+                                    Text('Select an image from gallary'),
+                                  ],
+                                ),
+                              )
+                            : Image.file(mService.pickedImage!),
+                      )),
+                ),
+                actions: [
+                  customContainerButton('Upload image', double.infinity, () {
+                    Navigator.of(context).pop();
+                  })
+                ],
+              );
+            });
+          });
+      return;
+    }
 
     snackBar(context, 'Select a payment Gateaway');
+  }
+
+  Future<void> imageSelector(BuildContext context,
+      {ImageSource imageSource = ImageSource.camera}) async {
+    try {
+      final pickedImage =
+          await ImagePicker.platform.pickImage(source: imageSource);
+      Provider.of<MenualPaymentService>(context, listen: false)
+          .setPickedImage(File(pickedImage!.path));
+    } catch (error) {
+      print(error);
+    }
   }
 }

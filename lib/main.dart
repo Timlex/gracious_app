@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
+import 'package:gren_mart/service/menual_payment_service.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/services.dart';
 
@@ -92,6 +93,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => PaymentGateawayService()),
         ChangeNotifierProvider(create: (_) => OrderListService()),
         ChangeNotifierProvider(create: (_) => OrderDetailsService()),
+        ChangeNotifierProvider(create: (_) => MenualPaymentService()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
