@@ -531,11 +531,8 @@ class Checkout extends StatelessWidget {
       return;
     }
     if (selectedGateaway.name.toLowerCase().contains('razorpay')) {
-      Navigator.of(context).push(
-        MaterialPageRoute<void>(
-          builder: (BuildContext context) => RazorpayPayment(),
-        ),
-      );
+      RazorpayPayment().createOrder(context);
+
       return;
     }
     if (selectedGateaway.name.toLowerCase().contains('paystack')) {

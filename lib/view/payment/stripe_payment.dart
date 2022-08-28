@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:gren_mart/service/payment_gateaway_service.dart';
 import 'package:gren_mart/service/shipping_zone_service.dart';
+import 'package:gren_mart/view/utils/constant_styles.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:provider/provider.dart';
@@ -16,13 +17,24 @@ class StripePayment {
   Map<String, dynamic>? paymentIntent;
 
   Future<void> makePayment(BuildContext context) async {
-    Stripe.publishableKey =
-        "pk_test_51LbdwFBfDAMfsX2WsDHQ0DafWeg3THiNveRBQFvjS2jqZUeClSFLglEx2s9VZUFTJzcWxF32vbz3n64v3fkSzN2i00dpADItrN";
+    if (Provider.of<PaymentGateawayService>(context, listen: false)
+                .selectedGateaway!
+                .publicKey ==
+            null ||
+        Provider.of<PaymentGateawayService>(context, listen: false)
+                .selectedGateaway!
+                .secretKey ==
+            null) {
+      snackBar(context, 'Invalid developer keys');
+      return;
+    }
     // Stripe.publishableKey =
-    //     Provider.of<PaymentGateawayService>(context, listen: false)
-    //         .selectedGateaway!
-    //         .publicKey
-    //         .toString();
+    //     "";
+    Stripe.publishableKey =
+        Provider.of<PaymentGateawayService>(context, listen: false)
+            .selectedGateaway!
+            .publicKey
+            .toString();
     try {
       paymentIntent = await createPaymentIntent(context, '10', 'USD');
       //Payment Sheet
@@ -111,9 +123,7 @@ class StripePayment {
     var response = await http.post(
       Uri.parse('https://api.stripe.com/v1/payment_intents'),
       headers: {
-        // 'Authorization': 'Bearer ${selectrdGateaway.secretKey}',
-        'Authorization':
-            'Bearer sk_test_51LbdwFBfDAMfsX2W42YBqv6juzNaqZwB6Lh9BD65lg6oquPFzxWQoyztuh3SZr9AEyg0eZAugnfPPVJa1iQGKFGx00AET5nhhr',
+        'Authorization': 'Bearer ${selectrdGateaway.secretKey}',
         'Content-Type': 'application/x-www-form-urlencoded'
       },
       body: body,
