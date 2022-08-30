@@ -1,28 +1,24 @@
-// To parse this JSON data, do
-//
-//     final posterSliderModel = posterSliderModelFromJson(jsonString);
-
 import 'dart:convert';
 
-PosterSliderModel posterSliderModelFromJson(String str) =>
-    PosterSliderModel.fromJson(json.decode(str));
+MobileSliderModel mobileSliderModelFromJson(String str) =>
+    MobileSliderModel.fromJson(json.decode(str));
 
-String posterSliderModelToJson(PosterSliderModel data) =>
+String mobileSliderModelToJson(MobileSliderModel data) =>
     json.encode(data.toJson());
 
-class PosterSliderModel {
-  PosterSliderModel({
+class MobileSliderModel {
+  MobileSliderModel({
     required this.currentPage,
     required this.data,
     required this.firstPageUrl,
     required this.from,
     required this.lastPage,
     required this.lastPageUrl,
-    // required this.links,
-    required this.nextPageUrl,
+    required this.links,
+    this.nextPageUrl,
     required this.path,
     required this.perPage,
-    required this.prevPageUrl,
+    this.prevPageUrl,
     required this.to,
     required this.total,
   });
@@ -33,7 +29,7 @@ class PosterSliderModel {
   int from;
   int lastPage;
   String lastPageUrl;
-  // List<Link> links;
+  List<Link> links;
   dynamic nextPageUrl;
   String path;
   int perPage;
@@ -41,15 +37,15 @@ class PosterSliderModel {
   int to;
   int total;
 
-  factory PosterSliderModel.fromJson(Map<String, dynamic> json) =>
-      PosterSliderModel(
+  factory MobileSliderModel.fromJson(Map<String, dynamic> json) =>
+      MobileSliderModel(
         currentPage: json["current_page"],
         data: List<Datum>.from(json["data"].map((x) => Datum.fromJson(x))),
         firstPageUrl: json["first_page_url"],
         from: json["from"],
         lastPage: json["last_page"],
         lastPageUrl: json["last_page_url"],
-        // links: List<Link>.from(json["links"].map((x) => Link.fromJson(x))),
+        links: List<Link>.from(json["links"].map((x) => Link.fromJson(x))),
         nextPageUrl: json["next_page_url"],
         path: json["path"],
         perPage: json["per_page"],
@@ -65,7 +61,7 @@ class PosterSliderModel {
         "from": from,
         "last_page": lastPage,
         "last_page_url": lastPageUrl,
-        // "links": List<dynamic>.from(links.map((x) => x.toJson())),
+        "links": List<dynamic>.from(links.map((x) => x.toJson())),
         "next_page_url": nextPageUrl,
         "path": path,
         "per_page": perPage,
@@ -77,11 +73,13 @@ class PosterSliderModel {
 
 class Datum {
   Datum({
+    required this.title,
     required this.description,
     required this.image,
     required this.buttonUrl,
-    required this.title,
     required this.buttonText,
+    this.campaign,
+    this.category,
   });
 
   String title;
@@ -89,6 +87,8 @@ class Datum {
   String image;
   String buttonUrl;
   String buttonText;
+  String? campaign;
+  String? category;
 
   factory Datum.fromJson(Map<String, dynamic> json) => Datum(
         title: json["title"],
@@ -96,6 +96,8 @@ class Datum {
         image: json["image"],
         buttonUrl: json["button_url"],
         buttonText: json["button_text"],
+        campaign: json["campaign"] == null ? null : json["campaign"],
+        category: json["category"] == null ? null : json["category"],
       );
 
   Map<String, dynamic> toJson() => {
@@ -104,29 +106,31 @@ class Datum {
         "image": image,
         "button_url": buttonUrl,
         "button_text": buttonText,
+        "campaign": campaign == null ? null : campaign,
+        "category": category == null ? null : category,
       };
 }
 
-// class Link {
-//   Link({
-//     required this.url,
-//     required this.label,
-//     required this.active,
-//   });
+class Link {
+  Link({
+    this.url,
+    required this.label,
+    required this.active,
+  });
 
-//   String url;
-//   String label;
-//   bool active;
+  String? url;
+  String label;
+  bool active;
 
-//   // factory Link.fromJson(Map<String, dynamic> json) => Link(
-//   //       url: json["url"],
-//   //       label: json["label"],
-//   //       active: json["active"],
-//   //     );
+  factory Link.fromJson(Map<String, dynamic> json) => Link(
+        url: json["url"] == null ? null : json["url"],
+        label: json["label"],
+        active: json["active"],
+      );
 
-//   // Map<String, dynamic> toJson() => {
-//   //       "url": url,
-//   //       "label": label,
-//   //       "active": active,
-//   //     };
-// }
+  Map<String, dynamic> toJson() => {
+        "url": url == null ? null : url,
+        "label": label,
+        "active": active,
+      };
+}

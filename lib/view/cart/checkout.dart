@@ -2,8 +2,12 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:gren_mart/service/menual_payment_service.dart';
+import 'package:gren_mart/view/payment/cash_free_payment.dart';
 import 'package:gren_mart/view/payment/flutter_wave_payment.dart';
-import 'package:gren_mart/view/payment/mercado_pago/mercado_pago_mobile_checkout.dart';
+import 'package:gren_mart/view/payment/instamojo_payment.dart';
+import 'package:gren_mart/view/payment/mercado_pago_payment.dart';
+import 'package:gren_mart/view/payment/mid_trans_payment.dart';
+import 'package:gren_mart/view/payment/payfast_payment.dart';
 import 'package:gren_mart/view/payment/paystack_payment.dart';
 import 'package:gren_mart/view/payment/razorpay_payment.dart';
 import 'package:image_picker/image_picker.dart';
@@ -542,13 +546,45 @@ class Checkout extends StatelessWidget {
       return;
     }
     if (selectedGateaway.name.toLowerCase().contains('flutterwave')) {
-      FlutterWavePayment().makePayment(context, 'email', '200');
+      FlutterWavePayment().makePayment(context);
       return;
     }
-    // if (selectedGateaway.name.toLowerCase().contains('marcadopago')) {
-    //   MercadoPagoMobileCheckout.startCheckout(context);
+    if (selectedGateaway.name.toLowerCase().contains('cashfree')) {
+      CashFreePayment().doPayment(context);
+      return;
+    }
+    // if (selectedGateaway.name.toLowerCase().contains('midtrans')) {
+    //   // MidTransPayment().startPayment(context);
+    //   // Navigator.of(context).push(
+    //   //   MaterialPageRoute(
+    //   //     builder: (BuildContext context) => MidTransPayment(),
+    //   //   ),
+    //   // );
     //   return;
     // }
+    if (selectedGateaway.name.toLowerCase().contains('marcadopago')) {
+      MercadoPagoPayment().startCheckout(context);
+
+      return;
+    }
+    if (selectedGateaway.name.toLowerCase().contains('midtrans')) {
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (BuildContext context) => PayFastPayment(),
+        ),
+      );
+
+      return;
+    }
+    if (selectedGateaway.name.toLowerCase().contains('instamojo')) {
+      // MercadoPagoMobileCheckout.startCheckout(context);
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (BuildContext context) => InstamojoPayment(),
+        ),
+      );
+      return;
+    }
     if (selectedGateaway.name.toLowerCase().contains('manual_payment')) {
       showDialog(
           context: context,
@@ -556,29 +592,27 @@ class Checkout extends StatelessWidget {
             return Consumer<MenualPaymentService>(
                 builder: (context, mService, child) {
               return AlertDialog(
-                content: Padding(
-                  padding: const EdgeInsets.all(10),
-                  child: Container(
-                      padding: EdgeInsets.all(15),
-                      height: 300,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(15),
-                          border: Border.all(
-                            color: cc.primaryColor,
-                          )),
-                      child: GestureDetector(
-                        onTap: (() {
-                          imageSelector(context);
-                        }),
+                content: GestureDetector(
+                  onTap: (() {
+                    imageSelector(context);
+                  }),
+                  child: Padding(
+                      padding: const EdgeInsets.all(10),
+                      child: Container(
+                        padding: EdgeInsets.all(15),
+                        height: 300,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(15),
+                            border: Border.all(
+                              color: cc.primaryColor,
+                            )),
                         child: mService.pickedImage == null
-                            ? Center(
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Icon(Icons.camera_alt_outlined),
-                                    Text('Select an image from gallary'),
-                                  ],
-                                ),
+                            ? Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(Icons.camera_alt_outlined),
+                                  Text('Select an image from gallary'),
+                                ],
                               )
                             : Image.file(mService.pickedImage!),
                       )),
@@ -605,7 +639,7 @@ class Checkout extends StatelessWidget {
       Provider.of<MenualPaymentService>(context, listen: false)
           .setPickedImage(File(pickedImage!.path));
     } catch (error) {
-      print(error);
+      print(error.toString());
     }
   }
 }

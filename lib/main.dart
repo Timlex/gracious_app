@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:gren_mart/service/menual_payment_service.dart';
 import 'package:gren_mart/service/social_login_service.dart';
+import 'package:gren_mart/view/home/all_camp_product_from_link.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
@@ -139,6 +140,8 @@ class _MyAppState extends State<MyApp> {
           AllTicketsView.routeName: (context) => AllTicketsView(),
           AddNewTicket.routeName: (context) => AddNewTicket(),
           AllProducts.routeName: (context) => AllProducts(),
+          ALLCampProductFromLink.routeName: (context) =>
+              ALLCampProductFromLink(),
         },
       ),
     );

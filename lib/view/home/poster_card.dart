@@ -8,6 +8,7 @@ class PosterCard extends StatelessWidget {
   final String description;
   final Function btFunction;
   final String image;
+  final bool showButton;
 
   PosterCard(
     this.title,
@@ -15,6 +16,7 @@ class PosterCard extends StatelessWidget {
     this.description,
     this.btFunction,
     this.image,
+    this.showButton,
   );
 
   ConstantColors cc = ConstantColors();
@@ -93,22 +95,23 @@ class PosterCard extends StatelessWidget {
                     maxLines: 3,
                   ),
                 )),
-            // const SizedBox(height: 15),
-            // ElevatedButton(
-            //   onPressed: () {
-            //     btFunction;
-            //   },
-            //   child: Text(btText),
-            //   style: ElevatedButton.styleFrom(
-            //       padding: const EdgeInsets.symmetric(
-            //         horizontal: 22,
-            //         vertical: 12,
-            //       ),
-            //       elevation: 0,
-            //       primary: cc.primaryColor,
-            //       shape: RoundedRectangleBorder(
-            //           borderRadius: BorderRadius.circular(12))),
-            // ),
+            if (showButton) const SizedBox(height: 15),
+            if (showButton)
+              ElevatedButton(
+                onPressed: () {
+                  btFunction;
+                },
+                child: Text(btText),
+                style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 22,
+                      vertical: 12,
+                    ),
+                    elevation: 0,
+                    primary: cc.primaryColor,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12))),
+              ),
             // const Spacer()
           ],
         ),

@@ -11,7 +11,9 @@ import 'package:http/http.dart' as http;
 class ProductCardDataService with ChangeNotifier {
   List<Datum> featuredCardProductsList = [];
   List<Product> campaignCardProductList = [];
+  List<Product> campaignPageProductList = [];
   CampaignInfo? campaignInfo;
+  CampaignInfo? campaignPageInfo;
 
   Future fetchFeaturedProductCardData() async {
     print('get featured products ran');
@@ -49,6 +51,32 @@ class ProductCardDataService with ChangeNotifier {
         var data = CampaignProductModel.fromJson(jsonDecode(response.body));
         campaignCardProductList = data.products;
         campaignInfo = data.campaignInfo;
+
+        // print(featuredCardProductsList[0].prdId);
+        // print(countryDropdownList);
+
+        notifyListeners();
+      } else {
+        //something went wrong
+      }
+    } catch (error) {
+      print(error);
+
+      rethrow;
+    }
+  }
+
+  Future fetchCapmaignPageProductData({id}) async {
+    print('get featured products ran');
+    final url = Uri.parse('$baseApiUrl/campaign/product/${id ?? ''}');
+
+    try {
+      final response = await http.get(url);
+
+      if (response.statusCode == 200) {
+        var data = CampaignProductModel.fromJson(jsonDecode(response.body));
+        campaignPageProductList = data.products;
+        campaignPageInfo = data.campaignInfo;
 
         // print(featuredCardProductsList[0].prdId);
         // print(countryDropdownList);

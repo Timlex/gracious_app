@@ -1,356 +1,190 @@
-import 'package:flutter/cupertino.dart';
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:instamojo/instamojo.dart';
+import 'package:flutter_inappwebview/flutter_inappwebview.dart';
+import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
+import 'dart:async';
 
-void main() {
-  WidgetsFlutterBinding.ensureInitialized();
-  runApp(const MyApp());
-}
+import '../../service/cart_data_service.dart';
+import '../../service/cupon_discount_service.dart';
+import '../../service/payment_gateaway_service.dart';
+import '../../service/shipping_addresses_service.dart';
+import '../../service/shipping_zone_service.dart';
+import '../../service/user_profile_service.dart';
 
-class MyApp extends StatefulWidget {
-  const MyApp({Key? key}) : super(key: key);
-
-  @override
-  _MyAppState createState() => _MyAppState();
-}
-
-class _MyAppState extends State<MyApp> {
-  @override
-  void initState() {
-    super.initState();
-  }
+class InstamojoPayment extends StatefulWidget {
+  const InstamojoPayment({
+    Key? key,
+  }) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    SystemChrome.setPreferredOrientations([
-      DeviceOrientation.portraitUp,
-      DeviceOrientation.portraitDown,
-    ]);
-    return MaterialApp(
-        color: Colors.black,
-        routes: const {},
-        title: 'Styli',
-        debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-            appBarTheme: const AppBarTheme(
-                systemOverlayStyle: SystemUiOverlayStyle.light),
-            primarySwatch: Colors.pink,
-            canvasColor: Colors.white,
-            backgroundColor: Colors.white,
-            brightness: Brightness.light,
-            cupertinoOverrideTheme: const CupertinoThemeData(
-              brightness: Brightness.light,
-              scaffoldBackgroundColor: Colors.white,
-              barBackgroundColor: Colors.white,
-              primaryColor: Colors.amber,
-            )),
-        darkTheme: ThemeData(
-            appBarTheme: const AppBarTheme(
-                systemOverlayStyle: SystemUiOverlayStyle.dark),
-            primarySwatch: Colors.amber,
-            canvasColor: Colors.black,
-            brightness: Brightness.dark,
-            cupertinoOverrideTheme: const CupertinoThemeData(
-              primaryColor: Colors.amber,
-            )),
-        home: const PaymentScreen());
-  }
+  _InstamojoPaymentState createState() => _InstamojoPaymentState();
 }
 
-class PaymentScreen extends StatefulWidget {
-  const PaymentScreen({Key? key}) : super(key: key);
+bool isLoading = true; //this can be declared outside the class
 
-  @override
-  _PaymentScreenState createState() => _PaymentScreenState();
-}
-
-class _PaymentScreenState extends State<PaymentScreen>
-    with SingleTickerProviderStateMixin {
-  String _paymentResponse = 'Unknown';
-  late bool isLive, apiCalled;
-  final _formKey = GlobalKey<FormState>();
-  final _data = DataModel();
-  late AnimationController _controller;
+class _InstamojoPaymentState extends State<InstamojoPayment> {
+  late String selectedUrl;
+  double progress = 0;
 
   @override
   void initState() {
     super.initState();
-    isLive = false;
-    apiCalled = false;
-    _controller = AnimationController(
-      vsync: this,
-      lowerBound: 0.5,
-      duration: const Duration(milliseconds: 500),
-    )..repeat();
-  }
-
-  // Platform messages are asynchronous, so we initialize in an async method.
-  startInstamojo() async {
-    dynamic result = await Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (ctx) => InstamojoScreen(
-                  isLive: _data.isLive,
-                  body: CreateOrderBody(
-                      buyerName: _data.name,
-                      buyerEmail: _data.email,
-                      buyerPhone: _data.number,
-                      amount: _data.amount,
-                      description: _data.description),
-                  orderCreationUrl:
-                      "https://sample-sdk-server.instamojo.com/order", // The sample server of instamojo to create order id.
-                )));
-
-    setState(() {
-      _paymentResponse = result.toString();
-    });
+    createRequest(); //creating the HTTP request
   }
 
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setPreferredOrientations([
-      DeviceOrientation.portraitUp,
-      DeviceOrientation.portraitDown,
-    ]);
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Instamojo Flutter'),
+        leading: InkWell(
+            onTap: () {
+              isLoading = true;
+              Navigator.pop(context);
+            },
+            child: const Icon(
+              Icons.arrow_back,
+              color: Colors.white,
+            )),
+        backgroundColor: Colors.blueGrey,
+        title: const Text("Pay"),
       ),
-      body: SingleChildScrollView(
-          child: Column(
-        children: <Widget>[
-          Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Builder(
-                  builder: (context) => Form(
-                      key: _formKey,
-                      autovalidateMode: AutovalidateMode.always,
-                      child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: [
-                            TextFormField(
-                              initialValue: "Test Payments",
-                              keyboardType: TextInputType.text,
-                              decoration:
-                                  const InputDecoration(labelText: 'Name'),
-                              // ignore: missing_return
-                              validator: (value) {
-                                if (value!.isEmpty) {
-                                  return 'Please enter the name';
-                                }
-                                return null;
-                              },
-                              onSaved: (val) =>
-                                  setState(() => _data.name = val!),
-                            ),
-                            TextFormField(
-                                initialValue: "test@test.com",
-                                keyboardType: TextInputType.emailAddress,
-                                decoration: const InputDecoration(
-                                    labelText: 'Email Id'),
-                                // ignore: missing_return
-                                validator: validateEmail,
-                                onSaved: (val) =>
-                                    setState(() => _data.email = val!)),
-                            TextFormField(
-                                initialValue: "1234567890",
-                                keyboardType: TextInputType.phone,
-                                maxLength: 10,
-                                decoration: const InputDecoration(
-                                    labelText: 'Mobile Number'),
-                                // ignore: missing_return
-                                validator: (value) {
-                                  if (value!.isEmpty) {
-                                    return 'Please enter the phone number.';
-                                  } else if (value.length < 10) {
-                                    return "Please enter a valid phone number";
-                                  }
-                                  return null;
-                                },
-                                onSaved: (val) =>
-                                    setState(() => _data.number = val!)),
-                            TextFormField(
-                                initialValue: "33",
-                                keyboardType: TextInputType.number,
-                                maxLength: 4,
-                                decoration:
-                                    const InputDecoration(labelText: 'Amount'),
-                                // ignore: missing_return
-                                validator: (value) {
-                                  if (value!.isEmpty) {
-                                    return 'Please enter the amount.';
-                                  }
-                                  return null;
-                                },
-                                onSaved: (val) =>
-                                    setState(() => _data.amount = val!)),
-                            TextFormField(
-                                initialValue: "test description",
-                                keyboardType: TextInputType.text,
-                                decoration: const InputDecoration(
-                                    labelText: 'Description'),
-                                onSaved: (val) =>
-                                    setState(() => _data.description = val!)),
-                            SwitchListTile(
-                                title: Text(_data.isLive
-                                    ? 'Live Account'
-                                    : 'Test Account'),
-                                value: _data.isLive,
-                                onChanged: (bool val) =>
-                                    setState(() => _data.isLive = val)),
-                            SizedBox(
-                              height: 50,
-                              child: ElevatedButton(
-                                  onPressed: () {
-                                    final form = _formKey.currentState;
-                                    if (form!.validate()) {
-                                      form.save();
-                                      startInstamojo();
-                                    }
-                                  },
-                                  child: apiCalled
-                                      ? animation()
-                                      : const Text('Make Payment')),
-                            ),
-                          ])))),
-          const SizedBox(
-            height: 20,
+      body: WillPopScope(
+        onWillPop: () {
+          isLoading = true;
+          return Future.value(true);
+        },
+        child: Container(
+          child: Center(
+            child: isLoading
+                ? //check loadind status
+                const CircularProgressIndicator() //if true
+                : InAppWebView(
+                    initialUrlRequest: URLRequest(
+                      url: Uri.tryParse(selectedUrl),
+                    ),
+                    onWebViewCreated: (InAppWebViewController controller) {},
+                    onProgressChanged:
+                        (InAppWebViewController controller, int progress) {
+                      setState(() {
+                        this.progress = progress / 100;
+                      });
+                    },
+                    onUpdateVisitedHistory: (_, Uri? uri, __) {
+                      String url = uri.toString();
+                      // print(uri);
+                      // uri containts newly loaded url
+                      if (mounted) {
+                        if (url.contains('https://www.google.com/')) {
+                          //Take the payment_id parameter of the url.
+                          String? paymentRequestId =
+                              uri?.queryParameters['payment_id'];
+                          // print("value is: " +paymentRequestId);
+                          //calling this method to check payment status
+                          _checkPaymentStatus(paymentRequestId!);
+                        }
+                      }
+                    },
+                  ),
           ),
-          Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Text("Response: $_paymentResponse")),
-          const SizedBox(
-            height: 30,
-          ),
-        ],
-      )),
-    );
-  }
-
-  Widget animation() {
-    return AnimatedBuilder(
-      animation:
-          CurvedAnimation(parent: _controller, curve: Curves.fastOutSlowIn),
-      builder: (context, child) {
-        return Stack(
-          alignment: Alignment.center,
-          children: <Widget>[
-            _buildContainer(15 * _controller.value),
-            _buildContainer(20 * _controller.value),
-            _buildContainer(25 * _controller.value),
-            _buildContainer(30 * _controller.value),
-            _buildContainer(35 * _controller.value),
-          ],
-        );
-      },
-    );
-  }
-
-  Widget _buildContainer(double radius) {
-    return Container(
-      width: radius,
-      height: radius,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        color:
-            Theme.of(context).primaryColor.withOpacity(1 - _controller.value),
+        ),
       ),
     );
   }
 
-  String? validateEmail(String? value) {
-    Pattern pattern =
-        r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
-    RegExp regex = RegExp(pattern as String);
-    if (!regex.hasMatch(value!)) {
-      return 'Enter Valid Email';
+  _checkPaymentStatus(String id) async {
+    // var header = {
+    //       "Accept": "application/json",
+    //       "Content-Type": "application/x-www-form-urlencoded",
+    //       "X-Api-Key": "test_b678a7048c8a9e5f69663c2e4fa",
+    //       "X-Auth-Token": "test_41af76995b230611b2c3b72b8cc"
+    //     };
+    final selectrdGateaway =
+        Provider.of<PaymentGateawayService>(context, listen: false)
+            .selectedGateaway!;
+    var header = {
+      "Accept": "application/json",
+      "Content-Type": "application/x-www-form-urlencoded",
+      "X-Api-Key": selectrdGateaway.publicKey as String,
+      "X-Auth-Token": selectrdGateaway.secretKey as String
+    };
+
+    var response = await http.get(
+        Uri.parse("https://test.instamojo.com/api/1.1/payments/$id/"),
+        headers: header);
+
+    var realResponse = json.decode(response.body);
+    print(realResponse);
+    if (realResponse['success'] == true) {
+      if (realResponse["payment"]['status'] == 'Credit') {
+        print('instamojo payment successfull');
+
+        // Provider.of<PlaceOrderService>(context, listen: false)
+        //     .makePaymentSuccess(context);
+
+//payment is successful.
+      } else {
+        print('failed');
+//payment failed or pending.
+      }
     } else {
-      return null;
+      print("PAYMENT STATUS FAILED");
     }
   }
-}
 
-class InstamojoScreen extends StatefulWidget {
-  final CreateOrderBody? body;
-  final String? orderCreationUrl;
-  final bool? isLive;
+  Future createRequest() async {
+    final userData =
+        Provider.of<UserProfileService>(context, listen: false).userProfileData;
+    final cartData = Provider.of<CartDataService>(context, listen: false);
+    final shippingAddress =
+        Provider.of<ShippingAddressesService>(context, listen: false);
+    final shippingZone =
+        Provider.of<ShippingZoneService>(context, listen: false);
+    final cuponData = Provider.of<CuponDiscountService>(context, listen: false);
+    final amount = (shippingZone.taxMoney(context) +
+            shippingZone.shippingCost +
+            cartData.calculateSubtotal() -
+            cuponData.cuponDiscount)
+        .toInt()
+        .toString();
+    Map<String, String> body = {
+      "amount": amount, //amount to be paid
+      "purpose": "Grenmart",
+      "buyer_name": 'abc',
+      "email": userData.email,
+      "allow_repeated_payments": "true",
+      "send_email": "true",
+      "phone": '2135632145',
+      "send_sms": "false",
+      "redirect_url": "https://www.xgenious.com/",
+      //Where to redirect after a successful payment.
+      "webhook": "https://www.xgenious.com/",
+    };
+//First we have to create a Payment_Request.
+//then we'll take the response of our request.
+    var resp = await http.post(
+        Uri.parse("https://test.instamojo.com/api/1.1/payment-requests/"),
+        headers: {
+          "Accept": "application/json",
+          "Content-Type": "application/x-www-form-urlencoded",
+          "X-Api-Key": "test_b678a7048c8a9e5f69663c2e4fa",
+          "X-Auth-Token": "test_41af76995b230611b2c3b72b8cc"
+        },
+        body: body);
+    print(jsonDecode(resp.body));
+    if (jsonDecode(resp.body)['success'] == true) {
+//If request is successful take the longurl.
+      setState(() {
+        isLoading = false; //setting state to false after data loaded
 
-  const InstamojoScreen(
-      {Key? key, this.body, this.orderCreationUrl, this.isLive = false})
-      : super(key: key);
-
-  @override
-  _InstamojoScreenState createState() => _InstamojoScreenState();
-}
-
-class _InstamojoScreenState extends State<InstamojoScreen>
-    implements InstamojoPaymentStatusListener {
-  @override
-  Widget build(BuildContext context) {
-    SystemChrome.setPreferredOrientations([
-      DeviceOrientation.portraitUp,
-      DeviceOrientation.portraitDown,
-    ]);
-    return Scaffold(
-        appBar: AppBar(
-          title: const Text('Instamojo Flutter'),
-        ),
-        body: SafeArea(
-            child: Instamojo(
-          isConvenienceFeesApplied: false,
-          listener: this,
-          environment:
-              widget.isLive! ? Environment.PRODUCTION : Environment.TEST,
-          apiCallType: ApiCallType.createOrder(
-              createOrderBody: widget.body,
-              orderCreationUrl: widget.orderCreationUrl),
-          stylingDetails: StylingDetails(
-              buttonStyle: ButtonStyling(
-                  buttonColor: Colors.amber,
-                  buttonTextStyle: const TextStyle(
-                    color: Colors.black,
-                  )),
-              listItemStyle: ListItemStyle(
-                  borderColor: Colors.grey,
-                  textStyle: const TextStyle(color: Colors.black, fontSize: 18),
-                  subTextStyle:
-                      const TextStyle(color: Colors.grey, fontSize: 14)),
-              loaderColor: Colors.amber,
-              inputFieldTextStyle: InputFieldTextStyle(
-                  textStyle: const TextStyle(color: Colors.black, fontSize: 18),
-                  hintTextStyle:
-                      const TextStyle(color: Colors.grey, fontSize: 14),
-                  labelTextStyle:
-                      const TextStyle(color: Colors.grey, fontSize: 14)),
-              alertStyle: AlertStyle(
-                headingTextStyle:
-                    const TextStyle(color: Colors.black, fontSize: 14),
-                messageTextStyle:
-                    const TextStyle(color: Colors.black, fontSize: 12),
-                positiveButtonTextStyle:
-                    const TextStyle(color: Colors.redAccent, fontSize: 10),
-                negativeButtonTextStyle:
-                    const TextStyle(color: Colors.amber, fontSize: 10),
-              )),
-        )));
+        selectedUrl =
+            json.decode(resp.body)["payment_request"]['longurl'].toString() +
+                "?embed=form";
+      });
+      print(json.decode(resp.body)['message'].toString());
+//If something is wrong with the data we provided to
+//create the Payment_Request. For Example, the email is in incorrect format, the payment_Request creation will fail.
+    }
   }
-
-  @override
-  void paymentStatus({Map<String, String>? status}) {
-    Navigator.pop(context, status);
-  }
-}
-
-print(String message) {
-  debugPrint(message);
-}
-
-class DataModel {
-  String name = '';
-  String email = '';
-  String number = '';
-  String amount = '';
-  String description = '';
-  bool isLive = false;
 }

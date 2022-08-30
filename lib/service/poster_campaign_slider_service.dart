@@ -1,14 +1,13 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import '../../model/Campaign_slider_model.dart' as camp;
-import '../../model/poster_slider_model.dart' as post;
+import 'package:gren_mart/model/mobile_slider_model.dart';
 import '../../service/common_service.dart';
 import 'package:http/http.dart' as http;
 
 class PosterCampaignSliderService with ChangeNotifier {
-  List<post.Datum> posterDataList = [];
-  List<camp.Datum> campaignDataList = [];
+  List<Datum> posterDataList = [];
+  List<Datum> campaignDataList = [];
 
   Future<void> fetchPosters() async {
     if (posterDataList.isNotEmpty) {
@@ -23,7 +22,7 @@ class PosterCampaignSliderService with ChangeNotifier {
         url,
       );
       if (response.statusCode == 200) {
-        final data = post.PosterSliderModel.fromJson(jsonDecode(response.body));
+        final data = MobileSliderModel.fromJson(jsonDecode(response.body));
         var stateData = [];
         // for (int i = 0; i < data.data.length; i++) {
         //   posterDataList.add({
@@ -59,7 +58,7 @@ class PosterCampaignSliderService with ChangeNotifier {
     );
     print(response.statusCode);
     if (response.statusCode == 200) {
-      final data = camp.CampaignSliderModel.fromJson(jsonDecode(response.body));
+      final data = MobileSliderModel.fromJson(jsonDecode(response.body));
       // var stateData = [];
 
       campaignDataList = data.data;
@@ -67,6 +66,7 @@ class PosterCampaignSliderService with ChangeNotifier {
       print('-------------------------------------');
       notifyListeners();
     }
+
     // else {
     //   // print('something went wrong');
     // }

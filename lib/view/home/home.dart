@@ -1,5 +1,6 @@
 import 'package:card_swiper/card_swiper.dart';
 import 'package:flutter/material.dart';
+import 'package:gren_mart/view/home/all_camp_product_from_link.dart';
 import '../../service/navigation_bar_helper_service.dart';
 import '../../service/poster_campaign_slider_service.dart';
 import '../../service/product_card_data_service.dart';
@@ -103,12 +104,41 @@ class Home extends StatelessWidget {
                     child: Swiper(
                       itemBuilder: (BuildContext context, int index) {
                         return PosterCard(
-                          posterData.posterDataList[index].title,
-                          'Shop now',
-                          posterData.posterDataList[index].description,
-                          () {},
-                          posterData.posterDataList[index].image,
-                        );
+                            posterData.posterDataList[index].title,
+                            'Shop now',
+                            posterData.posterDataList[index].description, () {
+                          if (posterData.posterDataList[index].campaign !=
+                              null) {
+                            Navigator.of(context).pushNamed(
+                                ALLCampProductFromLink.routeName,
+                                arguments: [
+                                  posterData.posterDataList[index].campaign
+                                      .toString()
+                                ]);
+                          }
+                          if (posterData.posterDataList[index].category !=
+                              null) {
+                            Provider.of<SearchResultDataService>(context,
+                                    listen: false)
+                                .resetSerch();
+                            Provider.of<SearchResultDataService>(context,
+                                    listen: false)
+                                .setCategoryId(posterData
+                                    .posterDataList[index].category
+                                    .toString());
+                            Provider.of<SearchResultDataService>(context,
+                                    listen: false)
+                                .fetchProductsBy(pageNo: '1');
+                            Provider.of<NavigationBarHelperService>(context,
+                                    listen: false)
+                                .setNavigationIndex(1);
+                          }
+                        },
+                            posterData.posterDataList[index].image,
+                            (posterData.posterDataList[index].campaign !=
+                                    null ||
+                                posterData.posterDataList[index].category !=
+                                    null));
                       },
                       itemCount: posterData.posterDataList.length,
                       viewportFraction: 0.8,
@@ -172,8 +202,28 @@ class Home extends StatelessWidget {
                           const SizedBox(width: 20),
                           ...pcData.campaignDataList.map((e) {
                             print(e.title);
-                            return DODCard(
-                                e.title, e.buttonText, () {}, e.image);
+                            return CampaignCard(e.title, e.buttonText, () {
+                              if (e.campaign != null) {
+                                Navigator.of(context).pushNamed(
+                                    ALLCampProductFromLink.routeName,
+                                    arguments: [e.campaign.toString()]);
+                              }
+                              if (e.category != null) {
+                                Provider.of<SearchResultDataService>(context,
+                                        listen: false)
+                                    .resetSerch();
+                                Provider.of<SearchResultDataService>(context,
+                                        listen: false)
+                                    .setCategoryId(e.category.toString());
+                                Provider.of<SearchResultDataService>(context,
+                                        listen: false)
+                                    .fetchProductsBy(pageNo: '1');
+                                Provider.of<NavigationBarHelperService>(context,
+                                        listen: false)
+                                    .setNavigationIndex(1);
+                              }
+                            }, e.image,
+                                e.campaign != null || e.category != null);
                           }).toList()
                         ],
                       );

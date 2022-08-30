@@ -85,8 +85,8 @@ class ShippingZoneService with ChangeNotifier {
   }
 
   double taxMoney(BuildContext context) {
-    final subTotal =
-        Provider.of<CartDataService>(context, listen: false).subTotal;
+    final subTotal = Provider.of<CartDataService>(context, listen: false)
+        .calculateSubtotal();
     return taxParcentage * subTotal;
   }
 

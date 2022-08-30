@@ -2,17 +2,19 @@ import 'package:flutter/material.dart';
 import '../../view/utils/constant_colors.dart';
 import '../../view/utils/constant_name.dart';
 
-class DODCard extends StatelessWidget {
+class CampaignCard extends StatelessWidget {
   final String title;
   final String btText;
   final Function btFunction;
   final String image;
+  final bool showButton;
 
-  DODCard(
+  CampaignCard(
     this.title,
     this.btText,
     this.btFunction,
     this.image,
+    this.showButton,
   );
 
   ConstantColors cc = ConstantColors();
@@ -70,22 +72,23 @@ class DODCard extends StatelessWidget {
                       ),
                     ),
                   ),
-                  const SizedBox(height: 15),
-                  // ElevatedButton(
-                  //   onPressed: () {
-                  //     btFunction;
-                  //   },
-                  //   child: Text(btText),
-                  //   style: ElevatedButton.styleFrom(
-                  //       padding: const EdgeInsets.symmetric(
-                  //         horizontal: 21,
-                  //         vertical: 11,
-                  //       ),
-                  //       elevation: 0,
-                  //       primary: cc.orange,
-                  //       shape: RoundedRectangleBorder(
-                  //           borderRadius: BorderRadius.circular(12))),
-                  // ),
+                  if (showButton) const SizedBox(height: 15),
+                  if (showButton)
+                    ElevatedButton(
+                      onPressed: () {
+                        btFunction;
+                      },
+                      child: Text(btText),
+                      style: ElevatedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 21,
+                            vertical: 11,
+                          ),
+                          elevation: 0,
+                          primary: cc.orange,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12))),
+                    ),
                   const Spacer()
                 ],
               ),

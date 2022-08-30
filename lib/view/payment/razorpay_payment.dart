@@ -32,21 +32,13 @@ class RazorpayPayment {
   void _handlePaymentError(PaymentFailureResponse response) {
     print(response);
     // Do something when payment fails
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(response.message ?? ''),
-      ),
-    );
+    snackBar(context, 'Payment failed');
   }
 
   void _handleExternalWallet(ExternalWalletResponse response) {
     print(response);
     // Do something when an external wallet is selected
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(response.walletName ?? ''),
-      ),
-    );
+    snackBar(context, 'Payment via wallet');
   }
 
 // create order
@@ -68,22 +60,23 @@ class RazorpayPayment {
       _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
       _razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, _handleExternalWallet);
     });
-    // String username = "rzp_test_qfnlVh6GDZoveL";
-    // String password = "1BKI89076hFeXRsbGuSaj29C";
+    String username = "rzp_test_qfnlVh6GDZoveL";
+    String password = "1BKI89076hFeXRsbGuSaj29C";
     if (selectrdGateaway.apiKey == null || selectrdGateaway.apiSecret == null) {
       snackBar(context, 'Invalid developer keys');
       return;
     }
-    String username = selectrdGateaway.apiKey;
-    String password = selectrdGateaway.apiSecret;
+    // String username = selectrdGateaway.apiKey;
+    // String password = selectrdGateaway.apiSecret;
     String basicAuth =
         'Basic ${base64Encode(utf8.encode('$username:$password'))}';
 
     Map<String, dynamic> body = {
-      "amount": (shippingZone.taxMoney(context) +
-              shippingZone.shippingCost +
-              cartData.calculateSubtotal() -
-              cuponData.cuponDiscount)
+      "amount": ((shippingZone.taxMoney(context) +
+                  shippingZone.shippingCost +
+                  cartData.calculateSubtotal() -
+                  cuponData.cuponDiscount) *
+              100)
           .toInt()
           .toString(),
       "currency": "USD",
@@ -98,29 +91,35 @@ class RazorpayPayment {
       },
       body: jsonEncode(body),
     );
-
+    print(res.body);
     if (res.statusCode == 200) {
       openGateway(
           jsonDecode(res.body)['id'],
-          (shippingZone.taxMoney(context) +
-                  shippingZone.shippingCost +
-                  cartData.calculateSubtotal() -
-                  cuponData.cuponDiscount)
+          ((shippingZone.taxMoney(context) +
+                      shippingZone.shippingCost +
+                      cartData.calculateSubtotal() -
+                      cuponData.cuponDiscount) *
+                  100)
               .toInt()
               .toString());
     }
-    print(res.body);
+    print(res.statusCode);
   }
 
   openGateway(String orderId, String amount) {
+    print(amount);
     final userData =
         Provider.of<UserProfileService>(context, listen: false).userProfileData;
     var options = {
+      // 'key': Provider.of<PaymentGateawayService>(context, listen: false)
+      //     .selectedGateaway!
+      //     .apiKey,
       'key': "rzp_test_qfnlVh6GDZoveL",
       'amount': amount, //in the smallest currency sub-unit.
       'name': userData.name,
+      "currency": "USD",
       'order_id': orderId, // Generate order_id using Orders API
-      'description': 'Fine T-Shirt',
+      // 'description': 'Fine T-Shirt',
       'timeout': 60 * 5, // in seconds // 5 minutes
       'prefill': {
         'contact': userData.phone,
@@ -150,7 +149,7 @@ class RazorpayPayment {
     var res = await http.post(
       Uri.https(
         "10.0.2.2", // my ip address , localhost
-        "razorpay_signature_verify.php",
+        "rzp_test_qfnlVh6GDZoveL",
       ),
       headers: {
         "Content-Type": "application/x-www-form-urlencoded", // urlencoded
@@ -160,11 +159,7 @@ class RazorpayPayment {
 
     print(res.body);
     if (res.statusCode == 200) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(res.body),
-        ),
-      );
+      snackBar(context, 'Payment Successfull');
     }
   }
 }
