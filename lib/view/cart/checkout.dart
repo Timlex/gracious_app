@@ -7,6 +7,7 @@ import 'package:gren_mart/view/payment/flutter_wave_payment.dart';
 import 'package:gren_mart/view/payment/instamojo_payment.dart';
 import 'package:gren_mart/view/payment/mercado_pago_payment.dart';
 import 'package:gren_mart/view/payment/mid_trans_payment.dart';
+import 'package:gren_mart/view/payment/mollie_payment.dart';
 import 'package:gren_mart/view/payment/payfast_payment.dart';
 import 'package:gren_mart/view/payment/paystack_payment.dart';
 import 'package:gren_mart/view/payment/razorpay_payment.dart';
@@ -563,14 +564,26 @@ class Checkout extends StatelessWidget {
     //   return;
     // }
     if (selectedGateaway.name.toLowerCase().contains('marcadopago')) {
-      MercadoPagoPayment().startCheckout(context);
-
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (BuildContext context) => MercadopagoPayment(),
+        ),
+      );
+      return;
+    }
+    // }
+    if (selectedGateaway.name.toLowerCase().contains('payfast')) {
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (BuildContext context) => PayfastPayment(),
+        ),
+      );
       return;
     }
     if (selectedGateaway.name.toLowerCase().contains('midtrans')) {
       Navigator.of(context).push(
         MaterialPageRoute(
-          builder: (BuildContext context) => PayFastPayment(),
+          builder: (BuildContext context) => MidtransPayment(),
         ),
       );
 
@@ -581,6 +594,15 @@ class Checkout extends StatelessWidget {
       Navigator.of(context).push(
         MaterialPageRoute(
           builder: (BuildContext context) => InstamojoPayment(),
+        ),
+      );
+      return;
+    }
+    if (selectedGateaway.name.toLowerCase().contains('mollie')) {
+      // MercadoPagoMobileCheckout.startCheckout(context);
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (BuildContext context) => MolliePayment(),
         ),
       );
       return;

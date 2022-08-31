@@ -1,161 +1,131 @@
-// import 'package:gren_mart/view/utils/constant_styles.dart';
-// import 'package:midtrans_sdk/midtrans_sdk.dart';
-// import 'package:flutter/cupertino.dart';
-// import 'package:provider/provider.dart';
-// import 'package:http/http.dart' as http;
-// import 'package:dotenv/dotenv.dart';
+import 'dart:convert';
+import 'dart:math';
 
-// import '../../service/cart_data_service.dart';
-// import '../../service/cupon_discount_service.dart';
-// import '../../service/payment_gateaway_service.dart';
-// import '../../service/shipping_addresses_service.dart';
-// import '../../service/shipping_zone_service.dart';
-// import '../../service/user_profile_service.dart';
+import 'package:flutter/material.dart';
+import 'package:gren_mart/service/payment_gateaway_service.dart';
+import 'package:gren_mart/view/utils/app_bars.dart';
+import 'package:gren_mart/view/utils/constant_styles.dart';
+import 'package:provider/provider.dart';
+import 'package:webview_flutter/webview_flutter.dart';
+import 'package:http/http.dart' as http;
 
-// class MidTransPayment {
-//   late BuildContext context;
-//   MidtransSDK? _midtransSdk;
-//   final env = DotEnv(includePlatformEnvironment: true)..load();
+import '../../service/cart_data_service.dart';
+import '../../service/cupon_discount_service.dart';
+import '../../service/shipping_addresses_service.dart';
+import '../../service/shipping_zone_service.dart';
+import '../../service/user_profile_service.dart';
 
-//   Future startPayment(BuildContext context) async {
-//     await initSDK();
-//     this.context = context;
-//     final userData =
-//         Provider.of<UserProfileService>(context, listen: false).userProfileData;
-//     final cartData = Provider.of<CartDataService>(context, listen: false);
-//     final shippingAddress =
-//         Provider.of<ShippingAddressesService>(context, listen: false);
-//     final shippingZone =
-//         Provider.of<ShippingZoneService>(context, listen: false);
-//     final cuponData = Provider.of<CuponDiscountService>(context, listen: false);
-//     final selectrdGateaway =
-//         Provider.of<PaymentGateawayService>(context, listen: false)
-//             .selectedGateaway!;
-//     final amount = (shippingZone.taxMoney(context) +
-//             shippingZone.shippingCost +
-//             cartData.calculateSubtotal() -
-//             cuponData.cuponDiscount)
-//         .toInt()
-//         .toString();
+class MidtransPayment extends StatelessWidget {
+  MidtransPayment({Key? key}) : super(key: key);
+  String? url;
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBars().appBarTitled('', () {
+        Navigator.of(context).pop();
+      }),
+      body: FutureBuilder(
+          future: waitForIt(context),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return loadingProgressBar();
+            }
+            if (snapshot.hasData) {
+              return const Center(
+                child: Text('Loding failed.'),
+              );
+            }
+            if (snapshot.hasError) {
+              print(snapshot.error);
+              return const Center(
+                child: Text('Loding failed.'),
+              );
+            }
+            return WebView(
+              initialUrl: url,
+              javascriptMode: JavascriptMode.unrestricted,
+              onPageFinished: (value) {
+                print('on progress.........................$value');
+                if (value.contains('success')) {
+                  print('closing payment......');
+                  print('closing payment.............');
+                  print('closing payment...................');
+                  print('closing payment..........................');
+                  Navigator.of(context).pop();
+                }
+              },
+              onPageStarted: (value) {
+                print("on progress.........................$value");
+                if (value.contains('success')) {
+                  print('closing payment......');
+                  print('closing payment.............');
+                  print('closing payment...................');
+                  print('closing payment..........................');
+                  Navigator.of(context).pop();
+                }
+              },
+            );
+          }),
+    );
+  }
 
-//     _midtransSdk?.startPaymentUiFlow(
-//       token: env['SNAP_TOKEN'],
-//     );
-//   }
+  waitForIt(BuildContext context) async {
+    final userData =
+        Provider.of<UserProfileService>(context, listen: false).userProfileData;
+    final cartData = Provider.of<CartDataService>(context, listen: false);
+    final shippingAddress =
+        Provider.of<ShippingAddressesService>(context, listen: false);
+    final shippingZone =
+        Provider.of<ShippingZoneService>(context, listen: false);
+    final cuponData = Provider.of<CuponDiscountService>(context, listen: false);
+    final selectrdGateaway =
+        Provider.of<PaymentGateawayService>(context, listen: false)
+            .selectedGateaway!;
+    final amount = (shippingZone.taxMoney(context) +
+        shippingZone.shippingCost +
+        cartData.calculateSubtotal() -
+        cuponData.cuponDiscount);
+    if (selectrdGateaway.serverKey == null ||
+        selectrdGateaway.clientKey == null) {
+      snackBar(context, 'Invalid developer keys');
+    }
+    print('here');
+    final url =
+        Uri.parse('https://app.sandbox.midtrans.com/snap/v1/transactions');
+    final selectedGateaway =
+        Provider.of<PaymentGateawayService>(context, listen: false)
+            .selectedGateaway!;
+    final username = selectedGateaway.serverKey;
+    final password = selectedGateaway.clientKey;
+    final basicAuth =
+        'Basic ${base64Encode(utf8.encode('$username:$password'))}';
+    final header = {
+      "Content-Type": "application/json",
+      "Accept": "application/json",
+      "Authorization": basicAuth,
+      // Above is API server key for the Midtrans account, encoded to base64
+    };
+    final orderId = Random().nextInt(23000).toInt();
+    final response = await http.post(url,
+        headers: header,
+        body: jsonEncode({
+          "transaction_details": {
+            "order_id": "$orderId",
+            "gross_amount": amount.toInt()
+          },
+          "credit_card": {"secure": true},
+          "customer_details": {
+            "first_name": userData.name,
+            "email": userData.email,
+            "phone": shippingAddress.phone,
+          }
+        }));
+    print(response.statusCode);
+    if (response.statusCode == 201) {
+      this.url = jsonDecode(response.body)['redirect_url'];
+      return;
+    }
 
-//   Future<void> initSDK() async {
-//     print('SB-Mid-client-iDuy-jKdZHkLjL_I');
-//     _midtransSdk = await MidtransSDK.init(
-//       config: MidtransConfig(
-//         clientKey: 'SB-Mid-client-iDuy-jKdZHkLjL_I',
-//         merchantBaseUrl: 'https://www.youtube.com/watch?v=YNRvx96ACz8&t=742s',
-//         colorTheme: ColorTheme(
-//           colorPrimary: cc.primaryColor,
-//         ),
-//       ),
-//     );
-//     print('came here- ----------------------');
-//     _midtransSdk?.setUIKitCustomSetting(
-//       skipCustomerDetailsPages: true,
-//     );
-//     _midtransSdk!.setTransactionFinishedCallback((result) {
-//       print(result.toJson());
-//     });
-//   }
-// }
-
-// import 'dart:developer';
-
-// import 'package:flutter/material.dart';
-// import 'dart:async';
-
-// import 'package:flutter/services.dart';
-// import 'package:flutter_midtrans_payment/flutter_midtrans_payment.dart';
-
-// class MidTransPayment extends StatefulWidget {
-//   @override
-//   _MidTransPaymentState createState() => _MidTransPaymentState();
-// }
-
-// class _MidTransPaymentState extends State<MidTransPayment> {
-//   String _platformVersion = 'Unknown';
-
-//   @override
-//   void initState() {
-//     super.initState();
-//     initPlatformState();
-//   }
-
-//   // Platform messages are asynchronous, so we initialize in an async method.
-//   Future<void> initPlatformState() async {
-//     log("mulai");
-//     String platformVersion;
-//     // Platform messages may fail, so we use a try/catch PlatformException.
-//     try {
-//       platformVersion = await FlutterMidtransPayment.platformVersion;
-//     } on PlatformException {
-//       platformVersion = 'Failed to get platform version.';
-//     }
-
-//     // If the widget was removed from the tree while the asynchronous platform
-//     // message was in flight, we want to discard the reply rather than calling
-//     // setState to update our non-existent appearance.
-//     if (!mounted) return;
-
-//     setState(() {
-//       _platformVersion = platformVersion;
-//     });
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return MaterialApp(
-//       home: Scaffold(
-//         appBar: AppBar(
-//           title: const Text('Plugin example app'),
-//         ),
-//         body: Center(
-//           child: Column(
-//             children: [
-//               Text('Running on: $_platformVersion\n'),
-//               ElevatedButton(
-//                   child: Text('Pay'),
-//                   onPressed: () async {
-//                     var midtransPayParam = MidtransPayParam();
-//                     midtransPayParam.clientKey = "=";
-//                     midtransPayParam.merchantBaseUrl = "";
-//                     midtransPayParam.totalPrice = 0;
-//                     midtransPayParam.orderId = "";
-//                     midtransPayParam.selectedPaymentMethod =
-//                         MidtransPaymentMethod.SHOPEEPAY.index;
-//                     var result =
-//                         await FlutterMidtransPayment.pay(midtransPayParam);
-//                     log(result);
-//                   }),
-//               ElevatedButton(
-//                   child: Text('Pay with token2'),
-//                   onPressed: () async {
-//                     log("start");
-//                     var midtransPayParam = MidtransPayWithTokenParam();
-//                     midtransPayParam.clientKey =
-//                         "SB-Mid-client-iDuy-jKdZHkLjL_I";
-//                     midtransPayParam.merchantBaseUrl =
-//                         "https://kesan-api.bangun-kreatif.com";
-//                     midtransPayParam.snapToken =
-//                         "3143c741-3e24-4251-96e5-e5391cd19280";
-//                     try {
-//                       var result = await FlutterMidtransPayment.payWithToken(
-//                           midtransPayParam);
-//                       log('result');
-//                       log(result.toString());
-//                     } catch (err) {
-//                       log(err.toString());
-//                     }
-//                   })
-//             ],
-//           ),
-//         ),
-//       ),
-//     );
-//   }
-// }
+    return true;
+  }
+}
