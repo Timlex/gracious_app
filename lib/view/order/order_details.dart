@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gren_mart/service/order_details_service.dart';
 import 'package:gren_mart/view/utils/constant_name.dart';
+import 'package:gren_mart/view/utils/text_themes.dart';
 import '../../view/order/order_details_tile.dart';
 import 'package:provider/provider.dart';
 
@@ -33,48 +34,46 @@ class OrderDetails extends StatelessWidget {
             }
             return Consumer<OrderDetailsService>(
                 builder: (context, odService, child) {
+              final titleTextTheme =
+                  const TextStyle(fontSize: 12, fontWeight: FontWeight.bold);
               return Column(
                 children: [
                   Padding(
                     padding: const EdgeInsets.only(left: 20),
                     child: Row(
                       children: [
-                        const SizedBox(
+                        SizedBox(
                           width: 60,
                           // padding: const EdgeInsets.all(10),
                           child: Text(
                             'Image',
-                            style: TextStyle(
-                                fontSize: 12, fontWeight: FontWeight.bold),
+                            style: titleTextTheme,
                           ),
                         ),
                         Container(
                           width: screenWidth / 2.5,
                           padding: const EdgeInsets.only(left: 15),
-                          child: const Text(
+                          child: Text(
                             'Name',
-                            style: TextStyle(
-                                fontSize: 12, fontWeight: FontWeight.bold),
+                            style: titleTextTheme,
                           ),
                         ),
                         const SizedBox(width: 10),
                         Container(
                           width: 70,
                           padding: const EdgeInsets.all(10),
-                          child: const Text(
+                          child: Text(
                             'Quantity',
-                            style: TextStyle(
-                                fontSize: 12, fontWeight: FontWeight.bold),
+                            style: titleTextTheme,
                           ),
                         ),
                         // const Spacer(),
                         Container(
                           padding: const EdgeInsets.all(10),
                           // alignment: Alignment.center,
-                          child: const Text(
+                          child: Text(
                             'Price',
-                            style: TextStyle(
-                                fontSize: 12, fontWeight: FontWeight.bold),
+                            style: titleTextTheme,
                           ),
                         ),
                       ],
@@ -176,10 +175,7 @@ class OrderDetails extends StatelessWidget {
       children: [
         Text(
           leading,
-          style: TextStyle(
-            color: cc.greyParagraph,
-            fontSize: 13,
-          ),
+          style: TextThemeConstrants.paragraphText,
         ),
         if (trailing != null)
           Text(

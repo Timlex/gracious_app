@@ -7,6 +7,7 @@ import 'package:timeago/timeago.dart' as timeago;
 
 import '../utils/constant_name.dart';
 import '../utils/constant_styles.dart';
+import '../utils/text_themes.dart';
 
 class ReviewBox extends StatelessWidget {
   bool expanded;
@@ -103,13 +104,12 @@ class ReviewBox extends StatelessWidget {
                 },
               ),
               const SizedBox(height: 8),
-              Text(element.reviewMsg,
-                  overflow: TextOverflow.ellipsis,
-                  maxLines: 3,
-                  style: TextStyle(
-                    color: cc.greyParagraph,
-                    fontSize: 12,
-                  )),
+              Text(
+                element.reviewMsg,
+                overflow: TextOverflow.ellipsis,
+                maxLines: 3,
+                style: TextThemeConstrants.paragraphText,
+              ),
               const SizedBox(height: 10),
               Text(timeago.format(element.createdAt),
                   style: TextStyle(color: cc.greyHint, fontSize: 11)),
@@ -126,6 +126,8 @@ class ReviewBox extends StatelessWidget {
   }
 
   Widget submitReview() {
+    final textTheme = TextStyle(
+        fontSize: 17, fontWeight: FontWeight.bold, color: cc.greyParagraph);
     return Form(
         child: Container(
       margin: const EdgeInsets.symmetric(horizontal: 20),
@@ -136,11 +138,7 @@ class ReviewBox extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const SizedBox(height: 20),
-          Text('Your rating',
-              style: TextStyle(
-                  fontSize: 17,
-                  fontWeight: FontWeight.bold,
-                  color: cc.greyParagraph)),
+          Text('Your rating', style: textTheme),
           const SizedBox(height: 10),
           RatingBar.builder(
             // ignoreGestures: true,
@@ -160,11 +158,7 @@ class ReviewBox extends StatelessWidget {
             },
           ),
           const SizedBox(height: 10),
-          Text('Your review',
-              style: TextStyle(
-                  fontSize: 17,
-                  fontWeight: FontWeight.bold,
-                  color: cc.greyParagraph)),
+          Text('Your review', style: textTheme),
           const SizedBox(height: 10),
           SizedBox(
             height: screenHight / 7,

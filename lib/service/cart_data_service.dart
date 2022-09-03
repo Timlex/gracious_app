@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
 import '../db/database_helper.dart';
 import '../model/cart_data_model.dart';
+import 'common_service.dart';
 
 class CartDataService with ChangeNotifier {
   Map<String, Cart> _cartItems = {}
@@ -12,7 +14,6 @@ class CartDataService with ChangeNotifier {
       // Cart(id: '05', quantity: 1),
       // Cart('06', 1),
       ;
-  var subTotal = 0;
 
   Map<String, Cart> get cartList {
     return _cartItems;
@@ -81,7 +82,6 @@ class CartDataService with ChangeNotifier {
           // 'imgUrl': value.imgUrl,
         },
       );
-      subTotal -= value.price;
       return Cart(
         value.id,
         value.title,
@@ -124,10 +124,8 @@ class CartDataService with ChangeNotifier {
     String? mayo,
     String? cheese,
   }) async {
-    print('adding to cart $subTotal');
     if (_cartItems.containsKey(id.toString())) {
       addItem(id, extraQuantity: quantity);
-      subTotal += price * quantity;
       notifyListeners();
       return;
     }
@@ -151,7 +149,6 @@ class CartDataService with ChangeNotifier {
           'cheese': cheese,
         },
       );
-      subTotal += price * quantity;
       _cartItems.putIfAbsent(
           id.toString(),
           (() => Cart(
@@ -198,19 +195,16 @@ class CartDataService with ChangeNotifier {
         );
       });
     }
-    dataList.forEach((key, value) {
-      subTotal += value.discountPrice * value.quantity;
-    });
+    dataList.forEach((key, value) {});
     _cartItems = dataList;
     notifyListeners();
+    refreshCartList();
     print('fetching carts');
     // _cartList = dataList;
   }
 
   void deleteCartItem(int id) async {
     await DbHelper.deleteDbSI('cart', id);
-    subTotal -=
-        _cartItems[id.toString()]!.price * _cartItems[id.toString()]!.quantity;
     _cartItems.remove(id.toString());
     notifyListeners();
   }
@@ -221,5 +215,17 @@ class CartDataService with ChangeNotifier {
       total += value.quantity;
     });
     return total;
+  }
+
+  refreshCartList() {
+    cartList.forEach((key, value) async {
+      final url = Uri.parse('$baseApiUrl/product/$key');
+
+      // try {
+      final response = await http.get(url);
+      if (response.statusCode != 200) {
+        deleteCartItem(value.id);
+      }
+    });
   }
 }

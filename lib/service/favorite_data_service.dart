@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
 import '../db/database_helper.dart';
 import '../model/favorite_data_model.dart';
+import 'common_service.dart';
 
 class FavoriteDataService with ChangeNotifier {
   Map<String, Favorites> _favoriteItems = {};
@@ -55,6 +57,7 @@ class FavoriteDataService with ChangeNotifier {
     }
     _favoriteItems = dataList;
     notifyListeners();
+    refreshFavList();
     print('fetching favorite');
   }
 
@@ -62,5 +65,17 @@ class FavoriteDataService with ChangeNotifier {
     await DbHelper.deleteDbSI('favorite', id);
     _favoriteItems.removeWhere((key, value) => value.id == id);
     notifyListeners();
+  }
+
+  refreshFavList() {
+    favoriteItems.forEach((key, value) async {
+      final url = Uri.parse('$baseApiUrl/product/$key');
+
+      // try {
+      final response = await http.get(url);
+      if (response.statusCode != 200) {
+        deleteFavoriteItem(value.id);
+      }
+    });
   }
 }

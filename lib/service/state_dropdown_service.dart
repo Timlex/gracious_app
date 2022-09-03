@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:gren_mart/service/shipping_addresses_service.dart';
+import 'package:gren_mart/view/utils/constant_styles.dart';
 import 'package:provider/provider.dart';
 import '../../model/state_dropdown_model.dart';
 import '../../service/common_service.dart';
@@ -74,9 +75,10 @@ class StateDropdownService with ChangeNotifier {
         // print('something went wrong');
       }
     } catch (error) {
-      // print(error);
+      print(error);
+      snackBar(context!, 'Loding failed!');
 
-      rethrow;
+      return;
     }
   }
 }

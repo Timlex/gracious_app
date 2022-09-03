@@ -66,13 +66,13 @@ dependencies:
   razorpay_flutter: 
   flutterwave_standard: 
   uuid:
-  # mercado_pago_mobile_checkout: ^0.1.0
   instamojo:
-  # midtrans_sdk: ^0.3.4
-  # dotenv: ^4.0.1
-  # flutter_midtrans_payment:
+
+
   cashfree_pg: ^2.0.12+32
   flutter_paystack: ^1.0.5+1
+  # flutter_paytabs_bridge: ^2.2.7
+
   
   provider: ^6.0.3
 
@@ -85,10 +85,28 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_native_splash:
+  flutter_launcher_icons: "^0.10.0"
+
 
 flutter_native_splash:
   color: "#ffffff"
-  image: assets/images/splash_screen.png
+  image: assets/images/splash.png
+
+flutter_icons:
+  android: true
+  # ios: true
+  image_path: "assets/images/app_icon.png"
+  # min_sdk_android: 21 # android min sdk min:16, default 21
+  # web:
+  #   generate: true
+  #   image_path: "path/to/image.png"
+  #   background_color: "#hexcode"
+  #   theme_color: "#hexcode"
+  # windows:
+  #   generate: true
+  #   image_path: "path/to/image.png"
+  #   icon_size: 48 # min:48, max:256, default: 48
+
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is

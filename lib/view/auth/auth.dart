@@ -3,6 +3,7 @@ import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:gren_mart/service/social_login_service.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
+import 'package:gren_mart/view/utils/text_themes.dart';
 import 'package:provider/provider.dart';
 
 import '../../db/database_helper.dart';
@@ -62,7 +63,9 @@ class _AuthState extends State<Auth> {
       }
       Provider.of<NavigationBarHelperService>(context, listen: false)
           .setNavigationIndex(0);
-      await ssService.signInOption(email.trim(), pass).then((value) async {
+      await ssService
+          .signInOption(context, email.trim(), pass)
+          .then((value) async {
         if (value) {
           await Provider.of<UserProfileService>(context, listen: false)
               .fetchProfileService(ssService.token);
@@ -73,9 +76,9 @@ class _AuthState extends State<Auth> {
         }
         ssService.toggleLaodingSpinner(value: false);
 
-        snackBar(context, 'SomeThing went wrong');
+        // snackBar(context, 'SomeThing went wrong');
       }).onError((error, stackTrace) {
-        snackBar(context, error.toString());
+        snackBar(context, 'Signin failed!');
         print(error.toString());
       });
       ssService.toggleLaodingSpinner(value: false);
@@ -105,6 +108,8 @@ class _AuthState extends State<Auth> {
             .fetchProfileService(ssService.token);
 
         ssService.toggleLaodingSpinner(value: false);
+        Provider.of<NavigationBarHelperService>(context, listen: false)
+            .setNavigationIndex(0);
         Navigator.of(context).pushReplacementNamed(HomeFront.routeName);
 
         return;
@@ -175,11 +180,7 @@ class _AuthState extends State<Auth> {
                   padding: const EdgeInsets.symmetric(horizontal: 20.0),
                   child: Text(
                     ssData.login ? 'Welcome back' : 'Register to join us',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w600,
-                      color: cc.titleTexts,
-                    ),
+                    style: TextThemeConstrants.titleText,
                   ),
                 ),
                 const SizedBox(height: 15),
@@ -281,7 +282,7 @@ class _AuthState extends State<Auth> {
                         ssData.login
                             ? 'Don\'t have an account?'
                             : 'Already have an account?',
-                        style: TextStyle(color: cc.greyParagraph),
+                        style: TextThemeConstrants.paragraphText,
                       ),
                       const SizedBox(width: 5),
                       Padding(
@@ -318,7 +319,7 @@ class _AuthState extends State<Auth> {
                   child: GestureDetector(
                     onTap: (() async {
                       Provider.of<SocialLoginService>(context, listen: false)
-                          .googleLogin()
+                          .googleLogin(context)
                           .then((value) async {
                         await Provider.of<UserProfileService>(context,
                                 listen: false)
@@ -351,7 +352,7 @@ class _AuthState extends State<Auth> {
                   child: GestureDetector(
                     onTap: () async {
                       Provider.of<SocialLoginService>(context, listen: false)
-                          .facebookLogin()
+                          .facebookLogin(context)
                           .then((value) async {
                         await Provider.of<UserProfileService>(context,
                                 listen: false)
@@ -367,6 +368,9 @@ class _AuthState extends State<Auth> {
                                   listen: false)
                               .fetchCampaigns();
 
+                          Provider.of<NavigationBarHelperService>(context,
+                                  listen: false)
+                              .setNavigationIndex(0);
                           Navigator.of(context)
                               .pushReplacementNamed(HomeFront.routeName);
                         });

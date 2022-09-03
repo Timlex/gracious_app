@@ -78,8 +78,8 @@ class ShippingZoneService with ChangeNotifier {
   }
 
   cuponTotal(BuildContext context) {
-    final subTotal =
-        Provider.of<CartDataService>(context, listen: false).subTotal;
+    final subTotal = Provider.of<CartDataService>(context, listen: false)
+        .calculateSubtotal();
     final taxMoney = taxParcentage * subTotal;
     return subTotal + taxMoney + shippingCost;
   }

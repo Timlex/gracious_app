@@ -2,12 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:gren_mart/service/common_service.dart';
+import 'package:gren_mart/service/signin_signup_service.dart';
+import 'package:gren_mart/view/utils/constant_name.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SocialLoginService with ChangeNotifier {
-  Future facebookLogin() async {
+  Future facebookLogin(BuildContext context) async {
     try {
       final AccessToken? accessToken = await FacebookAuth.instance.accessToken;
 // or FacebookAuth.i.accessToken
@@ -19,7 +22,7 @@ class SocialLoginService with ChangeNotifier {
         print(userData['id']);
         print(userData['name']);
         return socialLogin(
-            '0', userData['email'], userData['name'], userData['id']);
+            context, '0', userData['email'], userData['name'], userData['id']);
       }
 
       final response = await FacebookAuth.i.login(
@@ -36,7 +39,7 @@ class SocialLoginService with ChangeNotifier {
         print(userData['id']);
         print(userData['name']);
         return socialLogin(
-            '0', userData['email'], userData['name'], userData['id']);
+            context, '0', userData['email'], userData['name'], userData['id']);
       }
       throw '';
     } catch (e) {
@@ -44,7 +47,7 @@ class SocialLoginService with ChangeNotifier {
     }
   }
 
-  Future googleLogin() async {
+  Future googleLogin(BuildContext context) async {
     try {
       await GoogleSignIn().signOut();
       final response = await GoogleSignIn().signIn();
@@ -54,7 +57,7 @@ class SocialLoginService with ChangeNotifier {
         print(response.displayName);
         print('===========================================');
         return socialLogin(
-            1, response.email, response.displayName, response.id);
+            context, '1', response.email, response.displayName, response.id);
       }
       throw '';
     } catch (e) {
@@ -62,7 +65,7 @@ class SocialLoginService with ChangeNotifier {
     }
   }
 
-  Future socialLogin(isGoogle, email, name, id) async {
+  Future socialLogin(BuildContext context, isGoogle, email, name, id) async {
     final url = Uri.parse('$baseApiUrl/social/login');
 
     final response = await http.post(url, body: {
@@ -82,7 +85,11 @@ class SocialLoginService with ChangeNotifier {
       final tokenData = json.encode({
         'token': loginData['token'],
       });
+      pref.setString('token', tokenData);
+      globalUserToken = loginData['token'];
       print('here');
+      Provider.of<SignInSignUpService>(context, listen: false)
+          .setToken(globalUserToken);
       return loginData['token'];
     }
     print('why here');

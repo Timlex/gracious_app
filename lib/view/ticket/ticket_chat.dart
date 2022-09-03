@@ -11,6 +11,7 @@ import '../../view/utils/constant_name.dart';
 import 'package:provider/provider.dart';
 
 import '../utils/constant_styles.dart';
+import '../utils/text_themes.dart';
 
 class TicketChat extends StatelessWidget {
   String title;
@@ -174,10 +175,7 @@ class TicketChat extends StatelessWidget {
                               tcService.pickedImage == null
                                   ? 'No file choosen'
                                   : tcService.pickedImage!.path.split('/').last,
-                              style: TextStyle(
-                                  color: cc.greyHint,
-                                  fontSize: 13,
-                                  overflow: TextOverflow.ellipsis),
+                              style: TextThemeConstrants.greyHint13Eclipse,
                             ),
                           ),
                         ],

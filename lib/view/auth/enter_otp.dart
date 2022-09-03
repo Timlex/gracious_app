@@ -10,6 +10,7 @@ import 'package:provider/provider.dart';
 
 import '../utils/constant_colors.dart';
 import '../utils/constant_styles.dart';
+import '../utils/text_themes.dart';
 
 class EnterOTP extends StatelessWidget {
   static const routeName = 'confirm OTP';
@@ -56,11 +57,7 @@ class EnterOTP extends StatelessWidget {
             const SizedBox(height: 40),
             Text(
               'Reset Password',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w600,
-                color: cc.titleTexts,
-              ),
+              style: TextThemeConstrants.titleText,
             ),
             const SizedBox(height: 10),
             Padding(
@@ -68,10 +65,7 @@ class EnterOTP extends StatelessWidget {
               child: Text(
                 'Enter the 4 digit code we sent to to your email in order to reset password',
                 textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 13,
-                  color: cc.greyParagraph,
-                ),
+                style: TextThemeConstrants.paragraphText,
               ),
             ),
             const SizedBox(height: 20),
@@ -81,10 +75,7 @@ class EnterOTP extends StatelessWidget {
               child: RichText(
                 text: TextSpan(
                   text: 'Didn\'t received?',
-                  style: TextStyle(
-                    fontSize: 13,
-                    color: ConstantColors().greyParagraph,
-                  ),
+                  style: TextThemeConstrants.paragraphText,
                   children: <TextSpan>[
                     TextSpan(
                         recognizer: TapGestureRecognizer()

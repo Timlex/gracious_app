@@ -8,6 +8,7 @@ import '../../view/utils/constant_name.dart';
 import 'package:provider/provider.dart';
 
 import '../utils/constant_styles.dart';
+import '../utils/text_themes.dart';
 import 'custom_text_field.dart';
 
 class ResetPassEmail extends StatelessWidget {
@@ -53,11 +54,7 @@ class ResetPassEmail extends StatelessWidget {
                   ),
                   Text(
                     'Reset Password',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w600,
-                      color: cc.titleTexts,
-                    ),
+                    style: TextThemeConstrants.titleText,
                   ),
                   const SizedBox(height: 17),
                   Text(

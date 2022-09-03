@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
+import 'package:gren_mart/view/utils/constant_styles.dart';
 import '../../model/signin_model.dart';
 import '../../model/signup_model.dart';
 import '../../service/common_service.dart';
@@ -18,6 +19,11 @@ class SignInSignUpService with ChangeNotifier {
   bool isLoading = false;
   bool rememberPass = false;
   bool termsAndCondi = false;
+
+  setToken(value) {
+    _token = value;
+    notifyListeners();
+  }
 
   toggleSigninSignup() {
     login = !login;
@@ -56,54 +62,56 @@ class SignInSignUpService with ChangeNotifier {
     return _token;
   }
 
-  Future<bool> signInOption(String? email, String? password) async {
+  Future<bool> signInOption(
+      BuildContext context, String? email, String? password) async {
     toggleLaodingSpinner(value: true);
     print('$email + $password');
     final url = Uri.parse('$baseApiUrl/login');
 
-    // try {
-    final response = await http.post(url, body: {
-      'username': email!.toLowerCase().trim(),
-      'password': password,
-    });
-    if (response.statusCode == 200) {
-      print(response.body);
-      final data = SignInModel.fromJson(jsonDecode(response.body));
-      print(data);
-      signInData = data;
-      _token = signInData!.token;
-      globalUserToken = _token;
-
-      final pref = await SharedPreferences.getInstance();
-      print('working on pref');
-      final tokenData = json.encode({
-        'token': signInData!.token,
+    try {
+      final response = await http.post(url, body: {
+        'username': email!.toLowerCase().trim(),
+        'password': password,
       });
-      await pref.setString('token', tokenData);
-      if (rememberPass) {
-        final userData = json.encode({
-          'email': email,
-          'password': password,
+      if (response.statusCode == 200) {
+        print(response.body);
+        final data = SignInModel.fromJson(jsonDecode(response.body));
+        print(data);
+        signInData = data;
+        _token = signInData!.token;
+        globalUserToken = _token;
+
+        final pref = await SharedPreferences.getInstance();
+        print('working on pref');
+        final tokenData = json.encode({
+          'token': signInData!.token,
         });
-        pref.setString('userData', userData);
+        await pref.setString('token', tokenData);
+        if (rememberPass) {
+          final userData = json.encode({
+            'email': email,
+            'password': password,
+          });
+          pref.setString('userData', userData);
+        }
+        if (!rememberPass) {
+          resetEmailPassData();
+        }
+
+        notifyListeners();
+        return true;
       }
-      if (!rememberPass) {
-        resetEmailPassData();
+      if (response.statusCode == 422) {
+        print(response.body);
+        snackBar(context, jsonDecode(response.body)['message']);
       }
 
-      notifyListeners();
-      return true;
+      return false;
+    } catch (error) {
+      print(error);
+      // snackBar(context, 'Login failed.');
+      rethrow;
     }
-    if (response.statusCode == 422) {
-      print('Invalide username');
-    }
-
-    return false;
-    // } catch (error) {
-    //   print(error);
-
-    //   rethrow;
-    // }
   }
 
   Future<bool> signUpOption(
@@ -187,7 +195,7 @@ class SignInSignUpService with ChangeNotifier {
     } catch (error) {
       print(error);
 
-      rethrow;
+      throw 'Signup failed';
     }
   }
 

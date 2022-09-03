@@ -3,6 +3,7 @@ import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:gren_mart/service/menual_payment_service.dart';
 import 'package:gren_mart/service/social_login_service.dart';
 import 'package:gren_mart/view/home/all_camp_product_from_link.dart';
+import 'package:gren_mart/view/utils/text_themes.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
@@ -63,6 +64,7 @@ void main() {
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
     statusBarColor: Colors.transparent, // transparent status bar
   ));
+  TextThemeConstrants();
   runApp(const MyApp());
 }
 

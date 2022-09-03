@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gren_mart/view/utils/text_themes.dart';
 import '../../service/shipping_addresses_service.dart';
 import '../../view/utils/app_bars.dart';
 import '../../view/utils/constant_colors.dart';
@@ -133,7 +134,7 @@ class AddNewAddress extends StatelessWidget {
                       textFieldTitle('Phone Number'),
                       IntlPhoneField(
                         focusNode: _phonelFN,
-                        style: TextStyle(color: cc.greyHint, fontSize: 13),
+                        style: TextThemeConstrants.greyHint13,
                         keyboardType: TextInputType.number,
                         initialCountryCode: 'BD',
                         decoration: InputDecoration(

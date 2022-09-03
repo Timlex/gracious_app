@@ -4,6 +4,7 @@ import '../../view/utils/app_bars.dart';
 import '../../view/utils/constant_colors.dart';
 import '../../view/utils/constant_name.dart';
 import '../../view/utils/constant_styles.dart';
+import '../utils/text_themes.dart';
 
 class PaymentStatusView extends StatefulWidget {
   static const routeName = 'pament status';
@@ -58,10 +59,7 @@ class _PaymentStatusViewState extends State<PaymentStatusView> {
                         text: widget.isError
                             ? 'We\'re getting problems with your payment methods and we couldn\'t proceed your order '
                             : 'Your order has been successful! You\'ll receive ordered items in 3-5 days. Your order ID  is ',
-                        style: TextStyle(
-                          fontSize: 13,
-                          color: ConstantColors().greyParagraph,
-                        ),
+                        style: TextThemeConstrants.paragraphText,
                         children: widget.isError
                             ? null
                             : <TextSpan>[

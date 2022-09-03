@@ -7,6 +7,8 @@ import '../../model/country_dropdown_model.dart';
 import '../../service/common_service.dart';
 import 'package:http/http.dart' as http;
 
+import '../view/utils/constant_styles.dart';
+
 class CountryDropdownService with ChangeNotifier {
   List countryDropdownList = [];
   List countryDropdownIdList = [];
@@ -57,9 +59,10 @@ class CountryDropdownService with ChangeNotifier {
         //something went wrong
       }
     } catch (error) {
+      snackBar(context, 'Loding failed!');
       print(error);
 
-      rethrow;
+      return;
     }
   }
 }

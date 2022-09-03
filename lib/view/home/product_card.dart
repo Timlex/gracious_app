@@ -118,7 +118,7 @@ class ProductCard extends StatelessWidget {
                       color: cc.orange,
                     ),
                     child: Text(
-                      campaignPercentage.toString(),
+                      '${campaignPercentage.toString()}%',
                       style: TextStyle(
                           color: cc.pureWhite,
                           fontSize: 10,

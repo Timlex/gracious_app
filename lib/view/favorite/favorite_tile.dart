@@ -8,6 +8,8 @@ import '../../service/favorite_data_service.dart';
 import '../../view/utils/constant_colors.dart';
 import 'package:provider/provider.dart';
 
+import '../utils/text_themes.dart';
+
 class FavoriteTile extends StatelessWidget {
   final int id;
 
@@ -103,10 +105,7 @@ class FavoriteTile extends StatelessWidget {
                           const SizedBox(height: 13),
                           Text(
                             '\$${favoriteItem.discountPrice == 0 ? favoriteItem.price : favoriteItem.discountPrice}',
-                            style: TextStyle(
-                                color: cc.primaryColor,
-                                fontWeight: FontWeight.w600,
-                                fontSize: 13),
+                            style: TextThemeConstrants.primary13,
                           ),
                         ],
                       ),

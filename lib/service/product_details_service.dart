@@ -328,23 +328,22 @@ class ProductDetailsService with ChangeNotifier {
   }
 
   final productInvenSet = {
-    'size': {
-      "m": [0, 1],
-    },
-    'color': {
-      "#710404": [0, 2],
-    },
-    'sauce': {
-      "Tartar": [0],
-      "Soy": [1],
-    },
-    'mayo': {
-      "Lime": [0],
-      "Wasabi": [1],
-    },
-    'cheese': {
-      "mozzarella": [0],
-      "white": [1],
-    },
+    'size': [0, 1],
+
+    // 'color': {
+    //   "#710404": [0, 2],
+    // },
+    // 'sauce': {
+    //   "Tartar": [0],
+    //   "Soy": [1],
+    // },
+    // 'mayo': {
+    //   "Lime": [0],
+    //   "Wasabi": [1],
+    // },
+    // 'cheese': {
+    //   "mozzarella": [0],
+    //   "white": [1],
+    // },
   };
 }

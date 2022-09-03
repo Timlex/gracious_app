@@ -18,6 +18,7 @@ import '../home/home_front.dart';
 import '../home/product_card.dart';
 import '../utils/constant_name.dart';
 import '../utils/image_view.dart';
+import '../utils/text_themes.dart';
 
 class ProductDetails extends StatelessWidget {
   static const routeName = 'product details screen';
@@ -27,6 +28,8 @@ class ProductDetails extends StatelessWidget {
   List<Widget> mayoes = [];
   List<Widget> cheeses = [];
   List<Widget> sizes = [];
+  TextStyle attributeTitleTheme =
+      const TextStyle(fontSize: 15, fontWeight: FontWeight.w600);
 
   ConstantColors cc = ConstantColors();
   int itemCount = 1;
@@ -271,10 +274,7 @@ class ProductDetails extends StatelessWidget {
                                       const SizedBox(height: 17),
                                       Text(
                                         'In Stock (${product.inventory.stockCount.toString()})',
-                                        style: TextStyle(
-                                            color: cc.primaryColor,
-                                            fontWeight: FontWeight.w600,
-                                            fontSize: 13),
+                                        style: TextThemeConstrants.primary13,
                                       ),
                                     ],
                                   ),
@@ -303,11 +303,8 @@ class ProductDetails extends StatelessWidget {
                                               crossAxisAlignment:
                                                   CrossAxisAlignment.center,
                                               children: [
-                                                const Text('Size:',
-                                                    style: TextStyle(
-                                                        fontSize: 15,
-                                                        fontWeight:
-                                                            FontWeight.w600)),
+                                                Text('Size:',
+                                                    style: attributeTitleTheme),
                                                 const SizedBox(width: 5),
                                                 ...sizes,
                                               ],
@@ -319,11 +316,8 @@ class ProductDetails extends StatelessWidget {
                                               crossAxisAlignment:
                                                   CrossAxisAlignment.center,
                                               children: [
-                                                const Text('Color:',
-                                                    style: TextStyle(
-                                                        fontSize: 15,
-                                                        fontWeight:
-                                                            FontWeight.w600)),
+                                                Text('Color:',
+                                                    style: attributeTitleTheme),
                                                 const SizedBox(width: 5),
                                                 ...colors,
                                               ],
@@ -336,11 +330,9 @@ class ProductDetails extends StatelessWidget {
                                                   CrossAxisAlignment.center,
                                               children: [
                                                 if (showAttribute)
-                                                  const Text('Sauce:',
-                                                      style: TextStyle(
-                                                          fontSize: 15,
-                                                          fontWeight:
-                                                              FontWeight.w600)),
+                                                  Text('Sauce:',
+                                                      style:
+                                                          attributeTitleTheme),
                                                 const SizedBox(width: 5),
                                                 ...sauces,
                                               ],
@@ -351,11 +343,9 @@ class ProductDetails extends StatelessWidget {
                                             Row(
                                               children: [
                                                 if (showAttribute)
-                                                  const Text('Mayo:',
-                                                      style: TextStyle(
-                                                          fontSize: 15,
-                                                          fontWeight:
-                                                              FontWeight.w600)),
+                                                  Text('Mayo:',
+                                                      style:
+                                                          attributeTitleTheme),
                                                 const SizedBox(width: 5),
                                                 ...mayoes,
                                               ],
@@ -366,11 +356,9 @@ class ProductDetails extends StatelessWidget {
                                             Row(
                                               children: [
                                                 if (showAttribute)
-                                                  const Text('Cheese:',
-                                                      style: TextStyle(
-                                                          fontSize: 15,
-                                                          fontWeight:
-                                                              FontWeight.w600)),
+                                                  Text('Cheese:',
+                                                      style:
+                                                          attributeTitleTheme),
                                                 const SizedBox(width: 5),
                                                 ...cheeses,
                                               ],

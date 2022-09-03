@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:gren_mart/view/details/product_details.dart';
+import 'package:gren_mart/view/utils/text_themes.dart';
 import '../../view/utils/constant_name.dart';
 import 'package:provider/provider.dart';
 
@@ -97,7 +98,7 @@ class CartTile extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         SizedBox(
-                          width: screenWidth / 2.8,
+                          width: screenWidth / 3,
                           child: Text(
                             name,
                             style: const TextStyle(
@@ -111,10 +112,7 @@ class CartTile extends StatelessWidget {
                           fit: BoxFit.cover,
                           child: Text(
                             '\$${discountPrice == 0 ? price : discountPrice}',
-                            style: TextStyle(
-                                color: cc.primaryColor,
-                                fontWeight: FontWeight.w600,
-                                fontSize: 13),
+                            style: TextThemeConstrants.primary13,
                           ),
                         ),
                       ],

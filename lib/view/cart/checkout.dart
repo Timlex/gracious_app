@@ -10,7 +10,9 @@ import 'package:gren_mart/view/payment/mid_trans_payment.dart';
 import 'package:gren_mart/view/payment/mollie_payment.dart';
 import 'package:gren_mart/view/payment/payfast_payment.dart';
 import 'package:gren_mart/view/payment/paystack_payment.dart';
+import 'package:gren_mart/view/payment/paytabs_payment.dart';
 import 'package:gren_mart/view/payment/razorpay_payment.dart';
+import 'package:gren_mart/view/payment/squareup_payment.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:gren_mart/service/cupon_discount_service.dart';
@@ -21,6 +23,7 @@ import '../../service/shipping_zone_service.dart';
 import '../payment/paypal_payment.dart';
 import '../payment/stripe_payment.dart';
 import '../settings/new_address.dart';
+import '../utils/text_themes.dart';
 import 'payment_grid_tile.dart';
 import '../../service/shipping_addresses_service.dart';
 import '../../view/utils/app_bars.dart';
@@ -195,10 +198,8 @@ class Checkout extends StatelessWidget {
                               child: RichText(
                                 text: TextSpan(
                                     text: e.title,
-                                    style: TextStyle(
-                                        overflow: TextOverflow.ellipsis,
-                                        fontSize: 13,
-                                        color: cc.greyHint),
+                                    style:
+                                        TextThemeConstrants.greyHint13Eclipse,
                                     children: [
                                       if (showAdditionlInfo)
                                         TextSpan(
@@ -230,11 +231,7 @@ class Checkout extends StatelessWidget {
                             ),
                             Text(
                               '\$${e.price * e.quantity}',
-                              style: TextStyle(
-                                overflow: TextOverflow.ellipsis,
-                                fontSize: 13,
-                                color: cc.greyHint,
-                              ),
+                              style: TextThemeConstrants.greyHint13Eclipse,
                             )
                           ],
                         ),
@@ -332,16 +329,10 @@ class Checkout extends StatelessWidget {
                         color: Colors.white,
                       ),
                       child: TextField(
-                        style: TextStyle(
-                          color: cc.greyHint,
-                          fontSize: 13,
-                        ),
+                        style: TextThemeConstrants.greyHint13,
                         decoration: InputDecoration(
                             hintText: 'Enter Coupon code',
-                            hintStyle: TextStyle(
-                              color: cc.greyHint,
-                              fontSize: 13,
-                            ),
+                            hintStyle: TextThemeConstrants.greyHint13,
                             enabledBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(10),
                               borderSide: BorderSide(
@@ -428,11 +419,7 @@ class Checkout extends StatelessWidget {
               const SizedBox(height: 15),
               Text(
                 'Chose a payment method',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w600,
-                  color: cc.titleTexts,
-                ),
+                style: TextThemeConstrants.titleText,
               ),
               const SizedBox(height: 20),
               FutureBuilder(
@@ -493,23 +480,19 @@ class Checkout extends StatelessWidget {
   }
 
   Widget rows(String leading, {String? trailing}) {
+    final textStyle = TextStyle(
+        color: cc.greyParagraph, fontSize: 15, fontWeight: FontWeight.bold);
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text(
           leading,
-          style: TextStyle(
-              color: cc.greyParagraph,
-              fontSize: 15,
-              fontWeight: FontWeight.bold),
+          style: textStyle,
         ),
         if (trailing != null)
           Text(
             trailing,
-            style: TextStyle(
-                color: cc.greyParagraph,
-                fontSize: 15,
-                fontWeight: FontWeight.bold),
+            style: textStyle,
           ),
       ],
     );
@@ -575,7 +558,7 @@ class Checkout extends StatelessWidget {
     if (selectedGateaway.name.toLowerCase().contains('payfast')) {
       Navigator.of(context).push(
         MaterialPageRoute(
-          builder: (BuildContext context) => PayfastPayment(),
+          builder: (BuildContext context) => SquareUpPayment(),
         ),
       );
       return;
@@ -583,7 +566,7 @@ class Checkout extends StatelessWidget {
     if (selectedGateaway.name.toLowerCase().contains('midtrans')) {
       Navigator.of(context).push(
         MaterialPageRoute(
-          builder: (BuildContext context) => MidtransPayment(),
+          builder: (BuildContext context) => PayTabsPayment(),
         ),
       );
 

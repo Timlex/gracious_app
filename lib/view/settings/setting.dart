@@ -16,6 +16,7 @@ import 'package:provider/provider.dart';
 
 import '../../service/auth_text_controller_service.dart';
 import '../../service/ticket_service.dart';
+import '../utils/text_themes.dart';
 
 class SettingView extends StatelessWidget {
   SettingView({Key? key}) : super(key: key);
@@ -35,10 +36,7 @@ class SettingView extends StatelessWidget {
           Center(
             child: Text(
               uData.userProfileData.name,
-              style: const TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
+              style: TextThemeConstrants.titleText,
             ),
           ),
           const SizedBox(height: 7),

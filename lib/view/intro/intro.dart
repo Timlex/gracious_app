@@ -8,6 +8,7 @@ import '../../view/utils/constant_name.dart';
 import '../../view/utils/constant_styles.dart';
 import 'package:provider/provider.dart';
 
+import '../utils/text_themes.dart';
 import './intro_helper.dart';
 
 class Intro extends StatefulWidget {
@@ -75,10 +76,7 @@ class _IntroState extends State<Intro> {
                               Text(
                                 e['description'] as String,
                                 textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  fontSize: 13,
-                                  color: ConstantColors().greyParagraph,
-                                ),
+                                style: TextThemeConstrants.paragraphText,
                               ),
                             ],
                           ),

@@ -45,25 +45,14 @@ class _SplashScreenState extends State<SplashScreen> {
 
     // initiateAutoSignIn(context);
 
-    return Scaffold(
-      body: Stack(
-        children: [
-          Center(
-            child: Container(
-              padding: const EdgeInsets.all(8.0),
-              child: Image.asset(
-                'assets/images/splash_screen.png',
-                fit: BoxFit.fill,
-              ),
-            ),
-          ),
-          // Expanded(
-          //   child: Container(
-          //     color: Color.fromARGB(61, 0, 0, 0),
-          //     child: loadingProgressBar(),
-          //   ),
-          // )
-        ],
+    return Container(
+      height: double.infinity,
+      width: double.infinity,
+      color: cc.pureWhite,
+      padding: const EdgeInsets.all(8.0),
+      child: Image.asset(
+        'assets/images/splash.png',
+        fit: BoxFit.fill,
       ),
     );
   }
@@ -87,6 +76,7 @@ class _SplashScreenState extends State<SplashScreen> {
             .then((value) async {
           if (value == null) {
             snackBar(context, 'Failed to load!');
+            return;
           }
           Provider.of<PosterCampaignSliderService>(context, listen: false)
               .fetchPosters();
@@ -127,13 +117,19 @@ class _SplashScreenState extends State<SplashScreen> {
       }
 
       // Future.delayed(const Duration(seconds: 1));
-
+      final ref = await SharedPreferences.getInstance();
       FlutterNativeSplash.remove();
-      Navigator.of(context).pushReplacementNamed(Auth.routeName);
-      Provider.of<AuthTextControllerService>(context, listen: false).setEmail(
-          Provider.of<SignInSignUpService>(context, listen: false).email);
-      Provider.of<AuthTextControllerService>(context, listen: false).setPass(
-          Provider.of<SignInSignUpService>(context, listen: false).password);
+      if (ref.containsKey('intro')) {
+        FlutterNativeSplash.remove();
+        Navigator.of(context).pushReplacementNamed(Auth.routeName);
+        Provider.of<AuthTextControllerService>(context, listen: false).setEmail(
+            Provider.of<SignInSignUpService>(context, listen: false).email);
+        Provider.of<AuthTextControllerService>(context, listen: false).setPass(
+            Provider.of<SignInSignUpService>(context, listen: false).password);
+        return;
+      }
+      Navigator.of(context).pushReplacementNamed(Intro.routeName);
+      return;
     });
   }
 }
