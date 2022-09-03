@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:gren_mart/service/menual_payment_service.dart';
 import 'package:gren_mart/view/payment/cash_free_payment.dart';
+import 'package:gren_mart/view/payment/cinetpay_payment.dart';
 import 'package:gren_mart/view/payment/flutter_wave_payment.dart';
 import 'package:gren_mart/view/payment/instamojo_payment.dart';
 import 'package:gren_mart/view/payment/mercado_pago_payment.dart';
@@ -549,7 +550,7 @@ class Checkout extends StatelessWidget {
     if (selectedGateaway.name.toLowerCase().contains('marcadopago')) {
       Navigator.of(context).push(
         MaterialPageRoute(
-          builder: (BuildContext context) => MercadopagoPayment(),
+          builder: (BuildContext context) => CinetPayPayment(),
         ),
       );
       return;

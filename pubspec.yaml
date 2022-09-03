@@ -67,6 +67,7 @@ dependencies:
   flutterwave_standard: 
   uuid:
   instamojo:
+  namefully:
 
 
   cashfree_pg: ^2.0.12+32
