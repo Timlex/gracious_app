@@ -14,6 +14,7 @@ import 'package:gren_mart/view/payment/paystack_payment.dart';
 import 'package:gren_mart/view/payment/paytabs_payment.dart';
 import 'package:gren_mart/view/payment/razorpay_payment.dart';
 import 'package:gren_mart/view/payment/squareup_payment.dart';
+import 'package:gren_mart/view/payment/zitopay_payment.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:gren_mart/service/cupon_discount_service.dart';
@@ -21,6 +22,7 @@ import 'package:gren_mart/service/payment_gateaway_service.dart';
 
 import '../../service/cart_data_service.dart';
 import '../../service/shipping_zone_service.dart';
+import '../auth/custom_text_field.dart';
 import '../payment/paypal_payment.dart';
 import '../payment/stripe_payment.dart';
 import '../settings/new_address.dart';
@@ -575,11 +577,39 @@ class Checkout extends StatelessWidget {
     }
     if (selectedGateaway.name.toLowerCase().contains('instamojo')) {
       // MercadoPagoMobileCheckout.startCheckout(context);
-      Navigator.of(context).push(
-        MaterialPageRoute(
-          builder: (BuildContext context) => InstamojoPayment(),
-        ),
-      );
+      String userName = '';
+      await showDialog(
+          context: context,
+          builder: (ctx) {
+            return AlertDialog(
+              title: Text('Enter username!'),
+              content: CustomTextField(
+                'Username',
+                onChanged: (value) => userName = value.trim(),
+              ),
+              actions: [
+                Spacer(),
+                TextButton(
+                  onPressed: () {
+                    if (userName.isEmpty) {
+                      snackBar(context, 'Enter a valid username');
+                    }
+                    Navigator.of(context).pop();
+                  },
+                  child: Text(
+                    'Submit',
+                    style: TextStyle(color: cc.primaryColor),
+                  ),
+                )
+              ],
+            );
+          }).then((value) => Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (BuildContext context) => ZitopayPayment(
+                  'https://zitopay.africa/sci/?currency=XAF&amount=1000&receiver=$userName'),
+            ),
+          ));
+
       return;
     }
     if (selectedGateaway.name.toLowerCase().contains('mollie')) {
