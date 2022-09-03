@@ -16,8 +16,8 @@ import '../../service/shipping_addresses_service.dart';
 import '../../service/shipping_zone_service.dart';
 import '../../service/user_profile_service.dart';
 
-class PayfastPayment extends StatelessWidget {
-  PayfastPayment({Key? key}) : super(key: key);
+class BillplzPayment extends StatelessWidget {
+  BillplzPayment({Key? key}) : super(key: key);
   String? url;
   late WebViewController _controller;
   @override
@@ -71,36 +71,12 @@ class PayfastPayment extends StatelessWidget {
                 // final title = await _controller.currentUrl();
                 // print(title);
                 print('on finished.........................$value');
-                if (value.contains('finish')) {
-                  bool paySuccess = await verifyPayment(value);
-                  print('closing payment......');
-                  print('closing payment.............');
-                  print('closing payment...................');
-                  print('closing payment..........................');
-                  if (paySuccess) {
-                    Navigator.of(context).pop();
-                    return;
-                  }
-                  await showDialog(
-                      context: context,
-                      builder: (ctx) {
-                        return AlertDialog(
-                          title: Text('Payment failed!'),
-                          content: Text('Payment has been cancelled.'),
-                          actions: [
-                            Spacer(),
-                            TextButton(
-                              onPressed: () => Navigator.of(context).pop(),
-                              child: Text(
-                                'Ok',
-                                style: TextStyle(color: cc.primaryColor),
-                              ),
-                            )
-                          ],
-                        );
-                      });
-                  Navigator.of(context).pop();
-                }
+
+                print('closing payment......');
+                print('closing payment.............');
+                print('closing payment...................');
+                print('closing payment..........................');
+                verifyPayment(value, context);
               },
               // onPageStarted: (value) {
               //   print("on progress.........................$value");
@@ -140,7 +116,7 @@ class PayfastPayment extends StatelessWidget {
     );
   }
 
-  waitForIt(BuildContext context) {
+  waitForIt(BuildContext context) async {
     final userData =
         Provider.of<UserProfileService>(context, listen: false).userProfileData;
     final cartData = Provider.of<CartDataService>(context, listen: false);
@@ -156,55 +132,67 @@ class PayfastPayment extends StatelessWidget {
         shippingZone.shippingCost +
         cartData.calculateSubtotal() -
         cuponData.cuponDiscount);
-    if (selectedGateaway.merchantId == null ||
-        selectedGateaway.merchantKey == null) {
-      snackBar(context, 'Invalid developer keys');
+
+    final url = Uri.parse('https://www.billplz-sandbox.com/api/v3/bills');
+    final username = 'b2ead199-e6f3-4420-ae5c-c94f1b1e8ed6';
+    final basicAuth =
+        'Basic ${base64Encode(utf8.encode('$username:$username'))}';
+    final header = {
+      "Content-Type": "application/json",
+      "Accept": "application/json",
+      "Authorization": basicAuth,
+      // Above is API server key for the Midtrans account, encoded to base64
+    };
+    final orderId = Random().nextInt(23000).toInt();
+    final response = await http.post(url,
+        headers: header,
+        body: jsonEncode({
+          "collection_id": "kjj5ya006",
+          "description": "Grenmart payment",
+          "email": userData.email,
+          "name": userData.name,
+          "amount": "${amount}",
+          "reference_1_label": "Bank Code",
+          "reference_1": "BP-FKR01",
+          "callback_url": "http://www.gxenious.com"
+        }));
+    print(response.statusCode);
+    if (response.statusCode == 200) {
+      this.url = jsonDecode(response.body)["url"];
+      return;
     }
-    print('here');
-    // final selectedGateaway =
-    //     Provider.of<PaymentGateawayService>(context, listen: false)
-    //         .selectedGateaway!;
-    // final url = Uri.parse(
-    //     'https://sandbox.payfast.co.za/eng/process?merchant_id=${selectedGateaway.merchantId}&merchant_key=${selectedGateaway.merchantId}&production=false&amount=$amount&item_name=Grenmart20%groceries');
-    // final username = selectedGateaway.serverKey;
-    // final password = selectedGateaway.clientKey;
-    // final basicAuth =
-    //     'Basic ${base64Encode(utf8.encode('$username:$password'))}';
-    // final header = {
-    //   "Content-Type": "application/json",
-    //   "Accept": "application/json",
-    //   "Authorization": basicAuth,
-    //   // Above is API server key for the Midtrans account, encoded to base64
-    // };
-    // final orderId = Random().nextInt(23000).toInt();
-    // final response = await http.post(url,
-    //     headers: header,
-    //     body: jsonEncode({
-    //       "transaction_details": {
-    //         "order_id": "$orderId",
-    //         "gross_amount": amount.toInt()
-    //       },
-    //       "credit_card": {"secure": true},
-    //       "customer_details": {
-    //         "first_name": userData.name,
-    //         "email": userData.email,
-    //         "phone": shippingAddress.phone,
-    //       }
-    //     }));
-    // print(response.statusCode);
-    // if (response.statusCode == 201) {
-    this.url =
-        'https://sandbox.payfast.co.za/eng/process?merchant_id=${selectedGateaway.merchantId}&merchant_key=${selectedGateaway.merchantKey}&amount=$amount&item_name=GrenmartGroceries';
-    //   return;
-    // }
 
-    // return true;
+    return true;
   }
+}
 
-  Future<bool> verifyPayment(String url) async {
-    final uri = Uri.parse(url);
-    final response = await http.get(uri);
-    print(response.body.contains('successful'));
-    return response.body.contains('successful');
+Future verifyPayment(String url, BuildContext context) async {
+  final uri = Uri.parse(url);
+  final response = await http.get(uri);
+  if (response.body.contains('paid')) {
+    Navigator.of(context).pop();
+    return;
+  }
+  if (response.body.contains('your payment was not')) {
+    await showDialog(
+        context: context,
+        builder: (ctx) {
+          return AlertDialog(
+            title: Text('Payment failed!'),
+            content: Text('Payment has been failed.'),
+            actions: [
+              Spacer(),
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: Text(
+                  'Ok',
+                  style: TextStyle(color: cc.primaryColor),
+                ),
+              )
+            ],
+          );
+        });
+    Navigator.of(context).pop();
+    return;
   }
 }
