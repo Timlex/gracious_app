@@ -24,6 +24,11 @@ class PaymentGateawayService with ChangeNotifier {
     return selectedGateaway == value;
   }
 
+  setIsLoading(value) {
+    isLoading = value;
+    notifyListeners();
+  }
+
   resetGateaway() {
     gatawayList = [];
     selectedGateaway = null;
