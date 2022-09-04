@@ -7,6 +7,7 @@ import 'common_service.dart';
 
 class CartDataService with ChangeNotifier {
   Map<String, Cart> _cartItems = {}
+      // Map<String, List<Map<String, dynamic>>> _cartItems = {}
       // Cart(id: '01', quantity: 2),
       // Cart(id: '03', quantity: 6),
       // Cart(id: '02', quantity: 1),
