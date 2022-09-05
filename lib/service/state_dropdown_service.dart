@@ -53,7 +53,6 @@ class StateDropdownService with ChangeNotifier {
         final data = StateDropdownModel.fromJson(jsonDecode(response.body));
         var stateData = [];
         allState = data.state;
-        print(allState[0].name + '-------------------');
         for (int i = 0; i < data.state.length; i++) {
           var element = data.state[i];
           stateData.add(element.name);

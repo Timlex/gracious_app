@@ -24,8 +24,8 @@ class CampaignCard extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.only(right: 10),
       padding: const EdgeInsets.only(left: 20, top: 25),
-      height: screenHight / 5.5,
-      width: screenWidth / 1.6,
+      height: screenHight / 5,
+      width: screenWidth / 1.3 < 300 ? 300 : screenWidth / 1.3,
       // color: Color.fromARGB(110, 9, 154, 26),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),
@@ -96,7 +96,7 @@ class CampaignCard extends StatelessWidget {
               Container(
                   height: screenHight / 7,
                   width: screenHight / 6.5,
-                  margin: const EdgeInsets.only(right: 3),
+                  margin: const EdgeInsets.only(right: 3, bottom: 10),
                   child: Image.network(
                     image,
                     fit: BoxFit.fill,

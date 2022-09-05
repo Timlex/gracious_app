@@ -6,7 +6,7 @@ import '../../service/poster_campaign_slider_service.dart';
 import '../../service/product_card_data_service.dart';
 import '../../service/search_result_data_service.dart';
 import '../../view/auth/custom_text_field.dart';
-import '../../view/home/dod_card.dart';
+import 'campaign_card.dart';
 import '../../view/home/product_card.dart';
 import '../../view/utils/constant_name.dart';
 import '../../view/utils/constant_styles.dart';
@@ -21,7 +21,7 @@ class Home extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print(screenHight);
+    print(screenWidth);
     Provider.of<PosterCampaignSliderService>(context, listen: false)
         .fetchPosters();
     Provider.of<PosterCampaignSliderService>(context, listen: false)
@@ -141,8 +141,8 @@ class Home extends StatelessWidget {
                                     null));
                       },
                       itemCount: posterData.posterDataList.length,
-                      viewportFraction: 0.8,
-                      scale: 0.9,
+                      viewportFraction: 0.85,
+                      scale: 0.92,
                       autoplay: true,
                     ),
                   );
@@ -163,7 +163,7 @@ class Home extends StatelessWidget {
           Consumer<ProductCardDataService>(builder: (context, products, child) {
             return products.featuredCardProductsList.isNotEmpty
                 ? SizedBox(
-                    height: screenHight / 3.4 < 221 ? 185 : screenHight / 3.4,
+                    height: screenHight / 3.4 < 221 ? 195 : screenHight / 3.4,
                     child: ListView.builder(
                       physics: const BouncingScrollPhysics(
                           parent: AlwaysScrollableScrollPhysics()),
@@ -190,6 +190,7 @@ class Home extends StatelessWidget {
               .featuredCardProductsList
               .isNotEmpty)
             SingleChildScrollView(
+              padding: EdgeInsets.only(left: 20),
               physics: const BouncingScrollPhysics(
                   parent: AlwaysScrollableScrollPhysics()),
               scrollDirection: Axis.horizontal,
@@ -198,34 +199,30 @@ class Home extends StatelessWidget {
                 return pcData.campaignDataList.isEmpty
                     ? const SizedBox()
                     : Row(
-                        children: [
-                          const SizedBox(width: 20),
-                          ...pcData.campaignDataList.map((e) {
-                            print(e.title);
-                            return CampaignCard(e.title, e.buttonText, () {
-                              if (e.campaign != null) {
-                                Navigator.of(context).pushNamed(
-                                    ALLCampProductFromLink.routeName,
-                                    arguments: [e.campaign.toString()]);
-                              }
-                              if (e.category != null) {
-                                Provider.of<SearchResultDataService>(context,
-                                        listen: false)
-                                    .resetSerch();
-                                Provider.of<SearchResultDataService>(context,
-                                        listen: false)
-                                    .setCategoryId(e.category.toString());
-                                Provider.of<SearchResultDataService>(context,
-                                        listen: false)
-                                    .fetchProductsBy(pageNo: '1');
-                                Provider.of<NavigationBarHelperService>(context,
-                                        listen: false)
-                                    .setNavigationIndex(1);
-                              }
-                            }, e.image,
-                                e.campaign != null || e.category != null);
-                          }).toList()
-                        ],
+                        children: pcData.campaignDataList.map((e) {
+                          print(e.title);
+                          return CampaignCard(e.title, e.buttonText, () {
+                            if (e.campaign != null) {
+                              Navigator.of(context).pushNamed(
+                                  ALLCampProductFromLink.routeName,
+                                  arguments: [e.campaign.toString()]);
+                            }
+                            if (e.category != null) {
+                              Provider.of<SearchResultDataService>(context,
+                                      listen: false)
+                                  .resetSerch();
+                              Provider.of<SearchResultDataService>(context,
+                                      listen: false)
+                                  .setCategoryId(e.category.toString());
+                              Provider.of<SearchResultDataService>(context,
+                                      listen: false)
+                                  .fetchProductsBy(pageNo: '1');
+                              Provider.of<NavigationBarHelperService>(context,
+                                      listen: false)
+                                  .setNavigationIndex(1);
+                            }
+                          }, e.image, e.campaign != null || e.category != null);
+                        }).toList(),
                       );
               }),
             ),
@@ -269,7 +266,7 @@ class Home extends StatelessWidget {
           }),
           const SizedBox(height: 20),
           SizedBox(
-            height: screenHight / 3.4 < 221 ? 185 : screenHight / 3.4,
+            height: screenHight / 3.4 < 221 ? 195 : screenHight / 3.4,
             child: Consumer<ProductCardDataService>(
                 builder: (context, products, child) {
               return (products.campaignCardProductList.isNotEmpty &&
@@ -295,7 +292,7 @@ class Home extends StatelessWidget {
                   : loadingProgressBar();
             }),
           ),
-          // const SizedBox(height: 40),
+          const SizedBox(height: 20),
         ],
       ),
     );

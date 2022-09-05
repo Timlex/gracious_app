@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:gren_mart/service/country_dropdown_service.dart';
+import 'package:gren_mart/service/manage_account_service.dart';
+import 'package:gren_mart/service/state_dropdown_service.dart';
 import '../../service/shipping_addresses_service.dart';
 import '../../service/signin_signup_service.dart';
 import '../../service/user_profile_service.dart';
@@ -75,6 +78,21 @@ class SettingView extends StatelessWidget {
               'assets/images/icons/manage_profile.svg', 'Manage Account',
               onTap: () async {
             // setData(context);
+            Provider.of<CountryDropdownService>(context, listen: false)
+                .getContries(context)
+                .then((value) {
+              final userData =
+                  Provider.of<UserProfileService>(context, listen: false);
+              if (userData.userProfileData.country != null) {
+                Provider.of<CountryDropdownService>(context, listen: false)
+                    .setCountryIdAndValue(
+                        userData.userProfileData.country!.name);
+              }
+              if (userData.userProfileData.state != null) {
+                Provider.of<StateDropdownService>(context, listen: false)
+                    .setStateIdAndValue(userData.userProfileData.state!.name);
+              }
+            });
             Navigator.of(context).pushNamed(ManageAccount.routeName);
           }),
           settingItem(

@@ -92,12 +92,14 @@ class PaypalPaymentState extends State<PaypalPayment> {
         Provider.of<ShippingZoneService>(context, listen: false);
     final cuponData = Provider.of<CuponDiscountService>(context, listen: false);
     List items = [];
-    cartData.cartList.forEach((key, value) {
-      items.add({
-        "name": value.title,
-        "quantity": value.quantity,
-        "price": value.discountPrice != 0 ? value.discountPrice : value.price,
-        "currency": "USD",
+    cartData.cartList!.forEach((key, value) {
+      value.forEach((element) {
+        items.add({
+          "name": element['title'] as String,
+          "quantity": element['quantity'],
+          "price": element['price'],
+          "currency": "USD",
+        });
       });
     });
     // print(items);

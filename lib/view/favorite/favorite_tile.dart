@@ -104,7 +104,7 @@ class FavoriteTile extends StatelessWidget {
                           ),
                           const SizedBox(height: 13),
                           Text(
-                            '\$${favoriteItem.discountPrice == 0 ? favoriteItem.price : favoriteItem.discountPrice}',
+                            '\$${favoriteItem.price}',
                             style: TextThemeConstrants.primary13,
                           ),
                         ],

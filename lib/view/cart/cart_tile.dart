@@ -15,19 +15,18 @@ class CartTile extends StatelessWidget {
   final String image;
   final int quantity;
   final int price;
-  int discountPrice;
+  Map<String, dynamic>? inventorySet;
   CartTile(
     this.id,
     this.name,
     this.image,
     this.quantity,
     this.price,
-    this.discountPrice, {
+    this.inventorySet, {
     Key? key,
   }) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    print(discountPrice);
     final carts = Provider.of<CartDataService>(context, listen: false);
     return Dismissible(
       direction: DismissDirection.endToStart,
@@ -56,7 +55,7 @@ class CartTile extends StatelessWidget {
       ),
       onDismissed: (direction) {
         snackBar(context, 'Item removed from cart.');
-        carts.deleteCartItem(id);
+        carts.deleteCartItem(id, inventorySet: inventorySet);
       },
       key: Key(id.toString()),
       child: SizedBox(
@@ -111,7 +110,7 @@ class CartTile extends StatelessWidget {
                         FittedBox(
                           fit: BoxFit.cover,
                           child: Text(
-                            '\$${discountPrice == 0 ? price : discountPrice}',
+                            '\$$price ',
                             style: TextThemeConstrants.primary13,
                           ),
                         ),
@@ -179,7 +178,7 @@ class CartTile extends StatelessWidget {
                   GestureDetector(
                     onTap: (() {
                       snackBar(context, 'Item removed from cart.');
-                      carts.deleteCartItem(id);
+                      carts.deleteCartItem(id, inventorySet: inventorySet);
                     }),
                     child: Padding(
                       padding: const EdgeInsets.only(left: 7),

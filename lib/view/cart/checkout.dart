@@ -195,66 +195,7 @@ class Checkout extends StatelessWidget {
                         child: Consumer<CartDataService>(
                             builder: (context, cService, child) {
                           return Column(
-                            children:
-                                cService.cartList.values.toList().map((e) {
-                              final showAdditionlInfo = e.size != null ||
-                                  e.color != null ||
-                                  e.sauce != null ||
-                                  e.mayo != null ||
-                                  e.cheese != null;
-                              // subTotal += e.price;
-                              return Container(
-                                margin: const EdgeInsets.only(bottom: 10),
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    SizedBox(
-                                      width: screenWidth / 1.7,
-                                      child: RichText(
-                                        text: TextSpan(
-                                            text: e.title,
-                                            style: TextThemeConstrants
-                                                .greyHint13Eclipse,
-                                            children: [
-                                              if (showAdditionlInfo)
-                                                TextSpan(
-                                                    text: ' (' +
-                                                        (e.size == null
-                                                            ? ''
-                                                            : 'Size: ${e.size!.capitalize()}. ') +
-                                                        (e.colorName == null
-                                                            ? ''
-                                                            : 'Color: ${e.colorName!.capitalize()}. ') +
-                                                        (e.sauce == null
-                                                            ? ''
-                                                            : 'Sauce: ${e.sauce!.capitalize()}. ') +
-                                                        (e.mayo == null
-                                                            ? ''
-                                                            : 'Mayo: ${e.mayo!.capitalize()}. ') +
-                                                        (e.cheese == null
-                                                            ? ''
-                                                            : 'Cheese: ${e.cheese!.capitalize()}.'
-                                                                '') +
-                                                        ') '),
-                                              const TextSpan(text: 'X'),
-                                              TextSpan(
-                                                  text: '${e.quantity}',
-                                                  style: const TextStyle(
-                                                      fontWeight:
-                                                          FontWeight.w600))
-                                            ]),
-                                      ),
-                                    ),
-                                    Text(
-                                      '\$${e.price * e.quantity}',
-                                      style:
-                                          TextThemeConstrants.greyHint13Eclipse,
-                                    )
-                                  ],
-                                ),
-                              );
-                            }).toList(),
+                            children: productList(cService),
                           );
                         }),
                       ),
@@ -539,6 +480,44 @@ class Checkout extends StatelessWidget {
         })
       ],
     );
+  }
+
+  List<Widget> productList(CartDataService cService) {
+    List<Widget> list = [];
+    cService.cartList!.forEach((key, value) {
+      value.forEach((e) {
+        list.add(Container(
+          margin: const EdgeInsets.only(bottom: 10),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              SizedBox(
+                width: screenWidth / 1.7,
+                child: RichText(
+                  text: TextSpan(
+                      text: e['title'] as String,
+                      style: TextThemeConstrants.greyHint13Eclipse,
+                      children: [
+                        if (e['atribute'] != null)
+                          TextSpan(
+                              text: ' (' + e['atribute'].toString() + ') '),
+                        const TextSpan(text: 'X'),
+                        TextSpan(
+                            text: '${e['quantity']}',
+                            style: const TextStyle(fontWeight: FontWeight.w600))
+                      ]),
+                ),
+              ),
+              Text(
+                '\$${(e['price'] as int) * (e['quantity'] as int)}',
+                style: TextThemeConstrants.greyHint13Eclipse,
+              )
+            ],
+          ),
+        ));
+      });
+    });
+    return list;
   }
 
   Widget rows(String leading, {String? trailing}) {

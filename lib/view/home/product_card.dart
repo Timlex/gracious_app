@@ -134,7 +134,7 @@ class ProductCard extends StatelessWidget {
                               onPressed: () => favoriteData.toggleFavorite(
                                     _id,
                                     title,
-                                    price,
+                                    discountPrice,
                                     discountPrice,
                                     imgUrl,
                                   )));
@@ -169,7 +169,7 @@ class ProductCard extends StatelessWidget {
                                   cartData.addCartItem(
                                       _id,
                                       title,
-                                      price,
+                                      discountPrice,
                                       discountPrice,
                                       campaignPercentage,
                                       1,

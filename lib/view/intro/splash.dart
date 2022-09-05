@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gren_mart/service/navigation_bar_helper_service.dart';
 import 'package:gren_mart/view/utils/constant_styles.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
@@ -65,46 +66,35 @@ class _SplashScreenState extends State<SplashScreen> {
     Provider.of<CartDataService>(context, listen: false).fetchCarts();
   }
 
-  initiateAutoSignIn(BuildContext context) {
-    Provider.of<SignInSignUpService>(context, listen: false)
+  initiateAutoSignIn(BuildContext context) async {
+    await Provider.of<SignInSignUpService>(context, listen: false)
         .getToken()
         .then((value) async {
-      if (value != null) {
+      if (value != null || value != '') {
         // try {
         await Provider.of<UserProfileService>(context, listen: false)
             .fetchProfileService(value)
             .then((value) async {
           if (value == null) {
-            snackBar(context, 'Failed to load!');
+            snackBar(context, 'Connection failed!');
             return;
           }
           Provider.of<PosterCampaignSliderService>(context, listen: false)
               .fetchPosters();
+          print('here');
           Provider.of<PosterCampaignSliderService>(context, listen: false)
               .fetchCampaigns();
+          print('here2');
+          print('here2');
 
           FlutterNativeSplash.remove();
+          Provider.of<NavigationBarHelperService>(context, listen: false)
+              .setNavigationIndex(0);
           Navigator.of(context).pushReplacementNamed(HomeFront.routeName);
 
           return;
-        }).onError((error, stackTrace) async {
-          final ref = await SharedPreferences.getInstance();
-          if (ref.containsKey('intro')) {
-            FlutterNativeSplash.remove();
-            Navigator.of(context).pushReplacementNamed(Auth.routeName);
-            Provider.of<AuthTextControllerService>(context, listen: false)
-                .setEmail(
-                    Provider.of<SignInSignUpService>(context, listen: false)
-                        .email);
-            Provider.of<AuthTextControllerService>(context, listen: false)
-                .setPass(
-                    Provider.of<SignInSignUpService>(context, listen: false)
-                        .password);
-            return;
-          }
-          Navigator.of(context).pushReplacementNamed(Intro.routeName);
-          return;
-        });
+        }).onError(
+                (error, stackTrace) => snackBar(context, "Connection failed!"));
         // } catch (error) {
         //   print(error);
         // }
@@ -115,10 +105,13 @@ class _SplashScreenState extends State<SplashScreen> {
         //     .userProfileData);
         return;
       }
+      Navigator.of(context).pushReplacementNamed(HomeFront.routeName);
+      return;
 
       // Future.delayed(const Duration(seconds: 1));
+    }).onError((error, stackTrace) async {
+      snackBar(context, 'Connection failed!');
       final ref = await SharedPreferences.getInstance();
-      FlutterNativeSplash.remove();
       if (ref.containsKey('intro')) {
         FlutterNativeSplash.remove();
         Navigator.of(context).pushReplacementNamed(Auth.routeName);
@@ -131,5 +124,22 @@ class _SplashScreenState extends State<SplashScreen> {
       Navigator.of(context).pushReplacementNamed(Intro.routeName);
       return;
     });
+
+    if (globalUserToken == null) {
+      final ref = await SharedPreferences.getInstance();
+      FlutterNativeSplash.remove();
+      if (ref.containsKey('intro')) {
+        FlutterNativeSplash.remove();
+        Navigator.of(context).pushReplacementNamed(Auth.routeName);
+        Provider.of<AuthTextControllerService>(context, listen: false).setEmail(
+            Provider.of<SignInSignUpService>(context, listen: false).email);
+        Provider.of<AuthTextControllerService>(context, listen: false).setPass(
+            Provider.of<SignInSignUpService>(context, listen: false).password);
+        return;
+      }
+      Navigator.of(context).pushReplacementNamed(Intro.routeName);
+    }
+    // Navigator.of(context).pushReplacementNamed(HomeFront.routeName);
+    return;
   }
 }

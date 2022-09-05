@@ -246,7 +246,7 @@ class HomeFront extends StatelessWidget {
             icon:
                 Consumer<CartDataService>(builder: (context, cartData, child) {
               return Badge(
-                showBadge: cartData.cartList.isEmpty ? false : true,
+                showBadge: cartData.cartList!.isEmpty ? false : true,
                 badgeContent: Text(
                   cartData.totalQuantity().toString(),
                   style: TextStyle(color: cc.pureWhite),

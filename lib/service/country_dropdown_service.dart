@@ -48,7 +48,7 @@ class CountryDropdownService with ChangeNotifier {
 
         selectedCountry = 'Bangladesh';
         selectedCountryId = 1;
-        Provider.of<StateDropdownService>(context, listen: false)
+        await Provider.of<StateDropdownService>(context, listen: false)
             .getStates(selectedCountryId, context: context);
         print(selectedCountry);
         // print(countryDropdownList);

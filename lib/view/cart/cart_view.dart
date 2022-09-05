@@ -19,36 +19,28 @@ class CartView extends StatelessWidget {
   Widget build(BuildContext context) {
     List<String> cuponData = [];
     return Consumer<CartDataService>(builder: (context, cartData, child) {
-      for (var element in cartData.cartList.values) {
-        cuponData.add(
-            '{"id":${element.id},"price":${element.price * element.quantity}}');
-      }
+      cartData.cartList!.forEach((key, value) {
+        value.forEach((element) {
+          cuponData.add(
+              '{"id":${element['productId']},"price":${(element['price'] as int) * (element['quantity'] as int)}}');
+        });
+      });
       print(cuponData);
       return Column(
         children: [
           const SizedBox(height: 10),
           Expanded(
             child: ListView(
-                physics: Provider.of<CartDataService>(context).cartList.isEmpty
+                physics: Provider.of<CartDataService>(context).cartList!.isEmpty
                     ? const NeverScrollableScrollPhysics()
                     : const BouncingScrollPhysics(
                         parent: AlwaysScrollableScrollPhysics()),
                 children: [
-                  ...cartData.cartList.values.map((e) => CartTile(
-                        e.id,
-                        e.title,
-                        e.imgUrl,
-                        e.quantity,
-                        e.price,
-                        e.discountPrice,
-                      )),
-                  if (cartData.cartList.isEmpty)
-                    SizedBox(
-                      height: (screenHight / 3.1),
-                      child: Center(
-                          child: Text('Add item to cart!',
-                              style: TextStyle(color: cc.greyHint))),
-                    ),
+                  ...cartTiles(cartData),
+                  if (cartData.cartList!.isEmpty)
+                    Center(
+                        child: Text('Add item to cart!',
+                            style: TextStyle(color: cc.greyHint))),
                 ]),
           ),
           Padding(
@@ -74,5 +66,24 @@ class CartView extends StatelessWidget {
         ],
       );
     });
+  }
+
+  List<Widget> cartTiles(CartDataService cService) {
+    List<Widget> list = [];
+    cService.cartList!.forEach((key, value) {
+      value.forEach((e) {
+        list.add(CartTile(
+          e['productId'] as int,
+          e['title'] as String,
+          e['imgUrl'] as String,
+          e['quantity'] as int,
+          e['price'] as int,
+          e['attributes'] == null
+              ? null
+              : e['attributes'] as Map<String, dynamic>,
+        ));
+      });
+    });
+    return list;
   }
 }

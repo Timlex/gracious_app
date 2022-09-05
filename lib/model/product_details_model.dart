@@ -32,7 +32,7 @@ class ProductDetailsModel {
   List<Rating> ratings;
   dynamic avgRating;
   AvailableAttributes? availableAttributes;
-  List<ProductInventorySet> productInventorySet;
+  List<dynamic> productInventorySet;
   Map<String, AdditionalInfoStore>? additionalInfoStore;
   List<ProductColorElement> productColors;
   List<ProductColorElement> productSizes;
@@ -59,9 +59,7 @@ class ProductDetailsModel {
       availableAttributes: json["available_attributes"] is List
           ? null
           : AvailableAttributes.fromJson(json["available_attributes"]),
-      productInventorySet: List<ProductInventorySet>.from(
-          json["product_inventory_set"]
-              .map((x) => ProductInventorySet.fromJson(x))),
+      productInventorySet: json["product_inventory_set"],
       additionalInfoStore: json["additional_info_store"] is List
           ? null
           : Map.from(json["additional_info_store"]).map((k, v) =>
@@ -84,8 +82,7 @@ class ProductDetailsModel {
         "avg_rating": avgRating,
         "available_attributes":
             availableAttributes is List ? null : availableAttributes!.toJson(),
-        "product_inventory_set":
-            List<dynamic>.from(productInventorySet.map((x) => x.toJson())),
+        "product_inventory_set": productInventorySet,
         "additional_info_store": additionalInfoStore == null
             ? null
             : Map.from(additionalInfoStore!)
