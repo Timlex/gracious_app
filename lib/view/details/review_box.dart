@@ -55,14 +55,25 @@ class ReviewBox extends StatelessWidget {
               onPressed: onPressed),
         ),
         if (expanded &&
-            Provider.of<ProductDetailsService>(context)
+            !(Provider.of<ProductDetailsService>(context, listen: false)
                 .productDetails!
-                .userRatedAlready &&
-            Provider.of<ProductDetailsService>(context)
+                .userRatedAlready) &&
+            Provider.of<ProductDetailsService>(context, listen: false)
                     .productDetails!
-                    .userHasItem !=
-                null)
+                    .userHasItem ==
+                true)
           submitReview(),
+        if (expanded &&
+            !(Provider.of<ProductDetailsService>(context, listen: false)
+                .productDetails!
+                .userRatedAlready) &&
+            Provider.of<ProductDetailsService>(context, listen: false)
+                    .productDetails!
+                    .userHasItem ==
+                true)
+          SizedBox(
+            height: 20,
+          ),
         if (expanded)
           ...descriptions(Provider.of<ProductDetailsService>(context))
       ],
@@ -122,7 +133,17 @@ class ReviewBox extends StatelessWidget {
     // for (var element in pService.productDetails!.ratings ?? []) {
 
     // }
-    return reviewList;
+    return reviewList.isEmpty
+        ? [
+            Text(
+              'No Review submitted yet',
+              style: TextStyle(
+                  fontSize: 17,
+                  fontWeight: FontWeight.bold,
+                  color: cc.greyParagraph),
+            )
+          ]
+        : reviewList;
   }
 
   Widget submitReview() {

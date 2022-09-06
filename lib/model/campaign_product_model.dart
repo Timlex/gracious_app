@@ -42,28 +42,33 @@ class CampaignInfo {
     required this.endDate,
     required this.status,
     required this.createdAt,
-    required this.updatedAt,
+    this.updatedAt,
   });
 
   int id;
   String title;
   String subtitle;
   int image;
-  DateTime startDate;
-  DateTime endDate;
+  DateTime? startDate;
+  DateTime? endDate;
   String status;
-  DateTime createdAt;
-  DateTime updatedAt;
+  DateTime? createdAt;
+  DateTime? updatedAt;
 
   factory CampaignInfo.fromJson(Map<String, dynamic> json) => CampaignInfo(
         id: json["id"],
         title: json["title"],
         subtitle: json["subtitle"],
         image: json["image"],
-        startDate: DateTime.parse(json["start_date"]),
-        endDate: DateTime.parse(json["end_date"]),
+        startDate: json["start_date"] == null
+            ? null
+            : DateTime.parse(json["start_date"]),
+        endDate:
+            json["end_date"] == null ? null : DateTime.parse(json["end_date"]),
         status: json["status"],
-        createdAt: DateTime.parse(json["created_at"]),
+        createdAt: json["created_at"] == null
+            ? null
+            : DateTime.parse(json["created_at"]),
         updatedAt: DateTime.parse(json["updated_at"]),
       );
 
@@ -72,11 +77,11 @@ class CampaignInfo {
         "title": title,
         "subtitle": subtitle,
         "image": image,
-        "start_date": startDate.toIso8601String(),
-        "end_date": endDate.toIso8601String(),
+        "start_date": startDate!.toIso8601String(),
+        "end_date": endDate!.toIso8601String(),
         "status": status,
-        "created_at": createdAt.toIso8601String(),
-        "updated_at": updatedAt.toIso8601String(),
+        "created_at": createdAt!.toIso8601String(),
+        "updated_at": updatedAt!.toIso8601String(),
       };
 }
 

@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:gren_mart/view/utils/constant_name.dart';
 import '../../service/common_service.dart';
 import 'package:http/http.dart' as http;
 
@@ -93,10 +94,8 @@ class ManageAccountService with ChangeNotifier {
     notifyListeners();
   }
 
-  Future updateProfile(var token) async {
+  Future updateProfile() async {
     print('Edit in proccess');
-    print(token);
-    print(zipCode);
     Map<String, String> fieldss = {
       'name': name,
       'email': email,
@@ -108,9 +107,9 @@ class ManageAccountService with ChangeNotifier {
       'zipcode': zipCode ?? '',
       'address': address ?? '',
     };
+    print(fieldss);
 
     final url = Uri.parse('$baseApiUrl/user/update-profile');
-    print(token);
     var request = http.MultipartRequest('POST', url);
 
     fieldss.forEach((key, value) {
@@ -121,7 +120,7 @@ class ManageAccountService with ChangeNotifier {
     request.headers.addAll(
       {
         "Accept": "application/json",
-        "Authorization": "Bearer $token",
+        "Authorization": "Bearer $globalUserToken",
       },
     );
     print(pickeImage);

@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../../service/navigation_bar_helper_service.dart';
+import '../../service/search_result_data_service.dart';
 import '../../view/utils/constant_colors.dart';
 import '../../view/utils/constant_name.dart';
+import 'all_camp_product_from_link.dart';
 
 class CampaignCard extends StatelessWidget {
   final String title;
@@ -8,14 +12,12 @@ class CampaignCard extends StatelessWidget {
   final Function btFunction;
   final String image;
   final bool showButton;
+  int? camp;
+  int? cat;
 
   CampaignCard(
-    this.title,
-    this.btText,
-    this.btFunction,
-    this.image,
-    this.showButton,
-  );
+      this.title, this.btText, this.btFunction, this.image, this.showButton,
+      {this.camp, this.cat});
 
   ConstantColors cc = ConstantColors();
 
@@ -76,9 +78,38 @@ class CampaignCard extends StatelessWidget {
                   if (showButton)
                     ElevatedButton(
                       onPressed: () {
+                        print('here');
+                        print(camp);
+                        print(cat);
+                        if (camp != null) {
+                          Navigator.of(context).pushNamed(
+                              ALLCampProductFromLink.routeName,
+                              arguments: [camp.toString()]);
+                        }
+                        if (cat != null) {
+                          Provider.of<SearchResultDataService>(context,
+                                  listen: false)
+                              .resetSerch();
+                          Provider.of<SearchResultDataService>(context,
+                                  listen: false)
+                              .setCategoryId(cat.toString());
+                          Provider.of<SearchResultDataService>(context,
+                                  listen: false)
+                              .fetchProductsBy(pageNo: '1');
+                          Provider.of<NavigationBarHelperService>(context,
+                                  listen: false)
+                              .setNavigationIndex(1);
+                        }
                         btFunction;
                       },
-                      child: Text(btText),
+                      child: FittedBox(
+                        child: SizedBox(
+                            width: screenWidth / 5,
+                            child: Text(
+                              btText,
+                              style: TextStyle(overflow: TextOverflow.ellipsis),
+                            )),
+                      ),
                       style: ElevatedButton.styleFrom(
                           padding: const EdgeInsets.symmetric(
                             horizontal: 21,

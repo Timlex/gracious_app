@@ -22,7 +22,7 @@ class CartView extends StatelessWidget {
       cartData.cartList!.forEach((key, value) {
         value.forEach((element) {
           cuponData.add(
-              '{"id":${element['productId']},"price":${(element['price'] as int) * (element['quantity'] as int)}}');
+              '{"id":${element['id']},"price":${(element['price'] as int) * (element['quantity'] as int)}}');
         });
       });
       print(cuponData);
@@ -73,7 +73,7 @@ class CartView extends StatelessWidget {
     cService.cartList!.forEach((key, value) {
       value.forEach((e) {
         list.add(CartTile(
-          e['productId'] as int,
+          e['id'] as int,
           e['title'] as String,
           e['imgUrl'] as String,
           e['quantity'] as int,

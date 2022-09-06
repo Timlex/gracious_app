@@ -104,41 +104,45 @@ class Home extends StatelessWidget {
                     child: Swiper(
                       itemBuilder: (BuildContext context, int index) {
                         return PosterCard(
-                            posterData.posterDataList[index].title,
-                            'Shop now',
-                            posterData.posterDataList[index].description, () {
-                          if (posterData.posterDataList[index].campaign !=
-                              null) {
-                            Navigator.of(context).pushNamed(
-                                ALLCampProductFromLink.routeName,
-                                arguments: [
-                                  posterData.posterDataList[index].campaign
-                                      .toString()
-                                ]);
-                          }
-                          if (posterData.posterDataList[index].category !=
-                              null) {
-                            Provider.of<SearchResultDataService>(context,
-                                    listen: false)
-                                .resetSerch();
-                            Provider.of<SearchResultDataService>(context,
-                                    listen: false)
-                                .setCategoryId(posterData
-                                    .posterDataList[index].category
-                                    .toString());
-                            Provider.of<SearchResultDataService>(context,
-                                    listen: false)
-                                .fetchProductsBy(pageNo: '1');
-                            Provider.of<NavigationBarHelperService>(context,
-                                    listen: false)
-                                .setNavigationIndex(1);
-                          }
-                        },
-                            posterData.posterDataList[index].image,
-                            (posterData.posterDataList[index].campaign !=
-                                    null ||
-                                posterData.posterDataList[index].category !=
-                                    null));
+                          posterData.posterDataList[index].title,
+                          posterData.posterDataList[index].buttonText,
+                          posterData.posterDataList[index].description,
+                          () {
+                            if (posterData.posterDataList[index].campaign !=
+                                null) {
+                              print('campaign');
+                              Navigator.of(context).pushNamed(
+                                  ALLCampProductFromLink.routeName,
+                                  arguments: [
+                                    posterData.posterDataList[index].campaign
+                                        .toString()
+                                  ]);
+                            }
+                            if (posterData.posterDataList[index].category !=
+                                null) {
+                              Provider.of<SearchResultDataService>(context,
+                                      listen: false)
+                                  .resetSerch();
+                              Provider.of<SearchResultDataService>(context,
+                                      listen: false)
+                                  .setCategoryId(posterData
+                                      .posterDataList[index].category
+                                      .toString());
+                              Provider.of<SearchResultDataService>(context,
+                                      listen: false)
+                                  .fetchProductsBy(pageNo: '1');
+                              Provider.of<NavigationBarHelperService>(context,
+                                      listen: false)
+                                  .setNavigationIndex(1);
+                            }
+                          },
+                          posterData.posterDataList[index].image,
+                          (posterData.posterDataList[index].campaign != null ||
+                              posterData.posterDataList[index].category !=
+                                  null),
+                          capm: posterData.posterDataList[index].campaign,
+                          cat: posterData.posterDataList[index].category,
+                        );
                       },
                       itemCount: posterData.posterDataList.length,
                       viewportFraction: 0.85,
@@ -201,27 +205,36 @@ class Home extends StatelessWidget {
                     : Row(
                         children: pcData.campaignDataList.map((e) {
                           print(e.title);
-                          return CampaignCard(e.title, e.buttonText, () {
-                            if (e.campaign != null) {
-                              Navigator.of(context).pushNamed(
-                                  ALLCampProductFromLink.routeName,
-                                  arguments: [e.campaign.toString()]);
-                            }
-                            if (e.category != null) {
-                              Provider.of<SearchResultDataService>(context,
-                                      listen: false)
-                                  .resetSerch();
-                              Provider.of<SearchResultDataService>(context,
-                                      listen: false)
-                                  .setCategoryId(e.category.toString());
-                              Provider.of<SearchResultDataService>(context,
-                                      listen: false)
-                                  .fetchProductsBy(pageNo: '1');
-                              Provider.of<NavigationBarHelperService>(context,
-                                      listen: false)
-                                  .setNavigationIndex(1);
-                            }
-                          }, e.image, e.campaign != null || e.category != null);
+                          return CampaignCard(
+                            e.title,
+                            e.buttonText,
+                            () {
+                              if (e.campaign != null) {
+                                Navigator.of(context).pushNamed(
+                                    ALLCampProductFromLink.routeName,
+                                    arguments: [e.campaign.toString()]);
+                                return;
+                              }
+                              if (e.category != null) {
+                                Provider.of<SearchResultDataService>(context,
+                                        listen: false)
+                                    .resetSerch();
+                                Provider.of<SearchResultDataService>(context,
+                                        listen: false)
+                                    .setCategoryId(e.category.toString());
+                                Provider.of<SearchResultDataService>(context,
+                                        listen: false)
+                                    .fetchProductsBy(pageNo: '1');
+                                Provider.of<NavigationBarHelperService>(context,
+                                        listen: false)
+                                    .setNavigationIndex(1);
+                              }
+                            },
+                            e.image,
+                            e.campaign != null || e.category != null,
+                            camp: e.campaign,
+                            cat: e.category,
+                          );
                         }).toList(),
                       );
               }),
@@ -243,22 +256,23 @@ class Home extends StatelessWidget {
                               ),
 
                               const Spacer(),
-                              SlideCountdown(
-                                showZeroValue: true,
-                                textStyle: TextStyle(
-                                    color: cc.orange,
-                                    fontWeight: FontWeight.w500),
-                                decoration: BoxDecoration(
-                                    color: cc.pureWhite,
-                                    borderRadius: const BorderRadius.all(
-                                        Radius.circular(10)),
-                                    border: Border.all(
-                                      width: .7,
+                              if (campInfo.campaignInfo!.endDate != null)
+                                SlideCountdown(
+                                  showZeroValue: true,
+                                  textStyle: TextStyle(
                                       color: cc.orange,
-                                    )),
-                                duration: DateTime.now()
-                                    .difference(campInfo.campaignInfo!.endDate),
-                              ),
+                                      fontWeight: FontWeight.w500),
+                                  decoration: BoxDecoration(
+                                      color: cc.pureWhite,
+                                      borderRadius: const BorderRadius.all(
+                                          Radius.circular(10)),
+                                      border: Border.all(
+                                        width: .7,
+                                        color: cc.orange,
+                                      )),
+                                  duration: DateTime.now().difference(campInfo
+                                      .campaignInfo!.endDate as DateTime),
+                                ),
                             ],
                           )
                         : null)

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
+import 'package:gren_mart/service/checkout_service.dart';
 import 'package:gren_mart/service/menual_payment_service.dart';
 import 'package:gren_mart/service/social_login_service.dart';
 import 'package:gren_mart/view/home/all_camp_product_from_link.dart';
@@ -107,8 +108,8 @@ class _MyAppState extends State<MyApp> {
         ChangeNotifierProvider(create: (_) => PaymentGateawayService()),
         ChangeNotifierProvider(create: (_) => OrderListService()),
         ChangeNotifierProvider(create: (_) => OrderDetailsService()),
-        ChangeNotifierProvider(create: (_) => MenualPaymentService()),
         ChangeNotifierProvider(create: (_) => SocialLoginService()),
+        ChangeNotifierProvider(create: (_) => CheckoutService()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,

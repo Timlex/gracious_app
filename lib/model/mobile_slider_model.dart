@@ -87,8 +87,8 @@ class Datum {
   String image;
   String buttonUrl;
   String buttonText;
-  String? campaign;
-  String? category;
+  int? campaign;
+  int? category;
 
   factory Datum.fromJson(Map<String, dynamic> json) => Datum(
         title: json["title"],

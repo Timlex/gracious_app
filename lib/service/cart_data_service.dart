@@ -10,12 +10,13 @@ class CartDataService with ChangeNotifier {
   Map<String, List<Map<String, Object?>>>? _cartItems = {};
 
   Map<String, List<Map<String, Object?>>>? get cartList {
-    return _cartItems;
+    final clist = _cartItems;
+    return clist;
   }
 
   int calculateSubtotal() {
     int sum = 0;
-    cartList!.forEach((key, value) {
+    _cartItems!.forEach((key, value) {
       value.forEach((element) {
         sum += (element['price'] as int) * (element['quantity'] as int);
       });
@@ -23,9 +24,35 @@ class CartDataService with ChangeNotifier {
     return sum;
   }
 
+  formatItems() {
+    List list = [];
+    Map map = {};
+
+    _cartItems!.keys.forEach((element) {
+      _cartItems![element]!.forEach((e) {
+        if (e['attributes'] == null) {
+          list.add(({
+            'id': e['id'],
+            'quantity': e['quantity'],
+            'attributes': {},
+          }));
+        }
+        if (e['attributes'] != null) {
+          list.add(({
+            'id': e['id'],
+            'quantity': e['quantity'],
+            'attributes': e['attributes'],
+          }));
+        }
+      });
+      map.putIfAbsent(element, () => list);
+    });
+    return map;
+  }
+
   void addItem(int id, {int? extraQuantity, inventorySet}) async {
     _cartItems![id.toString()]!.forEach((element) {
-      if (element['productId'] == id &&
+      if (element['id'] == id &&
           (element.containsValue(inventorySet) ||
               (inventorySet == null && element['attributes'] == null))) {
         element.update('quantity', (value) {
@@ -80,7 +107,7 @@ class CartDataService with ChangeNotifier {
 
   void minusItem(int id, {inventorySet}) {
     _cartItems![id.toString()]!.forEach((element) {
-      if (element['productId'] == id &&
+      if (element['id'] == id &&
           (element.containsValue(inventorySet) ||
               (inventorySet == null && element['attributes'] == null))) {
         element.update('quantity', (value) {
@@ -152,7 +179,7 @@ class CartDataService with ChangeNotifier {
     Map<String, List<Map<String, Object?>>>? map = {
       id.toString(): [
         {
-          'productId': id,
+          'id': id,
           'title': title,
           'price': price,
           'imgUrl': imgUrl,
@@ -186,7 +213,7 @@ class CartDataService with ChangeNotifier {
       });
       _cartItems![id.toString()] = [
         {
-          'productId': id,
+          'id': id,
           'title': title,
           'price': price,
           'imgUrl': imgUrl,
@@ -198,7 +225,7 @@ class CartDataService with ChangeNotifier {
       //     id.toString(),
       //     () => [
       //           {
-      //             'productId': id,
+      //             'id': id,
       //             'title': title,
       //             'price': price,
       //             'imgUrl': imgUrl,
@@ -217,7 +244,7 @@ class CartDataService with ChangeNotifier {
     // });
     // if (_cartItems!.containsKey(id.toString()) && itemAbsent) {
     _cartItems![id.toString()]!.add({
-      'productId': id,
+      'id': id,
       'title': title,
       'price': price,
       'imgUrl': imgUrl,
@@ -237,7 +264,7 @@ class CartDataService with ChangeNotifier {
     print(id);
     print(_cartItems![id.toString]);
     // _cartItems![id.toString]!.add({
-    //     'productId': id,
+    //     'id': id,
     //     'title': title,
     //     'price': price,
     //     'imgUrl': imgUrl,
@@ -287,7 +314,7 @@ class CartDataService with ChangeNotifier {
     }
     Map<String, Object?> targetedElement = {};
     _cartItems![id.toString()]!.forEach((element) {
-      if (element['productId'] == id &&
+      if (element['id'] == id &&
           (element.containsValue(inventorySet) ||
               (inventorySet == null && element['attributes'] == null))) {
         print(element);

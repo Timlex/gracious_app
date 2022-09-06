@@ -50,7 +50,7 @@ class ManageAccount extends StatelessWidget {
     maData.setIsLoading(true);
     final _token =
         Provider.of<SignInSignUpService>(context, listen: false).token;
-    maData.updateProfile(_token).then((value) async {
+    maData.updateProfile().then((value) async {
       if (value != null) {
         snackBar(context, value);
         maData.setIsLoading(false);

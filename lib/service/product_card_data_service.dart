@@ -67,28 +67,28 @@ class ProductCardDataService with ChangeNotifier {
   }
 
   Future fetchCapmaignPageProductData({id}) async {
-    print('get featured products ran');
+    print('get featured products ran-------------$id');
     final url = Uri.parse('$baseApiUrl/campaign/product/${id ?? ''}');
 
-    try {
-      final response = await http.get(url);
+    // try {print
+    final response = await http.get(url);
 
-      if (response.statusCode == 200) {
-        var data = CampaignProductModel.fromJson(jsonDecode(response.body));
-        campaignPageProductList = data.products;
-        campaignPageInfo = data.campaignInfo;
+    if (response.statusCode == 200) {
+      var data = CampaignProductModel.fromJson(jsonDecode(response.body));
+      campaignPageProductList = data.products;
+      campaignPageInfo = data.campaignInfo;
 
-        // print(featuredCardProductsList[0].prdId);
-        // print(countryDropdownList);
+      // print(featuredCardProductsList[0].prdId);
+      // print(countryDropdownList);
 
-        notifyListeners();
-      } else {
-        //something went wrong
-      }
-    } catch (error) {
-      print(error);
-
-      rethrow;
+      notifyListeners();
+    } else {
+      //something went wrong
     }
+    // } catch (error) {
+    //   print(error);
+
+    //   rethrow;
+    // }
   }
 }

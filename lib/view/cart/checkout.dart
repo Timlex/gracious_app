@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:gren_mart/service/checkout_service.dart';
 import 'package:gren_mart/service/menual_payment_service.dart';
 import 'package:gren_mart/view/payment/billplz_payment.dart';
 import 'package:gren_mart/view/payment/cash_free_payment.dart';
@@ -445,23 +446,95 @@ class Checkout extends StatelessWidget {
                             });
                           }),
                       const SizedBox(height: 20),
-                      customContainerButton('Pay & Confirm', double.maxFinite,
-                          () async {
-                        Provider.of<PaymentGateawayService>(context,
-                                listen: false)
-                            .setIsLoading(true);
+                      Row(
+                        children: [
+                          Transform.scale(
+                            scale: 1.3,
+                            child: Consumer<CheckoutService>(
+                                builder: (context, cService, child) {
+                              return Checkbox(
 
-                        await startPayment(context);
-                        Provider.of<PaymentGateawayService>(context,
-                                listen: false)
-                            .setIsLoading(false);
-                        // DbHelper.deleteDbTable('cart');
-                        // Navigator.push(
-                        //   context,
-                        //   MaterialPageRoute(
-                        //       builder: (context) => PaymentStatusView(error)),
-                        // );
-                        // error = true;
+                                  // splashRadius: 30,
+                                  materialTapTargetSize:
+                                      MaterialTapTargetSize.shrinkWrap,
+                                  side: BorderSide(
+                                    width: 1,
+                                    color: cc.greyBorder,
+                                  ),
+                                  activeColor: cc.primaryColor,
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(6),
+                                      side: BorderSide(
+                                        width: 1,
+                                        color: cc.greyBorder,
+                                      )),
+                                  value: cService.termsAcondi,
+                                  onChanged: (value) {
+                                    cService.setTermsACondi();
+                                  });
+                            }),
+                          ),
+                          const SizedBox(width: 5),
+                          SizedBox(
+                            width: screenWidth - 130,
+                            child: FittedBox(
+                              child: RichText(
+                                softWrap: true,
+                                text: TextSpan(
+                                    text: 'Accept all',
+                                    style: TextStyle(
+                                      color: cc.greyHint,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                    children: [
+                                      TextSpan(
+                                          text: ' Terms and Conditions',
+                                          style: TextStyle(
+                                              color: cc.primaryColor)),
+                                      TextSpan(
+                                          text: ' & ',
+                                          style: TextStyle(color: cc.greyHint)),
+                                      TextSpan(
+                                          text: ' Privacy Policy',
+                                          style: TextStyle(
+                                              color: cc.primaryColor)),
+                                    ]),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 10),
+                      Consumer<CheckoutService>(
+                          builder: (context, cService, child) {
+                        return customContainerButton(
+                            'Pay & Confirm',
+                            double.maxFinite,
+                            cService.termsAcondi
+                                ? () async {
+                                    Provider.of<PaymentGateawayService>(context,
+                                            listen: false)
+                                        .setIsLoading(true);
+
+                                    await startPayment(context, cService)
+                                        .onError((error, stackTrace) =>
+                                            snackBar(
+                                                context, 'Connection failed!'));
+                                    Provider.of<PaymentGateawayService>(context,
+                                            listen: false)
+                                        .setIsLoading(false);
+                                    // DbHelper.deleteDbTable('cart');
+                                    // Navigator.push(
+                                    //   context,
+                                    //   MaterialPageRoute(
+                                    //       builder: (context) => PaymentStatusView(error)),
+                                    // );
+                                    // error = true;
+                                  }
+                                : () {
+                                    snackBar(context,
+                                        'You have agree to our Terms & Conditions.');
+                                  });
                       }),
                       const SizedBox(height: 30),
                     ]),
@@ -539,11 +612,62 @@ class Checkout extends StatelessWidget {
     );
   }
 
-  startPayment(BuildContext context) async {
+  Future startPayment(BuildContext context, CheckoutService cService) async {
     final selectedGateaway =
         Provider.of<PaymentGateawayService>(context, listen: false)
             .selectedGateaway;
-    if (selectedGateaway!.name.toLowerCase().contains('paypal')) {
+    if (selectedGateaway == null) {
+      snackBar(context, 'Select a payment Gateaway');
+      return;
+    }
+
+    if (selectedGateaway.name.toLowerCase().contains('manual_payment')) {
+      bool continued = false;
+      showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              content: GestureDetector(
+                onTap: (() {
+                  imageSelector(context);
+                }),
+                child: Padding(
+                    padding: const EdgeInsets.all(10),
+                    child: Container(
+                      padding: EdgeInsets.all(15),
+                      height: 300,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(15),
+                          border: Border.all(
+                            color: cc.primaryColor,
+                          )),
+                      child: cService.pickedImage == null
+                          ? Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(Icons.camera_alt_outlined),
+                                Text('Select an image from gallary'),
+                              ],
+                            )
+                          : Image.file(cService.pickedImage!),
+                    )),
+              ),
+              actions: [
+                customContainerButton('Continue', double.infinity, () {
+                  continued = true;
+                  Navigator.of(context).pop();
+                })
+              ],
+            );
+          });
+      if (continued) {
+        await cService.proccessCheckout(context);
+      }
+      return;
+    }
+
+    await cService.proccessCheckout(context);
+    if (selectedGateaway.name.toLowerCase().contains('paypal')) {
       Navigator.of(context).push(
         MaterialPageRoute(
           builder: (BuildContext context) => PaypalPayment(
@@ -705,46 +829,41 @@ class Checkout extends StatelessWidget {
       showDialog(
           context: context,
           builder: (context) {
-            return Consumer<MenualPaymentService>(
-                builder: (context, mService, child) {
-              return AlertDialog(
-                content: GestureDetector(
-                  onTap: (() {
-                    imageSelector(context);
-                  }),
-                  child: Padding(
-                      padding: const EdgeInsets.all(10),
-                      child: Container(
-                        padding: EdgeInsets.all(15),
-                        height: 300,
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(15),
-                            border: Border.all(
-                              color: cc.primaryColor,
-                            )),
-                        child: mService.pickedImage == null
-                            ? Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Icon(Icons.camera_alt_outlined),
-                                  Text('Select an image from gallary'),
-                                ],
-                              )
-                            : Image.file(mService.pickedImage!),
-                      )),
-                ),
-                actions: [
-                  customContainerButton('Upload image', double.infinity, () {
-                    Navigator.of(context).pop();
-                  })
-                ],
-              );
-            });
+            return AlertDialog(
+              content: GestureDetector(
+                onTap: (() {
+                  imageSelector(context);
+                }),
+                child: Padding(
+                    padding: const EdgeInsets.all(10),
+                    child: Container(
+                      padding: EdgeInsets.all(15),
+                      height: 300,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(15),
+                          border: Border.all(
+                            color: cc.primaryColor,
+                          )),
+                      child: cService.pickedImage == null
+                          ? Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(Icons.camera_alt_outlined),
+                                Text('Select an image from gallary'),
+                              ],
+                            )
+                          : Image.file(cService.pickedImage!),
+                    )),
+              ),
+              actions: [
+                customContainerButton('Upload image', double.infinity, () {
+                  Navigator.of(context).pop();
+                })
+              ],
+            );
           });
       return;
     }
-
-    snackBar(context, 'Select a payment Gateaway');
   }
 
   Future<void> imageSelector(BuildContext context,
@@ -752,7 +871,7 @@ class Checkout extends StatelessWidget {
     try {
       final pickedImage =
           await ImagePicker.platform.pickImage(source: imageSource);
-      Provider.of<MenualPaymentService>(context, listen: false)
+      Provider.of<CheckoutService>(context, listen: false)
           .setPickedImage(File(pickedImage!.path));
     } catch (error) {
       print(error.toString());

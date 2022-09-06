@@ -14,7 +14,7 @@ class ProductDetailsModel {
   ProductDetailsModel({
     required this.product,
     required this.relatedProducts,
-    this.userHasItem,
+    required this.userHasItem,
     required this.ratings,
     this.avgRating,
     this.availableAttributes,
@@ -28,7 +28,7 @@ class ProductDetailsModel {
 
   Product product;
   List<RelatedProduct> relatedProducts;
-  dynamic userHasItem;
+  bool userHasItem;
   List<Rating> ratings;
   dynamic avgRating;
   AvailableAttributes? availableAttributes;

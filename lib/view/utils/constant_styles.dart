@@ -279,7 +279,7 @@ snackBar(BuildContext context, String content,
         children: [
           Text(
             content,
-            overflow: TextOverflow.fade,
+            overflow: TextOverflow.ellipsis,
           ),
           const Spacer(),
           if (buttonText != null)

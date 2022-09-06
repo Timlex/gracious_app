@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:gren_mart/service/country_dropdown_service.dart';
 import 'package:gren_mart/service/manage_account_service.dart';
+import 'package:gren_mart/service/navigation_bar_helper_service.dart';
 import 'package:gren_mart/service/state_dropdown_service.dart';
 import '../../service/shipping_addresses_service.dart';
 import '../../service/signin_signup_service.dart';
@@ -83,6 +84,7 @@ class SettingView extends StatelessWidget {
                 .then((value) {
               final userData =
                   Provider.of<UserProfileService>(context, listen: false);
+              print(userData.userProfileData.country!.id);
               if (userData.userProfileData.country != null) {
                 Provider.of<CountryDropdownService>(context, listen: false)
                     .setCountryIdAndValue(
@@ -111,6 +113,8 @@ class SettingView extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 25),
             child: customContainerButton('Log Out', double.infinity, () {
+              Provider.of<NavigationBarHelperService>(context, listen: false)
+                  .setNavigationIndex(0);
               Provider.of<SignInSignUpService>(context, listen: false)
                   .signOut();
               Provider.of<AuthTextControllerService>(context, listen: false)

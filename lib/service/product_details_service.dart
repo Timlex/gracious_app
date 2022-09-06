@@ -6,6 +6,8 @@ import '../../model/product_details_model.dart';
 import '../../service/common_service.dart';
 import 'package:http/http.dart' as http;
 
+import '../view/utils/constant_name.dart';
+
 class ProductDetailsService with ChangeNotifier {
   ProductDetailsModel? productDetails;
   late Map<String, AdditionalInfoStore> additionalInventoryInfo;
@@ -288,11 +290,18 @@ class ProductDetailsService with ChangeNotifier {
   Future fetchProductDetails(id) async {
     print(id);
     inventoryKeys = [];
+    var header = {
+      //if header type is application/json then the data should be in jsonEncode method
+      "Accept": "application/json",
+      'Content-Type': 'application/json',
+      "Authorization": "Bearer $globalUserToken",
+    };
     final url = Uri.parse('$baseApiUrl/product/$id');
 
     // try {
-    final response = await http.get(url);
+    final response = await http.get(url, headers: header);
     if (response.statusCode == 200) {
+      print(response.body);
       var data = ProductDetailsModel.fromJson(jsonDecode(response.body));
       productDetails = data;
       productSalePrice = productDetails!.product.salePrice;
