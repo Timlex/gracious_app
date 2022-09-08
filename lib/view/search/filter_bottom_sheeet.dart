@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:gren_mart/service/common_service.dart';
 import '../../service/categories_data_service.dart';
 import '../../service/search_result_data_service.dart';
 import '../../view/utils/constant_styles.dart';
@@ -23,21 +24,28 @@ class FilterBottomSheet extends StatelessWidget {
       return catData.subCategorydataList.isEmpty
           ? SizedBox(height: 150, child: Center(child: loadingProgressBar()))
           : Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              const Padding(
-                padding: EdgeInsets.only(left: 25.0, top: 15),
+              Padding(
+                padding: EdgeInsets.only(
+                    left: rtl ? 0 : 25.0, right: rtl ? 25 : 0, top: 15),
                 child: Text(
                   'Filter by:',
                   style: TextStyle(fontSize: 19, fontWeight: FontWeight.w600),
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.only(left: 25.0),
+                padding: EdgeInsets.only(
+                  left: rtl ? 0 : 25.0,
+                  right: rtl ? 25 : 0,
+                ),
                 child: textFieldTitle('All categories', fontSize: 13),
               ),
               Container(
                 height: 50,
-                padding: const EdgeInsets.only(left: 25.0),
                 child: ListView.builder(
+                    padding: EdgeInsets.only(
+                      left: rtl ? 0 : 25.0,
+                      right: rtl ? 25 : 0,
+                    ),
                     scrollDirection: Axis.horizontal,
                     itemCount: catData.categorydataList.length,
                     itemBuilder: ((context, index) {
@@ -57,13 +65,19 @@ class FilterBottomSheet extends StatelessWidget {
                     })),
               ),
               Padding(
-                padding: const EdgeInsets.only(left: 25.0),
+                padding: EdgeInsets.only(
+                  left: rtl ? 0 : 25.0,
+                  right: rtl ? 25 : 0,
+                ),
                 child: textFieldTitle('Sub-category', fontSize: 13),
               ),
               Container(
                 height: 50,
-                padding: const EdgeInsets.only(left: 25.0),
                 child: ListView.builder(
+                    padding: EdgeInsets.only(
+                      left: rtl ? 0 : 25.0,
+                      right: rtl ? 25 : 0,
+                    ),
                     scrollDirection: Axis.horizontal,
                     itemCount: catData.subCategorydataList.length,
                     itemBuilder: ((context, index) {
@@ -88,7 +102,10 @@ class FilterBottomSheet extends StatelessWidget {
                   children: [
                     textFieldTitle('Filter Price', fontSize: 13),
                     Container(
-                      margin: const EdgeInsets.only(top: 17),
+                      margin: EdgeInsets.only(
+                        left: rtl ? 0 : 25.0,
+                        right: rtl ? 25 : 0,
+                      ),
                       child: Text('\$' +
                           startRange.output.withoutFractionDigits +
                           '-' +
@@ -118,12 +135,18 @@ class FilterBottomSheet extends StatelessWidget {
                 );
               }),
               Padding(
-                padding: const EdgeInsets.only(left: 25.0),
+                padding: EdgeInsets.only(
+                  left: rtl ? 0 : 25.0,
+                  right: rtl ? 25 : 0,
+                ),
                 child: textFieldTitle('Average Rating', fontSize: 13),
               ),
               const SizedBox(height: 10),
               Padding(
-                padding: const EdgeInsets.only(left: 25.0),
+                padding: EdgeInsets.only(
+                  left: rtl ? 0 : 25.0,
+                  right: rtl ? 25 : 0,
+                ),
                 child: Consumer<SearchResultDataService>(
                     builder: (context, srData, child) {
                   return RatingBar.builder(

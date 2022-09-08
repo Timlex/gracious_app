@@ -4,6 +4,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import '../../service/common_service.dart';
 import '../../service/ticket_chat_service.dart';
 import '../../view/utils/image_view.dart';
 import '../../view/utils/app_bars.dart';
@@ -84,64 +85,6 @@ class TicketChat extends StatelessWidget {
                         ),
                       ),
                     ),
-                    // Container(
-                    //   color: cc.pureWhite,
-                    //   height: 60,
-                    //   child: Row(
-                    //     children: [
-                    //       // Expanded(
-                    //       //   child: TextField(
-                    //       //     decoration: InputDecoration(
-                    //       //       hintText: 'Write message',
-                    //       //       hintStyle: TextStyle(color: cc.greyHint),
-                    //       //       enabledBorder: OutlineInputBorder(
-                    //       //         borderSide: BorderSide(color: cc.pureWhite),
-                    //       //       ),
-                    //       //       focusedBorder: OutlineInputBorder(
-                    //       //         borderSide: BorderSide(color: cc.pureWhite),
-                    //       //       ),
-                    //       //       errorBorder: OutlineInputBorder(
-                    //       //         borderSide: BorderSide(color: cc.pureWhite),
-                    //       //       ),
-                    //       //     ),
-                    //       //     onChanged: (value) {
-                    //       //       tcService.setMessage(value);
-                    //       //     },
-                    //       //   ),
-                    //       // ),
-                    //       if (tcService.pickedImage != null)
-                    //         SizedBox(
-                    //           height: 55,
-                    //           width: 55,
-                    //           child: Image.file(
-                    //             tcService.pickedImage as File,
-                    //             fit: BoxFit.cover,
-                    //           ),
-                    //         ),
-                    //       IconButton(
-                    //           onPressed: (() {
-                    //             imageSelector(context);
-                    //           }),
-                    //           icon: const Icon(
-                    //             Icons.attach_file,
-                    //           )),
-                    //       IconButton(
-                    //           onPressed: tcService.message.isEmpty
-                    //               ? null
-                    //               : (() {
-                    //                   tcService.sendMessage(
-                    //                       tcService.ticketDetails.id);
-                    //                 }),
-                    //           icon: Icon(
-                    //             Icons.send_rounded,
-                    //             color: tcService.message.isEmpty
-                    //                 ? cc.greyDots
-                    //                 : cc.primaryColor,
-                    //           )),
-                    //     ],
-                    //   ),
-                    // ),
-
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 15),
                       child: Row(
@@ -312,40 +255,25 @@ class TicketChat extends StatelessWidget {
                             borderRadius: BorderRadius.only(
                               topLeft: const Radius.circular(20),
                               topRight: const Radius.circular(20),
-                              bottomLeft: usersMessage
-                                  ? const Radius.circular(20)
-                                  : Radius.zero,
-                              bottomRight: usersMessage
-                                  ? Radius.zero
-                                  : const Radius.circular(20),
+                              bottomLeft: rtl
+                                  ? (usersMessage
+                                      ? Radius.zero
+                                      : const Radius.circular(20))
+                                  : (usersMessage
+                                      ? const Radius.circular(20)
+                                      : Radius.zero),
+                              bottomRight: rtl
+                                  ? (usersMessage
+                                      ? Radius.circular(20)
+                                      : Radius.zero)
+                                  : (usersMessage
+                                      ? Radius.zero
+                                      : const Radius.circular(20)),
                             ),
                             color: usersMessage
                                 ? cc.primaryColor
                                 : const Color(0xffEFEFEF),
                           ),
-                          // child:
-                          //  CustomPaint(
-                          //   painter: usersMessage
-                          //       ? UserChatBubble()
-                          //       : AdminChatBubble(),
-                          // child:
-                          //  Padding(
-                          //   padding: EdgeInsets.only(
-                          //       right: usersMessage ? 20 : 10,
-                          //       top: 10,
-                          //       bottom: 10,
-                          //       left: usersMessage ? 10 : 20),
-                          //   child:
-                          //   Text(
-                          //     tcService.messagesList[index].message,
-                          //     style: TextStyle(
-                          //         color: usersMessage ? cc.pureWhite : null,
-                          //         fontSize: 15),
-                          //     // textAlign: usersMessage
-                          //     //     ? TextAlign.right
-                          //     //     : TextAlign.left,
-                          //   ),
-                          // ),
                           child: Text(
                             tcService.messagesList[index].message,
                             style: usersMessage

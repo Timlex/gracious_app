@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:gren_mart/service/checkout_service.dart';
 import 'package:gren_mart/service/payment_gateaway_service.dart';
 import 'package:gren_mart/view/utils/app_bars.dart';
 import 'package:gren_mart/view/utils/constant_styles.dart';
@@ -133,6 +134,9 @@ class BillplzPayment extends StatelessWidget {
         cartData.calculateSubtotal() -
         cuponData.cuponDiscount);
 
+    final checkoutInfo = Provider.of<CheckoutService>(context, listen: false);
+    final orderId = checkoutInfo.checkoutModel.id;
+
     final url = Uri.parse('https://www.billplz-sandbox.com/api/v3/bills');
     final username = 'b2ead199-e6f3-4420-ae5c-c94f1b1e8ed6';
     final basicAuth =
@@ -143,7 +147,6 @@ class BillplzPayment extends StatelessWidget {
       "Authorization": basicAuth,
       // Above is API server key for the Midtrans account, encoded to base64
     };
-    final orderId = Random().nextInt(23000).toInt();
     final response = await http.post(url,
         headers: header,
         body: jsonEncode({

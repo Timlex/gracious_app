@@ -107,35 +107,6 @@ class Home extends StatelessWidget {
                           posterData.posterDataList[index].title,
                           posterData.posterDataList[index].buttonText,
                           posterData.posterDataList[index].description,
-                          () {
-                            if (posterData.posterDataList[index].campaign !=
-                                null) {
-                              print('campaign');
-                              Navigator.of(context).pushNamed(
-                                  ALLCampProductFromLink.routeName,
-                                  arguments: [
-                                    posterData.posterDataList[index].campaign
-                                        .toString()
-                                  ]);
-                            }
-                            if (posterData.posterDataList[index].category !=
-                                null) {
-                              Provider.of<SearchResultDataService>(context,
-                                      listen: false)
-                                  .resetSerch();
-                              Provider.of<SearchResultDataService>(context,
-                                      listen: false)
-                                  .setCategoryId(posterData
-                                      .posterDataList[index].category
-                                      .toString());
-                              Provider.of<SearchResultDataService>(context,
-                                      listen: false)
-                                  .fetchProductsBy(pageNo: '1');
-                              Provider.of<NavigationBarHelperService>(context,
-                                      listen: false)
-                                  .setNavigationIndex(1);
-                            }
-                          },
                           posterData.posterDataList[index].image,
                           (posterData.posterDataList[index].campaign != null ||
                               posterData.posterDataList[index].category !=
@@ -208,28 +179,6 @@ class Home extends StatelessWidget {
                           return CampaignCard(
                             e.title,
                             e.buttonText,
-                            () {
-                              if (e.campaign != null) {
-                                Navigator.of(context).pushNamed(
-                                    ALLCampProductFromLink.routeName,
-                                    arguments: [e.campaign.toString()]);
-                                return;
-                              }
-                              if (e.category != null) {
-                                Provider.of<SearchResultDataService>(context,
-                                        listen: false)
-                                    .resetSerch();
-                                Provider.of<SearchResultDataService>(context,
-                                        listen: false)
-                                    .setCategoryId(e.category.toString());
-                                Provider.of<SearchResultDataService>(context,
-                                        listen: false)
-                                    .fetchProductsBy(pageNo: '1');
-                                Provider.of<NavigationBarHelperService>(context,
-                                        listen: false)
-                                    .setNavigationIndex(1);
-                              }
-                            },
                             e.image,
                             e.campaign != null || e.category != null,
                             camp: e.campaign,

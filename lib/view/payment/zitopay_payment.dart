@@ -1,22 +1,13 @@
 import 'dart:async';
-import 'dart:convert';
-import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:gren_mart/service/payment_gateaway_service.dart';
-import 'package:gren_mart/view/auth/custom_text_field.dart';
 import 'package:gren_mart/view/utils/app_bars.dart';
 import 'package:gren_mart/view/utils/constant_styles.dart';
 import 'package:provider/provider.dart';
 import 'package:webview_flutter/webview_flutter.dart';
-import 'package:namefully/namefully.dart';
 import 'package:http/http.dart' as http;
 
-import '../../service/cart_data_service.dart';
-import '../../service/cupon_discount_service.dart';
-import '../../service/shipping_addresses_service.dart';
-import '../../service/shipping_zone_service.dart';
-import '../../service/user_profile_service.dart';
+import '../../service/checkout_service.dart';
 
 class ZitopayPayment extends StatelessWidget {
   ZitopayPayment(this.url, {Key? key}) : super(key: key);
@@ -59,6 +50,9 @@ class ZitopayPayment extends StatelessWidget {
             print('closing payment...................');
             print('closing payment..........................');
             if (paySuccess) {
+              final checkoutInfo =
+                  Provider.of<CheckoutService>(context, listen: false);
+              final orderId = checkoutInfo.checkoutModel.id;
               Navigator.of(context).pop();
               return;
             }

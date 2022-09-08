@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:gren_mart/service/product_details_service.dart';
+import 'package:gren_mart/service/review_service.dart';
 import 'package:provider/provider.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
@@ -12,7 +13,9 @@ import '../utils/text_themes.dart';
 class ReviewBox extends StatelessWidget {
   bool expanded;
   void Function()? onPressed;
-  ReviewBox(this.expanded, {this.onPressed, Key? key}) : super(key: key);
+  int id;
+  ReviewBox(this.expanded, this.id, {this.onPressed, Key? key})
+      : super(key: key);
 
   // final reviewData = [
   //   {
@@ -62,7 +65,7 @@ class ReviewBox extends StatelessWidget {
                     .productDetails!
                     .userHasItem ==
                 true)
-          submitReview(),
+          submitReview(context),
         if (expanded &&
             !(Provider.of<ProductDetailsService>(context, listen: false)
                 .productDetails!
@@ -138,15 +141,15 @@ class ReviewBox extends StatelessWidget {
             Text(
               'No Review submitted yet',
               style: TextStyle(
-                  fontSize: 17,
-                  fontWeight: FontWeight.bold,
-                  color: cc.greyParagraph),
+                  color: cc.greyHint,
+                  fontWeight: FontWeight.w600,
+                  fontSize: 14),
             )
           ]
         : reviewList;
   }
 
-  Widget submitReview() {
+  Widget submitReview(BuildContext context) {
     final textTheme = TextStyle(
         fontSize: 17, fontWeight: FontWeight.bold, color: cc.greyParagraph);
     return Form(
@@ -176,6 +179,8 @@ class ReviewBox extends StatelessWidget {
             ),
             onRatingUpdate: (rating) {
               print(rating);
+              Provider.of<ReviewService>(context, listen: false)
+                  .setRating(rating.toString());
             },
           ),
           const SizedBox(height: 10),
@@ -184,37 +189,78 @@ class ReviewBox extends StatelessWidget {
           SizedBox(
             height: screenHight / 7,
             // margin: const EdgeInsets.symmetric(horizontal: 15),
-            child: TextField(
-              maxLines: 4,
-              controller: _controller,
-              decoration: InputDecoration(
-                isDense: true,
-                hintText: 'Write yor feedback.',
-                hintStyle: TextStyle(color: cc.greyHint, fontSize: 14),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(15),
-                  borderSide: BorderSide(color: cc.greyBorder2),
+            child: Consumer<ReviewService>(builder: (context, rService, child) {
+              return TextField(
+                maxLines: 4,
+                controller: _controller,
+                decoration: InputDecoration(
+                  isDense: true,
+                  hintText: 'Write yor feedback.',
+                  hintStyle: TextStyle(color: cc.greyHint, fontSize: 14),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(15),
+                    borderSide: BorderSide(color: cc.greyBorder2),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(15),
+                    borderSide: BorderSide(color: cc.greyBorder2),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(15),
+                    borderSide: BorderSide(color: cc.primaryColor),
+                  ),
+                  errorBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(15),
+                    borderSide: BorderSide(color: cc.pink),
+                  ),
                 ),
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(15),
-                  borderSide: BorderSide(color: cc.greyBorder2),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(15),
-                  borderSide: BorderSide(color: cc.primaryColor),
-                ),
-                errorBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(15),
-                  borderSide: BorderSide(color: cc.pink),
-                ),
-              ),
-              onChanged: (value) {
-                // tcService.setMessage(value);
-              },
-            ),
+                onChanged: (value) {
+                  Provider.of<ReviewService>(context, listen: false)
+                      .setComment(value);
+                },
+                onSubmitted: (_) {
+                  rService.toggleLaodingSpinner(true);
+                  FocusScope.of(context).unfocus();
+                  rService.submitReview(id.toString(), context).onError(
+                      (error, stackTrace) =>
+                          snackBar(context, 'Connection failed'));
+                  rService.toggleLaodingSpinner(false);
+                },
+              );
+            }),
           ),
           const SizedBox(height: 30),
-          customBorderButton('Submit', () {}, width: double.infinity),
+          Consumer<ReviewService>(builder: (context, rService, child) {
+            return Stack(
+              children: [
+                customContainerButton(
+                  Provider.of<ReviewService>(context).isLoading ? '' : 'Submit',
+                  double.infinity,
+                  Provider.of<ReviewService>(context).isLoading
+                      ? () {}
+                      : () {
+                          if (rService.comment.isEmpty) {
+                            snackBar(context, 'Please write a feedback');
+                            return;
+                          }
+                          rService.toggleLaodingSpinner(true);
+                          FocusScope.of(context).unfocus();
+                          rService.submitReview(id.toString(), context).onError(
+                              (error, stackTrace) =>
+                                  snackBar(context, 'Connection failed'));
+                          rService.toggleLaodingSpinner(false);
+                        },
+                ),
+                if (Provider.of<ReviewService>(context).isLoading)
+                  SizedBox(
+                      height: 50,
+                      width: double.infinity,
+                      child: Center(
+                          child: loadingProgressBar(
+                              size: 30, color: cc.pureWhite)))
+              ],
+            );
+          }),
           const SizedBox(height: 20),
         ],
       ),

@@ -169,28 +169,28 @@ class OrderDetail {
     required this.id,
     required this.quantity,
     required this.hash,
-    required this.attributes,
+    this.attributes,
   });
 
   int id;
   int quantity;
   String hash;
-  Attributes attributes;
+  dynamic attributes;
 
   factory OrderDetail.fromJson(Map<String, dynamic> json) => OrderDetail(
         id: json["id"],
-        quantity: (json["quantity"] is String)
+        quantity: json["quantity"] is String
             ? int.parse(json["quantity"])
             : json["quantity"],
         hash: json["hash"],
-        attributes: Attributes.fromJson(json["attributes"]),
+        attributes: json["attributes"],
       );
 
   Map<String, dynamic> toJson() => {
         "id": id,
         "quantity": quantity,
         "hash": hash,
-        "attributes": attributes.toJson(),
+        "attributes": attributes,
       };
 }
 
@@ -205,13 +205,13 @@ class Productdetail {
   int id;
   int quantity;
   String hash;
-  Attributes attributes;
+  dynamic attributes;
 
   factory Productdetail.fromJson(Map<String, dynamic> json) => Productdetail(
         id: json["id"],
         quantity: json["quantity"],
         hash: json["hash"],
-        attributes: Attributes.fromJson(json["attributes"]),
+        attributes: json["attributes"],
       );
 
   Map<String, dynamic> toJson() => {
@@ -219,48 +219,6 @@ class Productdetail {
         "quantity": quantity,
         "hash": hash,
         "attributes": attributes.toJson(),
-      };
-}
-
-class Attributes {
-  Attributes({
-    this.color,
-    this.colorName,
-    this.size,
-    this.sauce,
-    this.cheese,
-    this.mayo,
-    this.type,
-    required this.price,
-  });
-
-  String? color;
-  String? colorName;
-  String? size;
-  String? sauce;
-  String? cheese;
-  String? mayo;
-  String? type;
-  int price;
-
-  factory Attributes.fromJson(Map<String, dynamic> json) => Attributes(
-        color: json["Color"],
-        colorName: json["Color_name"],
-        size: json["Size"],
-        sauce: json["Sauce"],
-        cheese: json["Cheese"],
-        mayo: json["Mayo"],
-        type: json["type"],
-        price: json["price"],
-      );
-
-  Map<String, dynamic> toJson() => {
-        "Color": color,
-        "Color_name": colorName,
-        "Size": size,
-        "Sauce": sauce,
-        "Mayo": mayo,
-        "price": price,
       };
 }
 

@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../service/cart_data_service.dart';
+import '../../service/checkout_service.dart';
 import '../../service/cupon_discount_service.dart';
 import '../../service/payment_gateaway_service.dart';
 import '../../service/shipping_addresses_service.dart';
@@ -126,25 +127,25 @@ class FlutterWavePayment {
 
     final style = FlutterwaveStyle(
       appBarText: "Flutterwave payment",
-      buttonColor: Colors.blue,
+      buttonColor: cc.primaryColor,
       buttonTextStyle: const TextStyle(
         color: Colors.white,
         fontSize: 16,
       ),
-      appBarColor: Colors.blue,
+      appBarColor: cc.pureWhite,
       dialogCancelTextStyle: const TextStyle(
         color: Colors.grey,
         fontSize: 17,
       ),
-      dialogContinueTextStyle: const TextStyle(
-        color: Colors.blue,
+      dialogContinueTextStyle: TextStyle(
+        color: cc.primaryColor,
         fontSize: 17,
       ),
       mainBackgroundColor: Colors.white,
       mainTextStyle:
           const TextStyle(color: Colors.black, fontSize: 17, letterSpacing: 2),
       dialogBackgroundColor: Colors.white,
-      appBarIcon: const Icon(Icons.arrow_back, color: Colors.white),
+      appBarIcon: Icon(Icons.arrow_back, color: cc.blackColor),
       buttonText: "Pay \$ $amount",
       appBarTitleTextStyle: const TextStyle(
         color: Colors.white,
@@ -168,6 +169,8 @@ class FlutterWavePayment {
           transactionPercentage: 50)
     ];
 
+    final checkoutInfo = Provider.of<CheckoutService>(context, listen: false);
+    final orderId = checkoutInfo.checkoutModel.id;
     final Flutterwave flutterwave = Flutterwave(
         context: context,
         style: style,

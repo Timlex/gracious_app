@@ -17,7 +17,7 @@ import '../../service/shipping_zone_service.dart';
 import '../../service/user_profile_service.dart';
 
 class PaytmPayment extends StatelessWidget {
-  PaytmPayment(this.html, {Key? key}) : super(key: key);
+  PaytmPayment({Key? key}) : super(key: key);
   WebViewController? _controller;
   String? html;
   @override
@@ -93,76 +93,42 @@ class PaytmPayment extends StatelessWidget {
         shippingZone.shippingCost +
         cartData.calculateSubtotal() -
         cuponData.cuponDiscount);
-    // if (selectrdGateaway.serverKey == null ||
-    //     selectrdGateaway.clientKey == null) {
-    //   snackBar(context, 'Invalid developer keys');
-    // }
+
     print('here');
-    final url = Uri.parse(
-        'https://zahid.xgenious.com/grenmart-api/api/v1/user/checkout-paytm');
-    final selectedGateaway =
-        Provider.of<PaymentGateawayService>(context, listen: false)
-            .selectedGateaway!;
-    final username = selectedGateaway.serverKey;
-    final password = selectedGateaway.clientKey;
-    final basicAuth =
-        'Basic ${base64Encode(utf8.encode('$username:$password'))}';
+
     final header = {
-      // "Content-Type": "application/json",
       "Accept": "application/json",
       "Authorization": 'Bearer $globalUserToken',
-      // Above is API server key for the Midtrans account, encoded to base64
     };
-    List cartItemsId = [];
-    Map cartItems = {};
-    final orderId = Random().nextInt(23000).toInt();
-    // final response = await http.post(url, headers: header, body:
-    //     //   {
-    //     //   "name": userData.name,
-    //     //   "email": userData.email,
-    //     //   "country": userData.country.toString(),
-    //     //   "address": userData.address ?? "''",
-    //     //   "city": userData.city ?? "",
-    //     //   "state": userData.state.toString(),
-    //     //   "zipcode": userData.zipcode.toString(),
-    //     //   "phone": userData.phone.toString(),
-    //     //   "shipping_address_id": "$orderId",
-    //     //   "selected_payment_shipping_option":
-    //     //       shippingZoneData.selectedOption!.id.toString(),
-    //     //   "tax_amount": amount.toStringAsFixed(2),
-    //     //   "coupon": cuponData.cuponDiscount > 0 ? cuponData.cuponText : "",
-    //     //   "selected_payment_gateway": "",
-    //     //   "bank_payment_input": "",
-    //     //   "agree": "on",
-    //     //   "sub_total": cartData.calculateSubtotal(),
-    //     //   "products_ids": [],
-    //     //   "all_cart_items": {},
-    //     // }
-    //     {
-    //   "name": "Md Zahidul Islam",
-    //   "email": "mdzahid.pro@gmail.com",
-    //   "country": "24",
-    //   "address": "Tongi Bazar Tongi",
-    //   "city": "fasfafda",
-    //   "state": "2",
-    //   "zipcode": "12365",
-    //   "phone": "214515544454",
-    //   "shipping_address_id": "",
-    //   "selected_payment_shipping_option": "8",
-    //   "tax_amount": "12",
-    //   "coupon": "zahid1234",
-    //   "selected_payment_gateway": "8",
-    //   "agree": "on",
-    //   "sub_total": "14",
-    //   "products_ids": "[105]",
-    //   "all_cart_items": "{}",
-    // });
-    // print(response.statusCode);
-    // if (response.statusCode == 200) {
-    // //   html = response.body;
-    //   return;
-    // }
+    final url = Uri.parse(
+        'https://zahid.xgenious.com/grenmart-api/api/v1/user/checkout-paytm');
 
+    final response = await http.post(url, headers: header, body: {
+      "name": "Md Zahidul Islam",
+      "email": "mdzahid.pro@gmail.com",
+      "country": "24",
+      "address": "Tongi Bazar Tongi",
+      "city": "fasfafda",
+      "state": "2",
+      "zipcode": "12365",
+      "phone": "214515544454",
+      "shipping_address_id": "",
+      "selected_payment_shipping_option": "8",
+      "tax_amount": "12",
+      "coupon": "zahid1234",
+      "selected_payment_gateway": "8",
+      "agree": "on",
+      "sub_total": "14",
+      "products_ids": "[105]",
+      "all_cart_items": "{}",
+    });
+
+    print(response.statusCode);
+    if (response.statusCode == 200) {
+      html = response.body;
+      return;
+    }
+    snackBar(context, 'Connection failed');
     return;
   }
 }

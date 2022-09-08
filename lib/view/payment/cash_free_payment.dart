@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
 
 import '../../service/cart_data_service.dart';
+import '../../service/checkout_service.dart';
 import '../../service/cupon_discount_service.dart';
 import '../../service/payment_gateaway_service.dart';
 import '../../service/shipping_addresses_service.dart';
@@ -43,7 +44,8 @@ class CashFreePayment {
     }
 
     final url = Uri.parse("https://test.cashfree.com/api/v2/cftoken/order");
-    final randomOrderID = Random().nextInt(20000).toInt();
+    final checkoutInfo = Provider.of<CheckoutService>(context, listen: false);
+    final orderId = checkoutInfo.checkoutModel.id;
 
     final response = await http.post(url,
         headers: {
@@ -53,7 +55,7 @@ class CashFreePayment {
           "x-client-secret": selectrdGateaway.secretKey as String,
         },
         body: jsonEncode({
-          "orderId": "${randomOrderID}",
+          "orderId": "${orderId}",
           "orderAmount": amount,
           "orderCurrency": "INR"
         }));
@@ -61,7 +63,7 @@ class CashFreePayment {
     if (200 == 200) {
       print(amount);
       Map<String, dynamic> inputParams = {
-        "orderId": "${randomOrderID}",
+        "orderId": "${orderId}",
         "orderAmount": amount,
         "customerName": userData.name,
         "orderCurrency": "INR",

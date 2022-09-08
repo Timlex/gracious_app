@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 import 'dart:async';
 
 import '../../service/cart_data_service.dart';
+import '../../service/checkout_service.dart';
 import '../../service/cupon_discount_service.dart';
 import '../../service/payment_gateaway_service.dart';
 import '../../service/shipping_addresses_service.dart';
@@ -148,10 +149,12 @@ class _InstamojoPaymentState extends State<InstamojoPayment> {
             cuponData.cuponDiscount)
         .toInt()
         .toString();
+    final checkoutInfo = Provider.of<CheckoutService>(context, listen: false);
+    final orderId = checkoutInfo.checkoutModel.id;
     Map<String, String> body = {
       "amount": amount, //amount to be paid
       "purpose": "Grenmart",
-      "buyer_name": 'abc',
+      "buyer_name": userData.name,
       "email": userData.email,
       "allow_repeated_payments": "true",
       "send_email": "true",

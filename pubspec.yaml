@@ -48,7 +48,6 @@ dependencies:
   image_picker: 
   shimmer: 
   flutter_spinkit:
-  shared_preferences:
   loading_animation_widget:
   intl_phone_field:
   cached_network_image:
@@ -61,18 +60,15 @@ dependencies:
   photo_view:
   http_auth: 
   webview_flutter: 
-  paytm_allinonesdk: 
   flutter_stripe: 
-  razorpay_flutter: 
   flutterwave_standard: 
   uuid:
   instamojo:
   namefully:
 
 
+  shared_preferences: ^2.0.15
   cashfree_pg: ^2.0.12+32
-  flutter_paystack: ^1.0.5+1
-  # flutter_paytabs_bridge: ^2.2.7
 
   
   provider: ^6.0.3

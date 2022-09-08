@@ -10,14 +10,13 @@ class PosterCard extends StatelessWidget {
   final String title;
   final String btText;
   final String description;
-  final Function btFunction;
   final String image;
   final bool showButton;
   int? capm;
   int? cat;
 
-  PosterCard(this.title, this.btText, this.description, this.btFunction,
-      this.image, this.showButton,
+  PosterCard(
+      this.title, this.btText, this.description, this.image, this.showButton,
       {this.capm, this.cat});
 
   ConstantColors cc = ConstantColors();
@@ -111,6 +110,8 @@ class PosterCard extends StatelessWidget {
                     Provider.of<SearchResultDataService>(context, listen: false)
                         .resetSerch();
                     Provider.of<SearchResultDataService>(context, listen: false)
+                        .setFilterOn(true);
+                    Provider.of<SearchResultDataService>(context, listen: false)
                         .setCategoryId(cat.toString());
                     Provider.of<SearchResultDataService>(context, listen: false)
                         .fetchProductsBy(pageNo: '1');
@@ -118,7 +119,6 @@ class PosterCard extends StatelessWidget {
                             listen: false)
                         .setNavigationIndex(1);
                   }
-                  btFunction;
                 },
                 child: FittedBox(
                   child: SizedBox(

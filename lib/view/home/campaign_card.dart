@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../../service/common_service.dart';
 import '../../service/navigation_bar_helper_service.dart';
 import '../../service/search_result_data_service.dart';
 import '../../view/utils/constant_colors.dart';
@@ -9,14 +10,12 @@ import 'all_camp_product_from_link.dart';
 class CampaignCard extends StatelessWidget {
   final String title;
   final String btText;
-  final Function btFunction;
   final String image;
   final bool showButton;
   int? camp;
   int? cat;
 
-  CampaignCard(
-      this.title, this.btText, this.btFunction, this.image, this.showButton,
+  CampaignCard(this.title, this.btText, this.image, this.showButton,
       {this.camp, this.cat});
 
   ConstantColors cc = ConstantColors();
@@ -24,8 +23,12 @@ class CampaignCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.only(right: 10),
-      padding: const EdgeInsets.only(left: 20, top: 25),
+      margin: EdgeInsets.only(
+        left: rtl ? 0 : 20,
+        right: rtl ? 20 : 0,
+      ),
+      padding:
+          EdgeInsets.only(left: rtl ? 0 : 20, right: rtl ? 20 : 0, top: 25),
       height: screenHight / 5,
       width: screenWidth / 1.3 < 300 ? 300 : screenWidth / 1.3,
       // color: Color.fromARGB(110, 9, 154, 26),
@@ -78,9 +81,6 @@ class CampaignCard extends StatelessWidget {
                   if (showButton)
                     ElevatedButton(
                       onPressed: () {
-                        print('here');
-                        print(camp);
-                        print(cat);
                         if (camp != null) {
                           Navigator.of(context).pushNamed(
                               ALLCampProductFromLink.routeName,
@@ -92,6 +92,9 @@ class CampaignCard extends StatelessWidget {
                               .resetSerch();
                           Provider.of<SearchResultDataService>(context,
                                   listen: false)
+                              .setFilterOn(true);
+                          Provider.of<SearchResultDataService>(context,
+                                  listen: false)
                               .setCategoryId(cat.toString());
                           Provider.of<SearchResultDataService>(context,
                                   listen: false)
@@ -100,7 +103,6 @@ class CampaignCard extends StatelessWidget {
                                   listen: false)
                               .setNavigationIndex(1);
                         }
-                        btFunction;
                       },
                       child: FittedBox(
                         child: SizedBox(
@@ -127,7 +129,8 @@ class CampaignCard extends StatelessWidget {
               Container(
                   height: screenHight / 7,
                   width: screenHight / 6.5,
-                  margin: const EdgeInsets.only(right: 3, bottom: 10),
+                  margin: EdgeInsets.only(
+                      right: rtl ? 0 : 3, left: rtl ? 3 : 0, bottom: 10),
                   child: Image.network(
                     image,
                     fit: BoxFit.fill,

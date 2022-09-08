@@ -110,7 +110,6 @@ class _SplashScreenState extends State<SplashScreen> {
 
       // Future.delayed(const Duration(seconds: 1));
     }).onError((error, stackTrace) async {
-      snackBar(context, 'Connection failed!');
       final ref = await SharedPreferences.getInstance();
       if (ref.containsKey('intro')) {
         FlutterNativeSplash.remove();

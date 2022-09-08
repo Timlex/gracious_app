@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:gren_mart/service/checkout_service.dart';
 import 'package:gren_mart/service/menual_payment_service.dart';
+import 'package:gren_mart/service/review_service.dart';
 import 'package:gren_mart/service/social_login_service.dart';
 import 'package:gren_mart/view/home/all_camp_product_from_link.dart';
 import 'package:gren_mart/view/utils/text_themes.dart';
+import 'package:gren_mart/view/utils/web_view.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
@@ -54,9 +56,6 @@ import '../../view/settings/new_address.dart';
 import '../../view/utils/constant_colors.dart';
 import '../../service/navigation_bar_helper_service.dart';
 import '../../service/order_details_service.dart';
-import 'db/database_helper.dart';
-import 'view/utils/constant_name.dart';
-import 'view/utils/constant_styles.dart';
 
 void main() {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
@@ -110,10 +109,17 @@ class _MyAppState extends State<MyApp> {
         ChangeNotifierProvider(create: (_) => OrderDetailsService()),
         ChangeNotifierProvider(create: (_) => SocialLoginService()),
         ChangeNotifierProvider(create: (_) => CheckoutService()),
+        ChangeNotifierProvider(create: (_) => ReviewService()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'GrenMart',
+        // builder: (context, rtlchild) {
+        //   return Directionality(
+        //     textDirection: TextDirection.rtl,
+        //     child: rtlchild!,
+        //   );
+        // },
         theme: ThemeData(
           primarySwatch: Colors.blue,
           scaffoldBackgroundColor: ConstantColors().pureWhite,
@@ -143,6 +149,7 @@ class _MyAppState extends State<MyApp> {
           AllTicketsView.routeName: (context) => AllTicketsView(),
           AddNewTicket.routeName: (context) => AddNewTicket(),
           AllProducts.routeName: (context) => AllProducts(),
+          WebViewScreen.routeName: (context) => WebViewScreen(),
           ALLCampProductFromLink.routeName: (context) =>
               ALLCampProductFromLink(),
         },

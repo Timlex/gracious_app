@@ -52,8 +52,8 @@ class CheckoutModel {
   String? coupon;
   String? couponDiscounted;
   String totalAmount;
-  OrderDetails orderDetails;
-  PaymentMeta paymentMeta;
+  dynamic orderDetails;
+  dynamic paymentMeta;
   String paymentGateway;
   String paymentTrack;
   String? transactionId;
@@ -79,8 +79,8 @@ class CheckoutModel {
         coupon: json["coupon"],
         couponDiscounted: json["coupon_discounted"],
         totalAmount: json["total_amount"],
-        orderDetails: OrderDetails.fromJson(json["order_details"]),
-        paymentMeta: PaymentMeta.fromJson(json["payment_meta"]),
+        orderDetails: json["order_details"],
+        paymentMeta: json["payment_meta"],
         paymentGateway: json["payment_gateway"],
         paymentTrack: json["payment_track"],
         transactionId: json["transaction_id"],

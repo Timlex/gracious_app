@@ -12,6 +12,11 @@ class CuponDiscountService with ChangeNotifier {
   double cuponDiscount = 0;
   bool isLoading = false;
 
+  setIsLoading(value) {
+    isLoading = value;
+    notifyListeners();
+  }
+
   setCuponText(value) {
     cuponText = value;
     notifyListeners();
@@ -44,7 +49,7 @@ class CuponDiscountService with ChangeNotifier {
     print(response.body);
     if (response.statusCode == 200) {
       print(response.body);
-      cuponDiscount = json.decode(response.body)['coupon_amount'];
+      cuponDiscount = json.decode(response.body)['coupon_amount'].toDouble();
       isLoading = false;
       notifyListeners();
       return;

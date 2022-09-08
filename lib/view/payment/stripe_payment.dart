@@ -9,6 +9,7 @@ import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:provider/provider.dart';
 
 import '../../service/cart_data_service.dart';
+import '../../service/checkout_service.dart';
 import '../../service/cupon_discount_service.dart';
 import '../../service/shipping_addresses_service.dart';
 import '../../service/user_profile_service.dart';
@@ -78,6 +79,9 @@ class StripePayment {
                 ));
         // ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("paid successfully")));
 
+        final checkoutInfo =
+            Provider.of<CheckoutService>(context, listen: false);
+        final orderId = checkoutInfo.checkoutModel.id;
         paymentIntent = null;
       }).onError((error, stackTrace) {
         print('Error is:--->$error $stackTrace');

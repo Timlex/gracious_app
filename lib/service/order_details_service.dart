@@ -17,13 +17,6 @@ class OrderDetailsService with ChangeNotifier {
     if (response.statusCode == 200) {
       orderDetailsModel = OrderDetailsModel.fromJson(jsonDecode(response.body));
 
-      print(orderDetailsModel.orderInfo.orderDetails.values
-          .toList()
-          .first
-          .first
-          .attributes
-          .cheese);
-      print(';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;');
       return 'fetching success.';
     }
     print(jsonDecode(response.body));

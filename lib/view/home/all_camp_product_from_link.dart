@@ -17,7 +17,7 @@ class ALLCampProductFromLink extends StatelessWidget {
         ModalRoute.of(context)!.settings.arguments as List<String>;
     final id = routeData[0];
     double cardWidth = screenWidth / 3.3;
-    double cardHeight = screenHight / 4.9 < 165 ? 130 : screenHight / 4.9;
+    double cardHeight = screenHight / 5.5 < 130 ? 130 : screenHight / 5.5;
     return Scaffold(
       appBar: AppBars().appBarTitled('', () {
         Navigator.of(context).pop();

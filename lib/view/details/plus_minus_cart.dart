@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:gren_mart/service/common_service.dart';
 import 'package:gren_mart/service/product_details_service.dart';
 import 'package:provider/provider.dart';
 import '../../view/utils/constant_colors.dart';
@@ -101,8 +102,10 @@ class PlusMinusCart extends StatelessWidget {
                 ],
               ),
             ),
+            SizedBox(width: 3),
             Positioned(
-              right: 0,
+              right: rtl ? null : 0,
+              left: rtl ? 0 : null,
               child: Container(
                 height: 50,
                 width: screenWidth / 5.3,

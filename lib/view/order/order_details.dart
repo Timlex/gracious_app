@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gren_mart/service/order_details_service.dart';
 import 'package:gren_mart/view/utils/constant_name.dart';
 import 'package:gren_mart/view/utils/text_themes.dart';
+import '../../service/common_service.dart';
 import '../../view/order/order_details_tile.dart';
 import 'package:provider/provider.dart';
 
@@ -39,7 +40,8 @@ class OrderDetails extends StatelessWidget {
               return Column(
                 children: [
                   Padding(
-                    padding: const EdgeInsets.only(left: 20),
+                    padding: EdgeInsets.only(
+                        left: rtl ? 0 : 20, right: rtl ? 20 : 0),
                     child: Row(
                       children: [
                         SizedBox(
@@ -52,7 +54,8 @@ class OrderDetails extends StatelessWidget {
                         ),
                         Container(
                           width: screenWidth / 2.5,
-                          padding: const EdgeInsets.only(left: 15),
+                          padding: EdgeInsets.only(
+                              left: rtl ? 0 : 15, right: rtl ? 15 : 0),
                           child: Text(
                             'Name',
                             style: titleTextTheme,
@@ -79,53 +82,45 @@ class OrderDetails extends StatelessWidget {
                       ],
                     ),
                   ),
-                  Expanded(
-                    child: ListView.separated(
-                      physics: const BouncingScrollPhysics(
-                          parent: AlwaysScrollableScrollPhysics()),
-                      padding: const EdgeInsets.only(top: 10),
-                      itemCount: odService
-                          .orderDetailsModel.orderInfo.orderDetails.length,
-                      itemBuilder: (context, index) {
-                        final productItem =
-                            odService.orderDetailsModel.product[index];
-                        final e = odService
-                            .orderDetailsModel.orderInfo.orderDetails.values
-                            .toList()[0][index];
-                        return OrderDetailsTile(
-                          productItem.title,
-                          e.attributes.price.toDouble(),
-                          e.quantity,
-                          productItem.image,
-                          ' (' +
-                              (e.attributes.size == null
-                                  ? ''
-                                  : 'Size: ${e.attributes.size!.capitalize()}. ') +
-                              (e.attributes.colorName == null
-                                  ? ''
-                                  : 'Color: ${e.attributes.colorName!.capitalize()}. ') +
-                              (e.attributes.sauce == null
-                                  ? ''
-                                  : 'Sauce: ${e.attributes.sauce!.capitalize()}. ') +
-                              (e.attributes.mayo == null
-                                  ? ''
-                                  : 'Mayo: ${e.attributes.mayo!.capitalize()}. ') +
-                              (e.attributes.cheese == null
-                                  ? ''
-                                  : 'Cheese: ${e.attributes.cheese!.capitalize()}.'
-                                      '') +
-                              (e.attributes.type == null
-                                  ? ''
-                                  : 'Type: ${e.attributes.type!.capitalize()}.'
-                                      '') +
-                              ') ',
-                        );
-                      },
-                      separatorBuilder: (context, index) {
-                        return const Divider();
-                      },
+                  if (odService.orderDetailsModel.product.length != 0)
+                    Expanded(
+                      child: ListView.separated(
+                        physics: const BouncingScrollPhysics(
+                            parent: AlwaysScrollableScrollPhysics()),
+                        padding: const EdgeInsets.only(top: 10),
+                        itemCount: odService
+                            .orderDetailsModel.orderInfo.orderDetails.length,
+                        itemBuilder: (context, index) {
+                          if ((odService.orderDetailsModel.product.length) <
+                              index + 1) {
+                            return SizedBox();
+                          }
+                          print(index);
+                          print(odService.orderDetailsModel.product.length);
+                          final productItem =
+                              odService.orderDetailsModel.product[index];
+                          final e = odService
+                              .orderDetailsModel.orderInfo.orderDetails.values
+                              .toList()[0][index];
+                          final price = e.attributes.remove('price');
+                          ;
+                          e.attributes.remove('price');
+                          e.attributes.remove('type');
+                          return OrderDetailsTile(
+                            productItem.title,
+                            price.toDouble(),
+                            e.quantity,
+                            productItem.image,
+                            e.attributes.toString() == '{}'
+                                ? ''
+                                : ' (' + e.attributes.toString() + ') ',
+                          );
+                        },
+                        separatorBuilder: (context, index) {
+                          return const Divider();
+                        },
+                      ),
                     ),
-                  ),
                   Container(
                     // height: 200,
                     padding: const EdgeInsets.all(20),

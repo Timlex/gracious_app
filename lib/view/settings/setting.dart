@@ -1,5 +1,8 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:gren_mart/service/common_service.dart';
 import 'package:gren_mart/service/country_dropdown_service.dart';
 import 'package:gren_mart/service/manage_account_service.dart';
 import 'package:gren_mart/service/navigation_bar_helper_service.dart';
@@ -175,8 +178,12 @@ class SettingView extends StatelessWidget {
                     color: cc.blackColor,
                   ),
                 ),
-                trailing:
-                    SvgPicture.asset('assets/images/icons/arrow_right.svg'),
+                trailing: Transform(
+                  transform: rtl ? Matrix4.rotationY(pi) : Matrix4.rotationY(0),
+                  child: SvgPicture.asset(
+                    'assets/images/icons/arrow_right.svg',
+                  ),
+                ),
               ),
             ),
             const Divider()

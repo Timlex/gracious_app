@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import '../../service/common_service.dart';
 import '../../service/ticket_service.dart';
 import '../../view/utils/constant_colors.dart';
 import '../../view/utils/constant_styles.dart';
@@ -101,58 +102,64 @@ class TicketTile extends StatelessWidget {
                   //   return const Color(0xffBFB55A);
                   // }
 
-                  return FittedBox(
-                    child: Row(
-                      children: [
-                        const Text('Priority:'),
-                        const SizedBox(width: 5),
-                        Consumer<TicketService>(
-                            builder: (context, tServicem, child) {
-                          return PopupMenuButton(
-                              child: Container(
-                                padding: const EdgeInsets.only(
-                                    left: 7, top: 3, bottom: 3),
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(10),
-                                  color: tService.priorityColor[priority],
+                  return SizedBox(
+                    height: 30,
+                    child: FittedBox(
+                      child: Row(
+                        children: [
+                          const Text('Priority:'),
+                          const SizedBox(width: 5),
+                          Consumer<TicketService>(
+                              builder: (context, tServicem, child) {
+                            return PopupMenuButton(
+                                child: Container(
+                                  padding: EdgeInsets.only(
+                                      left: rtl ? 0 : 7,
+                                      right: rtl ? 7 : 0,
+                                      top: 3,
+                                      bottom: 3),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10),
+                                    color: tService.priorityColor[priority],
+                                  ),
+                                  child: Row(
+                                    children: [
+                                      Text(
+                                        priority.capitalize(),
+                                        style: TextStyle(
+                                            color: cc.pureWhite,
+                                            fontSize: 13,
+                                            fontWeight: FontWeight.w600),
+                                      ),
+                                      Icon(
+                                        Icons.arrow_drop_down_rounded,
+                                        color: cc.pureWhite,
+                                      )
+                                    ],
+                                  ),
                                 ),
-                                child: Row(
-                                  children: [
-                                    Text(
-                                      priority.capitalize(),
-                                      style: TextStyle(
-                                          color: cc.pureWhite,
-                                          fontSize: 13,
-                                          fontWeight: FontWeight.w600),
-                                    ),
-                                    Icon(
-                                      Icons.arrow_drop_down_rounded,
-                                      color: cc.pureWhite,
-                                    )
-                                  ],
-                                ),
-                              ),
-                              onSelected: (value) {
-                                if (value != priority.capitalize()) {
-                                  tService.priorityChange(
-                                      ticketId, value.toString());
-                                }
-                              },
-                              itemBuilder: (context) => tService.priorityList
-                                  .map((e) => PopupMenuItem(
-                                        child: Text(e.capitalize()),
-                                        value: e,
-                                      ))
-                                  .toList());
-                        }),
-                      ],
+                                onSelected: (value) {
+                                  if (value != priority.capitalize()) {
+                                    tService.priorityChange(
+                                        ticketId, value.toString());
+                                  }
+                                },
+                                itemBuilder: (context) => tService.priorityList
+                                    .map((e) => PopupMenuItem(
+                                          child: Text(e.capitalize()),
+                                          value: e,
+                                        ))
+                                    .toList());
+                          }),
+                        ],
+                      ),
                     ),
                   );
                 }),
               ),
               const SizedBox(width: 5),
               SizedBox(
-                width: (screenWidth - 40) / 3,
+                height: 30,
                 child: Consumer<TicketService>(
                     builder: (context, tService, child) {
                   return FittedBox(
@@ -162,8 +169,11 @@ class TicketTile extends StatelessWidget {
                         const SizedBox(width: 5),
                         PopupMenuButton(
                           child: Container(
-                            padding: const EdgeInsets.only(
-                                left: 7, top: 3, bottom: 3),
+                            padding: EdgeInsets.only(
+                                left: rtl ? 0 : 7,
+                                right: rtl ? 7 : 0,
+                                top: 3,
+                                bottom: 3),
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(10),
                               color: ticketItem.status == 'open'
@@ -208,6 +218,7 @@ class TicketTile extends StatelessWidget {
               ),
               const Spacer(),
               SizedBox(
+                height: 30,
                 child: GestureDetector(
                   onTap: (() {
                     Provider.of<TicketChatService>(context, listen: false)

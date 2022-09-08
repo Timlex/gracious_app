@@ -11,6 +11,7 @@ import 'package:webview_flutter/webview_flutter.dart';
 import 'package:http/http.dart' as http;
 
 import '../../service/cart_data_service.dart';
+import '../../service/checkout_service.dart';
 import '../../service/cupon_discount_service.dart';
 import '../../service/shipping_addresses_service.dart';
 import '../../service/shipping_zone_service.dart';
@@ -193,6 +194,8 @@ class PayfastPayment extends StatelessWidget {
     //     }));
     // print(response.statusCode);
     // if (response.statusCode == 201) {
+    final checkoutInfo = Provider.of<CheckoutService>(context, listen: false);
+    final orderId = checkoutInfo.checkoutModel.id;
     this.url =
         'https://sandbox.payfast.co.za/eng/process?merchant_id=${selectedGateaway.merchantId}&merchant_key=${selectedGateaway.merchantKey}&amount=$amount&item_name=GrenmartGroceries';
     //   return;

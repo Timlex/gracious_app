@@ -51,7 +51,7 @@ class AnimatedBox extends StatelessWidget {
                     color: cc.greyHint,
                     fontWeight: FontWeight.w600,
                     fontSize: 14),
-                maxLines: 2,
+                maxLines: 1,
               ),
             ),
             const SizedBox(width: 5),

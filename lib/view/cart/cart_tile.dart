@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:gren_mart/view/details/product_details.dart';
 import 'package:gren_mart/view/utils/text_themes.dart';
+import '../../service/common_service.dart';
 import '../../view/utils/constant_name.dart';
 import 'package:provider/provider.dart';
 
@@ -181,7 +182,10 @@ class CartTile extends StatelessWidget {
                       carts.deleteCartItem(id, inventorySet: inventorySet);
                     }),
                     child: Padding(
-                      padding: const EdgeInsets.only(left: 7),
+                      padding: EdgeInsets.only(
+                        left: rtl ? 0 : 7,
+                        right: rtl ? 7 : 0,
+                      ),
                       child: SvgPicture.asset(
                         'assets/images/icons/trash.svg',
                         height: 22,

@@ -1,4 +1,6 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:gren_mart/view/utils/web_view.dart';
 import '../../service/auth_text_controller_service.dart';
 import '../../service/country_dropdown_service.dart';
 import '../../service/signin_signup_service.dart';
@@ -278,6 +280,12 @@ class SignUp extends StatelessWidget {
                         ),
                         children: [
                           TextSpan(
+                              recognizer: TapGestureRecognizer()
+                                ..onTap = () => Navigator.of(context).pushNamed(
+                                        WebViewScreen.routeName,
+                                        arguments: [
+                                          'https://zahid.xgenious.com/grenmart-api/terms-and-conditions'
+                                        ]),
                               text: ' Terms and Conditions',
                               style: TextStyle(color: cc.primaryColor)),
                           TextSpan(

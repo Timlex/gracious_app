@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:gren_mart/model/checkout_model.dart';
 import 'package:gren_mart/service/user_profile_service.dart';
 import 'package:gren_mart/view/utils/constant_name.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import '../../service/common_service.dart';
 import 'package:http/http.dart' as http;
@@ -23,13 +24,20 @@ class CheckoutService with ChangeNotifier {
 
   setTermsACondi() {
     termsAcondi = !termsAcondi;
-    ;
     notifyListeners();
   }
 
-  setPickedImage(File value) {
-    pickedImage = value;
-    notifyListeners();
+  Future<void> imageSelector(BuildContext context,
+      {ImageSource imageSource = ImageSource.camera}) async {
+    try {
+      final pickedFile =
+          await ImagePicker.platform.pickImage(source: imageSource);
+      pickedImage = File(pickedFile!.path);
+      notifyListeners();
+    } catch (error) {
+      print('error occured------------------------------------');
+      print(error.toString());
+    }
   }
 
   Future proccessCheckout(BuildContext context) async {
@@ -43,26 +51,13 @@ class CheckoutService with ChangeNotifier {
     final shippingZone =
         Provider.of<ShippingZoneService>(context, listen: false);
     final cuponData = Provider.of<CuponDiscountService>(context, listen: false);
-    final selectrdGateaway =
+    final selectedGateaway =
         Provider.of<PaymentGateawayService>(context, listen: false)
             .selectedGateaway!;
+    final taxAmount = shippingZone.taxMoney(context);
     final clist = Provider.of<CartDataService>(context, listen: false).cartList;
     Map<String, List<Map<String, Object?>>>? formatedCartItem = clist;
     final subTotal = cartData.calculateSubtotal().toString();
-    // formatedCartItem!.forEach((key, value) {
-    //   print('here');
-    //   value.forEach((element) {
-    //     element.remove('title');
-    //     element.remove('price');
-    //     element.remove('imgUrl');
-    //     if (element['attributes'] != null) {
-    //       (element['attributes'] as Map).remove('Color_name');
-    //       (element['attributes'] as Map).remove('Color');
-    //     }
-    //   });
-    // });
-    // print(formatedCartItem.values);
-    // print(cartData.cartList);
 
     Map<String, String> fieldss = {
       'name': userData.name,
@@ -75,14 +70,14 @@ class CheckoutService with ChangeNotifier {
       'zipcode': userData.zipcode ?? '',
       'phone': userData.phone ?? '',
       'shipping_address_id': shippingAddress.selectedAddress!.id.toString(),
-      'tax_amount': shippingZone.taxMoney.toString(),
-      'coupon': cuponData.cuponText ?? '',
+      'tax_amount': taxAmount.toString(),
+      'coupon': cuponData.cuponText ?? 'null',
       'agree': 'on',
       'sub_total': subTotal,
       'products_ids': cartData.cartList!.keys.toList().toString(),
       'all_cart_items': cartData.formatItems().toString(),
     };
-    print(fieldss);
+    // print(fieldss);
 
     final url = Uri.parse('$baseApiUrl/user/checkout');
     var request = http.MultipartRequest('POST', url);
@@ -97,17 +92,21 @@ class CheckoutService with ChangeNotifier {
       },
     );
     print(pickedImage);
-    if (pickedImage != null) {
-      print(pickedImage!.path);
+    if (pickedImage != null &&
+        (selectedGateaway.name.contains('bank_transfer') ||
+            selectedGateaway.name.contains('cheque_payment'))) {
+      print('pickedImage!.path');
       var multiport = await http.MultipartFile.fromPath(
-        'file',
+        selectedGateaway.name.contains('bank_transfer')
+            ? 'bank_payment_input'
+            : 'check_payment_input',
         pickedImage!.path,
       );
 
       request.files.add(multiport);
     }
     var streamedResponse = await request.send();
-
+    // try {
     var response = await http.Response.fromStream(streamedResponse);
 
     // var header = {
@@ -129,7 +128,7 @@ class CheckoutService with ChangeNotifier {
     //   'file': pickedImage,
     // });
     print(response.statusCode.toString() + '++++++++++++++');
-    if (response.statusCode == 200) {
+    if (response.statusCode == 201) {
       checkoutModel = CheckoutModel.fromJson(jsonDecode(response.body));
       print(jsonDecode(response.body));
       notifyListeners();
@@ -137,16 +136,15 @@ class CheckoutService with ChangeNotifier {
     }
     if (response.statusCode == 500) {
       print(jsonDecode(response.body));
-      return jsonDecode(response.body);
+      throw 'Connection failed';
     }
 
     return;
     // throw '';
-  }
-  //   //  catch (error) {
-  //   //   // print(error);
+    // } catch (error) {
+    //   // print(error);
 
-  //   //   rethrow;
-  //   // }
-  // }
+    //   rethrow;
+    // }
+  }
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:gren_mart/service/user_profile_service.dart';
+import '../../service/common_service.dart';
 import '../../view/home/all_products.dart';
 import '../../view/utils/constant_colors.dart';
 import '../../view/utils/constant_name.dart';
@@ -173,7 +174,7 @@ PreferredSizeWidget helloAppBar(BuildContext context) {
 Widget favoriteIcon(bool isFavorite,
     {double size = 15, required void Function()? onPressed}) {
   return Container(
-    margin: const EdgeInsets.only(top: 9, right: 5),
+    margin: const EdgeInsets.only(top: 9, right: 5, left: 5),
     child: CircleAvatar(
       radius: size,
       backgroundColor: cc.pureWhite,

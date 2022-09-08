@@ -301,7 +301,6 @@ class ProductDetailsService with ChangeNotifier {
     // try {
     final response = await http.get(url, headers: header);
     if (response.statusCode == 200) {
-      print(response.body);
       var data = ProductDetailsModel.fromJson(jsonDecode(response.body));
       productDetails = data;
       productSalePrice = productDetails!.product.salePrice;

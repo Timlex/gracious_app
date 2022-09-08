@@ -1,5 +1,8 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import '../../service/common_service.dart';
 import '../../view/utils/constant_colors.dart';
 
 class AppBars {
@@ -24,10 +27,13 @@ class AppBars {
         leading: GestureDetector(
           onTap: () => ontap(),
           child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-            SvgPicture.asset(
-              'assets/images/icons/back_button.svg',
-              color: cc.blackColor,
-              height: 25,
+            Transform(
+              transform: rtl ? Matrix4.rotationY(pi) : Matrix4.rotationY(0),
+              child: SvgPicture.asset(
+                'assets/images/icons/back_button.svg',
+                color: cc.blackColor,
+                height: 25,
+              ),
             ),
           ]),
         ),

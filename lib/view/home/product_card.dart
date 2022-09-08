@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:gren_mart/service/common_service.dart';
 import '../../service/cart_data_service.dart';
 import '../../service/favorite_data_service.dart';
 import '../../service/product_details_service.dart';
@@ -91,18 +92,21 @@ class ProductCard extends StatelessWidget {
                   padding:
                       const EdgeInsets.symmetric(vertical: 3, horizontal: 6),
                   decoration: BoxDecoration(
-                    borderRadius: const BorderRadius.only(
-                      topRight: Radius.circular(5),
-                      bottomRight: Radius.circular(5),
+                    borderRadius: BorderRadius.only(
+                      topRight: rtl ? Radius.zero : Radius.circular(5),
+                      bottomRight: rtl ? Radius.zero : Radius.circular(5),
+                      topLeft: rtl ? Radius.circular(5) : Radius.zero,
+                      bottomLeft: rtl ? Radius.circular(5) : Radius.zero,
                     ),
                     color: cc.pureWhite,
                   ),
                   child: Text(
                     'New',
                     style: TextStyle(
-                        color: cc.blackColor,
-                        fontSize: 11,
-                        fontWeight: FontWeight.w600),
+                      color: cc.blackColor,
+                      fontSize: 11,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                 ),
                 if (campaignPercentage > 0)
@@ -111,9 +115,11 @@ class ProductCard extends StatelessWidget {
                     padding:
                         const EdgeInsets.symmetric(vertical: 3, horizontal: 6),
                     decoration: BoxDecoration(
-                      borderRadius: const BorderRadius.only(
-                        topRight: Radius.circular(5),
-                        bottomRight: Radius.circular(5),
+                      borderRadius: BorderRadius.only(
+                        topRight: rtl ? Radius.zero : Radius.circular(5),
+                        bottomRight: rtl ? Radius.zero : Radius.circular(5),
+                        topLeft: rtl ? Radius.circular(5) : Radius.zero,
+                        bottomLeft: rtl ? Radius.circular(5) : Radius.zero,
                       ),
                       color: cc.orange,
                     ),
@@ -128,7 +134,8 @@ class ProductCard extends StatelessWidget {
                 Consumer<FavoriteDataService>(
                     builder: (context, favoriteData, child) {
                   return Positioned(
-                      right: 0,
+                      right: rtl ? null : 0,
+                      left: rtl ? 0 : null,
                       child:
                           favoriteIcon(favoriteData.isfavorite(_id.toString()),
                               onPressed: () => favoriteData.toggleFavorite(

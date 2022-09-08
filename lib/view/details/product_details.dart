@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:card_swiper/card_swiper.dart';
 import 'package:flutter/material.dart';
@@ -5,6 +7,7 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:gren_mart/service/cart_data_service.dart';
 import 'package:gren_mart/view/details/review_box.dart';
+import '../../service/common_service.dart';
 import '../../service/favorite_data_service.dart';
 import '../../service/product_details_service.dart';
 import '../../view/details/animated_box.dart';
@@ -177,10 +180,15 @@ class ProductDetails extends StatelessWidget {
                           child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                SvgPicture.asset(
-                                  'assets/images/icons/back_button.svg',
-                                  color: cc.blackColor,
-                                  height: 30,
+                                Transform(
+                                  transform: rtl
+                                      ? Matrix4.rotationY(pi)
+                                      : Matrix4.rotationY(0),
+                                  child: SvgPicture.asset(
+                                    'assets/images/icons/back_button.svg',
+                                    color: cc.blackColor,
+                                    height: 30,
+                                  ),
                                 ),
                               ]),
                         ),
@@ -332,75 +340,7 @@ class ProductDetails extends StatelessWidget {
                                                         ],
                                                       ),
                                                     ))
-                                                .toList()
-                                            //  [
-                                            //   if (sizes.isNotEmpty)
-                                            //     Row(
-                                            //       crossAxisAlignment:
-                                            //           CrossAxisAlignment.center,
-                                            //       children: [
-                                            //         Text('Size:',
-                                            //             style: attributeTitleTheme),
-                                            //         const SizedBox(width: 5),
-                                            //         ...sizes,
-                                            //       ],
-                                            //     ),
-                                            //   if (colors.isNotEmpty)
-                                            //     const SizedBox(height: 15),
-                                            //   if (colors.isNotEmpty)
-                                            //     Row(
-                                            //       crossAxisAlignment:
-                                            //           CrossAxisAlignment.center,
-                                            //       children: [
-                                            //         Text('Color:',
-                                            //             style: attributeTitleTheme),
-                                            //         const SizedBox(width: 5),
-                                            //         ...colors,
-                                            //       ],
-                                            //     ),
-                                            //   if (sauces.isNotEmpty)
-                                            //     const SizedBox(height: 15),
-                                            //   if (sauces.isNotEmpty)
-                                            //     Row(
-                                            //       crossAxisAlignment:
-                                            //           CrossAxisAlignment.center,
-                                            //       children: [
-                                            //         if (showAttribute)
-                                            //           Text('Sauce:',
-                                            //               style:
-                                            //                   attributeTitleTheme),
-                                            //         const SizedBox(width: 5),
-                                            //         ...sauces,
-                                            //       ],
-                                            //     ),
-                                            //   if (mayoes.isNotEmpty)
-                                            //     const SizedBox(height: 15),
-                                            //   if (mayoes.isNotEmpty)
-                                            //     Row(
-                                            //       children: [
-                                            //         if (showAttribute)
-                                            //           Text('Mayo:',
-                                            //               style:
-                                            //                   attributeTitleTheme),
-                                            //         const SizedBox(width: 5),
-                                            //         ...mayoes,
-                                            //       ],
-                                            //     ),
-                                            //   if (cheeses.isNotEmpty)
-                                            //     const SizedBox(height: 15),
-                                            //   if (cheeses.isNotEmpty)
-                                            //     Row(
-                                            //       children: [
-                                            //         if (showAttribute)
-                                            //           Text('Cheese:',
-                                            //               style:
-                                            //                   attributeTitleTheme),
-                                            //         const SizedBox(width: 5),
-                                            //         ...cheeses,
-                                            //       ],
-                                            //     ),
-                                            // ],
-                                            ),
+                                                .toList()),
                                       );
                               }),
                             AnimatedBox(
@@ -421,6 +361,7 @@ class ProductDetails extends StatelessWidget {
                             ),
                             ReviewBox(
                               pService.reviewExpand,
+                              pService.productDetails!.product.id,
                               onPressed: pService.toggleReviewExpand,
                             ),
                             const SizedBox(height: 10),
@@ -540,38 +481,6 @@ class ProductDetails extends StatelessWidget {
                 : null;
           }
         });
-        // if (selectedSize != null) {
-        //   selectedSize =
-        //       deselect(value, sizeAttributes[selectedSize]) ? selectedSize : null;
-        // }
-        // if (selectedColor != null) {
-        //   selectedColor = deselect(value, colorAttributes[selectedColor])
-        //       ? selectedColor
-        //       : null;
-        // }
-        // if (selectedSauce != null) {
-        //   selectedSauce = deselect(value, sauceAttributes[selectedSauce])
-        //       ? selectedSauce
-        //       : null;
-        // }
-        // if (selectedMayo != null) {
-        //   selectedMayo =
-        //       deselect(value, mayoAttributes[selectedMayo]) ? selectedMayo : null;
-        // }
-        // if ((selectedChese != null)) {
-        //   selectedChese = deselect(value, cheeseAttributes[selectedChese])
-        //       ? selectedChese
-        //       : null;
-        // }
-        //   print('Its here');
-        //   return;
-        // }
-        // print('Its here too');
-        // selectedSize = '';
-        // selectedColor = '';
-        // selectedSauce = '';
-        // selectedMayo = '';
-        // selectedChese = '';
       }
       if (selectedInventorySetIndex.isEmpty) {
         pdService.selectedInventorySetIndex = value ?? [];
@@ -680,312 +589,4 @@ class ProductDetails extends StatelessWidget {
       ],
     );
   }
-
-  // generateAttributeWidgets(
-  //   ProductDetailsService pdService,
-  // ) {
-  //   List<Widget> list0 = [];
-  //   List<Widget> list1 = [];
-  //   List<Widget> list2 = [];
-  //   List<Widget> list3 = [];
-  //   List<Widget> list4 = [];
-
-  //   //   for (var element in list) {
-  //   //     list0.add(
-  //   //       GestureDetector(
-  //   //         onTap: () {
-  //   //           pdService.setProductInventorySet(pdService
-  //   //               .productDetails!.productInventorySet
-  //   //               .indexWhere((e) => e == element));
-  //   //           pdService.setSelectedSauce(element);
-  //   //         }on,
-  //   //         child: Stack(
-  //   //           children: [
-  //   //             Container(
-  //   //               margin: const EdgeInsets.only(right: 15),
-  //   //               padding: const EdgeInsets.all(12),
-  //   //               decoration: BoxDecoration(
-  //   //                   // borderRadius: BorderRadius.circular(10),
-  //   //                   color: element == selectedValue
-  //   //                       ? cc.lightPrimery3
-  //   //                       : cc.whiteGrey,
-  //   //                   border: Border.all(
-  //   //                       color: element == selectedValue
-  //   //                           ? cc.primaryColor
-  //   //                           : cc.greyHint,
-  //   //                       width: .5)),
-  //   //               child: Text(element.toString().capitalize()),
-  //   //             ),
-  //   //             if (!(element == selectedValue))
-  //   //               Container(
-  //   //                 color: Colors.white38,
-  //   //               )
-  //   //           ],
-  //   //         ),
-  //   //       ),
-  //   //     );
-  //   //   }
-  //   //   return list0;
-  //   // }
-  //   int index = 0;
-
-  //   print(index);
-  //   bool isSelected = false;
-  //   // bool isSelected = (element.sauce ==
-  //   //     pdService.productDetails!
-  //   //         .productInventorySet[pdService.selectedInventorySetIndex].sauce);
-  //   final sizeKeys = pdService.sizeAttributes.keys;
-  //   final colorKeys = pdService.colorAttributes.keys;
-  //   final keys = pdService.sauceAttributes.keys;
-  //   final mayoKeys = pdService.mayoAttributes.keys;
-  //   final cheeseKeys = pdService.cheeseAttributes.keys;
-  //   for (var elemnt in sizeKeys) {
-  //     list0.add(
-  //       GestureDetector(
-  //         onTap: () {
-  //           if (elemnt == pdService.selectedSauce) {
-  //             return;
-  //           }
-  //           if (!pdService.isInSet(pdService.sauceAttributes[elemnt])) {
-  //             pdService.clearSelection();
-  //           }
-  //           print(pdService.sauceAttributes[elemnt]);
-  //           pdService.setProductInventorySet(pdService.sauceAttributes[elemnt]);
-  //           pdService.setSelectedSauce(elemnt);
-  //           pdService.addAdditionalPrice();
-  //         },
-  //         child: Stack(
-  //           children: [
-  //             Container(
-  //               margin: const EdgeInsets.only(right: 15),
-  //               padding: const EdgeInsets.all(12),
-  //               decoration: BoxDecoration(
-  //                   borderRadius: BorderRadius.circular(10),
-  //                   color: elemnt == pdService.selectedSauce
-  //                       ? cc.lightPrimery3
-  //                       : cc.whiteGrey,
-  //                   border: Border.all(
-  //                       color: elemnt == pdService.selectedSauce
-  //                           ? cc.primaryColor
-  //                           : cc.greyHint,
-  //                       width: .5)),
-  //               child: Text(elemnt.capitalize()),
-  //             ),
-  //             if (!pdService.isInSet(pdService.sauceAttributes[elemnt]))
-  //               Container(
-  //                 margin: const EdgeInsets.only(right: 15),
-  //                 padding: const EdgeInsets.all(12),
-  //                 color: Colors.white60,
-  //                 child: Text(
-  //                   elemnt.capitalize(),
-  //                   style: const TextStyle(color: Colors.transparent),
-  //                 ),
-  //               )
-  //           ],
-  //         ),
-  //       ),
-  //     );
-  //   }
-
-  //   for (var key in mayoKeys) {
-  //     list1.add(
-  //       GestureDetector(
-  //         onTap: () {
-  //           if (key == pdService.selectedMayo) {
-  //             return;
-  //           }
-  //           if (!pdService.isInSet(pdService.mayoAttributes[key])) {
-  //             pdService.clearSelection();
-  //           }
-  //           print(pdService.mayoAttributes[key]);
-  //           pdService.setProductInventorySet(pdService.mayoAttributes[key]);
-  //           pdService.setSelectedMayo(key);
-  //           pdService.addAdditionalPrice();
-  //         },
-  //         child: Stack(
-  //           children: [
-  //             Container(
-  //               margin: const EdgeInsets.only(right: 15),
-  //               padding: const EdgeInsets.all(12),
-  //               decoration: BoxDecoration(
-  //                   borderRadius: BorderRadius.circular(10),
-  //                   color: key == pdService.selectedMayo
-  //                       ? cc.lightPrimery3
-  //                       : cc.whiteGrey,
-  //                   border: Border.all(
-  //                       color: key == pdService.selectedMayo
-  //                           ? cc.primaryColor
-  //                           : cc.greyHint,
-  //                       width: .5)),
-  //               child: Text(key.capitalize()),
-  //             ),
-  //             if (!pdService.isInSet(pdService.mayoAttributes[key]))
-  //               Container(
-  //                 margin: const EdgeInsets.only(right: 15),
-  //                 padding: const EdgeInsets.all(12),
-  //                 color: Colors.white60,
-  //                 child: Text(
-  //                   key.capitalize(),
-  //                   style: const TextStyle(color: Colors.transparent),
-  //                 ),
-  //               )
-  //           ],
-  //         ),
-  //       ),
-  //     );
-  //   }
-
-  //   for (var key in cheeseKeys) {
-  //     list2.add(
-  //       GestureDetector(
-  //         onTap: () {
-  //           if (key == pdService.selectedChese) {
-  //             return;
-  //           }
-  //           if (!pdService.isInSet(pdService.cheeseAttributes[key])) {
-  //             pdService.clearSelection();
-  //           }
-  //           pdService.setProductInventorySet(pdService.cheeseAttributes[key]);
-  //           pdService.setSelectedCheese(key);
-  //           pdService.addAdditionalPrice();
-  //         },
-  //         child: Stack(
-  //           children: [
-  //             Container(
-  //               margin: const EdgeInsets.only(right: 15),
-  //               padding: const EdgeInsets.all(12),
-  //               decoration: BoxDecoration(
-  //                   borderRadius: BorderRadius.circular(10),
-  //                   color: key == pdService.selectedChese
-  //                       ? cc.lightPrimery3
-  //                       : cc.whiteGrey,
-  //                   border: Border.all(
-  //                       color: key == pdService.selectedChese
-  //                           ? cc.primaryColor
-  //                           : cc.greyHint,
-  //                       width: .5)),
-  //               child: Text(key.capitalize()),
-  //             ),
-  //             if (!pdService.isInSet(pdService.cheeseAttributes[key]))
-  //               Container(
-  //                 margin: const EdgeInsets.only(right: 15),
-  //                 padding: const EdgeInsets.all(12),
-  //                 color: Colors.white60,
-  //                 child: Text(
-  //                   key.capitalize(),
-  //                   style: const TextStyle(color: Colors.transparent),
-  //                 ),
-  //               )
-  //           ],
-  //         ),
-  //       ),
-  //     );
-  //   }
-  //   for (var key in colorKeys) {
-  //     final color = key.replaceAll('#', '0xff');
-  //     list3.add(
-  //       GestureDetector(
-  //         onTap: () {
-  //           if (key == pdService.selectedColor) {
-  //             return;
-  //           }
-  //           if (!pdService.isInSet(pdService.colorAttributes[key])) {
-  //             pdService.clearSelection();
-  //           }
-  //           pdService.setProductInventorySet(pdService.colorAttributes[key]);
-  //           pdService.setSelectedColor(
-  //             key,
-  //           );
-  //           pdService.addAdditionalPrice();
-  //         },
-  //         child: Stack(
-  //           children: [
-  //             Container(
-  //               height: 40,
-  //               width: 40,
-  //               margin: const EdgeInsets.only(right: 15),
-  //               padding: const EdgeInsets.all(12),
-  //               decoration: BoxDecoration(
-  //                 borderRadius: BorderRadius.circular(10),
-  //                 color: Color(int.parse(color)),
-  //                 border: key == pdService.selectedColor
-  //                     ? Border.all(color: cc.primaryColor, width: 2.5)
-  //                     : null,
-  //               ),
-  //               // child: const Text('element.color!.capitalize()'),
-  //             ),
-  //             if (!pdService.isInSet(pdService.colorAttributes[key]))
-  //               Container(
-  //                 height: 40,
-  //                 width: 40,
-  //                 margin: const EdgeInsets.only(right: 15),
-  //                 padding: const EdgeInsets.all(12),
-  //                 color: Colors.white60,
-  //                 child: Text(
-  //                   key.capitalize(),
-  //                   style: const TextStyle(color: Colors.transparent),
-  //                 ),
-  //               )
-  //           ],
-  //         ),
-  //       ),
-  //     );
-  //   }
-
-  //   print(sizeKeys);
-  //   for (var element in sizeKeys) {
-  //     list4.add(
-  //       GestureDetector(
-  //         onTap: () {
-  //           if (element == pdService.selectedSize) {
-  //             return;
-  //           }
-  //           if (!pdService.isInSet(pdService.sizeAttributes[element])) {
-  //             pdService.clearSelection();
-  //           }
-  //           pdService.setProductInventorySet(pdService.sizeAttributes[element]);
-  //           pdService.setSelectedSize(element);
-  //           pdService.addAdditionalPrice();
-  //         },
-  //         child: Stack(
-  //           children: [
-  //             Container(
-  //               margin: const EdgeInsets.only(right: 15),
-  //               padding: const EdgeInsets.all(12),
-  //               decoration: BoxDecoration(
-  //                   borderRadius: BorderRadius.circular(10),
-  //                   color: element == pdService.selectedSize
-  //                       ? cc.lightPrimery3
-  //                       : cc.whiteGrey,
-  //                   border: Border.all(
-  //                       color: element == pdService.selectedSize
-  //                           ? cc.primaryColor
-  //                           : cc.greyHint,
-  //                       width: .5)),
-  //               child: Text(element.capitalize()),
-  //             ),
-  //             if (!pdService.isInSet(pdService.sizeAttributes[element]))
-  //               Container(
-  //                 margin: const EdgeInsets.only(right: 15),
-  //                 padding: const EdgeInsets.all(12),
-  //                 color: Colors.white60,
-  //                 child: Text(
-  //                   element.capitalize(),
-  //                   style: const TextStyle(color: Colors.transparent),
-  //                 ),
-  //               )
-  //           ],
-  //         ),
-  //       ),
-  //     );
-  //   }
-  //   index++;
-
-  //   sauces = list0;
-  //   mayoes = list1;
-  //   cheeses = list2;
-  //   colors = list3;
-  //   sizes = list4;
-  //   print(sauces);
-  // }
 }

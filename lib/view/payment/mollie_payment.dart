@@ -11,6 +11,7 @@ import 'package:webview_flutter/webview_flutter.dart';
 import 'package:http/http.dart' as http;
 
 import '../../service/cart_data_service.dart';
+import '../../service/checkout_service.dart';
 import '../../service/cupon_discount_service.dart';
 import '../../service/shipping_addresses_service.dart';
 import '../../service/shipping_zone_service.dart';
@@ -113,7 +114,7 @@ class MolliePayment extends StatelessWidget {
                     Navigator.of(context).pop();
                     return;
                   }
-                  if (status == 'failed' || status == 'expired') {
+                  if (status == 'expired') {
                     await showDialog(
                         context: context,
                         builder: (ctx) {
@@ -186,7 +187,8 @@ class MolliePayment extends StatelessWidget {
       "Authorization": "Bearer test_fVk76gNbAp6ryrtRjfAVvzjxSHxC2v",
       // Above is API server key for the Midtrans account, encoded to base64
     };
-    final orderId = Random().nextInt(23000).toInt();
+    final checkoutInfo = Provider.of<CheckoutService>(context, listen: false);
+    final orderId = checkoutInfo.checkoutModel.id;
     final response = await http.post(url,
         headers: header,
         body: jsonEncode({

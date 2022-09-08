@@ -2,7 +2,9 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:gren_mart/service/checkout_service.dart';
+import 'package:gren_mart/service/common_service.dart';
 import 'package:gren_mart/service/menual_payment_service.dart';
+import 'package:gren_mart/service/user_profile_service.dart';
 import 'package:gren_mart/view/payment/billplz_payment.dart';
 import 'package:gren_mart/view/payment/cash_free_payment.dart';
 import 'package:gren_mart/view/payment/cinetpay_payment.dart';
@@ -48,7 +50,6 @@ class Checkout extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print('kenooooooooooooo');
     return Stack(
       children: [
         Scaffold(
@@ -129,7 +130,8 @@ class Checkout extends StatelessWidget {
                                 if (selected)
                                   Positioned(
                                       top: 10,
-                                      right: 15,
+                                      right: rtl ? null : 15,
+                                      left: rtl ? 15 : null,
                                       child: Icon(
                                         Icons.check_box,
                                         color: cc.primaryColor,
@@ -355,7 +357,8 @@ class Checkout extends StatelessWidget {
                                           if (value != null) {
                                             snackBar(context, value);
                                           }
-                                        });
+                                        }).onError((error, stackTrace) =>
+                                                cService.setIsLoading(false));
                                         FocusScope.of(context).unfocus();
                                       },
                                 child: Stack(
@@ -420,7 +423,8 @@ class Checkout extends StatelessWidget {
                             return Consumer<PaymentGateawayService>(
                                 builder: (context, pgService, child) {
                               return SizedBox(
-                                  height: 270,
+                                  height:
+                                      (pgService.gatawayList.length / 3) * 60,
                                   child: GridView(
                                     physics:
                                         const NeverScrollableScrollPhysics(),
@@ -543,10 +547,9 @@ class Checkout extends StatelessWidget {
           ),
         ),
         Consumer<PaymentGateawayService>(builder: (context, pgService, child) {
-          print(pgService.isLoading);
           return pgService.isLoading
               ? Container(
-                  color: Colors.white38,
+                  color: Colors.white60,
                   child: loadingProgressBar(),
                 )
               : SizedBox();
@@ -559,6 +562,9 @@ class Checkout extends StatelessWidget {
     List<Widget> list = [];
     cService.cartList!.forEach((key, value) {
       value.forEach((e) {
+        String attributes = e['attributes'].toString();
+        String attributes2 = attributes.replaceAll('{', '');
+        final attributes3 = attributes2.replaceAll('}', '');
         list.add(Container(
           margin: const EdgeInsets.only(bottom: 10),
           child: Row(
@@ -571,9 +577,8 @@ class Checkout extends StatelessWidget {
                       text: e['title'] as String,
                       style: TextThemeConstrants.greyHint13Eclipse,
                       children: [
-                        if (e['atribute'] != null)
-                          TextSpan(
-                              text: ' (' + e['atribute'].toString() + ') '),
+                        if (e['attributes'] != null)
+                          TextSpan(text: ' (' + attributes3.toString() + ') '),
                         const TextSpan(text: 'X'),
                         TextSpan(
                             text: '${e['quantity']}',
@@ -621,15 +626,16 @@ class Checkout extends StatelessWidget {
       return;
     }
 
-    if (selectedGateaway.name.toLowerCase().contains('manual_payment')) {
+    if (selectedGateaway.name.contains('bank_transfer') ||
+        selectedGateaway.name.contains('cheque_payment')) {
       bool continued = false;
-      showDialog(
+      await showDialog(
           context: context,
           builder: (context) {
             return AlertDialog(
               content: GestureDetector(
                 onTap: (() {
-                  imageSelector(context);
+                  cService.imageSelector(context);
                 }),
                 child: Padding(
                     padding: const EdgeInsets.all(10),
@@ -641,40 +647,64 @@ class Checkout extends StatelessWidget {
                           border: Border.all(
                             color: cc.primaryColor,
                           )),
-                      child: cService.pickedImage == null
-                          ? Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Icon(Icons.camera_alt_outlined),
-                                Text('Select an image from gallary'),
-                              ],
-                            )
-                          : Image.file(cService.pickedImage!),
+                      child:
+                          Provider.of<CheckoutService>(context).pickedImage ==
+                                  null
+                              ? Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Icon(Icons.camera_alt_outlined),
+                                    Text('Select an image from gallary'),
+                                  ],
+                                )
+                              : Image.file(cService.pickedImage!),
                     )),
               ),
               actions: [
-                customContainerButton('Continue', double.infinity, () {
-                  continued = true;
-                  Navigator.of(context).pop();
-                })
+                customContainerButton(
+                    'Continue',
+                    double.infinity,
+                    Provider.of<CheckoutService>(context).pickedImage == null
+                        ? () {
+                            snackBar(context, 'Take an image to proceed');
+                          }
+                        : () {
+                            continued = true;
+                            Navigator.of(context).pop();
+                          })
               ],
             );
           });
       if (continued) {
         await cService.proccessCheckout(context);
+        return;
       }
+      cService.pickedImage = null;
       return;
     }
 
     await cService.proccessCheckout(context);
+    if (selectedGateaway.name.toLowerCase().contains('marcadopago')) {
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (BuildContext context) => MercadopagoPayment(),
+        ),
+      );
+      return;
+    }
+    if (selectedGateaway.name.toLowerCase().contains('paytm')) {
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (BuildContext context) => PaytmPayment(),
+        ),
+      );
+      return;
+    }
     if (selectedGateaway.name.toLowerCase().contains('paypal')) {
       Navigator.of(context).push(
         MaterialPageRoute(
           builder: (BuildContext context) => PaypalPayment(
-            onFinish: (number) async {
-              // payment done
-              print('order id: ' + number);
-            },
+            onFinish: (number) async {},
           ),
         ),
       );
@@ -685,13 +715,20 @@ class Checkout extends StatelessWidget {
       return;
     }
     if (selectedGateaway.name.toLowerCase().contains('razorpay')) {
-      RazorpayPayment().createOrder(context);
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (BuildContext context) => RazorpayPayment(),
+        ),
+      );
 
       return;
     }
     if (selectedGateaway.name.toLowerCase().contains('paystack')) {
-      PaystackPayment(ctx: context, price: 100, email: 'fake@gmail.com')
-          .chargeCardAndMakePayment();
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (BuildContext context) => PaystackPayment(),
+        ),
+      );
       return;
     }
     if (selectedGateaway.name.toLowerCase().contains('flutterwave')) {
@@ -702,67 +739,12 @@ class Checkout extends StatelessWidget {
       CashFreePayment().doPayment(context);
       return;
     }
-    // if (selectedGateaway.name.toLowerCase().contains('midtrans')) {
-    //   // MidTransPayment().startPayment(context);
-    //   // Navigator.of(context).push(
-    //   //   MaterialPageRoute(
-    //   //     builder: (BuildContext context) => MidTransPayment(),
-    //   //   ),
-    //   // );
-    //   return;
-    // }
-    if (selectedGateaway.name.toLowerCase().contains('marcadopago')) {
-      Navigator.of(context).push(
-        MaterialPageRoute(
-          builder: (BuildContext context) => CinetPayPayment(),
-        ),
-      );
-      return;
-    }
-    if (selectedGateaway.name.toLowerCase().contains('paytm')) {
-      final header = {
-        // "Content-Type": "application/json",
-        "Accept": "application/json",
-        "Authorization": 'Bearer $globalUserToken',
-        // Above is API server key for the Midtrans account, encoded to base64
-      };
-      final url = Uri.parse(
-          'https://zahid.xgenious.com/grenmart-api/api/v1/user/checkout-paytm');
 
-      final response = await http.post(url, headers: header, body:
-          //
-          {
-        "name": "Md Zahidul Islam",
-        "email": "mdzahid.pro@gmail.com",
-        "country": "24",
-        "address": "Tongi Bazar Tongi",
-        "city": "fasfafda",
-        "state": "2",
-        "zipcode": "12365",
-        "phone": "214515544454",
-        "shipping_address_id": "",
-        "selected_payment_shipping_option": "8",
-        "tax_amount": "12",
-        "coupon": "zahid1234",
-        "selected_payment_gateway": "8",
-        "agree": "on",
-        "sub_total": "14",
-        "products_ids": "[105]",
-        "all_cart_items": "{}",
-      });
-
-      Navigator.of(context).push(
-        MaterialPageRoute(
-          builder: (BuildContext context) => PaytmPayment(response.body),
-        ),
-      );
-      return;
-    }
     // }
     if (selectedGateaway.name.toLowerCase().contains('payfast')) {
       Navigator.of(context).push(
         MaterialPageRoute(
-          builder: (BuildContext context) => SquareUpPayment(),
+          builder: (BuildContext context) => PayfastPayment(),
         ),
       );
       return;
@@ -770,111 +752,63 @@ class Checkout extends StatelessWidget {
     if (selectedGateaway.name.toLowerCase().contains('midtrans')) {
       Navigator.of(context).push(
         MaterialPageRoute(
-          builder: (BuildContext context) => BillplzPayment(),
+          builder: (BuildContext context) => MidtransPayment(),
         ),
       );
 
       return;
     }
     if (selectedGateaway.name.toLowerCase().contains('instamojo')) {
-      // MercadoPagoMobileCheckout.startCheckout(context);
-      String userName = '';
-      await showDialog(
-          context: context,
-          builder: (ctx) {
-            return AlertDialog(
-              title: Text('Enter username!'),
-              content: CustomTextField(
-                'Username',
-                onChanged: (value) => userName = value.trim(),
-              ),
-              actions: [
-                Spacer(),
-                TextButton(
-                  onPressed: () {
-                    if (userName.isEmpty || userName.trim() == '') {
-                      snackBar(context, 'Enter a valid username');
-                      return;
-                    }
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (BuildContext context) => InstamojoPayment(),
+        ),
+      );
+      // String userName = '';
+      // await showDialog(
+      //     context: context,
+      //     builder: (ctx) {
+      //       return AlertDialog(
+      //         title: Text('Enter username!'),
+      //         content: CustomTextField(
+      //           'Username',
+      //           onChanged: (value) => userName = value.trim(),
+      //         ),
+      //         actions: [
+      //           Spacer(),
+      //           TextButton(
+      //             onPressed: () {
+      //               if (userName.isEmpty || userName.trim() == '') {
+      //                 snackBar(context, 'Enter a valid username');
+      //                 return;
+      //               }
 
-                    Navigator.of(context).pop();
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (BuildContext context) => ZitopayPayment(
-                            'https://zitopay.africa/sci/?currency=XAF&amount=1000&receiver=$userName'),
-                      ),
-                    );
-                  },
-                  child: Text(
-                    'Submit',
-                    style: TextStyle(color: cc.primaryColor),
-                  ),
-                )
-              ],
-            );
-          });
+      //               Navigator.of(context).pop();
+      //               Navigator.of(context).push(
+      //                 MaterialPageRoute(
+      //                   builder: (BuildContext context) => ZitopayPayment(
+      //                       'https://zitopay.africa/sci/?currency=XAF&amount=1000&receiver=$userName'),
+      //                 ),
+      //               );
+      //             },
+      //             child: Text(
+      //               'Submit',
+      //               style: TextStyle(color: cc.primaryColor),
+      //             ),
+      //           )
+      //         ],
+      //       );
+      //     });
 
       return;
     }
     if (selectedGateaway.name.toLowerCase().contains('mollie')) {
-      // MercadoPagoMobileCheckout.startCheckout(context);
       Navigator.of(context).push(
         MaterialPageRoute(
           builder: (BuildContext context) => MolliePayment(),
         ),
       );
       return;
-    }
-    if (selectedGateaway.name.toLowerCase().contains('manual_payment')) {
-      showDialog(
-          context: context,
-          builder: (context) {
-            return AlertDialog(
-              content: GestureDetector(
-                onTap: (() {
-                  imageSelector(context);
-                }),
-                child: Padding(
-                    padding: const EdgeInsets.all(10),
-                    child: Container(
-                      padding: EdgeInsets.all(15),
-                      height: 300,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(15),
-                          border: Border.all(
-                            color: cc.primaryColor,
-                          )),
-                      child: cService.pickedImage == null
-                          ? Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Icon(Icons.camera_alt_outlined),
-                                Text('Select an image from gallary'),
-                              ],
-                            )
-                          : Image.file(cService.pickedImage!),
-                    )),
-              ),
-              actions: [
-                customContainerButton('Upload image', double.infinity, () {
-                  Navigator.of(context).pop();
-                })
-              ],
-            );
-          });
-      return;
-    }
-  }
-
-  Future<void> imageSelector(BuildContext context,
-      {ImageSource imageSource = ImageSource.camera}) async {
-    try {
-      final pickedImage =
-          await ImagePicker.platform.pickImage(source: imageSource);
-      Provider.of<CheckoutService>(context, listen: false)
-          .setPickedImage(File(pickedImage!.path));
-    } catch (error) {
-      print(error.toString());
     }
   }
 }

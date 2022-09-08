@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gren_mart/view/utils/constant_name.dart';
+import '../../service/common_service.dart';
 import '../../view/utils/constant_colors.dart';
 
 class OrderDetailsTile extends StatelessWidget {
@@ -18,12 +19,17 @@ class OrderDetailsTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print(subTitle);
+    String subtitle1 = subTitle.replaceAll('{', '');
+    final subtitle2 = subtitle1.replaceAll('}', '');
+    print(subtitle2);
     return SizedBox(
       // height: 75,
       child: Column(
         children: [
           ListTile(
-            contentPadding: const EdgeInsets.only(left: 20),
+            contentPadding:
+                EdgeInsets.only(left: rtl ? 0 : 20, right: rtl ? 20 : 0),
             leading: Container(
               height: 60,
               width: 60,
@@ -50,10 +56,10 @@ class OrderDetailsTile extends StatelessWidget {
                         style: const TextStyle(
                             fontSize: 12, fontWeight: FontWeight.w600),
                       ),
-                      if (subTitle.trim() != '()') const SizedBox(height: 5),
-                      if (subTitle.trim() != '()')
+                      if (subtitle2.trim() != '()') const SizedBox(height: 5),
+                      if (subtitle2.trim() != '()')
                         Text(
-                          subTitle,
+                          subtitle2,
                           overflow: TextOverflow.ellipsis,
                           maxLines: 3,
                           style: TextStyle(
