@@ -1,19 +1,17 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+
 import 'package:provider/provider.dart';
 import 'package:http/http.dart ' as http;
 import 'package:webview_flutter/webview_flutter.dart';
 
-import '../../service/cart_data_service.dart';
 import '../../service/checkout_service.dart';
-import '../../service/cupon_discount_service.dart';
+import '../../service/confirm_payment_service.dart';
 import '../../service/payment_gateaway_service.dart';
-import '../../service/shipping_addresses_service.dart';
-import '../../service/shipping_zone_service.dart';
-import '../../service/user_profile_service.dart';
+import '../cart/payment_status.dart';
+import '../home/home_front.dart';
 import '../utils/app_bars.dart';
 import '../utils/constant_styles.dart';
 
@@ -23,91 +21,139 @@ class MercadopagoPayment extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBars().appBarTitled('', () {
-        Navigator.of(context).pop();
+      appBar: AppBars().appBarTitled('', () async {
+        await showDialog(
+            context: context,
+            builder: (ctx) {
+              return AlertDialog(
+                title: Text('Are you sure?'),
+                content: Text('Your payment proccess will get terminated.'),
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.of(context).pushAndRemoveUntil(
+                        MaterialPageRoute(
+                            builder: (context) => PaymentStatusView(true)),
+                        (Route<dynamic> route) => false),
+                    child: Text(
+                      'Yes',
+                      style: TextStyle(color: cc.primaryColor),
+                    ),
+                  )
+                ],
+              );
+            });
       }),
-      body: FutureBuilder(
-          future: getPaymentUrl(context),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return loadingProgressBar();
-            }
-            if (snapshot.hasData) {
-              return const Center(
-                child: Text('Loding failed.'),
+      body: WillPopScope(
+        onWillPop: () async {
+          await showDialog(
+              context: context,
+              builder: (ctx) {
+                return AlertDialog(
+                  title: Text('Are you sure?'),
+                  content: Text('Your payment proccess will get terminated.'),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.of(context).pushAndRemoveUntil(
+                          MaterialPageRoute(
+                              builder: (context) => PaymentStatusView(true)),
+                          (Route<dynamic> route) => false),
+                      child: Text(
+                        'Yes',
+                        style: TextStyle(color: cc.primaryColor),
+                      ),
+                    )
+                  ],
+                );
+              });
+          return false;
+        },
+        child: FutureBuilder(
+            future: getPaymentUrl(context),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return loadingProgressBar();
+              }
+              if (snapshot.hasData) {
+                return const Center(
+                  child: Text('Loding failed.'),
+                );
+              }
+              if (snapshot.hasError) {
+                print(snapshot.error);
+                return const Center(
+                  child: Text('Loding failed.'),
+                );
+              }
+              return WebView(
+                onWebResourceError: (error) => showDialog(
+                    context: context,
+                    builder: (ctx) {
+                      return AlertDialog(
+                        title: Text('Loading failed!'),
+                        content: Text('Failed to load payment page.'),
+                        actions: [
+                          Spacer(),
+                          TextButton(
+                            onPressed: () => Navigator.of(context)
+                                .pushAndRemoveUntil(
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            PaymentStatusView(true)),
+                                    (Route<dynamic> route) => false),
+                            child: Text(
+                              'Return',
+                              style: TextStyle(color: cc.primaryColor),
+                            ),
+                          )
+                        ],
+                      );
+                    }),
+                initialUrl: url,
+                javascriptMode: JavascriptMode.unrestricted,
+                onPageFinished: (value) async {
+                  print('on progress.........................$value');
+                  if (value.contains('success')) {
+                    print('closing payment......');
+                    print('closing payment.............');
+                    print('closing payment...................');
+                    print('closing payment..........................');
+                    await Provider.of<ConfirmPaymentService>(context,
+                            listen: false)
+                        .confirmPayment(context);
+                  }
+                },
+                onPageStarted: (value) async {
+                  final response = await http.get(Uri.parse(value));
+                  print(
+                      'Checking condition.............................${response.body.contains('other')}');
+                  print("on progress.........................$value");
+                  if (value.contains('success')) {
+                    await Provider.of<ConfirmPaymentService>(context,
+                            listen: false)
+                        .confirmPayment(context);
+                    print('closing payment......');
+                    print('closing payment.............');
+                    print('closing payment...................');
+                    print('closing payment..........................');
+
+                    Navigator.of(context).pushAndRemoveUntil(
+                        MaterialPageRoute(
+                            builder: (context) => PaymentStatusView(true)),
+                        (Route<dynamic> route) => false);
+                  }
+                },
               );
-            }
-            if (snapshot.hasError) {
-              print(snapshot.error);
-              return const Center(
-                child: Text('Loding failed.'),
-              );
-            }
-            return WebView(
-              onWebResourceError: (error) => showDialog(
-                  context: context,
-                  builder: (ctx) {
-                    return AlertDialog(
-                      title: Text('Loading failed!'),
-                      content: Text('Failed to load payment page.'),
-                      actions: [
-                        Spacer(),
-                        TextButton(
-                          onPressed: () => Navigator.of(context).pop(),
-                          child: Text(
-                            'Return',
-                            style: TextStyle(color: cc.primaryColor),
-                          ),
-                        )
-                      ],
-                    );
-                  }),
-              initialUrl: url,
-              javascriptMode: JavascriptMode.unrestricted,
-              onPageFinished: (value) {
-                print('on progress.........................$value');
-                if (value.contains('success')) {
-                  print('closing payment......');
-                  print('closing payment.............');
-                  print('closing payment...................');
-                  print('closing payment..........................');
-                  Navigator.of(context).pop();
-                }
-              },
-              onPageStarted: (value) {
-                print("on progress.........................$value");
-                if (value.contains('success')) {
-                  print('closing payment......');
-                  print('closing payment.............');
-                  print('closing payment...................');
-                  print('closing payment..........................');
-                  Navigator.of(context).pop();
-                }
-              },
-            );
-          }),
+            }),
+      ),
     );
   }
 
   Future<dynamic> getPaymentUrl(BuildContext context) async {
-    final userData =
-        Provider.of<UserProfileService>(context, listen: false).userProfileData;
-    final cartData = Provider.of<CartDataService>(context, listen: false);
-    final shippingAddress =
-        Provider.of<ShippingAddressesService>(context, listen: false);
-    final shippingZone =
-        Provider.of<ShippingZoneService>(context, listen: false);
-    final cuponData = Provider.of<CuponDiscountService>(context, listen: false);
-    final amount = (shippingZone.taxMoney(context) +
-            shippingZone.shippingCost +
-            cartData.calculateSubtotal() -
-            cuponData.cuponDiscount)
-        .toInt();
     final selectrdGateaway =
         Provider.of<PaymentGateawayService>(context, listen: false)
             .selectedGateaway!;
-    final checkoutInfo = Provider.of<CheckoutService>(context, listen: false);
-    final orderId = checkoutInfo.checkoutModel.id;
+    final checkoutInfo =
+        Provider.of<CheckoutService>(context, listen: false).checkoutModel;
     if (selectrdGateaway.clientSecret == null) {
       snackBar(context, 'Invalid developer keys');
     }
@@ -123,11 +169,10 @@ class MercadopagoPayment extends StatelessWidget {
           "description": "Grenmart cart items",
           "quantity": 1,
           "currency_id": "ARS",
-          "unit_price":
-              double.parse(checkoutInfo.checkoutModel.totalAmount).toInt() + 1
+          "unit_price": double.parse(checkoutInfo!.totalAmount).toInt()
         }
       ],
-      "payer": {"email": userData.email}
+      "payer": {"email": checkoutInfo.email}
     });
 
     var response = await http.post(
