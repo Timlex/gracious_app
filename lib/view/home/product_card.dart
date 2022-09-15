@@ -1,14 +1,16 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:gren_mart/service/common_service.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:provider/provider.dart';
+
 import '../../service/cart_data_service.dart';
 import '../../service/favorite_data_service.dart';
+import '../../service/language_service.dart';
 import '../../service/product_details_service.dart';
 import '../../view/details/product_details.dart';
 import '../../view/utils/constant_colors.dart';
 import '../../view/utils/constant_name.dart';
 import '../../view/utils/constant_styles.dart';
-import 'package:provider/provider.dart';
 
 class ProductCard extends StatelessWidget {
   final int _id;
@@ -18,6 +20,7 @@ class ProductCard extends StatelessWidget {
   final String imgUrl;
   final int discountPrice;
   final bool isCartable;
+  bool popFirst;
 
   EdgeInsetsGeometry? margin;
 
@@ -31,16 +34,19 @@ class ProductCard extends StatelessWidget {
     this.isCartable, {
     Key? key,
     this.margin = const EdgeInsets.only(right: 18),
+    this.popFirst = false,
   }) : super(key: key);
 
   ConstantColors cc = ConstantColors();
 
   @override
   Widget build(BuildContext context) {
+    initiateDeviceSize(context);
     return GestureDetector(
       onTap: () {
-        Provider.of<ProductDetailsService>(context, listen: false)
-            .clearProdcutDetails();
+        if (popFirst) {
+          Navigator.of(context).pop();
+        }
         Navigator.of(context)
             .pushNamed(ProductDetails.routeName, arguments: [_id]);
       },
@@ -78,11 +84,10 @@ class ProductCard extends StatelessWidget {
                     child: CachedNetworkImage(
                       fit: BoxFit.cover,
                       imageUrl: imgUrl,
-                      placeholder: (context, url) => Image.asset(
-                        'assets/images/skelleton.png',
-                      ),
+                      placeholder: (context, url) =>
+                          SvgPicture.asset('assets/images/image_empty.svg'),
                       errorWidget: (context, url, error) =>
-                          const Icon(Icons.error),
+                          SvgPicture.asset('assets/images/image_empty.svg'),
                     ),
                   ),
                   // ),
@@ -93,10 +98,18 @@ class ProductCard extends StatelessWidget {
                       const EdgeInsets.symmetric(vertical: 3, horizontal: 6),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.only(
-                      topRight: rtl ? Radius.zero : Radius.circular(5),
-                      bottomRight: rtl ? Radius.zero : Radius.circular(5),
-                      topLeft: rtl ? Radius.circular(5) : Radius.zero,
-                      bottomLeft: rtl ? Radius.circular(5) : Radius.zero,
+                      topRight: LanguageService().rtl
+                          ? Radius.zero
+                          : Radius.circular(5),
+                      bottomRight: LanguageService().rtl
+                          ? Radius.zero
+                          : Radius.circular(5),
+                      topLeft: LanguageService().rtl
+                          ? Radius.circular(5)
+                          : Radius.zero,
+                      bottomLeft: LanguageService().rtl
+                          ? Radius.circular(5)
+                          : Radius.zero,
                     ),
                     color: cc.pureWhite,
                   ),
@@ -116,10 +129,18 @@ class ProductCard extends StatelessWidget {
                         const EdgeInsets.symmetric(vertical: 3, horizontal: 6),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.only(
-                        topRight: rtl ? Radius.zero : Radius.circular(5),
-                        bottomRight: rtl ? Radius.zero : Radius.circular(5),
-                        topLeft: rtl ? Radius.circular(5) : Radius.zero,
-                        bottomLeft: rtl ? Radius.circular(5) : Radius.zero,
+                        topRight: LanguageService().rtl
+                            ? Radius.zero
+                            : Radius.circular(5),
+                        bottomRight: LanguageService().rtl
+                            ? Radius.zero
+                            : Radius.circular(5),
+                        topLeft: LanguageService().rtl
+                            ? Radius.circular(5)
+                            : Radius.zero,
+                        bottomLeft: LanguageService().rtl
+                            ? Radius.circular(5)
+                            : Radius.zero,
                       ),
                       color: cc.orange,
                     ),
@@ -134,11 +155,12 @@ class ProductCard extends StatelessWidget {
                 Consumer<FavoriteDataService>(
                     builder: (context, favoriteData, child) {
                   return Positioned(
-                      right: rtl ? null : 0,
-                      left: rtl ? 0 : null,
+                      right: LanguageService().rtl ? null : 0,
+                      left: LanguageService().rtl ? 0 : null,
                       child:
                           favoriteIcon(favoriteData.isfavorite(_id.toString()),
                               onPressed: () => favoriteData.toggleFavorite(
+                                    context,
                                     _id,
                                     title,
                                     discountPrice,
@@ -174,6 +196,7 @@ class ProductCard extends StatelessWidget {
                           onTap: isCartable
                               ? () {
                                   cartData.addCartItem(
+                                      context,
                                       _id,
                                       title,
                                       discountPrice,
@@ -184,18 +207,12 @@ class ProductCard extends StatelessWidget {
                                   snackBar(context, 'Product added to cart.');
                                 }
                               : (() {
-                                  Provider.of<ProductDetailsService>(context,
-                                          listen: false)
-                                      .clearProdcutDetails();
-                                  Provider.of<ProductDetailsService>(context,
-                                          listen: false)
-                                      .fetchProductDetails(_id);
+                                  if (popFirst) {
+                                    Navigator.of(context).pop();
+                                  }
                                   Navigator.of(context).pushNamed(
                                       ProductDetails.routeName,
-                                      arguments: [_id]).then((value) => Provider
-                                          .of<ProductDetailsService>(context,
-                                              listen: false)
-                                      .clearProdcutDetails());
+                                      arguments: [_id]);
                                 }),
                           child: child,
                         );

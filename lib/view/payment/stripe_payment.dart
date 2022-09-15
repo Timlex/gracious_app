@@ -1,18 +1,15 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:gren_mart/service/payment_gateaway_service.dart';
-import 'package:gren_mart/service/shipping_zone_service.dart';
-import 'package:gren_mart/view/utils/constant_styles.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:provider/provider.dart';
 
-import '../../service/cart_data_service.dart';
+import '../../service/payment_gateaway_service.dart';
+import '../../view/utils/constant_styles.dart';
 import '../../service/checkout_service.dart';
-import '../../service/cupon_discount_service.dart';
-import '../../service/shipping_addresses_service.dart';
-import '../../service/user_profile_service.dart';
+import '../../service/confirm_payment_service.dart';
+import '../cart/payment_status.dart';
 
 class StripePayment {
   Map<String, dynamic>? paymentIntent;
@@ -36,8 +33,12 @@ class StripePayment {
             .selectedGateaway!
             .publicKey
             .toString();
+    final checkoutInfo =
+        Provider.of<CheckoutService>(context, listen: false).checkoutModel;
+    final orderId = checkoutInfo!.id;
     try {
-      paymentIntent = await createPaymentIntent(context, '10', 'USD');
+      paymentIntent =
+          await createPaymentIntent(context, checkoutInfo.totalAmount, 'USD');
       //Payment Sheet
       await Stripe.instance
           .initPaymentSheet(
@@ -46,7 +47,7 @@ class StripePayment {
                   // applePay: const PaymentSheetApplePay(merchantCountryCode: '+92',),
                   // googlePay: const PaymentSheetGooglePay(testEnv: true, currencyCode: "US", merchantCountryCode: "+92"),
                   style: ThemeMode.dark,
-                  merchantDisplayName: 'Adnan'))
+                  merchantDisplayName: 'Grenmart'))
           .then((value) {});
 
       ///now finally display payment sheeet
@@ -58,68 +59,111 @@ class StripePayment {
 
   displayPaymentSheet(BuildContext context) async {
     try {
-      await Stripe.instance.presentPaymentSheet().then((value) {
-        showDialog(
-            context: context,
-            builder: (_) => AlertDialog(
-                  content: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Row(
-                        children: const [
-                          Icon(
-                            Icons.check_circle,
-                            color: Colors.green,
-                          ),
-                          Text("Payment Successfull"),
-                        ],
-                      ),
-                    ],
-                  ),
-                ));
+      await Stripe.instance.presentPaymentSheet().then((value) async {
+        await Provider.of<ConfirmPaymentService>(context, listen: false)
+            .confirmPayment(context);
+        // showDialog(
+        //     context: context,
+        //     builder: (_) => AlertDialog(
+        //           content: Column(
+        //             mainAxisSize: MainAxisSize.min,
+        //             children: [
+        //               Row(
+        //                 children: const [
+        //                   Icon(
+        //                     Icons.check_circle,
+        //                     color: Colors.green,
+        //                   ),
+        //                   Text("Payment Successfull"),
+        //                 ],
+        //               ),
+        //             ],
+        //           ),
+        //         ));
         // ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("paid successfully")));
 
-        final checkoutInfo =
-            Provider.of<CheckoutService>(context, listen: false);
-        final orderId = checkoutInfo.checkoutModel.id;
         paymentIntent = null;
-      }).onError((error, stackTrace) {
+      }).onError((error, stackTrace) async {
         print('Error is:--->$error $stackTrace');
+        await showDialog(
+            context: context,
+            builder: (ctx) {
+              return AlertDialog(
+                title: Text('Payment failed'),
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.of(context).pushAndRemoveUntil(
+                        MaterialPageRoute(
+                            builder: (context) => PaymentStatusView(true)),
+                        (Route<dynamic> route) => false),
+                    child: Text(
+                      'Ubderstood',
+                      style: TextStyle(color: cc.primaryColor),
+                    ),
+                  )
+                ],
+              );
+            });
       });
     } on StripeException catch (e) {
       print('Error is:---> $e');
-      showDialog(
+      await showDialog(
           context: context,
-          builder: (_) => const AlertDialog(
-                content: Text("Cancelled "),
-              ));
+          builder: (ctx) {
+            return AlertDialog(
+              title: Text('Payment failed'),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.of(context).pushAndRemoveUntil(
+                      MaterialPageRoute(
+                          builder: (context) => PaymentStatusView(true)),
+                      (Route<dynamic> route) => false),
+                  child: Text(
+                    'Ubderstood',
+                    style: TextStyle(color: cc.primaryColor),
+                  ),
+                )
+              ],
+            );
+          });
     } catch (e) {
       print('$e');
+      await showDialog(
+          context: context,
+          builder: (ctx) {
+            return AlertDialog(
+              title: Text('Payment failed'),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.of(context).pushAndRemoveUntil(
+                      MaterialPageRoute(
+                          builder: (context) => PaymentStatusView(true)),
+                      (Route<dynamic> route) => false),
+                  child: Text(
+                    'Ubderstood',
+                    style: TextStyle(color: cc.primaryColor),
+                  ),
+                )
+              ],
+            );
+          });
     }
   }
 
   //  Future<Map<String, dynamic>>
   createPaymentIntent(
       BuildContext context, String amount, String currency) async {
-    final userData =
-        Provider.of<UserProfileService>(context, listen: false).userProfileData;
-    final cartData = Provider.of<CartDataService>(context, listen: false);
-    final shippingAddress =
-        Provider.of<ShippingAddressesService>(context, listen: false);
-    final shippingZone =
-        Provider.of<ShippingZoneService>(context, listen: false);
-    final cuponData = Provider.of<CuponDiscountService>(context, listen: false);
+    final checkoutInfo =
+        Provider.of<CheckoutService>(context, listen: false).checkoutModel;
+    final orderId = checkoutInfo!.id;
     final selectrdGateaway =
         Provider.of<PaymentGateawayService>(context, listen: false)
             .selectedGateaway!;
     // try {
+    print(checkoutInfo.totalAmount);
     Map<String, dynamic> body = {
-      'amount': (shippingZone.taxMoney(context) +
-              shippingZone.shippingCost +
-              cartData.calculateSubtotal() -
-              cuponData.cuponDiscount)
-          .toInt()
-          .toString(),
+      'amount':
+          (double.parse(checkoutInfo.totalAmount).toInt() * 100).toString(),
       'currency': currency,
       'payment_method_types[]': 'card'
     };

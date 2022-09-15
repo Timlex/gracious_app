@@ -1,115 +1,144 @@
 import 'dart:convert';
-
-import 'package:flutter/material.dart';
-import 'package:flutter_inappwebview/flutter_inappwebview.dart';
-import 'package:http/http.dart' as http;
-import 'package:provider/provider.dart';
 import 'dart:async';
 
-import '../../service/cart_data_service.dart';
-import '../../service/checkout_service.dart';
-import '../../service/cupon_discount_service.dart';
-import '../../service/payment_gateaway_service.dart';
-import '../../service/shipping_addresses_service.dart';
-import '../../service/shipping_zone_service.dart';
-import '../../service/user_profile_service.dart';
+import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 
-class InstamojoPayment extends StatefulWidget {
-  const InstamojoPayment({
+import '../../view/utils/app_bars.dart';
+import '../../view/utils/constant_styles.dart';
+import '../../service/checkout_service.dart';
+import '../../service/confirm_payment_service.dart';
+import '../cart/payment_status.dart';
+import '../home/home_front.dart';
+
+class InstamojoPayment extends StatelessWidget {
+  InstamojoPayment({
     Key? key,
   }) : super(key: key);
+  String? selectedUrl;
+  String? prevUrl;
 
   @override
-  _InstamojoPaymentState createState() => _InstamojoPaymentState();
-}
-
-bool isLoading = true; //this can be declared outside the class
-
-class _InstamojoPaymentState extends State<InstamojoPayment> {
-  late String selectedUrl;
-  double progress = 0;
-
-  @override
-  void initState() {
-    super.initState();
-    createRequest(); //creating the HTTP request
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        leading: InkWell(
-            onTap: () {
-              isLoading = true;
-              Navigator.pop(context);
-            },
-            child: const Icon(
-              Icons.arrow_back,
-              color: Colors.white,
-            )),
-        backgroundColor: Colors.blueGrey,
-        title: const Text("Pay"),
-      ),
-      body: WillPopScope(
-        onWillPop: () {
-          isLoading = true;
-          return Future.value(true);
-        },
-        child: Container(
-          child: Center(
-            child: isLoading
-                ? //check loadind status
-                const CircularProgressIndicator() //if true
-                : InAppWebView(
-                    initialUrlRequest: URLRequest(
-                      url: Uri.tryParse(selectedUrl),
-                    ),
-                    onWebViewCreated: (InAppWebViewController controller) {},
-                    onProgressChanged:
-                        (InAppWebViewController controller, int progress) {
-                      setState(() {
-                        this.progress = progress / 100;
-                      });
+        appBar: AppBars().appBarTitled('', () async {
+          await showDialog(
+              context: context,
+              builder: (ctx) {
+                return AlertDialog(
+                  title: Text('Are you sure?'),
+                  content: Text('Your payment proccess will get terminated.'),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.of(context).pushAndRemoveUntil(
+                          MaterialPageRoute(
+                              builder: (context) => PaymentStatusView(true)),
+                          (Route<dynamic> route) => false),
+                      child: Text(
+                        'Yes',
+                        style: TextStyle(color: cc.primaryColor),
+                      ),
+                    )
+                  ],
+                );
+              });
+        }),
+        body: WillPopScope(
+          onWillPop: () async {
+            await showDialog(
+                context: context,
+                builder: (ctx) {
+                  return AlertDialog(
+                    title: Text('Are you sure?'),
+                    content: Text('Your payment proccess will get terminated.'),
+                    actions: [
+                      TextButton(
+                        onPressed: () => Navigator.of(context)
+                            .pushAndRemoveUntil(
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        PaymentStatusView(true)),
+                                (Route<dynamic> route) => false),
+                        child: Text(
+                          'Yes',
+                          style: TextStyle(color: cc.primaryColor),
+                        ),
+                      )
+                    ],
+                  );
+                });
+            return false;
+          },
+          child: FutureBuilder(
+              future: createRequest(context),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return loadingProgressBar();
+                }
+                if (snapshot.connectionState == ConnectionState.done) {
+                  print(selectedUrl);
+                  return WebView(
+                    initialUrl: selectedUrl as String,
+                    javascriptMode: JavascriptMode.unrestricted,
+                    onPageStarted: (url) async {
+                      print('proccessing...............................');
+                      print(url);
                     },
-                    onUpdateVisitedHistory: (_, Uri? uri, __) {
-                      String url = uri.toString();
-                      // print(uri);
-                      // uri containts newly loaded url
-                      if (mounted) {
-                        if (url.contains('https://www.google.com/')) {
-                          //Take the payment_id parameter of the url.
-                          String? paymentRequestId =
-                              uri?.queryParameters['payment_id'];
-                          // print("value is: " +paymentRequestId);
-                          //calling this method to check payment status
-                          _checkPaymentStatus(paymentRequestId!);
+                    navigationDelegate: (navRequest) async {
+                      print(
+                          'nav req to .......................${navRequest.url}');
+                      if (navRequest.url.contains('xgenious')) {
+                        if (prevUrl!.contains('status')) {
+                          final response = await http.get(Uri.parse(prevUrl!));
+                          print(
+                              '---------------------------------------------------');
+                          print(prevUrl);
+                          print(response.statusCode);
+                          print(response.body.contains('Payment Successful'));
+                          if (response.body.contains('Payment Successful')) {
+                            await Provider.of<ConfirmPaymentService>(context,
+                                    listen: false)
+                                .confirmPayment(context);
+                          }
+                          if (!response.body.contains('Payment Successful')) {
+                            Navigator.of(context).pushAndRemoveUntil(
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        PaymentStatusView(true)),
+                                (Route<dynamic> route) => false);
+                          }
                         }
+                        return NavigationDecision.prevent;
                       }
+                      prevUrl = navRequest.url;
+                      return NavigationDecision.navigate;
                     },
-                  ),
-          ),
-        ),
-      ),
-    );
+                  );
+                }
+                return loadingProgressBar();
+              }),
+        ));
   }
 
-  _checkPaymentStatus(String id) async {
-    // var header = {
-    //       "Accept": "application/json",
-    //       "Content-Type": "application/x-www-form-urlencoded",
-    //       "X-Api-Key": "test_b678a7048c8a9e5f69663c2e4fa",
-    //       "X-Auth-Token": "test_41af76995b230611b2c3b72b8cc"
-    //     };
-    final selectrdGateaway =
-        Provider.of<PaymentGateawayService>(context, listen: false)
-            .selectedGateaway!;
+  _checkPaymentStatus(String id, BuildContext context) async {
     var header = {
       "Accept": "application/json",
       "Content-Type": "application/x-www-form-urlencoded",
-      "X-Api-Key": selectrdGateaway.publicKey as String,
-      "X-Auth-Token": selectrdGateaway.secretKey as String
+      "X-Api-Key": "test_b678a7048c8a9e5f69663c2e4fa",
+      "X-Auth-Token": "test_41af76995b230611b2c3b72b8cc"
     };
+    // final selectrdGateaway =
+    //     Provider.of<PaymentGateawayService>(context, listen: false)
+    //         .selectedGateaway!;
+    // Map<String, String> header = {
+    //   "Accept": "application/json",
+    //   "Content-Type": "application/x-www-form-urlencoded",
+    //   "X-Api-Key": selectrdGateaway.clientId as String,
+    //   "X-Auth-Token": selectrdGateaway.clientSecret as String
+    // };
 
     var response = await http.get(
         Uri.parse("https://test.instamojo.com/api/1.1/payments/$id/"),
@@ -118,74 +147,64 @@ class _InstamojoPaymentState extends State<InstamojoPayment> {
     var realResponse = json.decode(response.body);
     print(realResponse);
     if (realResponse['success'] == true) {
-      if (realResponse["payment"]['status'] == 'Credit') {
-        print('instamojo payment successfull');
-
-        // Provider.of<PlaceOrderService>(context, listen: false)
-        //     .makePaymentSuccess(context);
+      // if (realResponse["payment"]['status'] == 'Credit') {
+      print('instamojo payment successfull');
+      await Provider.of<ConfirmPaymentService>(context, listen: false)
+          .confirmPayment(context);
+      // Provider.of<PlaceOrderService>(context, listen: false)
+      //     .makePaymentSuccess(context);
 
 //payment is successful.
-      } else {
-        print('failed');
-//payment failed or pending.
-      }
+//       } else {
+//         print('failed');
+// //payment failed or pending.
+//       }
     } else {
       print("PAYMENT STATUS FAILED");
+      Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(builder: (context) => PaymentStatusView(true)),
+          (Route<dynamic> route) => false);
     }
   }
 
-  Future createRequest() async {
-    final userData =
-        Provider.of<UserProfileService>(context, listen: false).userProfileData;
-    final cartData = Provider.of<CartDataService>(context, listen: false);
-    final shippingAddress =
-        Provider.of<ShippingAddressesService>(context, listen: false);
-    final shippingZone =
-        Provider.of<ShippingZoneService>(context, listen: false);
-    final cuponData = Provider.of<CuponDiscountService>(context, listen: false);
-    final amount = (shippingZone.taxMoney(context) +
-            shippingZone.shippingCost +
-            cartData.calculateSubtotal() -
-            cuponData.cuponDiscount)
-        .toInt()
-        .toString();
-    final checkoutInfo = Provider.of<CheckoutService>(context, listen: false);
-    final orderId = checkoutInfo.checkoutModel.id;
+  Future createRequest(BuildContext context) async {
+    final checkoutInfo =
+        Provider.of<CheckoutService>(context, listen: false).checkoutModel;
+    final orderId = checkoutInfo!.id;
+    print(checkoutInfo.phone.toString().length);
     Map<String, String> body = {
-      "amount": amount, //amount to be paid
+      "amount": checkoutInfo.totalAmount, //amount to be paid
       "purpose": "Grenmart",
-      "buyer_name": userData.name,
-      "email": userData.email,
+      "buyer_name": 'abc',
+      "email": checkoutInfo.email,
       "allow_repeated_payments": "true",
       "send_email": "true",
-      "phone": '2135632145',
+      "phone": '1236521452',
       "send_sms": "false",
       "redirect_url": "https://www.xgenious.com/",
       //Where to redirect after a successful payment.
       "webhook": "https://www.xgenious.com/",
     };
-//First we have to create a Payment_Request.
-//then we'll take the response of our request.
+
+    var header = {
+      "Accept": "application/json",
+      "Content-Type": "application/x-www-form-urlencoded",
+      "X-Api-Key": "test_b678a7048c8a9e5f69663c2e4fa",
+      "X-Auth-Token": "test_41af76995b230611b2c3b72b8cc"
+    };
+
     var resp = await http.post(
         Uri.parse("https://test.instamojo.com/api/1.1/payment-requests/"),
-        headers: {
-          "Accept": "application/json",
-          "Content-Type": "application/x-www-form-urlencoded",
-          "X-Api-Key": "test_b678a7048c8a9e5f69663c2e4fa",
-          "X-Auth-Token": "test_41af76995b230611b2c3b72b8cc"
-        },
+        headers: header,
         body: body);
-    print(jsonDecode(resp.body));
+    print(resp.statusCode);
     if (jsonDecode(resp.body)['success'] == true) {
 //If request is successful take the longurl.
-      setState(() {
-        isLoading = false; //setting state to false after data loaded
 
-        selectedUrl =
-            json.decode(resp.body)["payment_request"]['longurl'].toString() +
-                "?embed=form";
-      });
-      print(json.decode(resp.body)['message'].toString());
+      selectedUrl =
+          json.decode(resp.body)["payment_request"]['longurl'].toString() +
+              "?embed=form";
+
 //If something is wrong with the data we provided to
 //create the Payment_Request. For Example, the email is in incorrect format, the payment_Request creation will fail.
     }

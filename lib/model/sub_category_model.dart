@@ -1,31 +1,25 @@
-// To parse this JSON data, do
-//
-//     final subCategoryModel = subCategoryModelFromJson(jsonString);
-
 import 'dart:convert';
 
-SubCategoryModel subCategoryModelFromJson(String str) =>
-    SubCategoryModel.fromJson(json.decode(str));
+SubcategoryModel subcategoryModelFromJson(String str) =>
+    SubcategoryModel.fromJson(json.decode(str));
 
-String subCategoryModelToJson(SubCategoryModel data) =>
+String subcategoryModelToJson(SubcategoryModel data) =>
     json.encode(data.toJson());
 
-class SubCategoryModel {
-  SubCategoryModel({
-    required this.subcategories,
+class SubcategoryModel {
+  SubcategoryModel({
+    this.subcategory,
   });
 
-  List<Subcategory> subcategories;
+  Subcategory? subcategory;
 
-  factory SubCategoryModel.fromJson(Map<String, dynamic> json) =>
-      SubCategoryModel(
-        subcategories: List<Subcategory>.from(
-            json["subcategories"].map((x) => Subcategory.fromJson(x))),
+  factory SubcategoryModel.fromJson(Map<String, dynamic> json) =>
+      SubcategoryModel(
+        subcategory: Subcategory.fromJson(json["subcategory"]),
       );
 
   Map<String, dynamic> toJson() => {
-        "subcategories":
-            List<dynamic>.from(subcategories.map((x) => x.toJson())),
+        "subcategory": subcategory!.toJson(),
       };
 }
 

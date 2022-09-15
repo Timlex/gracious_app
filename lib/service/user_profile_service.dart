@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:gren_mart/view/utils/constant_name.dart';
 import '../../model/user_profile_model.dart';
 import '../../service/common_service.dart';
 import 'package:http/http.dart' as http;
@@ -8,18 +9,16 @@ import 'package:http/http.dart' as http;
 class UserProfileService with ChangeNotifier {
   late UserDetails userProfileData;
 
-  Future<UserDetails?> fetchProfileService(var token) async {
+  Future<UserDetails?> fetchProfileService() async {
     print('fetching profile data');
-    print(token);
 
     final url = Uri.parse('$baseApiUrl/user/profile');
-    print(token);
 
     var header = {
       //if header type is application/json then the data should be in jsonEncode method
       "Accept": "application/json",
       "Content-Type": "application/json",
-      "Authorization": "Bearer $token",
+      "Authorization": "Bearer $globalUserToken",
     };
 
     // try {

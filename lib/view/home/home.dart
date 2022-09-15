@@ -1,11 +1,18 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:card_swiper/card_swiper.dart';
 import 'package:flutter/material.dart';
-import 'package:gren_mart/view/home/all_camp_product_from_link.dart';
+import 'package:gren_mart/service/categories_data_service.dart';
+import 'package:gren_mart/view/home/categories.dart';
+import 'package:gren_mart/view/home/category_page.dart';
+import 'package:gren_mart/view/home/category_product_page.dart';
+import 'package:gren_mart/view/home/section_title.dart';
+
+import '../../service/language_service.dart';
 import '../../service/navigation_bar_helper_service.dart';
 import '../../service/poster_campaign_slider_service.dart';
 import '../../service/product_card_data_service.dart';
 import '../../service/search_result_data_service.dart';
-import '../../view/auth/custom_text_field.dart';
+import 'all_products.dart';
 import 'campaign_card.dart';
 import '../../view/home/product_card.dart';
 import '../../view/utils/constant_name.dart';
@@ -21,6 +28,7 @@ class Home extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    initiateDeviceSize(context);
     print(screenWidth);
     Provider.of<PosterCampaignSliderService>(context, listen: false)
         .fetchPosters();
@@ -37,61 +45,76 @@ class Home extends StatelessWidget {
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: CustomTextField(
-              'Search your need here',
-              leadingImage: 'assets/images/icons/search_normal.png',
-              onFieldSubmitted: (value) {
-                Provider.of<SearchResultDataService>(context, listen: false)
-                    .resetSerch();
-                Provider.of<SearchResultDataService>(context, listen: false)
-                    .fetchProductsBy(pageNo: '1');
-                Provider.of<NavigationBarHelperService>(context, listen: false)
-                    .setNavigationIndex(1);
-              },
-              onChanged: (value) {
-                Provider.of<SearchResultDataService>(context, listen: false)
-                    .setSearchText(value);
-              },
-            ),
-
-            // child: GestureDetector(
-            //   onTap: () {
-            //     Navigator.of(context).pushNamed(SearchView.routeName);
-            //   },
-            //   child: Container(
-            //     height: 44,
-            //     width: double.infinity,
-            //     margin: const EdgeInsets.symmetric(vertical: 7),
-            //     alignment: Alignment.center,
-            //     decoration: BoxDecoration(
-            //       borderRadius: BorderRadius.circular(10),
-            //       border: Border.all(
-            //         color: cc.greyBorder,
-            //         width: 1,
-            //       ),
-            //     ),
-            //     child: Row(
-            //       mainAxisAlignment: MainAxisAlignment.start,
-            //       children: [
-            //         const SizedBox(
-            //           width: 10,
-            //         ),
-            //         SizedBox(
-            //           height: 25,
-            //           child:
-            //               Image.asset('assets/images/icons/search_normal.png'),
-            //         ),
-            //         const SizedBox(
-            //           width: 10,
-            //         ),
-            //         Text(
-            //           'Search your needs here',
-            //           style: TextStyle(color: cc.greyHint),
-            //         )
-            //       ],
-            //     ),
-            //   ),
-            // ),
+            child: Consumer<SearchResultDataService>(
+                builder: (context, srService, child) {
+              return TextField(
+                style: TextStyle(color: cc.greyTextFieldLebel, fontSize: 13),
+                decoration: InputDecoration(
+                  contentPadding:
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 17),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    borderSide: BorderSide(color: cc.primaryColor, width: 2),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    borderSide: BorderSide(color: cc.greyBorder, width: 1),
+                  ),
+                  focusedErrorBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    borderSide: BorderSide(color: cc.orange, width: 1),
+                  ),
+                  errorBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    borderSide: BorderSide(color: cc.orange, width: 1),
+                  ),
+                  hintText: 'Search your need here',
+                  hintStyle:
+                      TextStyle(color: cc.greyTextFieldLebel, fontSize: 13),
+                  prefixIcon: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      SizedBox(
+                          height: 25,
+                          child: Image.asset(
+                            'assets/images/icons/search_normal.png',
+                          )),
+                    ],
+                  ),
+                  suffixIcon: GestureDetector(
+                    onTap: (() {
+                      Provider.of<SearchResultDataService>(context,
+                              listen: false)
+                          .resetSerch();
+                      Provider.of<SearchResultDataService>(context,
+                              listen: false)
+                          .fetchProductsBy(pageNo: '1');
+                      Provider.of<NavigationBarHelperService>(context,
+                              listen: false)
+                          .setNavigationIndex(1);
+                    }),
+                    child: Icon(
+                      Icons.arrow_forward_ios,
+                      color: cc.blackColor,
+                      size: 17,
+                    ),
+                  ),
+                ),
+                onSubmitted: (_) {
+                  Provider.of<SearchResultDataService>(context, listen: false)
+                      .resetSerch();
+                  Provider.of<SearchResultDataService>(context, listen: false)
+                      .fetchProductsBy(pageNo: '1');
+                  Provider.of<NavigationBarHelperService>(context,
+                          listen: false)
+                      .setNavigationIndex(1);
+                },
+                onChanged: (value) {
+                  Provider.of<SearchResultDataService>(context, listen: false)
+                      .setSearchText(value);
+                },
+              );
+            }),
           ),
           const SizedBox(height: 20),
           Consumer<PosterCampaignSliderService>(
@@ -99,7 +122,7 @@ class Home extends StatelessWidget {
             return posterData.posterDataList.isEmpty
                 ? const SizedBox()
                 : SizedBox(
-                    height: screenHight / 4.8,
+                    height: 175,
                     width: double.infinity,
                     child: Swiper(
                       itemBuilder: (BuildContext context, int index) {
@@ -123,26 +146,37 @@ class Home extends StatelessWidget {
                   );
           }),
           const SizedBox(height: 10),
-          if (Provider.of<ProductCardDataService>(context)
-              .featuredCardProductsList
-              .isNotEmpty)
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: seeAllTitle(
-                  context,
-                  'Fetured products',
-                  Provider.of<ProductCardDataService>(context)
-                      .featuredCardProductsList),
-            ),
+          Consumer<ProductCardDataService>(
+              builder: (context, pcService, child) {
+            return pcService.featuredCardProductsList.isNotEmpty
+                ? Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child:
+                        seeAllTitle(context, 'Fetured products', onPressed: () {
+                      Provider.of<SearchResultDataService>(context,
+                              listen: false)
+                          .resetSerch();
+                      Provider.of<SearchResultDataService>(context,
+                              listen: false)
+                          .fetchProductsBy(pageNo: '1');
+                      Navigator.of(context).pushNamed(AllProducts.routeName,
+                          arguments: [pcService.featuredCardProductsList]);
+                    }),
+                  )
+                : SizedBox();
+          }),
           const SizedBox(height: 10),
           Consumer<ProductCardDataService>(builder: (context, products, child) {
             return products.featuredCardProductsList.isNotEmpty
                 ? SizedBox(
-                    height: screenHight / 3.4 < 221 ? 195 : screenHight / 3.4,
+                    height: screenHight / 3.4 < 221 ? 195 : screenHight / 3.6,
                     child: ListView.builder(
                       physics: const BouncingScrollPhysics(
                           parent: AlwaysScrollableScrollPhysics()),
-                      padding: const EdgeInsets.only(left: 20),
+                      padding: EdgeInsets.only(
+                        left: LanguageService().rtl ? 0 : 20.0,
+                        right: LanguageService().rtl ? 20 : 0,
+                      ),
                       shrinkWrap: true,
                       scrollDirection: Axis.horizontal,
                       itemCount: products.featuredCardProductsList.length,
@@ -160,38 +194,154 @@ class Home extends StatelessWidget {
                     ))
                 : const SizedBox();
           }),
-          // const SizedBox(height: 20),
-          if (Provider.of<ProductCardDataService>(context)
-              .featuredCardProductsList
-              .isNotEmpty)
-            SingleChildScrollView(
-              padding: EdgeInsets.only(left: 20),
-              physics: const BouncingScrollPhysics(
-                  parent: AlwaysScrollableScrollPhysics()),
-              scrollDirection: Axis.horizontal,
-              child: Consumer<PosterCampaignSliderService>(
-                  builder: (context, pcData, child) {
-                return pcData.campaignDataList.isEmpty
-                    ? const SizedBox()
-                    : Row(
-                        children: pcData.campaignDataList.map((e) {
-                          print(e.title);
-                          return CampaignCard(
-                            e.title,
-                            e.buttonText,
-                            e.image,
-                            e.campaign != null || e.category != null,
-                            camp: e.campaign,
-                            cat: e.category,
-                          );
-                        }).toList(),
-                      );
+          Consumer<ProductCardDataService>(
+              builder: (context, pcService, child) {
+            return pcService.featuredCardProductsList.isNotEmpty
+                ? Consumer<CategoriesDataService>(
+                    builder: (context, catService, child) {
+                      return catService.categorydataList.isNotEmpty
+                          ? Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 15),
+                              child: seeAllTitle(context, 'Categories',
+                                  onPressed: () {
+                                Navigator.of(context).pushNamed(
+                                    CategoryPage.routeName,
+                                    arguments: [
+                                      catService.categorydataList,
+                                      'Categories'
+                                    ]);
+                              }),
+                            )
+                          : SizedBox();
+                    },
+                  )
+                : SizedBox();
+          }),
+          SizedBox(height: 10),
+          FutureBuilder(
+              future: Provider.of<CategoriesDataService>(context, listen: false)
+                  .fetchCategories(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return SizedBox();
+                }
+                return Consumer<CategoriesDataService>(
+                  builder: (context, catService, child) {
+                    return SizedBox(
+                      height: 40,
+                      child: ListView.builder(
+                          padding: EdgeInsets.only(
+                            left: LanguageService().rtl ? 0 : 20.0,
+                            right: LanguageService().rtl ? 20 : 0,
+                          ),
+                          scrollDirection: Axis.horizontal,
+                          itemCount: catService.categorydataList.length,
+                          itemBuilder: (context, index) {
+                            final element = catService.categorydataList[index];
+                            return GestureDetector(
+                              onTap: () {
+                                Provider.of<SearchResultDataService>(context,
+                                        listen: false)
+                                    .setCategoryId(element.id.toString(),
+                                        notListen: true);
+                                Navigator.of(context).pushNamed(
+                                    CategoryProductPage.routeName,
+                                    arguments: [
+                                      element.id.toString(),
+                                      element.title
+                                    ]);
+                              },
+                              child: Container(
+                                margin: EdgeInsets.only(
+                                  left: LanguageService().rtl ? 10 : 0,
+                                  right: LanguageService().rtl ? 0 : 10,
+                                ),
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 10, vertical: 5),
+                                constraints: BoxConstraints(maxWidth: 150),
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10),
+                                    border: Border.all(
+                                      color: cc.greyBorder,
+                                      width: 1,
+                                    )),
+                                child: Row(
+                                  children: [
+                                    ClipRRect(
+                                      borderRadius: BorderRadius.circular(50),
+                                      child: CachedNetworkImage(
+                                        height: 37,
+                                        width: 37,
+                                        imageUrl: element.imageUrl ?? '',
+                                        errorWidget: (context, url, error) =>
+                                            const Icon(Icons.category),
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
+
+                                    const SizedBox(
+                                      width: 10,
+                                    ),
+                                    //Title
+                                    Flexible(
+                                      child: Text(
+                                        element.title,
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: TextStyle(
+                                          color: cc.greyParagraph,
+                                          fontSize: 14,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            );
+                          }),
+                    );
+                  },
+                );
               }),
-            ),
+          const SizedBox(height: 25),
+          Consumer<ProductCardDataService>(
+              builder: (context, pcService, child) {
+            return pcService.featuredCardProductsList.isNotEmpty ||
+                    pcService.featureNoData
+                ? SingleChildScrollView(
+                    padding: EdgeInsets.only(
+                        left: LanguageService().rtl ? 0 : 20,
+                        right: LanguageService().rtl ? 20 : 0),
+                    physics: const BouncingScrollPhysics(
+                        parent: AlwaysScrollableScrollPhysics()),
+                    scrollDirection: Axis.horizontal,
+                    child: Consumer<PosterCampaignSliderService>(
+                        builder: (context, pcData, child) {
+                      return pcData.campaignDataList.isEmpty
+                          ? const SizedBox()
+                          : Row(
+                              children: pcData.campaignDataList.map((e) {
+                                print(e.title);
+                                return CampaignCard(
+                                  e.title,
+                                  e.buttonText,
+                                  e.image,
+                                  e.campaign != null || e.category != null,
+                                  camp: e.campaign,
+                                  cat: e.category,
+                                );
+                              }).toList(),
+                            );
+                    }),
+                  )
+                : SizedBox();
+          }),
           const SizedBox(height: 20),
           Consumer<ProductCardDataService>(builder: (context, campInfo, child) {
             return (campInfo.campaignCardProductList.isNotEmpty &&
-                    campInfo.featuredCardProductsList.isNotEmpty)
+                    (campInfo.featureNoData ||
+                        campInfo.featuredCardProductsList.isNotEmpty))
                 ? Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20),
                     child: campInfo.campaignInfo != null
@@ -232,8 +382,9 @@ class Home extends StatelessWidget {
             height: screenHight / 3.4 < 221 ? 195 : screenHight / 3.4,
             child: Consumer<ProductCardDataService>(
                 builder: (context, products, child) {
-              return (products.campaignCardProductList.isNotEmpty &&
-                      products.featuredCardProductsList.isNotEmpty)
+              return ((products.campaignCardProductList.isNotEmpty) &&
+                      (products.featureNoData ||
+                          products.featuredCardProductsList.isNotEmpty))
                   ? ListView.builder(
                       physics: const BouncingScrollPhysics(
                           parent: AlwaysScrollableScrollPhysics()),
@@ -252,7 +403,9 @@ class Home extends StatelessWidget {
                         products.campaignCardProductList[index].isCartAble,
                       ),
                     )
-                  : loadingProgressBar();
+                  : (products.campaignNoData
+                      ? SizedBox()
+                      : loadingProgressBar());
             }),
           ),
           const SizedBox(height: 20),

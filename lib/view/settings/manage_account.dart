@@ -30,11 +30,12 @@ class ManageAccount extends StatelessWidget {
   final _userNameFN = FocusNode();
   final _emailFN = FocusNode();
 
-  Future<void> imageSelector(BuildContext context,
-      {ImageSource imageSource = ImageSource.camera}) async {
+  Future<void> imageSelector(
+    BuildContext context,
+  ) async {
     try {
       final pickedImage =
-          await ImagePicker.platform.pickImage(source: imageSource);
+          await ImagePicker.platform.pickImage(source: ImageSource.gallery);
       Provider.of<ManageAccountService>(context, listen: false)
           .setPickedImage(File(pickedImage!.path));
     } catch (error) {
@@ -48,8 +49,7 @@ class ManageAccount extends StatelessWidget {
       return;
     }
     maData.setIsLoading(true);
-    final _token =
-        Provider.of<SignInSignUpService>(context, listen: false).token;
+
     maData.updateProfile().then((value) async {
       if (value != null) {
         snackBar(context, value);
@@ -57,7 +57,7 @@ class ManageAccount extends StatelessWidget {
         return;
       }
       await Provider.of<UserProfileService>(context, listen: false)
-          .fetchProfileService(_token);
+          .fetchProfileService();
       maData.setIsLoading(false);
       Navigator.of(context).pop();
     });
@@ -72,7 +72,7 @@ class ManageAccount extends StatelessWidget {
       userData.email,
       userData.phone ?? '',
       userData.country == null ? '1' : userData.country!.id.toString(),
-      userData.state == null ? '1' : userData.state!.id.toString(),
+      userData.state == null ? '143' : userData.state!.id.toString(),
       userData.city,
       userData.zipcode,
       userData.address,
@@ -80,6 +80,7 @@ class ManageAccount extends StatelessWidget {
     );
     return Scaffold(
       appBar: AppBars().appBarTitled('Manage Account', () {
+        initiateDeviceSize(context);
         Provider.of<ManageAccountService>(context, listen: false)
             .clearPickedImage();
         Navigator.of(context).pop();
@@ -98,6 +99,9 @@ class ManageAccount extends StatelessWidget {
                 child: Stack(alignment: Alignment.center, children: [
                   GestureDetector(
                     onTap: () {
+                      if (maData.pickeImage == null && maData.imgUrl == null) {
+                        return;
+                      }
                       Navigator.of(context).push(MaterialPageRoute<void>(
                         builder: (BuildContext context) => ImageView(
                           maData.pickeImage != null
@@ -107,7 +111,7 @@ class ManageAccount extends StatelessWidget {
                       ));
                     },
                     child: ClipRRect(
-                      borderRadius: BorderRadius.circular(150),
+                      borderRadius: BorderRadius.circular(screenHight / 8),
                       child: maData.pickeImage == null
                           ? CachedNetworkImage(
                               height: screenHight / 5.5,
@@ -115,11 +119,35 @@ class ManageAccount extends StatelessWidget {
                               fit: BoxFit.cover,
                               alignment: Alignment.topCenter,
                               imageUrl: maData.imgUrl ?? '',
-                              placeholder: (context, url) => Image.asset(
-                                'assets/images/skelleton.png',
+                              placeholder: (context, url) => Container(
+                                color: cc.primaryColor,
+                                alignment: Alignment.center,
+                                child: Text(
+                                  Provider.of<UserProfileService>(context)
+                                      .userProfileData
+                                      .name
+                                      .substring(0, 2)
+                                      .toUpperCase(),
+                                  style: TextStyle(
+                                      color: cc.pureWhite,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 35),
+                                ),
                               ),
-                              errorWidget: (context, url, error) => Image.asset(
-                                'assets/images/skelleton.png',
+                              errorWidget: (context, url, error) => Container(
+                                color: cc.primaryColor,
+                                alignment: Alignment.center,
+                                child: Text(
+                                  Provider.of<UserProfileService>(context)
+                                      .userProfileData
+                                      .name
+                                      .substring(0, 2)
+                                      .toUpperCase(),
+                                  style: TextStyle(
+                                      color: cc.pureWhite,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 45),
+                                ),
                               ),
                             )
                           : Image.file(
@@ -130,85 +158,25 @@ class ManageAccount extends StatelessWidget {
                             ),
                     ),
                   ),
-                  // CircleAvatar(
-                  //   backgroundColor: cc.greyYellow,
-                  //   radius: 70,
-                  //   backgroundImage:  (uData.userProfileData.profileImageUrl != null
-                  //           ? NetworkImage(
-                  //               uData.userProfileData.profileImageUrl,
-                  //             )
-                  //           : const AssetImage('assets/images/setting_dp.png')
-                  //               as ImageProvider<Object>)
-                  //       ,
-                  //     _pickedImage!,
-                  //     fit: BoxFit.cover,
-                  //   ),
-                  // ),
                   Positioned(
                       bottom: 0,
                       right: 0,
                       child: GestureDetector(
-                        onTap: () {
-                          showDialog(
-                              context: context,
-                              builder: (context) => AlertDialog(
-                                  title: const Text('Select an option.'),
-                                  content: SingleChildScrollView(
-                                    child: Column(
-                                      children: [
-                                        GestureDetector(
-                                          onTap: (() => imageSelector(context)
-                                              .then((value) =>
-                                                  Navigator.of(context).pop())),
-                                          child: SizedBox(
-                                            // width: screenWidth / 6,
-                                            child: Row(children: [
-                                              SvgPicture.asset(
-                                                'assets/images/icons/camera.svg',
-                                                height: 45,
-                                              ),
-                                              const SizedBox(width: 5),
-                                              Text(
-                                                'Cameta',
-                                                style: TextStyle(
-                                                    color:
-                                                        cc.greyTextFieldLebel),
-                                              )
-                                            ]),
-                                          ),
-                                        ),
-                                        const SizedBox(height: 10),
-                                        GestureDetector(
-                                          onTap: (() => imageSelector(context,
-                                                  imageSource:
-                                                      ImageSource.gallery)
-                                              .then((value) =>
-                                                  Navigator.of(context).pop())),
-                                          child: SizedBox(
-                                            // width: screenWidth / 6,
-                                            child: Row(children: [
-                                              Icon(
-                                                Icons.image_outlined,
-                                                size: 45,
-                                                color: cc.primaryColor,
-                                              ),
-                                              const SizedBox(width: 5),
-                                              Text(
-                                                'Gallery',
-                                                style: TextStyle(
-                                                    color:
-                                                        cc.greyTextFieldLebel),
-                                              )
-                                            ]),
-                                          ),
-                                        )
-                                      ],
-                                    ),
-                                  )));
+                        onTap: () async {
+                          await imageSelector(context);
                         },
-                        child: SvgPicture.asset(
-                          'assets/images/icons/camera.svg',
-                          height: 45,
+                        child: Container(
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(50),
+                              color: cc.primaryColor,
+                              border:
+                                  Border.all(color: cc.pureWhite, width: 3)),
+                          child: CircleAvatar(
+                              backgroundColor: cc.primaryColor,
+                              child: Icon(
+                                Icons.image,
+                                color: cc.pureWhite,
+                              )),
                         ),
                       ))
                 ]),
@@ -244,30 +212,7 @@ class ManageAccount extends StatelessWidget {
                         },
                         // imagePath: 'assets/images/icons/mail.png',
                       ),
-                      // textFieldTitle('User name'),
-                      // // const SizedBox(height: 8),
-                      // CustomTextField(
-                      //   'Enter user name',
-                      //   initialValue: uData.userProfileData.username,
-                      //   focusNode: _userNameFN,
-                      //   validator: (usernameText) {
-                      //     if (usernameText!.isEmpty) {
-                      //       return 'Enter your username';
-                      //     }
-                      //     if (usernameText.length < 5) {
-                      //       return 'Enter at least 5 charecters';
-                      //     }
-                      //     return null;
-                      //   },
-                      //   onFieldSubmitted: (_) {
-                      //     FocusScope.of(context).requestFocus(_emailFN);
-                      //   },
-                      //   onChanged: (value) {
-                      //     Provider.of<AuthTextControllerService>(context,
-                      //             listen: false)
-                      //         .setUserName(value);
-                      //   },
-                      // ),
+
                       textFieldTitle('Email'),
                       // const SizedBox(height: 8),
                       CustomTextField(
@@ -359,13 +304,6 @@ class ManageAccount extends StatelessWidget {
                       textFieldTitle('State'),
                       Consumer<StateDropdownService>(
                           builder: ((context, sModel, child) =>
-                              // sModel.stateDropdownList.isEmpty
-                              //     ? SizedBox(
-                              //         child: Center(
-                              //             child: CircularProgressIndicator(
-                              //         color: cc.greyHint,
-                              //       )))
-                              //     :
                               (sModel.isLoading
                                   ? SizedBox(
                                       height: 10,
@@ -391,15 +329,15 @@ class ManageAccount extends StatelessWidget {
                       CustomTextField(
                         'Enter your city',
                         initialValue: maData.city,
-                        // validator: (cityText) {
-                        //   if (cityText!.isEmpty) {
-                        //     return 'Enter your address';
-                        //   }
-                        //   if (cityText.length <= 5) {
-                        //     return 'Enter a valid address';
-                        //   }
-                        //   return null;
-                        // },
+                        validator: (cityText) {
+                          if (cityText!.isEmpty) {
+                            return 'Enter your address';
+                          }
+                          if (cityText.length <= 2) {
+                            return 'Enter a valid address';
+                          }
+                          return null;
+                        },
                         onChanged: (value) {
                           maData.setCity(value);
                         },
@@ -411,17 +349,15 @@ class ManageAccount extends StatelessWidget {
                         'Enter zip code',
                         initialValue: maData.zipCode,
                         keyboardType: TextInputType.number,
-                        // validator: (zipCode) {
-                        //   return null;
-
-                        //   // if (cityText!.isEmpty) {
-                        //   //   return 'Enter your address';
-                        //   // }
-                        //   // if (cityText.length <= 5) {
-                        //   //   return 'Enter a valid address';
-                        //   // }
-                        //   // return null;
-                        // },
+                        validator: (zipCode) {
+                          if (zipCode!.isEmpty) {
+                            return 'Enter your address';
+                          }
+                          if (zipCode.length <= 3) {
+                            return 'Enter a valid address';
+                          }
+                          return null;
+                        },
                         onChanged: (value) {
                           maData.setZipCode(value);
                         },

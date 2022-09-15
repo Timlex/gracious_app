@@ -1,14 +1,15 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:gren_mart/view/details/product_details.dart';
-import 'package:gren_mart/view/utils/text_themes.dart';
-import '../../service/common_service.dart';
-import '../../view/utils/constant_name.dart';
+import 'package:gren_mart/service/language_service.dart';
 import 'package:provider/provider.dart';
 
-import '../../service/cart_data_service.dart';
 import '../utils/constant_styles.dart';
+import '../../view/details/product_details.dart';
+import '../../view/utils/text_themes.dart';
+import '../../view/utils/constant_name.dart';
+import '../../service/cart_data_service.dart';
 
 class CartTile extends StatelessWidget {
   final int id;
@@ -55,7 +56,8 @@ class CartTile extends StatelessWidget {
         ),
       ),
       onDismissed: (direction) {
-        snackBar(context, 'Item removed from cart.');
+        snackBar(context, 'Item removed from cart.',
+            backgroundColor: cc.orange);
         carts.deleteCartItem(id, inventorySet: inventorySet);
       },
       key: Key(id.toString()),
@@ -82,11 +84,10 @@ class CartTile extends StatelessWidget {
                     child: CachedNetworkImage(
                       fit: BoxFit.cover,
                       imageUrl: image,
-                      placeholder: (context, url) => Image.asset(
-                        'assets/images/skelleton.png',
-                      ),
+                      placeholder: (context, url) =>
+                          SvgPicture.asset('assets/images/image_empty.svg'),
                       errorWidget: (context, url, error) =>
-                          const Icon(Icons.error),
+                          SvgPicture.asset('assets/images/image_empty.svg'),
                     ),
                   )),
               title: Row(
@@ -177,14 +178,21 @@ class CartTile extends StatelessWidget {
                     }),
                   ),
                   GestureDetector(
-                    onTap: (() {
-                      snackBar(context, 'Item removed from cart.');
-                      carts.deleteCartItem(id, inventorySet: inventorySet);
+                    onTap: (() async {
+                      bool deleteItem = false;
+
+                      await confirmDialouge(context,
+                          onPressed: () => deleteItem = true);
+                      if (deleteItem) {
+                        snackBar(context, 'Item removed from cart.',
+                            backgroundColor: cc.orange);
+                        carts.deleteCartItem(id, inventorySet: inventorySet);
+                      }
                     }),
                     child: Padding(
                       padding: EdgeInsets.only(
-                        left: rtl ? 0 : 7,
-                        right: rtl ? 7 : 0,
+                        left: LanguageService().rtl ? 0 : 7,
+                        right: LanguageService().rtl ? 7 : 0,
                       ),
                       child: SvgPicture.asset(
                         'assets/images/icons/trash.svg',
@@ -203,5 +211,34 @@ class CartTile extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Future confirmDialouge(BuildContext context,
+      {required void Function() onPressed}) async {
+    await showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+              title: const Text('Are you sure?'),
+              content: const Text('This Item will be Deleted.'),
+              actions: [
+                FlatButton(
+                    onPressed: (() {
+                      Navigator.pop(context);
+                    }),
+                    child: Text(
+                      'No',
+                      style: TextStyle(color: cc.primaryColor),
+                    )),
+                FlatButton(
+                    onPressed: () {
+                      onPressed();
+                      Navigator.of(context).pop();
+                    },
+                    child: Text(
+                      'Yes',
+                      style: TextStyle(color: cc.pink),
+                    ))
+              ],
+            ));
   }
 }

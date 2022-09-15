@@ -71,14 +71,6 @@ class _CustomTextFieldState extends State<CustomTextField> {
 
         hintStyle:
             TextStyle(color: ConstantColors().greyTextFieldLebel, fontSize: 13),
-        // label: Padding(
-        //   padding: EdgeInsets.only(left: widget.leadingImage == null ? 5 : 0),
-        //   child: Text(
-        //     widget.levelText,
-        //     style: TextStyle(
-        //         color: ConstantColors().greyTextFieldLebel, fontSize: 13),
-        //   ),
-        // ),
 
         prefixIcon: widget.leadingImage != null
             ? Column(

@@ -10,7 +10,7 @@ class OrderTile extends StatelessWidget {
   final double totalAmount;
   final String trackingCode;
   final DateTime orderedDate;
-  final Status? delivered;
+  final String? delivered;
   OrderTile(
     this.totalAmount,
     this.trackingCode,
@@ -22,6 +22,7 @@ class OrderTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    initiateDeviceSize(context);
     return SizedBox(
       height: screenHight / 10 < 82 ? 82 : screenHight / 10,
       child: ListTile(
@@ -31,7 +32,10 @@ class OrderTile extends StatelessWidget {
         visualDensity: const VisualDensity(vertical: -3),
         onTap: () {
           Navigator.of(context).push(MaterialPageRoute<void>(
-            builder: (BuildContext context) => OrderDetails(trackingCode),
+            builder: (BuildContext context) => OrderDetails(
+              trackingCode,
+              goHome: false,
+            ),
           ));
         },
         title: Text(
@@ -64,16 +68,15 @@ class OrderTile extends StatelessWidget {
                     const EdgeInsets.symmetric(horizontal: 10, vertical: 3),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
-                  color: delivered == Status.COMPLETE
-                      ? cc.primaryColor
-                      : cc.orange,
+                  color: delivered == 'complete' ? cc.primaryColor : cc.orange,
                 ),
                 child: FittedBox(
                   child: Text(
                     delivered
                         .toString()
                         .replaceAll('Status.', ' ')
-                        .replaceAll('_', ' '),
+                        .replaceAll('_', ' ')
+                        .capitalize(),
                     style: TextStyle(color: cc.pureWhite),
                     textAlign: TextAlign.center,
                   ),

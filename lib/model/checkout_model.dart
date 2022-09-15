@@ -19,7 +19,7 @@ class CheckoutModel {
     this.city,
     this.state,
     this.zipcode,
-    this.phone,
+    required this.phone,
     required this.shippingAddressId,
     this.selectedShippingOption,
     this.coupon,
@@ -46,7 +46,7 @@ class CheckoutModel {
   String? city;
   String? state;
   String? zipcode;
-  String? phone;
+  String phone;
   String shippingAddressId;
   int? selectedShippingOption;
   String? coupon;

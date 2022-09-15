@@ -9,12 +9,27 @@ import 'package:http/http.dart' as http;
 class CategoriesDataService with ChangeNotifier {
   List<Category> categorydataList = [];
   String selectedCategorieId = '';
-  List<Subcategory> subCategorydataList = [];
+  Subcategory? subCategorydataList;
   String selectedSubCategorieId = '';
+  bool noSubcategory = false;
+  bool loading = false;
+  bool hasError = false;
+  double minPrice = 0;
+  double maxPrice = 0;
 
-  setSelectedCategory(value) {
+  setSelectedCategory(value) async {
     selectedCategorieId = value;
+    subCategorydataList = null;
+    loading = true;
+    noSubcategory = false;
     notifyListeners();
+    if (value != '') {
+      fetchSubCategories().onError((error, stackTrace) {
+        loading = false;
+        noSubcategory = true;
+        notifyListeners();
+      });
+    }
   }
 
   setSelectedSubCategory(value) {
@@ -26,52 +41,66 @@ class CategoriesDataService with ChangeNotifier {
     if (categorydataList.isNotEmpty) {
       return;
     }
-
+    fetchPriceRange();
     final url = Uri.parse('$baseApiUrl/category');
 
-    try {
-      final response = await http.get(
-        url,
-      );
-      if (response.statusCode == 200) {
-        final data = CategoryModel.fromJson(jsonDecode(response.body));
+    final response = await http.get(
+      url,
+    );
+    if (response.statusCode == 200) {
+      final data = CategoryModel.fromJson(jsonDecode(response.body));
 
-        categorydataList = data.categories;
+      categorydataList = data.categories;
 
-        notifyListeners();
-      } else {
-        // print('something went wrong');
-      }
-    } catch (error) {
-      // print(error);
-
-      rethrow;
+      notifyListeners();
+    } else {
+      throw '';
     }
   }
 
   Future fetchSubCategories() async {
-    if (subCategorydataList.isNotEmpty) {
+    print('here we are');
+    if (subCategorydataList != null) {
       return;
     }
-    final url = Uri.parse('$baseApiUrl/subcategory');
+    print('fetching sub category');
+    final url = Uri.parse('$baseApiUrl/subcategory/$selectedCategorieId');
 
-    try {
-      final response = await http.get(
-        url,
-      );
-      if (response.statusCode == 200) {
-        final data = SubCategoryModel.fromJson(jsonDecode(response.body));
+    final response = await http.get(
+      url,
+    );
+    if (response.statusCode == 200) {
+      final data = SubcategoryModel.fromJson(jsonDecode(response.body));
 
-        subCategorydataList = data.subcategories;
+      subCategorydataList = data.subcategory;
+      print(subCategorydataList);
+      noSubcategory = subCategorydataList == null;
+      loading = false;
+      notifyListeners();
+      return;
+    }
+    noSubcategory = true;
+    loading = false;
+    notifyListeners();
+  }
 
-        notifyListeners();
-      } else {
-        // print('something went wrong');
-      }
-    } catch (error) {
-      // print(error);
+  Future fetchPriceRange() async {
+    final url = Uri.parse('$baseApiUrl/product/price-range');
 
-      rethrow;
+    final response = await http.get(
+      url,
+    );
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      minPrice = data['min_price'].toDouble();
+      maxPrice = data['max_price'].toDouble();
+      print(minPrice);
+      print(maxPrice);
+      categorydataList = data.categories;
+
+      notifyListeners();
+    } else {
+      throw '';
     }
   }
 }

@@ -1,39 +1,31 @@
-import 'dart:io';
-
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:gren_mart/service/checkout_service.dart';
-import 'package:gren_mart/service/common_service.dart';
-import 'package:gren_mart/service/menual_payment_service.dart';
-import 'package:gren_mart/service/user_profile_service.dart';
-import 'package:gren_mart/view/payment/billplz_payment.dart';
-import 'package:gren_mart/view/payment/cash_free_payment.dart';
-import 'package:gren_mart/view/payment/cinetpay_payment.dart';
-import 'package:gren_mart/view/payment/flutter_wave_payment.dart';
-import 'package:gren_mart/view/payment/instamojo_payment.dart';
-import 'package:gren_mart/view/payment/mercado_pago_payment.dart';
-import 'package:gren_mart/view/payment/mid_trans_payment.dart';
-import 'package:gren_mart/view/payment/mollie_payment.dart';
-import 'package:gren_mart/view/payment/payfast_payment.dart';
-import 'package:gren_mart/view/payment/paystack_payment.dart';
-import 'package:gren_mart/view/payment/paytabs_payment.dart';
-import 'package:gren_mart/view/payment/paytm_payment.dart';
-import 'package:gren_mart/view/payment/razorpay_payment.dart';
-import 'package:gren_mart/view/payment/squareup_payment.dart';
-import 'package:gren_mart/view/payment/zitopay_payment.dart';
-import 'package:image_picker/image_picker.dart';
+import 'package:gren_mart/view/cart/cart_tile.dart';
 import 'package:provider/provider.dart';
-import 'package:gren_mart/service/cupon_discount_service.dart';
-import 'package:gren_mart/service/payment_gateaway_service.dart';
-import 'package:http/http.dart' as http;
 
-import '../../service/cart_data_service.dart';
-import '../../service/shipping_zone_service.dart';
-import '../auth/custom_text_field.dart';
+import '../../service/language_service.dart';
+import 'payment_grid_tile.dart';
+import '../utils/text_themes.dart';
 import '../payment/paypal_payment.dart';
 import '../payment/stripe_payment.dart';
 import '../settings/new_address.dart';
-import '../utils/text_themes.dart';
-import 'payment_grid_tile.dart';
+import '../../service/cart_data_service.dart';
+import '../../service/shipping_zone_service.dart';
+import '../../service/checkout_service.dart';
+import '../../service/confirm_payment_service.dart';
+import '../../view/order/order_details.dart';
+import '../../view/payment/cash_free_payment.dart';
+import '../../view/payment/flutter_wave_payment.dart';
+import '../../view/payment/instamojo_payment.dart';
+import '../../view/payment/mercado_pago_payment.dart';
+import '../../view/payment/mid_trans_payment.dart';
+import '../../view/payment/mollie_payment.dart';
+import '../../view/payment/payfast_payment.dart';
+import '../../view/payment/paystack_payment.dart';
+import '../../view/payment/paytm_payment.dart';
+import '../../view/payment/razorpay_payment.dart';
+import '../../service/cupon_discount_service.dart';
+import '../../service/payment_gateaway_service.dart';
 import '../../service/shipping_addresses_service.dart';
 import '../../view/utils/app_bars.dart';
 import '../../view/utils/constant_colors.dart';
@@ -82,8 +74,11 @@ class Checkout extends StatelessWidget {
                       return loadingProgressBar();
                     }
                     if (snapShot.hasData) {
-                      return Center(
-                        child: Text(snapShot.data.toString()),
+                      return Container(
+                        margin: EdgeInsets.symmetric(vertical: 25),
+                        child: Center(
+                          child: Text(snapShot.data.toString()),
+                        ),
                       );
                     }
                     return Consumer<ShippingAddressesService>(
@@ -130,8 +125,8 @@ class Checkout extends StatelessWidget {
                                 if (selected)
                                   Positioned(
                                       top: 10,
-                                      right: rtl ? null : 15,
-                                      left: rtl ? 15 : null,
+                                      right: LanguageService().rtl ? null : 15,
+                                      left: LanguageService().rtl ? 15 : null,
                                       child: Icon(
                                         Icons.check_box,
                                         color: cc.primaryColor,
@@ -143,6 +138,7 @@ class Checkout extends StatelessWidget {
                   }),
               GestureDetector(
                 onTap: () {
+                  Navigator.of(context).pop();
                   Navigator.of(context).pushNamed(AddNewAddress.routeName);
                 },
                 child: Container(
@@ -272,7 +268,7 @@ class Checkout extends StatelessWidget {
                           builder: (context, cupService, child) {
                         return rows('Coupon discount',
                             trailing:
-                                '-\$${cupService.cuponDiscount.toStringAsFixed(2)}');
+                                '\$${cupService.cuponDiscount.toStringAsFixed(2)}');
                       }),
                       const SizedBox(height: 15),
                       const Divider(),
@@ -355,10 +351,15 @@ class Checkout extends StatelessWidget {
                                             .getCuponDiscontAmount()
                                             .then((value) {
                                           if (value != null) {
-                                            snackBar(context, value);
+                                            snackBar(context, value,
+                                                backgroundColor: cc.orange);
                                           }
-                                        }).onError((error, stackTrace) =>
-                                                cService.setIsLoading(false));
+                                        }).onError((error, stackTrace) {
+                                          cService.setIsLoading(false);
+                                          snackBar(
+                                              context, 'Connection failed.',
+                                              backgroundColor: cc.orange);
+                                        });
                                         FocusScope.of(context).unfocus();
                                       },
                                 child: Stack(
@@ -519,11 +520,76 @@ class Checkout extends StatelessWidget {
                                     Provider.of<PaymentGateawayService>(context,
                                             listen: false)
                                         .setIsLoading(true);
-
+                                    if (Provider.of<ShippingAddressesService>(
+                                                context,
+                                                listen: false)
+                                            .selectedAddress ==
+                                        null) {
+                                      showDialog(
+                                          context: context,
+                                          builder: (context) => AlertDialog(
+                                                title: const Text(
+                                                    'No shipping address selected?'),
+                                                content: const Text(
+                                                    'Please add Shipping address to proceed your payment.'),
+                                                actions: [
+                                                  FlatButton(
+                                                      onPressed: (() {
+                                                        Navigator.pop(context);
+                                                      }),
+                                                      child: Text(
+                                                        'Not now',
+                                                        style: TextStyle(
+                                                            color: cc.pink),
+                                                      )),
+                                                  FlatButton(
+                                                      onPressed: () {
+                                                        Navigator.of(context)
+                                                            .pop();
+                                                        Navigator.of(context)
+                                                            .pop();
+                                                        Navigator.of(context)
+                                                            .pushNamed(
+                                                                AddNewAddress
+                                                                    .routeName)
+                                                            .then((value) {
+                                                          Provider.of<ShippingAddressesService>(
+                                                                  context,
+                                                                  listen: false)
+                                                              .fetchUsersShippingAddress(
+                                                                  context,
+                                                                  loadShippingZone:
+                                                                      true);
+                                                        });
+                                                      },
+                                                      child: Text(
+                                                        'Add now',
+                                                        style: TextStyle(
+                                                            color: cc
+                                                                .primaryColor),
+                                                      ))
+                                                ],
+                                              ));
+                                      Provider.of<PaymentGateawayService>(
+                                              context,
+                                              listen: false)
+                                          .setIsLoading(false);
+                                      return;
+                                    }
+                                    final selecteGatway =
+                                        Provider.of<PaymentGateawayService>(
+                                                context,
+                                                listen: false)
+                                            .selectedGateaway!
+                                            .name;
                                     await startPayment(context, cService)
-                                        .onError((error, stackTrace) =>
-                                            snackBar(
-                                                context, 'Connection failed!'));
+                                        .onError((error, stackTrace) {
+                                      if (error == '') {
+                                        return;
+                                      }
+                                      snackBar(context, 'Connection failed!');
+                                    });
+
                                     Provider.of<PaymentGateawayService>(context,
                                             listen: false)
                                         .setIsLoading(false);
@@ -653,7 +719,7 @@ class Checkout extends StatelessWidget {
                               ? Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    Icon(Icons.camera_alt_outlined),
+                                    Icon(Icons.image_outlined),
                                     Text('Select an image from gallary'),
                                   ],
                                 )
@@ -677,6 +743,8 @@ class Checkout extends StatelessWidget {
           });
       if (continued) {
         await cService.proccessCheckout(context);
+        await showSuccessDialogue(context);
+        Navigator.of(context).pop();
         return;
       }
       cService.pickedImage = null;
@@ -684,6 +752,13 @@ class Checkout extends StatelessWidget {
     }
 
     await cService.proccessCheckout(context);
+    if (selectedGateaway.name == 'cash_on_delivery') {
+      await showSuccessDialogue(context);
+      Navigator.of(context).pop();
+      return;
+    }
+    print('no confirming');
+    print(selectedGateaway.name);
     if (selectedGateaway.name.toLowerCase().contains('marcadopago')) {
       Navigator.of(context).push(
         MaterialPageRoute(
@@ -704,13 +779,17 @@ class Checkout extends StatelessWidget {
       Navigator.of(context).push(
         MaterialPageRoute(
           builder: (BuildContext context) => PaypalPayment(
-            onFinish: (number) async {},
+            onFinish: (number) async {
+              await Provider.of<ConfirmPaymentService>(context, listen: false)
+                  .confirmPayment(context);
+            },
           ),
         ),
       );
       return;
     }
     if (selectedGateaway.name.toLowerCase().contains('stripe')) {
+      print('here');
       await StripePayment().makePayment(context);
       return;
     }
@@ -736,7 +815,7 @@ class Checkout extends StatelessWidget {
       return;
     }
     if (selectedGateaway.name.toLowerCase().contains('cashfree')) {
-      CashFreePayment().doPayment(context);
+      await CashFreePayment().doPayment(context);
       return;
     }
 
@@ -764,42 +843,6 @@ class Checkout extends StatelessWidget {
           builder: (BuildContext context) => InstamojoPayment(),
         ),
       );
-      // String userName = '';
-      // await showDialog(
-      //     context: context,
-      //     builder: (ctx) {
-      //       return AlertDialog(
-      //         title: Text('Enter username!'),
-      //         content: CustomTextField(
-      //           'Username',
-      //           onChanged: (value) => userName = value.trim(),
-      //         ),
-      //         actions: [
-      //           Spacer(),
-      //           TextButton(
-      //             onPressed: () {
-      //               if (userName.isEmpty || userName.trim() == '') {
-      //                 snackBar(context, 'Enter a valid username');
-      //                 return;
-      //               }
-
-      //               Navigator.of(context).pop();
-      //               Navigator.of(context).push(
-      //                 MaterialPageRoute(
-      //                   builder: (BuildContext context) => ZitopayPayment(
-      //                       'https://zitopay.africa/sci/?currency=XAF&amount=1000&receiver=$userName'),
-      //                 ),
-      //               );
-      //             },
-      //             child: Text(
-      //               'Submit',
-      //               style: TextStyle(color: cc.primaryColor),
-      //             ),
-      //           )
-      //         ],
-      //       );
-      //     });
-
       return;
     }
     if (selectedGateaway.name.toLowerCase().contains('mollie')) {
@@ -810,5 +853,56 @@ class Checkout extends StatelessWidget {
       );
       return;
     }
+  }
+
+  Future showSuccessDialogue(BuildContext context) async {
+    final cService = Provider.of<CheckoutService>(context, listen: false);
+    await showDialog(
+        useSafeArea: true,
+        context: context,
+        builder: (ctx) {
+          return SizedBox(
+            height: 300,
+            child: AlertDialog(
+              title: Text('Order submitted!'),
+              content: SizedBox(
+                width: 200,
+                child: RichText(
+                  textAlign: TextAlign.center,
+                  text: TextSpan(
+                    text:
+                        'Your order has been successful! You\'ll receive ordered items in 3-5 days. \nYour order ID  is ',
+                    style: TextThemeConstrants.paragraphText,
+                    children: <TextSpan>[
+                      TextSpan(
+                          recognizer: TapGestureRecognizer()
+                            ..onTap = () {
+                              Provider.of<PaymentGateawayService>(context,
+                                      listen: false)
+                                  .setIsLoading(false);
+                              Navigator.of(context)
+                                  .push(MaterialPageRoute<void>(
+                                builder: (BuildContext context) => OrderDetails(
+                                    cService.checkoutModel!.id.toString()),
+                              ));
+                            },
+                          text: ' #${cService.checkoutModel!.id}',
+                          style: TextStyle(color: cc.primaryColor)),
+                    ],
+                  ),
+                ),
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  child: Text(
+                    'Ok',
+                    style: TextStyle(color: cc.primaryColor),
+                  ),
+                )
+              ],
+            ),
+          );
+        });
   }
 }

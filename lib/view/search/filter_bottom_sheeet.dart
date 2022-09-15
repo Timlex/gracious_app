@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:gren_mart/service/common_service.dart';
-import '../../service/categories_data_service.dart';
-import '../../service/search_result_data_service.dart';
-import '../../view/utils/constant_styles.dart';
 import 'package:money_formatter/money_formatter.dart';
 import 'package:provider/provider.dart';
+
+import '../../service/categories_data_service.dart';
+import '../../service/language_service.dart';
+import '../../service/search_result_data_service.dart';
+import '../../view/utils/constant_styles.dart';
 
 class FilterBottomSheet extends StatelessWidget {
   const FilterBottomSheet({Key? key}) : super(key: key);
@@ -16,17 +17,21 @@ class FilterBottomSheet extends StatelessWidget {
     initCategories(context);
 
     MoneyFormatter startRange = MoneyFormatter(
-        amount: Provider.of<SearchResultDataService>(context).rangevalue.start);
+        amount: Provider.of<CategoriesDataService>(context, listen: false)
+            .minPrice);
     MoneyFormatter endRange = MoneyFormatter(
-        amount: Provider.of<SearchResultDataService>(context).rangevalue.end);
+        amount: Provider.of<CategoriesDataService>(context, listen: false)
+            .maxPrice);
 
     return Consumer<CategoriesDataService>(builder: (context, catData, chaild) {
-      return catData.subCategorydataList.isEmpty
+      return catData.categorydataList.isEmpty
           ? SizedBox(height: 150, child: Center(child: loadingProgressBar()))
           : Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               Padding(
                 padding: EdgeInsets.only(
-                    left: rtl ? 0 : 25.0, right: rtl ? 25 : 0, top: 15),
+                    left: LanguageService().rtl ? 0 : 25.0,
+                    right: LanguageService().rtl ? 25 : 0,
+                    top: 15),
                 child: Text(
                   'Filter by:',
                   style: TextStyle(fontSize: 19, fontWeight: FontWeight.w600),
@@ -34,17 +39,17 @@ class FilterBottomSheet extends StatelessWidget {
               ),
               Padding(
                 padding: EdgeInsets.only(
-                  left: rtl ? 0 : 25.0,
-                  right: rtl ? 25 : 0,
+                  left: LanguageService().rtl ? 0 : 25.0,
+                  right: LanguageService().rtl ? 25 : 0,
                 ),
                 child: textFieldTitle('All categories', fontSize: 13),
               ),
               Container(
-                height: 50,
+                height: 44,
                 child: ListView.builder(
                     padding: EdgeInsets.only(
-                      left: rtl ? 0 : 25.0,
-                      right: rtl ? 25 : 0,
+                      left: LanguageService().rtl ? 0 : 25.0,
+                      right: LanguageService().rtl ? 25 : 0,
                     ),
                     scrollDirection: Axis.horizontal,
                     itemCount: catData.categorydataList.length,
@@ -64,62 +69,106 @@ class FilterBottomSheet extends StatelessWidget {
                           child: filterOption(e.title, isSelected));
                     })),
               ),
-              Padding(
-                padding: EdgeInsets.only(
-                  left: rtl ? 0 : 25.0,
-                  right: rtl ? 25 : 0,
+              if (catData.selectedCategorieId.isNotEmpty)
+                Padding(
+                  padding: EdgeInsets.only(
+                    left: LanguageService().rtl ? 0 : 25.0,
+                    right: LanguageService().rtl ? 25 : 0,
+                  ),
+                  child: textFieldTitle('Sub-category', fontSize: 13),
                 ),
-                child: textFieldTitle('Sub-category', fontSize: 13),
-              ),
-              Container(
-                height: 50,
-                child: ListView.builder(
-                    padding: EdgeInsets.only(
-                      left: rtl ? 0 : 25.0,
-                      right: rtl ? 25 : 0,
-                    ),
-                    scrollDirection: Axis.horizontal,
-                    itemCount: catData.subCategorydataList.length,
-                    itemBuilder: ((context, index) {
-                      final e = catData.subCategorydataList[index];
-                      final isSelected =
-                          e.id.toString() == catData.selectedSubCategorieId;
-                      return GestureDetector(
-                          onTap: () {
-                            if (isSelected) {
-                              catData.setSelectedSubCategory('');
-                              return;
-                            }
-                            catData.setSelectedSubCategory(e.id.toString());
-                          },
-                          child: filterOption(e.title, isSelected));
-                    })),
-              ),
+              if (catData.selectedCategorieId.isNotEmpty &&
+                  (catData.loading || catData.noSubcategory))
+                Container(
+                  padding: EdgeInsets.only(
+                    left: LanguageService().rtl ? 0 : 25.0,
+                    right: LanguageService().rtl ? 25 : 0,
+                  ),
+                  child: catData.noSubcategory
+                      ? Container(
+                          margin: EdgeInsets.symmetric(vertical: 10),
+                          child: Text(
+                            'No sub-category available',
+                            style: TextStyle(color: cc.greyHint, fontSize: 14),
+                          ))
+                      : loadingProgressBar(),
+                ),
+              if (catData.subCategorydataList != null)
+                Container(
+                  padding: EdgeInsets.only(
+                    left: LanguageService().rtl ? 0 : 25.0,
+                    right: LanguageService().rtl ? 25 : 0,
+                  ),
+                  height: 44,
+                  child: Builder(builder: (context) {
+                    return GestureDetector(
+                        onTap: () {
+                          if (catData.selectedSubCategorieId.isNotEmpty) {
+                            catData.setSelectedSubCategory('');
+                            return;
+                          }
+                          catData.setSelectedSubCategory(
+                              catData.subCategorydataList!.id.toString());
+                        },
+                        child: filterOption(catData.subCategorydataList!.title,
+                            catData.selectedSubCategorieId.isNotEmpty));
+                  }),
+                ),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 25),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     textFieldTitle('Filter Price', fontSize: 13),
-                    Container(
-                      margin: EdgeInsets.only(
-                        left: rtl ? 0 : 25.0,
-                        right: rtl ? 25 : 0,
-                      ),
-                      child: Text('\$' +
-                          startRange.output.withoutFractionDigits +
-                          '-' +
-                          '\$' +
-                          endRange.output.withoutFractionDigits),
-                    )
+                    Consumer<SearchResultDataService>(
+                        builder: (context, srService, child) {
+                      return Container(
+                        margin: EdgeInsets.only(
+                          left: LanguageService().rtl ? 0 : 25.0,
+                          right: LanguageService().rtl ? 25 : 0,
+                        ),
+                        child: Text('\$' +
+                            (srService.minPrice.isNotEmpty
+                                ? MoneyFormatter(
+                                        amount:
+                                            double.parse(srService.minPrice))
+                                    .output
+                                    .withoutFractionDigits
+                                : startRange.output.withoutFractionDigits) +
+                            '-' +
+                            '\$' +
+                            (srService.maxPrice.isNotEmpty
+                                ? MoneyFormatter(
+                                        amount:
+                                            double.parse(srService.maxPrice))
+                                    .output
+                                    .withoutFractionDigits
+                                : endRange.output.withoutFractionDigits)),
+                      );
+                    })
                   ],
                 ),
               ),
               Consumer<SearchResultDataService>(
                   builder: (context, srData, child) {
                 return RangeSlider(
-                  values: srData.rangevalue,
-                  max: 3500,
+                  values: RangeValues(
+                      srData.minPrice.isEmpty
+                          ? Provider.of<CategoriesDataService>(context,
+                                  listen: false)
+                              .minPrice
+                          : double.parse(srData.minPrice),
+                      srData.maxPrice.isEmpty
+                          ? Provider.of<CategoriesDataService>(context,
+                                  listen: false)
+                              .maxPrice
+                          : double.parse(srData.maxPrice)),
+                  max:
+                      Provider.of<CategoriesDataService>(context, listen: false)
+                          .maxPrice,
+                  min:
+                      Provider.of<CategoriesDataService>(context, listen: false)
+                          .minPrice,
 
                   // divisions: 5,
                   activeColor: cc.primaryColor,
@@ -136,44 +185,60 @@ class FilterBottomSheet extends StatelessWidget {
               }),
               Padding(
                 padding: EdgeInsets.only(
-                  left: rtl ? 0 : 25.0,
-                  right: rtl ? 25 : 0,
+                  left: LanguageService().rtl ? 0 : 25.0,
+                  right: LanguageService().rtl ? 25 : 0,
                 ),
                 child: textFieldTitle('Average Rating', fontSize: 13),
               ),
               const SizedBox(height: 10),
               Padding(
-                padding: EdgeInsets.only(
-                  left: rtl ? 0 : 25.0,
-                  right: rtl ? 25 : 0,
-                ),
-                child: Consumer<SearchResultDataService>(
-                    builder: (context, srData, child) {
-                  return RatingBar.builder(
-                    itemSize: 24,
-                    initialRating: double.parse(srData.ratingPoint),
-                    minRating: 1,
-                    direction: Axis.horizontal,
-                    allowHalfRating: false,
-                    itemCount: 5,
-                    itemPadding: const EdgeInsets.symmetric(horizontal: 3),
-                    itemBuilder: (context, _) => SvgPicture.asset(
-                      'assets/images/icons/star.svg',
-                      color: cc.orangeRating,
-                    ),
-                    onRatingUpdate: (rating) {
-                      srData.setRating(rating.toInt());
-                      print(rating);
+                padding: EdgeInsets.symmetric(horizontal: 25.0),
+                child: Row(children: [
+                  Consumer<SearchResultDataService>(
+                      builder: (context, srData, child) {
+                    return RatingBar.builder(
+                      itemSize: 24,
+                      initialRating: double.parse(srData.ratingPoint),
+                      minRating: 1,
+                      direction: Axis.horizontal,
+                      allowHalfRating: false,
+                      itemCount: 5,
+                      itemPadding: const EdgeInsets.symmetric(horizontal: 3),
+                      itemBuilder: (context, _) => SvgPicture.asset(
+                        'assets/images/icons/star.svg',
+                        color: cc.orangeRating,
+                      ),
+                      onRatingUpdate: (rating) {
+                        srData.setRating(rating.toInt());
+                        print(rating);
+                      },
+                    );
+                  }),
+                  Spacer(),
+                  Consumer<SearchResultDataService>(
+                    builder: (context, srService, child) {
+                      return Container(
+                        child: GestureDetector(
+                          onTap: () {
+                            srService.setRating('0');
+                          },
+                          child: Icon(
+                            Icons.refresh_rounded,
+                            color: cc.primaryColor,
+                          ),
+                        ),
+                      );
                     },
-                  );
-                }),
+                  )
+                ]),
               ),
               const SizedBox(height: 40),
               Consumer<SearchResultDataService>(
                   builder: (context, srData, child) {
                 return Padding(
                   padding: const EdgeInsets.all(10),
-                  child: customRowButton('Reset Filter', 'Apply Filter', () {
+                  child: customRowButton(
+                      context, 'Reset Filter', 'Apply Filter', () {
                     filterReset(context, srData);
                   }, () {
                     filterApply(context, srData);
@@ -187,15 +252,15 @@ class FilterBottomSheet extends StatelessWidget {
 
   initCategories(BuildContext context) {
     Provider.of<CategoriesDataService>(context, listen: false)
-        .fetchCategories();
-    Provider.of<CategoriesDataService>(context, listen: false)
-        .fetchSubCategories();
+        .fetchCategories()
+        .onError((error, stackTrace) =>
+            snackBar(context, 'Connection failed', backgroundColor: cc.orange));
   }
 
   Widget filterOption(String text, bool isSelected) {
     return Container(
-      height: 44,
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+      height: 20,
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
       margin: const EdgeInsets.only(right: 8, top: 8, bottom: 8),
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
@@ -204,15 +269,17 @@ class FilterBottomSheet extends StatelessWidget {
             width: 1,
           ),
           color: isSelected ? cc.lightPrimery3 : null),
-      child: Row(children: [
-        Text(text, style: TextStyle(color: cc.greyHint, fontSize: 12)),
-        const SizedBox(width: 5),
-        SvgPicture.asset(
-          isSelected
-              ? 'assets/images/icons/selected_circle.svg'
-              : 'assets/images/icons/deselected_circle.svg',
-        )
-      ]),
+      child: FittedBox(
+        child: Row(children: [
+          Text(text, style: TextStyle(color: cc.greyHint, fontSize: 12)),
+          const SizedBox(width: 5),
+          SvgPicture.asset(
+            isSelected
+                ? 'assets/images/icons/selected_circle.svg'
+                : 'assets/images/icons/deselected_circle.svg',
+          )
+        ]),
+      ),
     );
   }
 
@@ -232,7 +299,7 @@ class FilterBottomSheet extends StatelessWidget {
         srData.subCategoryId == '' &&
         srData.minPrice == '' &&
         srData.maxPrice == '' &&
-        srData.ratingPoint == '') {
+        (srData.ratingPoint == '' || srData.ratingPoint == '0')) {
       srData.setFilterOn(false);
     }
     Navigator.of(context).pop();

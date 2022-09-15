@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gren_mart/view/utils/constant_name.dart';
 import '../../view/favorite/favorite_tile.dart';
 import '../../view/utils/constant_colors.dart';
 import 'package:provider/provider.dart';
@@ -11,23 +12,40 @@ class FavoriteView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    initiateDeviceSize(context);
     return Padding(
       padding: const EdgeInsets.only(top: 10),
       child: Consumer<FavoriteDataService>(
           builder: (context, favoriteData, child) {
         return favoriteData.favoriteItems.isEmpty
-            ? Center(
-                child: Text(
-                  'Add items to favorite',
-                  style: TextStyle(color: cc.greyHint),
-                ),
+            ? Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(
+                    height: screenHight / 2.5,
+                    padding: const EdgeInsets.all(20.0),
+                    child: Image.asset('assets/images/empty_favorite.png'),
+                  ),
+                  Center(
+                    child: Text(
+                      'Add items to favorite',
+                      style: TextStyle(color: cc.greyHint),
+                    ),
+                  ),
+                ],
               )
-            : ListView(
+            : ListView.separated(
                 physics: const BouncingScrollPhysics(
                     parent: AlwaysScrollableScrollPhysics()),
-                children: favoriteData.favoriteItems.values.map((e) {
-                  return FavoriteTile(e.id);
-                }).toList(),
+                itemCount: favoriteData.favoriteItems.values.length,
+                itemBuilder: (context, index) {
+                  final element =
+                      favoriteData.favoriteItems.values.toList()[index];
+                  return FavoriteTile(element.id);
+                },
+                separatorBuilder: (context, index) {
+                  return Divider();
+                },
               );
       }),
     );

@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:gren_mart/view/utils/text_themes.dart';
-import '../../service/shipping_addresses_service.dart';
-import '../../view/utils/app_bars.dart';
-import '../../view/utils/constant_colors.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:provider/provider.dart';
 
-import '../../service/country_dropdown_service.dart';
-import '../../service/state_dropdown_service.dart';
 import '../auth/custom_text_field.dart';
 import '../intro/custom_dropdown.dart';
 import '../utils/constant_styles.dart';
+import '../../view/utils/text_themes.dart';
+import '../../service/shipping_addresses_service.dart';
+import '../../view/utils/app_bars.dart';
+import '../../view/utils/constant_colors.dart';
+import '../../service/country_dropdown_service.dart';
+import '../../service/state_dropdown_service.dart';
 
 class AddNewAddress extends StatelessWidget {
   static const routeName = 'add new address';
@@ -43,20 +43,6 @@ class AddNewAddress extends StatelessWidget {
       saData.setIsLoading(false);
       return;
     });
-    // maData.setIsLoading(true);
-    // final _token =
-    //     Provider.of<SignInSignUpService>(context, listen: false).token;
-    // maData.updateProfile(_token).then((value) async {
-    //   if (value != null) {
-    //     snackBar(context, value);
-    //     maData.setIsLoading(false);
-    //     return;
-    //   }
-    //   await Provider.of<UserProfileService>(context, listen: false)
-    //       .fetchProfileService(_token);
-    //   maData.setIsLoading(false);
-    //   Navigator.of(context).pop();
-    // });
   }
 
   @override
@@ -214,13 +200,6 @@ class AddNewAddress extends StatelessWidget {
                       textFieldTitle('State'),
                       Consumer<StateDropdownService>(
                           builder: ((context, sModel, child) =>
-                              // sModel.stateDropdownList.isEmpty
-                              //     ? SizedBox(
-                              //         child: Center(
-                              //             child: CircularProgressIndicator(
-                              //         color: cc.greyHint,
-                              //       )))
-                              //     :
                               (sModel.isLoading
                                   ? SizedBox(
                                       height: 10,
@@ -249,7 +228,7 @@ class AddNewAddress extends StatelessWidget {
                           if (cityText!.isEmpty) {
                             return 'Enter your city';
                           }
-                          if (cityText.length <= 3) {
+                          if (cityText.length <= 2) {
                             return 'Enter a valid city';
                           }
                           return null;
@@ -273,7 +252,7 @@ class AddNewAddress extends StatelessWidget {
                           if (zipCode!.isEmpty) {
                             return 'Enter your zip conde';
                           }
-                          if (zipCode.length < 4) {
+                          if (zipCode.length <= 3) {
                             return 'Enter a valid zip code';
                           }
                           return null;

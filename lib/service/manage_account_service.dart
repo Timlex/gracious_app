@@ -12,7 +12,7 @@ class ManageAccountService with ChangeNotifier {
   String phoneNumber = '';
   String countryCode = 'BD';
   String countryId = '1';
-  String stateId = '1';
+  String stateId = '143';
   String? city = '';
   String? zipCode = '';
   String? address = '';
@@ -22,7 +22,7 @@ class ManageAccountService with ChangeNotifier {
 
   setInitialValue(nameValue, emailValue, phoneValue, countryIdValue,
       stateIdValue, cityValue, zipCodeValue, addressValue, imageUrl) {
-    print(zipCodeValue.toString() + '==================');
+    print(stateIdValue.toString() + '==================');
     name = nameValue;
     email = emailValue;
     phoneNumber = phoneValue;
@@ -95,6 +95,19 @@ class ManageAccountService with ChangeNotifier {
   }
 
   Future updateProfile() async {
+    if (name.isEmpty ||
+        email.isEmpty ||
+        phoneNumber.isEmpty ||
+        countryId.isEmpty ||
+        stateId.isEmpty ||
+        city == null ||
+        city!.isEmpty ||
+        zipCode == null ||
+        address == null ||
+        zipCode!.isEmpty ||
+        address!.isEmpty) {
+      return 'All Information must be provided';
+    }
     print('Edit in proccess');
     Map<String, String> fieldss = {
       'name': name,
@@ -115,8 +128,6 @@ class ManageAccountService with ChangeNotifier {
     fieldss.forEach((key, value) {
       request.fields[key] = value;
     });
-    print(
-        '$name, $email, $phoneNumber, $countryCode, $countryId, $stateId, $city, $zipCode,$address');
     request.headers.addAll(
       {
         "Accept": "application/json",
@@ -137,24 +148,6 @@ class ManageAccountService with ChangeNotifier {
 
     var response = await http.Response.fromStream(streamedResponse);
 
-    // var header = {
-    //   //if header type is application/json then the data should be in jsonEncode method
-    //   "Accept": "application/json",
-    //   "Authorization": "Bearer $token",
-    // };
-    // // try {
-    // final response = await http.post(url, headers: header, body: {
-    //   'name': name,
-    //   'email': email,
-    //   'phone': phoneNumber,
-    //   'country_code': countryCode,
-    //   'country': countryId,
-    //   'state': stateId,
-    //   'city': city,
-    //   'zip_code': zipCode,
-    //   'address': address,
-    //   'file': pickeImage,
-    // });
     print(response.statusCode.toString() + '++++++++++++++');
     if (response.statusCode == 200) {
       print(jsonDecode(response.body));

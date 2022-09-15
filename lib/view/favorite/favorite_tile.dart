@@ -8,6 +8,7 @@ import '../../service/favorite_data_service.dart';
 import '../../view/utils/constant_colors.dart';
 import 'package:provider/provider.dart';
 
+import '../utils/constant_styles.dart';
 import '../utils/text_themes.dart';
 
 class FavoriteTile extends StatelessWidget {
@@ -51,7 +52,7 @@ class FavoriteTile extends StatelessWidget {
           ),
         ),
         onDismissed: (direction) {
-          favoriteData.deleteFavoriteItem(id);
+          favoriteData.deleteFavoriteItem(id, context);
         },
         key: Key(id.toString()),
         child: SizedBox(
@@ -77,11 +78,10 @@ class FavoriteTile extends StatelessWidget {
                       child: CachedNetworkImage(
                         fit: BoxFit.cover,
                         imageUrl: favoriteItem.imgUrl,
-                        placeholder: (context, url) => Image.asset(
-                          'assets/images/skelleton.png',
-                        ),
+                        placeholder: (context, url) =>
+                            SvgPicture.asset('assets/images/image_empty.svg'),
                         errorWidget: (context, url, error) =>
-                            const Icon(Icons.error),
+                            SvgPicture.asset('assets/images/image_empty.svg'),
                       ),
                     )),
                 title: Row(
@@ -112,8 +112,13 @@ class FavoriteTile extends StatelessWidget {
                     ),
                     const Spacer(),
                     GestureDetector(
-                      onTap: (() {
-                        favoriteData.deleteFavoriteItem(id);
+                      onTap: (() async {
+                        bool deleteItem = false;
+                        await confirmDialouge(context,
+                            onPressed: () => deleteItem = true);
+                        if (deleteItem) {
+                          favoriteData.deleteFavoriteItem(id, context);
+                        }
                       }),
                       child: Padding(
                         padding: const EdgeInsets.only(left: 7),
@@ -134,5 +139,34 @@ class FavoriteTile extends StatelessWidget {
         ),
       );
     });
+  }
+
+  Future confirmDialouge(BuildContext context,
+      {required void Function() onPressed}) async {
+    await showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+              title: const Text('Are you sure?'),
+              content: const Text('This Item will be Deleted.'),
+              actions: [
+                FlatButton(
+                    onPressed: (() {
+                      Navigator.pop(context);
+                    }),
+                    child: Text(
+                      'No',
+                      style: TextStyle(color: cc.primaryColor),
+                    )),
+                FlatButton(
+                    onPressed: () {
+                      onPressed();
+                      Navigator.of(context).pop();
+                    },
+                    child: Text(
+                      'Yes',
+                      style: TextStyle(color: cc.pink),
+                    ))
+              ],
+            ));
   }
 }

@@ -44,58 +44,6 @@ class _ShippingAdressesState extends State<ShippingAdresses> {
                         parent: AlwaysScrollableScrollPhysics()),
                     children: [
                       const SizedBox(height: 25),
-                      // Padding(
-                      //   padding: const EdgeInsets.symmetric(horizontal: 25),
-                      //   child: CustomTextField(
-                      //     'enter new address',
-                      //     controller: TextEditingController(),
-                      //     leadingImage: 'assets/images/icons/location.png',
-                      //     onFieldSubmitted: (value) {
-                      //       if (value.length <= 10) {
-                      //         ScaffoldMessenger.of(context)
-                      //             .showSnackBar(snackBar('Enter a valid address'));
-                      //         return;
-                      //       }
-                      //       address = value;
-                      //       showDialog<String>(
-                      //         context: context,
-                      //         builder: (BuildContext context) => AlertDialog(
-                      //           title: const Text('Enter address name'),
-                      //           content: CustomTextField(
-                      //             'Enter address name',
-                      //             onChanged: (value) {
-                      //               addressTitle = value;
-                      //               print(addressTitle);
-                      //             },
-                      //           ),
-                      //           actions: <Widget>[
-                      //             TextButton(
-                      //               onPressed: () {
-                      //                 Navigator.pop(context, 'Cancel');
-                      //               },
-                      //               child: const Text('Cancel'),
-                      //             ),
-                      //             TextButton(
-                      //               onPressed: () {
-                      //                 setState(() {
-                      //                   addresses.add({
-                      //                     'id': (addresses.length + 1).toString(),
-                      //                     'title': addressTitle,
-                      //                     'address': address,
-                      //                   });
-                      //                 });
-                      //                 print(addresses.length);
-                      //                 Navigator.pop(context, 'OK');
-                      //               },
-                      //               child: const Text('OK'),
-                      //             ),
-                      //           ],
-                      //         ),
-                      //       );
-                      //     },
-                      //   ),
-                      // ),
-
                       ...Provider.of<ShippingAddressesService>(context)
                           .shippingAddresseList
                           .map(((e) => Padding(

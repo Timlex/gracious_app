@@ -9,7 +9,6 @@ import '../../view/utils/constant_styles.dart';
 import 'package:provider/provider.dart';
 
 import '../utils/text_themes.dart';
-import './intro_helper.dart';
 
 class Intro extends StatefulWidget {
   static const routeName = 'intro';
@@ -31,6 +30,7 @@ class _IntroState extends State<Intro> {
 
   @override
   Widget build(BuildContext context) {
+    initiateDeviceSize(context);
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.all(15),
@@ -90,7 +90,7 @@ class _IntroState extends State<Intro> {
               children: _dotIdicators(),
             ),
             Expanded(child: Container()),
-            customRowButton('Skip', 'Continue', () async {
+            customRowButton(context, 'Skip', 'Continue', () async {
               Provider.of<StateDropdownService>(context, listen: false)
                   .getStates(1);
               final ref = await SharedPreferences.getInstance();
@@ -126,4 +126,27 @@ class _IntroState extends State<Intro> {
     }
     return list;
   }
+}
+
+class IntroHelper {
+  static final introData = [
+    {
+      'introTitle': 'Save up to 30% off',
+      'description':
+          'Save up to 30% off many groceries, this over will be end very soon . So buy you food quickly',
+      'imagePath': 'assets/images/intro_0.png',
+    },
+    {
+      'introTitle': 'Fresh Groceries',
+      'description':
+          'Buy  fresh  Groceries and organic food from us.We have so many groceries in our Store ',
+      'imagePath': 'assets/images/intro_1.png',
+    },
+    {
+      'introTitle': 'Easy Shopping',
+      'description':
+          'Save up to 30% off many groceries, this over will be end very soon . So buy you food quickly',
+      'imagePath': 'assets/images/intro_2.png',
+    }
+  ];
 }

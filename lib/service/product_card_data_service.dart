@@ -14,8 +14,13 @@ class ProductCardDataService with ChangeNotifier {
   List<Product> campaignPageProductList = [];
   CampaignInfo? campaignInfo;
   CampaignInfo? campaignPageInfo;
+  bool featureNoData = false;
+  bool campaignNoData = false;
 
   Future fetchFeaturedProductCardData() async {
+    if (featuredCardProductsList.isNotEmpty) {
+      return;
+    }
     print('get featured products ran');
     final url = Uri.parse('$baseApiUrl/featured/product');
 
@@ -41,29 +46,28 @@ class ProductCardDataService with ChangeNotifier {
   }
 
   Future fetchCapmaignCardProductData() async {
+    if (campaignCardProductList.isNotEmpty) {
+      return;
+    }
     print('get featured products ran');
     final url = Uri.parse('$baseApiUrl/campaign/product');
 
-    try {
-      final response = await http.get(url);
+    // try {
+    final response = await http.get(url);
 
-      if (response.statusCode == 200) {
-        var data = CampaignProductModel.fromJson(jsonDecode(response.body));
-        campaignCardProductList = data.products;
-        campaignInfo = data.campaignInfo;
+    if (response.statusCode == 200) {
+      var data = CampaignProductModel.fromJson(jsonDecode(response.body));
+      campaignCardProductList = data.products;
+      campaignInfo = data.campaignInfo;
 
-        // print(featuredCardProductsList[0].prdId);
-        // print(countryDropdownList);
+      // print(featuredCardProductsList[0].prdId);
+      // print(countryDropdownList);
 
-        notifyListeners();
-      } else {
-        //something went wrong
-      }
-    } catch (error) {
-      print(error);
-
-      rethrow;
+      featureNoData = false;
+      notifyListeners();
     }
+    featureNoData = true;
+    notifyListeners();
   }
 
   Future fetchCapmaignPageProductData({id}) async {
@@ -80,11 +84,12 @@ class ProductCardDataService with ChangeNotifier {
 
       // print(featuredCardProductsList[0].prdId);
       // print(countryDropdownList);
+      campaignNoData = false;
 
       notifyListeners();
-    } else {
-      //something went wrong
     }
+    campaignNoData = true;
+    notifyListeners();
     // } catch (error) {
     //   print(error);
 

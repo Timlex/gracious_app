@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../service/common_service.dart';
+
+import '../../service/language_service.dart';
 import '../../service/navigation_bar_helper_service.dart';
 import '../../service/search_result_data_service.dart';
 import '../../view/utils/constant_colors.dart';
 import '../../view/utils/constant_name.dart';
 import 'all_camp_product_from_link.dart';
+import 'category_product_page.dart';
 
 class CampaignCard extends StatelessWidget {
   final String title;
@@ -22,14 +24,17 @@ class CampaignCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    initiateDeviceSize(context);
     return Container(
       margin: EdgeInsets.only(
-        left: rtl ? 0 : 20,
-        right: rtl ? 20 : 0,
+        right: LanguageService().rtl ? 0 : 20,
+        left: LanguageService().rtl ? 20 : 0,
       ),
-      padding:
-          EdgeInsets.only(left: rtl ? 0 : 20, right: rtl ? 20 : 0, top: 25),
-      height: screenHight / 5,
+      padding: EdgeInsets.only(
+          left: LanguageService().rtl ? 0 : 20,
+          right: LanguageService().rtl ? 20 : 0,
+          top: 25),
+      height: 160,
       width: screenWidth / 1.3 < 300 ? 300 : screenWidth / 1.3,
       // color: Color.fromARGB(110, 9, 154, 26),
       decoration: BoxDecoration(
@@ -63,7 +68,7 @@ class CampaignCard extends StatelessWidget {
                   ),
                   const SizedBox(height: 12),
                   SizedBox(
-                    width: screenWidth / 5,
+                    width: screenWidth / 4.5,
                     child: SafeArea(
                       child: Text(
                         title,
@@ -84,24 +89,15 @@ class CampaignCard extends StatelessWidget {
                         if (camp != null) {
                           Navigator.of(context).pushNamed(
                               ALLCampProductFromLink.routeName,
-                              arguments: [camp.toString()]);
+                              arguments: [camp.toString(), title]);
                         }
                         if (cat != null) {
                           Provider.of<SearchResultDataService>(context,
                                   listen: false)
-                              .resetSerch();
-                          Provider.of<SearchResultDataService>(context,
-                                  listen: false)
-                              .setFilterOn(true);
-                          Provider.of<SearchResultDataService>(context,
-                                  listen: false)
-                              .setCategoryId(cat.toString());
-                          Provider.of<SearchResultDataService>(context,
-                                  listen: false)
-                              .fetchProductsBy(pageNo: '1');
-                          Provider.of<NavigationBarHelperService>(context,
-                                  listen: false)
-                              .setNavigationIndex(1);
+                              .setCategoryId(camp.toString(), notListen: true);
+                          Navigator.of(context).pushNamed(
+                              CategoryProductPage.routeName,
+                              arguments: [camp.toString(), title]);
                         }
                       },
                       child: FittedBox(
@@ -127,13 +123,15 @@ class CampaignCard extends StatelessWidget {
               ),
               const Spacer(),
               Container(
-                  height: screenHight / 7,
+                  // height: screenHight / 7,
                   width: screenHight / 6.5,
                   margin: EdgeInsets.only(
-                      right: rtl ? 0 : 3, left: rtl ? 3 : 0, bottom: 10),
+                      right: LanguageService().rtl ? 0 : 3,
+                      left: LanguageService().rtl ? 3 : 0,
+                      bottom: 2),
                   child: Image.network(
                     image,
-                    fit: BoxFit.fill,
+                    // fit: BoxFit.fill,
                   )),
             ]),
         // Positioned(

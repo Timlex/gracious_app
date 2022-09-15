@@ -17,6 +17,8 @@ import '../../service/cupon_discount_service.dart';
 import '../../service/shipping_addresses_service.dart';
 import '../../service/shipping_zone_service.dart';
 import '../../service/user_profile_service.dart';
+import '../cart/payment_status.dart';
+import '../home/home_front.dart';
 
 class CinetPayPayment extends StatelessWidget {
   CinetPayPayment({Key? key}) : super(key: key);
@@ -24,111 +26,156 @@ class CinetPayPayment extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBars().appBarTitled('', () {
-        Navigator.of(context).pop();
+      appBar: AppBars().appBarTitled('', () async {
+        await showDialog(
+            context: context,
+            builder: (ctx) {
+              return AlertDialog(
+                title: Text('Are you sure?'),
+                content: Text('Your payment proccess will get terminated.'),
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.of(context).pushAndRemoveUntil(
+                        MaterialPageRoute(
+                            builder: (context) => PaymentStatusView(true)),
+                        (Route<dynamic> route) => false),
+                    child: Text(
+                      'Yes',
+                      style: TextStyle(color: cc.primaryColor),
+                    ),
+                  )
+                ],
+              );
+            });
       }),
-      body: FutureBuilder(
-          future: waitForIt(context),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return loadingProgressBar();
-            }
-            if (snapshot.hasData) {
-              return const Center(
-                child: Text('Loding failed.'),
-              );
-            }
-            if (snapshot.hasError) {
-              print(snapshot.error);
-              return const Center(
-                child: Text('Loding failed.'),
-              );
-            }
-            return WebView(
-              // onWebViewCreated: ((controller) {
-              //   _controller = controller;
-              // }),
-              onWebResourceError: (error) => showDialog(
-                  context: context,
-                  builder: (ctx) {
-                    return AlertDialog(
-                      title: Text('Loading failed!'),
-                      content: Text('Failed to load payment page.'),
-                      actions: [
-                        Spacer(),
-                        TextButton(
-                          onPressed: () => Navigator.of(context).pop(),
-                          child: Text(
-                            'Return',
-                            style: TextStyle(color: cc.primaryColor),
-                          ),
-                        )
-                      ],
-                    );
-                  }),
-              initialUrl: url,
-              javascriptMode: JavascriptMode.unrestricted,
+      body: WillPopScope(
+        onWillPop: () async {
+          await showDialog(
+              context: context,
+              builder: (ctx) {
+                return AlertDialog(
+                  title: Text('Are you sure?'),
+                  content: Text('Your payment proccess will get terminated.'),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.of(context).pushAndRemoveUntil(
+                          MaterialPageRoute(
+                              builder: (context) => PaymentStatusView(true)),
+                          (Route<dynamic> route) => false),
+                      child: Text(
+                        'Yes',
+                        style: TextStyle(color: cc.primaryColor),
+                      ),
+                    )
+                  ],
+                );
+              });
+          return false;
+        },
+        child: FutureBuilder(
+            future: waitForIt(context),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return loadingProgressBar();
+              }
+              if (snapshot.hasData) {
+                return const Center(
+                  child: Text('Loding failed.'),
+                );
+              }
+              if (snapshot.hasError) {
+                print(snapshot.error);
+                return const Center(
+                  child: Text('Loding failed.'),
+                );
+              }
+              return WebView(
+                // onWebViewCreated: ((controller) {
+                //   _controller = controller;
+                // }),
+                onWebResourceError: (error) => showDialog(
+                    context: context,
+                    builder: (ctx) {
+                      return AlertDialog(
+                        title: Text('Loading failed!'),
+                        content: Text('Failed to load payment page.'),
+                        actions: [
+                          Spacer(),
+                          TextButton(
+                            onPressed: () => Navigator.of(context)
+                                .pushReplacementNamed(HomeFront.routeName),
+                            child: Text(
+                              'Return',
+                              style: TextStyle(color: cc.primaryColor),
+                            ),
+                          )
+                        ],
+                      );
+                    }),
+                initialUrl: url,
+                javascriptMode: JavascriptMode.unrestricted,
 
-              onPageFinished: (value) async {
-                // final title = await _controller.currentUrl();
-                // print(title);
-                print('on finished......................... $value');
-                // if (value.contains('finish')) {
-                //   bool paySuccess = await verifyPayment(value);
-                //   print('closing payment......');
-                //   print('closing payment.............');
-                //   print('closing payment...................');
-                //   print('closing payment..........................');
-                //   if (paySuccess) {
+                onPageFinished: (value) async {
+                  // final title = await _controller.currentUrl();
+                  // print(title);
+                  print('on finished......................... $value');
+                  // if (value.contains('finish')) {
+                  //   bool paySuccess = await verifyPayment(value);
+                  //   print('closing payment......');
+                  //   print('closing payment.............');
+                  //   print('closing payment...................');
+                  //   print('closing payment..........................');
+                  //   if (paySuccess) {
+                  //     Navigator.of(context).pop();
+                  //     return;
+                  //   }
+                  //   await showDialog(
+                  //       context: context,
+                  //       builder: (ctx) {
+                  //         return AlertDialog(
+                  //           title: Text('Payment failed!'),
+                  //           content: Text('Payment has been cancelled.'),
+                  //           actions: [
+                  //             Spacer(),
+                  //             TextButton(
+                  //               onPressed: () => Navigator.of(context).pop(),
+                  //               child: Text(
+                  //                 'Ok',
+                  //                 style: TextStyle(color: cc.primaryColor),
+                  //               ),
+                  //             )
+                  //           ],
+                  //         );
+                  //       });
+                  //   Navigator.of(context).pop();
+                  // }
+                },
+                // onPageStarted: (value) {
+                //   print("on progress.........................$value");
+                //   if (value.contains('finish')) {
+                //     print('closing payment......');
+                //     print('closing payment.............');
+                //     print('closing payment...................');
+                //     print('closing payment..........................');
                 //     Navigator.of(context).pop();
-                //     return;
                 //   }
-                //   await showDialog(
-                //       context: context,
-                //       builder: (ctx) {
-                //         return AlertDialog(
-                //           title: Text('Payment failed!'),
-                //           content: Text('Payment has been cancelled.'),
-                //           actions: [
-                //             Spacer(),
-                //             TextButton(
-                //               onPressed: () => Navigator.of(context).pop(),
-                //               child: Text(
-                //                 'Ok',
-                //                 style: TextStyle(color: cc.primaryColor),
-                //               ),
-                //             )
-                //           ],
-                //         );
-                //       });
-                //   Navigator.of(context).pop();
-                // }
-              },
-              // onPageStarted: (value) {
-              //   print("on progress.........................$value");
-              //   if (value.contains('finish')) {
-              //     print('closing payment......');
-              //     print('closing payment.............');
-              //     print('closing payment...................');
-              //     print('closing payment..........................');
-              //     Navigator.of(context).pop();
-              //   }
-              // },
-              // navigationDelegate: (navRequest) async {
-              //   print('nav req to .......................${navRequest.url}');
-              //   return NavigationDecision.navigate;
-              // },
-              // javascriptChannels: <JavascriptChannel>[
-              //   // Set Javascript Channel to WebView
-              //   JavascriptChannel(
-              //       name: 'same',
-              //       onMessageReceived: (javMessage) {
-              //         print(javMessage.message);
-              //         print('...........................................');
-              //       }),
-              // ].toSet(),
-            );
-          }),
+                // },
+                // navigationDelegate: (navRequest) async {
+                //   print('nav req to .......................${navRequest.url}');
+                //   return NavigationDecision.navigate;
+                // },
+                // javascriptChannels: <JavascriptChannel>[
+                //   // Set Javascript Channel to WebView
+                //   JavascriptChannel(
+                //       name: 'same',
+                //       onMessageReceived: (javMessage) {
+                //         print(javMessage.message);
+                //         print('...........................................');
+                //       }),
+                // ].toSet(),
+              );
+            }),
+      ),
     );
   }
 
@@ -163,7 +210,7 @@ class CinetPayPayment extends StatelessWidget {
       // Above is API server key for the Midtrans account, encoded to base64
     };
     final checkoutInfo = Provider.of<CheckoutService>(context, listen: false);
-    final orderId = checkoutInfo.checkoutModel.id;
+    final orderId = checkoutInfo!.checkoutModel!.id;
     final response = await http.post(url,
         headers: header,
         body: jsonEncode({

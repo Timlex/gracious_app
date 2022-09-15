@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gren_mart/service/ticket_service.dart';
 import '../../service/add_new_ticket_service.dart';
 import '../../view/auth/custom_text_field.dart';
 import '../../view/intro/custom_dropdown.dart';
@@ -17,6 +18,8 @@ class AddNewTicket extends StatelessWidget {
   Future _onSubmit(BuildContext context, AddNewTicketService ntService) async {
     final validated = _formKey.currentState!.validate();
     if (!validated) {
+      snackBar(context, "Please give all the data properly",
+          backgroundColor: cc.orange);
       return;
     }
     ntService.setIsLoading(true);
@@ -27,12 +30,13 @@ class AddNewTicket extends StatelessWidget {
         return;
       }
       ntService.setIsLoading(false);
+      Provider.of<TicketService>(context, listen: false)
+          .fetchTickets(noForceFetch: false);
       Navigator.of(context).pop();
       return;
-    }).onError(
-        (error, stackTrace) => snackBar(context, 'Couldn\'t add Ticket'));
+    }).onError((error, stackTrace) =>
+        snackBar(context, 'Couldn\'t add Ticket', backgroundColor: cc.orange));
     ntService.setIsLoading(false);
-    Navigator.of(context).pop();
     // ScaffoldMessenger.of(context)
     //     .showSnackBar(snackBar('Invalid email/password'));
   }
@@ -40,7 +44,7 @@ class AddNewTicket extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBars().appBarTitled('Add new address', () {
+        appBar: AppBars().appBarTitled('Add new ticket', () {
           Navigator.of(context).pop();
         }, hasButton: true),
         body:
@@ -132,6 +136,9 @@ class AddNewTicket extends StatelessWidget {
                             if (address == null) {
                               return 'You have to give some description';
                             }
+                            if (address.isEmpty) {
+                              return 'You have to give some description';
+                            }
 
                             return null;
                           },
@@ -148,7 +155,7 @@ class AddNewTicket extends StatelessWidget {
                   child: Stack(
                     children: [
                       customContainerButton(
-                          ntService.isLoading ? '' : 'Add tocken',
+                          ntService.isLoading ? '' : 'Add Ticket',
                           double.infinity,
                           ntService.isLoading
                               ? () {}

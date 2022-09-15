@@ -1,5 +1,10 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:provider/provider.dart';
+import '../../service/country_dropdown_service.dart';
+import '../../service/state_dropdown_service.dart';
+import '../../service/user_profile_service.dart';
 import '../../view/settings/manage_account.dart';
 import '../../view/utils/constant_colors.dart';
 import '../../view/utils/constant_name.dart';
@@ -12,6 +17,7 @@ class SettingScreenAppBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    initiateDeviceSize(context);
     return SizedBox(
       height: screenHight / 3,
       child: Stack(
@@ -26,48 +32,72 @@ class SettingScreenAppBar extends StatelessWidget {
                 bottomRight: Radius.circular(15),
               ),
               color: cc.greyYellow,
-              // boxShadow: const [
-              //   BoxShadow(
-              //       color: Colors.grey,
-              //       blurRadius: 4,
-              //       spreadRadius: 2,
-              //       blurStyle: BlurStyle.normal)
-              // ],
             ),
           ),
           Positioned(
             top: screenHight / 6,
             right: screenWidth / 2.9,
             child: GestureDetector(
-                onTap: () =>
-                    Navigator.of(context).pushNamed(ManageAccount.routeName),
+                onTap: () {
+                  Provider.of<CountryDropdownService>(context, listen: false)
+                      .getContries(context)
+                      .then((value) {
+                    final userData =
+                        Provider.of<UserProfileService>(context, listen: false);
+                    print(userData.userProfileData.country!.id);
+                    if (userData.userProfileData.country != null) {
+                      Provider.of<CountryDropdownService>(context,
+                              listen: false)
+                          .setCountryIdAndValue(
+                              userData.userProfileData.country!.name);
+                    }
+                    if (userData.userProfileData.state != null) {
+                      Provider.of<StateDropdownService>(context, listen: false)
+                          .setStateIdAndValue(
+                              userData.userProfileData.state!.name);
+                    }
+                  });
+                  Navigator.of(context).pushNamed(ManageAccount.routeName);
+                },
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(150),
                   child: CachedNetworkImage(
-                    height: screenWidth / 3.16,
-                    width: screenWidth / 3.16,
-                    fit: BoxFit.cover,
-                    alignment: Alignment.topCenter,
-                    imageUrl: image ?? '',
-                    placeholder: (context, url) => Image.asset(
-                      'assets/images/skelleton.png',
-                    ),
-                    errorWidget: (context, url, error) => Image.asset(
-                      'assets/images/skelleton.png',
-                    ),
-                  ),
-                )
-                // CircleAvatar(
-                //   backgroundColor: cc.greyYellow,
-                //   radius: screenWidth / 6.5,
-                //   backgroundImage: image != null
-                //       ? NetworkImage(
-                //           image as String,
-                //         )
-                //       : const AssetImage('assets/images/setting_dp.png')
-                //           as ImageProvider<Object>,
-                // ),
-                ),
+                      height: screenWidth / 3.16,
+                      width: screenWidth / 3.16,
+                      fit: BoxFit.cover,
+                      alignment: Alignment.topCenter,
+                      imageUrl: image ?? '',
+                      placeholder: (context, url) => Container(
+                            color: cc.primaryColor,
+                            alignment: Alignment.center,
+                            child: Text(
+                              Provider.of<UserProfileService>(context)
+                                  .userProfileData
+                                  .name
+                                  .substring(0, 2)
+                                  .toUpperCase(),
+                              style: TextStyle(
+                                  color: cc.pureWhite,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 45),
+                            ),
+                          ),
+                      errorWidget: (context, url, error) => Container(
+                            color: cc.primaryColor,
+                            alignment: Alignment.center,
+                            child: Text(
+                              Provider.of<UserProfileService>(context)
+                                  .userProfileData
+                                  .name
+                                  .substring(0, 2)
+                                  .toUpperCase(),
+                              style: TextStyle(
+                                  color: cc.pureWhite,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 45),
+                            ),
+                          )),
+                )),
           ),
         ],
       ),

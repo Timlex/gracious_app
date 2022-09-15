@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gren_mart/service/language_service.dart';
 import 'package:gren_mart/service/navigation_bar_helper_service.dart';
 import 'package:gren_mart/view/utils/constant_styles.dart';
 import 'package:provider/provider.dart';
@@ -27,7 +28,6 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<SplashScreen> {
   Future<void> initialize() async {
     await getDatabegeData(context);
-    initiateDeviceSize(context);
 
     await initiateAutoSignIn(context);
   }
@@ -67,42 +67,41 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   initiateAutoSignIn(BuildContext context) async {
+    await LanguageService().setLanguage();
     await Provider.of<SignInSignUpService>(context, listen: false)
         .getToken()
         .then((value) async {
-      if (value != null || value != '') {
-        // try {
-        await Provider.of<UserProfileService>(context, listen: false)
-            .fetchProfileService(value)
-            .then((value) async {
-          if (value == null) {
-            snackBar(context, 'Connection failed!');
+      print('token.........................$value');
+      print(value);
+      if (value != null && value != '') {
+        try {
+          await Provider.of<UserProfileService>(context, listen: false)
+              .fetchProfileService()
+              .then((value) async {
+            if (value == null) {
+              snackBar(context, 'Connection failed!');
+              return;
+            }
+            Provider.of<PosterCampaignSliderService>(context, listen: false)
+                .fetchPosters();
+            print('here');
+            Provider.of<PosterCampaignSliderService>(context, listen: false)
+                .fetchCampaigns();
+            print('here2');
+            print('here2');
+
+            FlutterNativeSplash.remove();
+            Provider.of<NavigationBarHelperService>(context, listen: false)
+                .setNavigationIndex(0);
+            Navigator.of(context).pushReplacementNamed(HomeFront.routeName);
+
             return;
-          }
-          Provider.of<PosterCampaignSliderService>(context, listen: false)
-              .fetchPosters();
-          print('here');
-          Provider.of<PosterCampaignSliderService>(context, listen: false)
-              .fetchCampaigns();
-          print('here2');
-          print('here2');
+          }).onError((error, stackTrace) =>
+                  snackBar(context, "Connection failed!"));
+        } catch (error) {
+          print(error);
+        }
 
-          FlutterNativeSplash.remove();
-          Provider.of<NavigationBarHelperService>(context, listen: false)
-              .setNavigationIndex(0);
-          Navigator.of(context).pushReplacementNamed(HomeFront.routeName);
-
-          return;
-        }).onError(
-                (error, stackTrace) => snackBar(context, "Connection failed!"));
-        // } catch (error) {
-        //   print(error);
-        // }
-        await Provider.of<SignInSignUpService>(context, listen: false)
-            .getUserData();
-
-        // setData(Provider.of<UserProfileService>(context, listen: false)
-        //     .userProfileData);
         return;
       }
       Navigator.of(context).pushReplacementNamed(HomeFront.routeName);
@@ -111,8 +110,12 @@ class _SplashScreenState extends State<SplashScreen> {
       // Future.delayed(const Duration(seconds: 1));
     }).onError((error, stackTrace) async {
       final ref = await SharedPreferences.getInstance();
+
       if (ref.containsKey('intro')) {
         FlutterNativeSplash.remove();
+        await Provider.of<SignInSignUpService>(context, listen: false)
+            .getUserData();
+        print('inside error, going to auth');
         Navigator.of(context).pushReplacementNamed(Auth.routeName);
         Provider.of<AuthTextControllerService>(context, listen: false).setEmail(
             Provider.of<SignInSignUpService>(context, listen: false).email);
@@ -127,8 +130,10 @@ class _SplashScreenState extends State<SplashScreen> {
     if (globalUserToken == null) {
       final ref = await SharedPreferences.getInstance();
       FlutterNativeSplash.remove();
+      print('outside error, going to auth');
       if (ref.containsKey('intro')) {
-        FlutterNativeSplash.remove();
+        await Provider.of<SignInSignUpService>(context, listen: false)
+            .getUserData();
         Navigator.of(context).pushReplacementNamed(Auth.routeName);
         Provider.of<AuthTextControllerService>(context, listen: false).setEmail(
             Provider.of<SignInSignUpService>(context, listen: false).email);

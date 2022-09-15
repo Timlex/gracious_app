@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:gren_mart/view/utils/constant_name.dart';
-import '../../service/common_service.dart';
+
+import '../../view/utils/constant_name.dart';
+import '../../service/language_service.dart';
 import '../../view/utils/constant_colors.dart';
 
 class OrderDetailsTile extends StatelessWidget {
@@ -28,8 +29,9 @@ class OrderDetailsTile extends StatelessWidget {
       child: Column(
         children: [
           ListTile(
-            contentPadding:
-                EdgeInsets.only(left: rtl ? 0 : 20, right: rtl ? 20 : 0),
+            contentPadding: EdgeInsets.only(
+                left: LanguageService().rtl ? 0 : 20,
+                right: LanguageService().rtl ? 20 : 0),
             leading: Container(
               height: 60,
               width: 60,
@@ -45,7 +47,7 @@ class OrderDetailsTile extends StatelessWidget {
               // mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 SizedBox(
-                  width: screenWidth / 2.5,
+                  width: screenWidth / 3,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [

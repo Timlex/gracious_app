@@ -1,21 +1,15 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:gren_mart/service/payment_gateaway_service.dart';
-import 'package:gren_mart/view/utils/app_bars.dart';
-import 'package:gren_mart/view/utils/constant_styles.dart';
 import 'package:provider/provider.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:http/http.dart' as http;
 
-import '../../service/cart_data_service.dart';
+import '../../view/utils/app_bars.dart';
+import '../../view/utils/constant_styles.dart';
 import '../../service/checkout_service.dart';
-import '../../service/cupon_discount_service.dart';
-import '../../service/shipping_addresses_service.dart';
-import '../../service/shipping_zone_service.dart';
-import '../../service/user_profile_service.dart';
+import '../cart/payment_status.dart';
 
 class SquareUpPayment extends StatelessWidget {
   SquareUpPayment({Key? key}) : super(key: key);
@@ -23,135 +17,107 @@ class SquareUpPayment extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBars().appBarTitled('', () {
-        Navigator.of(context).pop();
+      appBar: AppBars().appBarTitled('', () async {
+        await showDialog(
+            context: context,
+            builder: (ctx) {
+              return AlertDialog(
+                title: Text('Are you sure?'),
+                content: Text('Your payment proccess will get terminated.'),
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.of(context).pushAndRemoveUntil(
+                        MaterialPageRoute(
+                            builder: (context) => PaymentStatusView(true)),
+                        (Route<dynamic> route) => false),
+                    child: Text(
+                      'Yes',
+                      style: TextStyle(color: cc.primaryColor),
+                    ),
+                  )
+                ],
+              );
+            });
       }),
-      body: FutureBuilder(
-          future: waitForIt(context),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return loadingProgressBar();
-            }
-            if (snapshot.hasData) {
-              return const Center(
-                child: Text('Loding failed.'),
+      body: WillPopScope(
+        onWillPop: () async {
+          await showDialog(
+              context: context,
+              builder: (ctx) {
+                return AlertDialog(
+                  title: Text('Are you sure?'),
+                  content: Text('Your payment proccess will get terminated.'),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.of(context).pushAndRemoveUntil(
+                          MaterialPageRoute(
+                              builder: (context) => PaymentStatusView(true)),
+                          (Route<dynamic> route) => false),
+                      child: Text(
+                        'Yes',
+                        style: TextStyle(color: cc.primaryColor),
+                      ),
+                    )
+                  ],
+                );
+              });
+          return false;
+        },
+        child: FutureBuilder(
+            future: waitForIt(context),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return loadingProgressBar();
+              }
+              if (snapshot.hasData) {
+                return const Center(
+                  child: Text('Loding failed.'),
+                );
+              }
+              if (snapshot.hasError) {
+                print(snapshot.error);
+                return const Center(
+                  child: Text('Loding failed.'),
+                );
+              }
+              return WebView(
+                onWebResourceError: (error) => showDialog(
+                    context: context,
+                    builder: (ctx) {
+                      return AlertDialog(
+                        title: Text('Loading failed!'),
+                        content: Text('Failed to load payment page.'),
+                        actions: [
+                          Spacer(),
+                          TextButton(
+                            onPressed: () => Navigator.of(context)
+                                .pushAndRemoveUntil(
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            PaymentStatusView(true)),
+                                    (Route<dynamic> route) => false),
+                            child: Text(
+                              'Return',
+                              style: TextStyle(color: cc.primaryColor),
+                            ),
+                          )
+                        ],
+                      );
+                    }),
+                initialUrl: url,
+                javascriptMode: JavascriptMode.unrestricted,
+                onPageFinished: (value) async {
+                  // final title = await _controller.currentUrl();
+                  // print(title);
+                  print('on finished......................... $value');
+                },
               );
-            }
-            if (snapshot.hasError) {
-              print(snapshot.error);
-              return const Center(
-                child: Text('Loding failed.'),
-              );
-            }
-            return WebView(
-              // onWebViewCreated: ((controller) {
-              //   _controller = controller;
-              // }),
-              onWebResourceError: (error) => showDialog(
-                  context: context,
-                  builder: (ctx) {
-                    return AlertDialog(
-                      title: Text('Loading failed!'),
-                      content: Text('Failed to load payment page.'),
-                      actions: [
-                        Spacer(),
-                        TextButton(
-                          onPressed: () => Navigator.of(context).pop(),
-                          child: Text(
-                            'Return',
-                            style: TextStyle(color: cc.primaryColor),
-                          ),
-                        )
-                      ],
-                    );
-                  }),
-              initialUrl: url,
-              javascriptMode: JavascriptMode.unrestricted,
-
-              onPageFinished: (value) async {
-                // final title = await _controller.currentUrl();
-                // print(title);
-                print('on finished......................... $value');
-                // if (value.contains('finish')) {
-                //   bool paySuccess = await verifyPayment(value);
-                //   print('closing payment......');
-                //   print('closing payment.............');
-                //   print('closing payment...................');
-                //   print('closing payment..........................');
-                //   if (paySuccess) {
-                //     Navigator.of(context).pop();
-                //     return;
-                //   }
-                //   await showDialog(
-                //       context: context,
-                //       builder: (ctx) {
-                //         return AlertDialog(
-                //           title: Text('Payment failed!'),
-                //           content: Text('Payment has been cancelled.'),
-                //           actions: [
-                //             Spacer(),
-                //             TextButton(
-                //               onPressed: () => Navigator.of(context).pop(),
-                //               child: Text(
-                //                 'Ok',
-                //                 style: TextStyle(color: cc.primaryColor),
-                //               ),
-                //             )
-                //           ],
-                //         );
-                //       });
-                //   Navigator.of(context).pop();
-                // }
-              },
-              // onPageStarted: (value) {
-              //   print("on progress.........................$value");
-              //   if (value.contains('finish')) {
-              //     print('closing payment......');
-              //     print('closing payment.............');
-              //     print('closing payment...................');
-              //     print('closing payment..........................');
-              //     Navigator.of(context).pop();
-              //   }
-              // },
-              // navigationDelegate: (navRequest) async {
-              //   print('nav req to .......................${navRequest.url}');
-              //   return NavigationDecision.navigate;
-              // },
-              // javascriptChannels: <JavascriptChannel>[
-              //   // Set Javascript Channel to WebView
-              //   JavascriptChannel(
-              //       name: 'same',
-              //       onMessageReceived: (javMessage) {
-              //         print(javMessage.message);
-              //         print('...........................................');
-              //       }),
-              // ].toSet(),
-            );
-          }),
+            }),
+      ),
     );
   }
 
   waitForIt(BuildContext context) async {
-    final userData =
-        Provider.of<UserProfileService>(context, listen: false).userProfileData;
-    final cartData = Provider.of<CartDataService>(context, listen: false);
-    final shippingAddress =
-        Provider.of<ShippingAddressesService>(context, listen: false);
-    final shippingZone =
-        Provider.of<ShippingZoneService>(context, listen: false);
-    final cuponData = Provider.of<CuponDiscountService>(context, listen: false);
-    final selectrdGateaway =
-        Provider.of<PaymentGateawayService>(context, listen: false)
-            .selectedGateaway!;
-    final amount = (shippingZone.taxMoney(context) +
-        shippingZone.shippingCost +
-        cartData.calculateSubtotal() -
-        cuponData.cuponDiscount);
-    // if (selectrdGateaway.serverKey == null ||
-    //     selectrdGateaway.clientKey == null) {
-    //   snackBar(context, 'Invalid developer keys');
-    // }
-    print('here');
     final url = Uri.parse(
         'https://connect.squareupsandbox.com/v2/online-checkout/payment-links');
     final header = {
@@ -161,8 +127,9 @@ class SquareUpPayment extends StatelessWidget {
           'Bearer EAAAEOuLQObrVwJvCvoio3H13b8Ssqz1ighmTBKZvIENW9qxirHGHkqsGcPBC1uN',
       // Above is API server key for the Midtrans account, encoded to base64
     };
-    final checkoutInfo = Provider.of<CheckoutService>(context, listen: false);
-    final orderId = checkoutInfo.checkoutModel.id;
+    final checkoutInfo =
+        Provider.of<CheckoutService>(context, listen: false).checkoutModel;
+    final orderId = checkoutInfo!.id;
     final response = await http.post(url,
         headers: header,
         body: jsonEncode({
@@ -171,10 +138,13 @@ class SquareUpPayment extends StatelessWidget {
           "quick_pay": {
             "location_id": "LE9C12TNM5HAS",
             "name": "grenmart items",
-            "price_money": {"amount": amount.toInt(), "currency": "USD"}
+            "price_money": {
+              "amount": checkoutInfo!.totalAmount,
+              "currency": "USD"
+            }
           },
           "payment_note": "grenmart groceries",
-          "pre_populated_data": {"buyer_email": "kizrudroa@gmail.com"}
+          "pre_populated_data": {"buyer_email": checkoutInfo!.email}
         }));
     print(response.body);
     if (response.statusCode == 200) {

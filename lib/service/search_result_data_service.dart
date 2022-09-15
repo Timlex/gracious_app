@@ -16,7 +16,7 @@ class SearchResultDataService with ChangeNotifier {
   String minPrice = '';
   String ratingPoint = '0';
   bool isLoading = false;
-  bool? lastPage;
+  bool? lastPage = false;
   String categoryId = '';
   String subCategoryId = '';
   String sortBy = '';
@@ -62,8 +62,11 @@ class SearchResultDataService with ChangeNotifier {
     notifyListeners();
   }
 
-  setCategoryId(value) {
+  setCategoryId(value, {bool notListen = false}) {
     categoryId = value;
+    if (notListen) {
+      return;
+    }
     notifyListeners();
   }
 
@@ -124,31 +127,33 @@ class SearchResultDataService with ChangeNotifier {
     }
     print('searching in progress');
     final url = Uri.parse(
-        '$baseApiUrl/product?count=&q=$searchText&cat=$categoryId&subcat=$subCategoryId&pr_min=$minPrice&pr_max=$maxPrice&rt=$ratingPoint&sort=$sortBy&page=$pageNo');
+        '$baseApiUrl/product?count=&q=$searchText&cat=$categoryId&subcat=$subCategoryId&pr_min=$minPrice&pr_max=$maxPrice&rt=${ratingPoint == '0' ? '' : ratingPoint}&sort=$sortBy&page=$pageNo');
     print(url);
-    try {
-      final response = await http.get(url);
+    // try {
+    final response = await http.get(url);
 
-      if (response.statusCode == 201) {
-        var data = SearchResultDataModel.fromJson(jsonDecode(response.body));
+    if (response.statusCode == 201) {
+      var data = SearchResultDataModel.fromJson(jsonDecode(response.body));
 
-        for (var element in data.data) {
-          searchResult.add(element);
-        }
-        resultMeta = data.meta;
-        setLastPage(resultMeta!.lastPage.toString() == pageNo);
-        print(isLoading);
-        print(searchResult.length);
-        print(resultMeta!.lastPage.toString() + '-------------------');
-        setIsLoading(false);
-        setNoProduct(resultMeta!.total == 0);
+      for (var element in data.data) {
+        searchResult.add(element);
+      }
+      resultMeta = data.meta;
+      setLastPage(resultMeta!.lastPage.toString() == pageNo);
+      print(isLoading);
+      print(searchResult.length);
+      print(resultMeta!.lastPage.toString() + '-------------------');
+      setIsLoading(false);
+      setNoProduct(resultMeta!.total == 0);
 
-        notifyListeners();
-      } else {}
-    } catch (error) {
-      print(error);
-
-      rethrow;
+      notifyListeners();
+      return;
     }
+    setNoProduct(true);
+    // } catch (error) {
+    //   print(error);
+
+    //   rethrow;
+    // }
   }
 }

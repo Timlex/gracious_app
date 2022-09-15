@@ -50,6 +50,7 @@ class PaymentGateawayService with ChangeNotifier {
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
       gatawayList = PaymentGateAwayModel.fromJson(data).gatewayList;
+      gatawayList.removeWhere((element) => element.name == "manual_payment");
       selectedGateaway = gatawayList.first;
 
       notifyListeners();

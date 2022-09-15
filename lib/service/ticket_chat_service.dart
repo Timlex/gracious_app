@@ -103,7 +103,6 @@ class TicketChatService with ChangeNotifier {
         "Authorization": "Bearer $globalUserToken",
       },
     );
-    print('searching in progress');
 
     print(url);
     try {

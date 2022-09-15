@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gren_mart/service/order_list_service.dart';
 import 'package:gren_mart/view/utils/constant_styles.dart';
-import '../../view/auth/order_data.dart';
 import '../../view/order/order_tile.dart';
 import '../../view/utils/app_bars.dart';
 import '../../view/utils/constant_colors.dart';
@@ -13,7 +12,6 @@ class MyOrders extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final orderData = Provider.of<OrderData>(context, listen: false).orderItem;
     return Scaffold(
       appBar: AppBars().appBarTitled('My orders', () {
         Navigator.of(context).pop();
@@ -25,7 +23,7 @@ class MyOrders extends StatelessWidget {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return loadingProgressBar();
             }
-            if (!snapshot.hasData) {
+            if (snapshot.hasError) {
               return const Center(
                 child: Text('Failed to load data.'),
               );
@@ -33,7 +31,7 @@ class MyOrders extends StatelessWidget {
 
             return Consumer<OrderListService>(
                 builder: (context, oService, child) {
-              if (oService.orderListModel.data.isEmpty) {
+              if (oService.noOrder) {
                 return const Center(
                   child: Text('No order found.'),
                 );
@@ -41,9 +39,9 @@ class MyOrders extends StatelessWidget {
               return ListView.separated(
                 physics: const BouncingScrollPhysics(
                     parent: AlwaysScrollableScrollPhysics()),
-                itemCount: oService.orderListModel.data.length,
+                itemCount: oService.orderListModel!.data.length,
                 itemBuilder: (context, index) {
-                  final element = oService.orderListModel.data[index];
+                  final element = oService.orderListModel!.data[index];
                   return OrderTile(
                     double.parse(element.totalAmount),
                     '#${element.orderId}',

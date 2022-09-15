@@ -1,6 +1,9 @@
 import 'package:badges/badges.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+import 'package:provider/provider.dart';
+
 import '../../service/cart_data_service.dart';
 import '../../service/favorite_data_service.dart';
 import '../../service/navigation_bar_helper_service.dart';
@@ -12,9 +15,6 @@ import '../../view/search/search.dart';
 import '../../view/settings/setting.dart';
 import '../../view/utils/constant_colors.dart';
 import '../../view/utils/constant_styles.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
-import 'package:provider/provider.dart';
-
 import '../../service/search_result_data_service.dart';
 import '../search/filter_bottom_sheeet.dart';
 
@@ -70,19 +70,55 @@ class HomeFront extends StatelessWidget {
               },
               itemBuilder: (context) => [
                     PopupMenuItem(
-                      child: const Text('Popularity'),
+                      child: Text(
+                        'Popularity',
+                        style: TextStyle(
+                            color: Provider.of<SearchResultDataService>(context,
+                                            listen: false)
+                                        .sortBy ==
+                                    'popularity'
+                                ? cc.primaryColor
+                                : cc.blackColor),
+                      ),
                       value: values.sortOption[0],
                     ),
                     PopupMenuItem(
-                      child: const Text('Letest'),
+                      child: Text(
+                        'Letest',
+                        style: TextStyle(
+                            color: Provider.of<SearchResultDataService>(context,
+                                            listen: false)
+                                        .sortBy ==
+                                    'latest'
+                                ? cc.primaryColor
+                                : cc.blackColor),
+                      ),
                       value: values.sortOption[1],
                     ),
                     PopupMenuItem(
-                      child: const Text('Lower price'),
+                      child: Text(
+                        'Lower price',
+                        style: TextStyle(
+                            color: Provider.of<SearchResultDataService>(context,
+                                            listen: false)
+                                        .sortBy ==
+                                    'price_low'
+                                ? cc.primaryColor
+                                : cc.blackColor),
+                      ),
                       value: values.sortOption[2],
                     ),
                     PopupMenuItem(
-                      child: const Text('Higher price'),
+                      child: Text(
+                        'Higher price',
+                        style: TextStyle(
+                            color: Provider.of<SearchResultDataService>(context,
+                                            listen: false)
+                                        .sortBy ==
+                                    'price_high'
+                                ? cc.primaryColor
+                                : cc.blackColor),
+                      ),
                       value: values.sortOption[3],
                     ),
                   ]),

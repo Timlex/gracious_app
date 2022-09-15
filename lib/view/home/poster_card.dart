@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../../service/language_service.dart';
 import '../../service/navigation_bar_helper_service.dart';
 import '../../service/search_result_data_service.dart';
 import '../../view/utils/constant_colors.dart';
 import '../../view/utils/constant_name.dart';
 import 'all_camp_product_from_link.dart';
+import 'category_product_page.dart';
 
 class PosterCard extends StatelessWidget {
   final String title;
@@ -23,6 +25,7 @@ class PosterCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    initiateDeviceSize(context);
     return
         // Container(
         //   // padding: const EdgeInsets.only(left: 20, top: 25),
@@ -69,7 +72,7 @@ class PosterCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             SizedBox(
-              width: screenWidth / 2.9,
+              width: screenWidth / 2.5,
               child: Text(
                 title,
                 style: TextStyle(
@@ -104,20 +107,14 @@ class PosterCard extends StatelessWidget {
                   if (capm != null) {
                     Navigator.of(context).pushNamed(
                         ALLCampProductFromLink.routeName,
-                        arguments: [capm.toString()]);
+                        arguments: [capm.toString(), title]);
                   }
                   if (cat != null) {
                     Provider.of<SearchResultDataService>(context, listen: false)
-                        .resetSerch();
-                    Provider.of<SearchResultDataService>(context, listen: false)
-                        .setFilterOn(true);
-                    Provider.of<SearchResultDataService>(context, listen: false)
-                        .setCategoryId(cat.toString());
-                    Provider.of<SearchResultDataService>(context, listen: false)
-                        .fetchProductsBy(pageNo: '1');
-                    Provider.of<NavigationBarHelperService>(context,
-                            listen: false)
-                        .setNavigationIndex(1);
+                        .setCategoryId(capm.toString(), notListen: true);
+                    Navigator.of(context).pushNamed(
+                        CategoryProductPage.routeName,
+                        arguments: [capm.toString(), title]);
                   }
                 },
                 child: FittedBox(
@@ -142,10 +139,13 @@ class PosterCard extends StatelessWidget {
           ],
         ),
         const Spacer(),
-        Padding(
-          padding: const EdgeInsets.only(left: 15),
+        Container(
+          margin: EdgeInsets.only(
+              right: LanguageService().rtl ? 0 : 3,
+              left: LanguageService().rtl ? 3 : 0,
+              bottom: 2),
           child: SizedBox(
-              height: screenHight / 7,
+              // height: screenHight / 7,
               width: screenWidth / 3.7,
               child: Image.network(
                 image,
@@ -166,6 +166,7 @@ class PosterCartSkelleton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    initiateDeviceSize(context);
     return SizedBox(
       width: screenWidth / 5,
       child: Row(

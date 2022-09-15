@@ -1,13 +1,19 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:gren_mart/service/cupon_discount_service.dart';
-import 'package:gren_mart/service/shipping_zone_service.dart';
+import 'package:gren_mart/service/payment_gateaway_service.dart';
+import 'package:provider/provider.dart';
+
+import '../../service/checkout_service.dart';
+import '../../service/cupon_discount_service.dart';
+import '../../service/shipping_zone_service.dart';
 import '../../service/cart_data_service.dart';
 import '../../view/cart/cart_tile.dart';
 import '../../view/cart/checkout.dart';
 import '../../view/utils/constant_colors.dart';
-import '../../view/utils/constant_name.dart';
 import '../../view/utils/constant_styles.dart';
-import 'package:provider/provider.dart';
+import '../order/order_details.dart';
+import '../utils/constant_name.dart';
+import '../utils/text_themes.dart';
 
 class CartView extends StatelessWidget {
   static const routeName = 'cart';
@@ -17,6 +23,7 @@ class CartView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    initiateDeviceSize(context);
     List<String> cuponData = [];
     return Consumer<CartDataService>(builder: (context, cartData, child) {
       cartData.cartList!.forEach((key, value) {
@@ -29,40 +36,56 @@ class CartView extends StatelessWidget {
       return Column(
         children: [
           const SizedBox(height: 10),
-          Expanded(
-            child: ListView(
-                physics: Provider.of<CartDataService>(context).cartList!.isEmpty
-                    ? const NeverScrollableScrollPhysics()
-                    : const BouncingScrollPhysics(
-                        parent: AlwaysScrollableScrollPhysics()),
-                children: [
-                  ...cartTiles(cartData),
-                  if (cartData.cartList!.isEmpty)
-                    Center(
-                        child: Text('Add item to cart!',
-                            style: TextStyle(color: cc.greyHint))),
-                ]),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(20),
-            child: customContainerButton(
-              'Checkout',
-              double.infinity,
-              cuponData.isEmpty
-                  ? () {
-                      snackBar(context, 'Add Items to cart.');
-                    }
-                  : () {
-                      print(cuponData.toString());
-                      Provider.of<CuponDiscountService>(context, listen: false)
-                          .setCarData(cuponData.toString().replaceAll(' ', ''));
-                      Navigator.of(context).pushNamed(Checkout.routeName).then(
-                          (value) => Provider.of<ShippingZoneService>(context,
-                                  listen: false)
-                              .resetChecout());
-                    },
+          if (cartData.cartList!.isNotEmpty)
+            Expanded(
+              child: ListView(
+                  physics:
+                      Provider.of<CartDataService>(context).cartList!.isEmpty
+                          ? const NeverScrollableScrollPhysics()
+                          : const BouncingScrollPhysics(
+                              parent: AlwaysScrollableScrollPhysics()),
+                  children: [
+                    ...cartTiles(cartData),
+                  ]),
             ),
-          ),
+          if (cartData.cartList!.isEmpty)
+            Expanded(
+                child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  height: screenHight / 2.5,
+                  padding: const EdgeInsets.all(20),
+                  child: Image.asset('assets/images/empty_cart.png'),
+                ),
+                Center(
+                    child: Text('Add item to cart!',
+                        style: TextStyle(
+                          color: cc.greyHint,
+                        ))),
+              ],
+            )),
+          if (Provider.of<CartDataService>(context, listen: false)
+              .cartList!
+              .isNotEmpty)
+            Padding(
+              padding: const EdgeInsets.all(20),
+              child: customContainerButton(
+                'Checkout',
+                double.infinity,
+                () {
+                  print(cuponData.toString());
+                  Provider.of<CuponDiscountService>(context, listen: false)
+                      .setCarData(cuponData.toString().replaceAll(' ', ''));
+                  Navigator.of(context)
+                      .pushNamed(Checkout.routeName)
+                      .then((value) {
+                    Provider.of<ShippingZoneService>(context, listen: false)
+                        .resetChecout();
+                  });
+                },
+              ),
+            ),
         ],
       );
     });

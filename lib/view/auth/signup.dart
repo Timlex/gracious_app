@@ -2,6 +2,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:gren_mart/view/utils/web_view.dart';
 import '../../service/auth_text_controller_service.dart';
+import '../../service/common_service.dart';
 import '../../service/country_dropdown_service.dart';
 import '../../service/signin_signup_service.dart';
 import '../../view/intro/custom_dropdown.dart';
@@ -192,7 +193,7 @@ class SignUp extends StatelessWidget {
               if (cityText!.isEmpty) {
                 return 'Enter at least 6 charechters';
               }
-              if (cityText.length <= 5) {
+              if (cityText.length <= 2) {
                 return 'Enter at least 6 charechters';
               }
               return null;
@@ -284,7 +285,8 @@ class SignUp extends StatelessWidget {
                                 ..onTap = () => Navigator.of(context).pushNamed(
                                         WebViewScreen.routeName,
                                         arguments: [
-                                          'https://zahid.xgenious.com/grenmart-api/terms-and-conditions'
+                                          'Terms and Conditions',
+                                          '$baseApiUrl/terms-and-condition-page'
                                         ]),
                               text: ' Terms and Conditions',
                               style: TextStyle(color: cc.primaryColor)),
@@ -292,6 +294,13 @@ class SignUp extends StatelessWidget {
                               text: ' & ',
                               style: TextStyle(color: cc.greyHint)),
                           TextSpan(
+                              recognizer: TapGestureRecognizer()
+                                ..onTap = () => Navigator.of(context).pushNamed(
+                                        WebViewScreen.routeName,
+                                        arguments: [
+                                          'Privacy Policy',
+                                          '$baseApiUrl/privacy-policy-page'
+                                        ]),
                               text: ' Privacy Policy',
                               style: TextStyle(color: cc.primaryColor)),
                         ]),

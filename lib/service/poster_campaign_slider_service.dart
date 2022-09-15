@@ -24,12 +24,7 @@ class PosterCampaignSliderService with ChangeNotifier {
     if (response.statusCode == 200) {
       final data = MobileSliderModel.fromJson(jsonDecode(response.body));
       var stateData = [];
-      // for (int i = 0; i < data.data.length; i++) {
-      //   posterDataList.add({
-      //     'title': data.data[i].title,
-      //     'description': data.data[i].description,
-      //     'image': data.data[i].image,
-      //   });        }
+
       posterDataList = data.data;
       print(posterDataList[0].title);
       print('-------------------------------------');

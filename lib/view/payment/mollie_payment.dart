@@ -1,21 +1,16 @@
 import 'dart:convert';
-import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:gren_mart/service/payment_gateaway_service.dart';
-import 'package:gren_mart/service/social_login_service.dart';
-import 'package:gren_mart/view/utils/app_bars.dart';
-import 'package:gren_mart/view/utils/constant_styles.dart';
 import 'package:provider/provider.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:http/http.dart' as http;
 
-import '../../service/cart_data_service.dart';
+import '../../service/payment_gateaway_service.dart';
+import '../../view/utils/app_bars.dart';
+import '../../view/utils/constant_styles.dart';
 import '../../service/checkout_service.dart';
-import '../../service/cupon_discount_service.dart';
-import '../../service/shipping_addresses_service.dart';
-import '../../service/shipping_zone_service.dart';
-import '../../service/user_profile_service.dart';
+import '../../service/confirm_payment_service.dart';
+import '../cart/payment_status.dart';
 
 class MolliePayment extends StatelessWidget {
   MolliePayment({Key? key}) : super(key: key);
@@ -24,159 +19,171 @@ class MolliePayment extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBars().appBarTitled('', () {
-        Navigator.of(context).pop();
+      appBar: AppBars().appBarTitled('', () async {
+        await showDialog(
+            context: context,
+            builder: (ctx) {
+              return AlertDialog(
+                title: Text('Are you sure?'),
+                content: Text('Your payment proccess will get terminated.'),
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.of(context).pushAndRemoveUntil(
+                        MaterialPageRoute(
+                            builder: (context) => PaymentStatusView(true)),
+                        (Route<dynamic> route) => false),
+                    child: Text(
+                      'Yes',
+                      style: TextStyle(color: cc.primaryColor),
+                    ),
+                  )
+                ],
+              );
+            });
       }),
-      body: FutureBuilder(
-          future: waitForIt(context),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return loadingProgressBar();
-            }
-            if (snapshot.hasData) {
-              return const Center(
-                child: Text('Loding failed.'),
+      body: WillPopScope(
+        onWillPop: () async {
+          await showDialog(
+              context: context,
+              builder: (ctx) {
+                return AlertDialog(
+                  title: Text('Are you sure?'),
+                  content: Text('Your payment proccess will get terminated.'),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.of(context).pushAndRemoveUntil(
+                          MaterialPageRoute(
+                              builder: (context) => PaymentStatusView(true)),
+                          (Route<dynamic> route) => false),
+                      child: Text(
+                        'Yes',
+                        style: TextStyle(color: cc.primaryColor),
+                      ),
+                    )
+                  ],
+                );
+              });
+          return false;
+        },
+        child: FutureBuilder(
+            future: waitForIt(context),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return loadingProgressBar();
+              }
+              if (snapshot.hasData) {
+                return const Center(
+                  child: Text('Loding failed.'),
+                );
+              }
+              if (snapshot.hasError) {
+                print(snapshot.error);
+                return const Center(
+                  child: Text('Loding failed.'),
+                );
+              }
+              return WebView(
+                initialUrl: url,
+                javascriptMode: JavascriptMode.unrestricted,
+                onPageStarted: (value) async {
+                  print("on progress.........................$value");
+                  if (value.contains('xgenious')) {
+                    String status = await verifyPayment();
+                    if (status == 'paid') {
+                      await Provider.of<ConfirmPaymentService>(context,
+                              listen: false)
+                          .confirmPayment(context);
+                    }
+                    if (status == 'open') {
+                      await showDialog(
+                          context: context,
+                          builder: (ctx) {
+                            return AlertDialog(
+                              title: Text('Payment cancelled!'),
+                              content: Text('Payment has been cancelled.'),
+                              actions: [
+                                TextButton(
+                                  onPressed: () => Navigator.of(context)
+                                      .pushAndRemoveUntil(
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  PaymentStatusView(true)),
+                                          (Route<dynamic> route) => false),
+                                  child: Text(
+                                    'Ok',
+                                    style: TextStyle(color: cc.primaryColor),
+                                  ),
+                                )
+                              ],
+                            );
+                          });
+
+                      return;
+                    }
+                    if (status == 'failed') {
+                      await showDialog(
+                          context: context,
+                          builder: (ctx) {
+                            return AlertDialog(
+                              title: Text('Payment failed!'),
+                              actions: [
+                                TextButton(
+                                  onPressed: () => Navigator.of(context)
+                                      .pushAndRemoveUntil(
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  PaymentStatusView(true)),
+                                          (Route<dynamic> route) => false),
+                                  child: Text(
+                                    'Ok',
+                                    style: TextStyle(color: cc.primaryColor),
+                                  ),
+                                )
+                              ],
+                            );
+                          });
+
+                      return;
+                    }
+                    if (status == 'expired') {
+                      await showDialog(
+                          context: context,
+                          builder: (ctx) {
+                            return AlertDialog(
+                              title: Text('Payment failed!'),
+                              content: Text('Payment has been expired.'),
+                              actions: [
+                                TextButton(
+                                  onPressed: () => Navigator.of(context)
+                                      .pushAndRemoveUntil(
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  PaymentStatusView(true)),
+                                          (Route<dynamic> route) => false),
+                                  child: Text(
+                                    'Ok',
+                                    style: TextStyle(color: cc.primaryColor),
+                                  ),
+                                )
+                              ],
+                            );
+                          });
+
+                      return;
+                    }
+                    print('closing payment......');
+                    print('closing payment.............');
+                    print('closing payment...................');
+                    print('closing payment..........................');
+                  }
+                },
               );
-            }
-            if (snapshot.hasError) {
-              print(snapshot.error);
-              return const Center(
-                child: Text('Loding failed.'),
-              );
-            }
-            return WebView(
-              initialUrl: url,
-              javascriptMode: JavascriptMode.unrestricted,
-              onPageStarted: (value) async {
-                print("on progress.........................$value");
-                if (value.contains('xgenious')) {
-                  String status = await verifyPayment();
-                  if (status == 'paid') {
-                    await showDialog(
-                        context: context,
-                        builder: (ctx) {
-                          return AlertDialog(
-                            title: Text('Payment Successfull!'),
-                            actions: [
-                              Spacer(),
-                              TextButton(
-                                onPressed: () => Navigator.of(context).pop(),
-                                child: Text(
-                                  'Ok',
-                                  style: TextStyle(color: cc.primaryColor),
-                                ),
-                              )
-                            ],
-                          );
-                        });
-                    Navigator.of(context).pop();
-                  }
-                  if (status == 'open') {
-                    await showDialog(
-                        context: context,
-                        builder: (ctx) {
-                          return AlertDialog(
-                            title: Text('Payment cancelled!'),
-                            content: Text('Payment has been cancelled.'),
-                            actions: [
-                              Spacer(),
-                              TextButton(
-                                onPressed: () => Navigator.of(context).pop(),
-                                child: Text(
-                                  'Ok',
-                                  style: TextStyle(color: cc.primaryColor),
-                                ),
-                              )
-                            ],
-                          );
-                        });
-                    Navigator.of(context).pop();
-                    return;
-                  }
-                  if (status == 'failed') {
-                    await showDialog(
-                        context: context,
-                        builder: (ctx) {
-                          return AlertDialog(
-                            title: Text('Payment failed!'),
-                            actions: [
-                              Spacer(),
-                              TextButton(
-                                onPressed: () => Navigator.of(context).pop(),
-                                child: Text(
-                                  'Ok',
-                                  style: TextStyle(color: cc.primaryColor),
-                                ),
-                              )
-                            ],
-                          );
-                        });
-                    Navigator.of(context).pop();
-                    return;
-                  }
-                  if (status == 'expired') {
-                    await showDialog(
-                        context: context,
-                        builder: (ctx) {
-                          return AlertDialog(
-                            title: Text('Payment failed!'),
-                            content: Text('Payment has been expired.'),
-                            actions: [
-                              Spacer(),
-                              TextButton(
-                                onPressed: () => Navigator.of(context).pop(),
-                                child: Text(
-                                  'Ok',
-                                  style: TextStyle(color: cc.primaryColor),
-                                ),
-                              )
-                            ],
-                          );
-                        });
-                    Navigator.of(context).pop();
-                    return;
-                  }
-                  print('closing payment......');
-                  print('closing payment.............');
-                  print('closing payment...................');
-                  print('closing payment..........................');
-                }
-              },
-              // navigationDelegate: (navReq) {
-              //   if (!navReq.url.contains('xgenious')) {
-              //     return NavigationDecision.navigate;
-              //   }
-              //   if (verifyPayment()) {
-              //     Navigator.of(context).pop();
-              //     return NavigationDecision.prevent;
-              //   }
-              //   return NavigationDecision.navigate;
-              // },
-            );
-          }),
+            }),
+      ),
     );
   }
 
   waitForIt(BuildContext context) async {
-    final userData =
-        Provider.of<UserProfileService>(context, listen: false).userProfileData;
-    final cartData = Provider.of<CartDataService>(context, listen: false);
-    final shippingAddress =
-        Provider.of<ShippingAddressesService>(context, listen: false);
-    final shippingZone =
-        Provider.of<ShippingZoneService>(context, listen: false);
-    final cuponData = Provider.of<CuponDiscountService>(context, listen: false);
-    final amount = (shippingZone.taxMoney(context) +
-        shippingZone.shippingCost +
-        cartData.calculateSubtotal() -
-        cuponData.cuponDiscount);
-    // final selectrdGateaway =
-    //     Provider.of<PaymentGateawayService>(context, listen: false)
-    //         .selectedGateaway!;
-    // if (selectrdGateaway.serverKey == null ||
-    //     selectrdGateaway.clientKey == null) {
-    //   snackBar(context, 'Invalid developer keys');
-    // }
     final url = Uri.parse('https://api.mollie.com/v2/payments');
     final selectedGateaway =
         Provider.of<PaymentGateawayService>(context, listen: false)
@@ -187,18 +194,23 @@ class MolliePayment extends StatelessWidget {
       "Authorization": "Bearer test_fVk76gNbAp6ryrtRjfAVvzjxSHxC2v",
       // Above is API server key for the Midtrans account, encoded to base64
     };
-    final checkoutInfo = Provider.of<CheckoutService>(context, listen: false);
-    final orderId = checkoutInfo.checkoutModel.id;
+    final checkoutInfo =
+        Provider.of<CheckoutService>(context, listen: false).checkoutModel;
+    final orderId = checkoutInfo!.id;
     final response = await http.post(url,
         headers: header,
         body: jsonEncode({
-          "amount": {"value": "235.22", "currency": "USD"},
-          "description": "Grenmart_groceries",
+          "amount": {
+            "value": double.parse(checkoutInfo.totalAmount).toStringAsFixed(2),
+            "currency": "USD"
+          },
+          "description": "Grenmart groceries",
           "redirectUrl": "http://www.xgenious.com",
           "webhookUrl": "http://www.xgenious.com",
-          "metadata": "$orderId",
+          "metadata": "creditcard",
           // "method": "creditcard",
         }));
+    print(response.body);
     if (response.statusCode == 201) {
       this.url = jsonDecode(response.body)['_links']['checkout']['href'];
       this.statusURl = jsonDecode(response.body)['_links']['self']['href'];

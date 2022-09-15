@@ -17,27 +17,6 @@ class ReviewBox extends StatelessWidget {
   ReviewBox(this.expanded, this.id, {this.onPressed, Key? key})
       : super(key: key);
 
-  // final reviewData = [
-  //   {
-  //     'username': 'Jack',
-  //     'rating': 2,
-  //     'comment': 'afasd sfdghfg hf hsfsjfkh',
-  //     'date': DateTime(2022, 7, 15)
-  //   },
-  //   {
-  //     'username': 'James',
-  //     'rating': 5,
-  //     'comment': 'afasd sfdghfg hf hsfsjfkh ha fhbfs shfsajf hsfjh;hsjfh',
-  //     'date': DateTime(2022, 5, 15)
-  //   },
-  //   {
-  //     'username': 'Joe',
-  //     'rating': 3,
-  //     'comment':
-  //         'afasd sfdghfg hf hsfsjfkh ha fhbfs shfsajf hsfjh;hsjfhafasd sfdghfg hf hsfsjfkh ha fhbfs shfsajf hsfjh;hsjfh',
-  //     'date': DateTime(2022, 3, 15)
-  //   },
-  // ];
   final TextEditingController _controller = TextEditingController();
 
   @override
@@ -45,6 +24,7 @@ class ReviewBox extends StatelessWidget {
     return Column(
       children: [
         ListTile(
+          onTap: onPressed,
           dense: false,
           contentPadding: const EdgeInsets.symmetric(horizontal: 18),
           title: const Text(
@@ -78,7 +58,8 @@ class ReviewBox extends StatelessWidget {
             height: 20,
           ),
         if (expanded)
-          ...descriptions(Provider.of<ProductDetailsService>(context))
+          ...descriptions(Provider.of<ProductDetailsService>(context)),
+        const SizedBox(height: 20)
       ],
     );
   }
@@ -144,12 +125,13 @@ class ReviewBox extends StatelessWidget {
                   color: cc.greyHint,
                   fontWeight: FontWeight.w600,
                   fontSize: 14),
-            )
+            ),
           ]
         : reviewList;
   }
 
   Widget submitReview(BuildContext context) {
+    initiateDeviceSize(context);
     final textTheme = TextStyle(
         fontSize: 17, fontWeight: FontWeight.bold, color: cc.greyParagraph);
     return Form(
@@ -238,15 +220,16 @@ class ReviewBox extends StatelessWidget {
                   double.infinity,
                   Provider.of<ReviewService>(context).isLoading
                       ? () {}
-                      : () {
+                      : () async {
                           if (rService.comment.isEmpty) {
                             snackBar(context, 'Please write a feedback');
                             return;
                           }
                           rService.toggleLaodingSpinner(true);
                           FocusScope.of(context).unfocus();
-                          rService.submitReview(id.toString(), context).onError(
-                              (error, stackTrace) =>
+                          await rService
+                              .submitReview(id.toString(), context)
+                              .onError((error, stackTrace) =>
                                   snackBar(context, 'Connection failed'));
                           rService.toggleLaodingSpinner(false);
                         },

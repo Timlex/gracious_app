@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:gren_mart/service/product_details_service.dart';
 import 'package:gren_mart/view/utils/constant_name.dart';
 import 'package:gren_mart/view/utils/constant_styles.dart';
+import 'package:provider/provider.dart';
 import 'dart:convert';
 
 import '../../service/common_service.dart';
@@ -48,7 +50,10 @@ class ReviewService with ChangeNotifier {
     print(response.body);
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
-
+      Provider.of<ProductDetailsService>(context, listen: false)
+          .setReviewing(false);
+      await Provider.of<ProductDetailsService>(context, listen: false)
+          .fetchProductDetails(id: id);
       notifyListeners();
       return;
     }

@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:gren_mart/view/utils/constant_styles.dart';
 import 'package:http/http.dart' as http;
 
 import '../db/database_helper.dart';
@@ -25,28 +26,36 @@ class CartDataService with ChangeNotifier {
   }
 
   formatItems() {
-    List list = [];
     Map map = {};
 
     _cartItems!.keys.forEach((element) {
+      List list = [];
+      print(element);
       _cartItems![element]!.forEach((e) {
         if (e['attributes'] == null) {
           list.add(({
             'id': e['id'],
             'quantity': e['quantity'],
-            'attributes': {},
+            'attributes': {"price": e['price']},
           }));
         }
         if (e['attributes'] != null) {
+          (e['attributes'] as Map).putIfAbsent("price", () => e['price']);
           list.add(({
             'id': e['id'],
             'quantity': e['quantity'],
+            'hash': e['hash'],
             'attributes': e['attributes'],
           }));
         }
       });
+      (list[0]['attributes'] as Map).remove('Color_name');
+      (list[0]['attributes'] as Map).remove('Color');
+      print(list);
       map.putIfAbsent(element, () => list);
+      print(list);
     });
+    print(map);
     return map;
   }
 
@@ -58,40 +67,12 @@ class CartDataService with ChangeNotifier {
         element.update('quantity', (value) {
           int sum = (value as int) + (extraQuantity ?? 1);
           print(sum);
-          // _cartItems![id.toString()]!.firstWhere((e) =>
-          //     e.containsKey(id.toString()) &&
-          //     e.containsValue(inventorySet))['quantity'] = sum;
-          // return {
-          //   'prodcutId': value['prodcutId'],
-          //   'title': value['title'],
-          //   'price': value['price'],
-          //   'imgUrl': value['imgUrl'],
-          //   'quantity': sum,
-          //   'attributes': value['attributes'],
-          // };
+
           return sum;
         });
       }
     });
-    // _cartItems![id.toString()]!
-    //     .where((element) =>
-    //         element.containsKey(id.toString()) &&
-    //         element.containsValue(inventorySet))
-    //     .first
-    //     .update(id.toString(), (value) {
-    //   int sum = (value as Map)['quantity'] + (extraQuantity ?? 1);
-    //   _cartItems![id.toString()]!.firstWhere((e) =>
-    //       e.containsKey(id.toString()) &&
-    //       e.containsValue(inventorySet))['quantity'] = sum;
-    //   return {
-    //     'prodcutId': value['prodcutId'],
-    //     'title': value['title'],
-    //     'price': value['price'],
-    //     'imgUrl': value['imgUrl'],
-    //     'quantity': sum,
-    //     'attributes': value['attributes'],
-    //   };
-    // });
+
     DbHelper.updateQuantity(
       'cart',
       id,
@@ -116,42 +97,13 @@ class CartDataService with ChangeNotifier {
             sum -= 1;
           }
           print(sum);
-          // _cartItems![id.toString()]!.firstWhere((e) =>
-          //     e.containsKey(id.toString()) &&
-          //     e.containsValue(inventorySet))['quantity'] = sum;
-          // return {
-          //   'prodcutId': value['prodcutId'],
-          //   'title': value['title'],
-          //   'price': value['price'],
-          //   'imgUrl': value['imgUrl'],
-          //   'quantity': sum,
-          //   'attributes': value['attributes'],
+
           // };
           return sum;
         });
       }
     });
-    // if (_cartItems![id.toString()]!.firstWhere((element) =>
-    //         element.containsKey(id.toString()) &&
-    //         element.containsValue(inventorySet))['quantity'] ==
-    //     1) {
-    //   return;
-    // }
-    // _cartItems![id.toString()]!
-    //     .firstWhere((element) =>
-    //         element.containsKey(id.toString()) &&
-    //         element.containsValue(inventorySet))
-    //     .update(id.toString(), (value) {
-    //   int sum = (value as Map)['quantity'] - 1;
-    //   return {
-    //     'prodcutId': value['prodcutId'],
-    //     'title': value['title'],
-    //     'price': value['price'],
-    //     'imgUrl': value['imgUrl'],
-    //     'quantity': sum,
-    //     'attributes': value['attributes'],
-    //   };
-    // });
+
     DbHelper.updateQuantity(
       'cart',
       id,
@@ -165,16 +117,9 @@ class CartDataService with ChangeNotifier {
     notifyListeners();
   }
 
-  void deleteFromCart(String id) {
-    // int index = _cartList.indexWhere((element) => element['prodcutId'].id == id);
-
-    // _cartList.removeAt(index);
-    // print(_cartList.length.toString());
-  }
-
-  void addCartItem(int id, String title, int price, int discountPrice,
-      double campaignPercentage, int quantity, String imgUrl,
-      {inventorySet}) async {
+  void addCartItem(BuildContext context, int id, String title, int price,
+      int discountPrice, double campaignPercentage, int quantity, String imgUrl,
+      {String? hash, inventorySet}) async {
     print(inventorySet);
     Map<String, List<Map<String, Object?>>>? map = {
       id.toString(): [
@@ -184,6 +129,7 @@ class CartDataService with ChangeNotifier {
           'price': price,
           'imgUrl': imgUrl,
           'quantity': quantity,
+          'hash': hash,
           'attributes': inventorySet
         },
       ]
@@ -218,70 +164,27 @@ class CartDataService with ChangeNotifier {
           'price': price,
           'imgUrl': imgUrl,
           'quantity': quantity,
+          'hash': hash,
           'attributes': inventorySet
         }
       ];
-      // _cartItems!.putIfAbsent(
-      //     id.toString(),
-      //     () => [
-      //           {
-      //             'id': id,
-      //             'title': title,
-      //             'price': price,
-      //             'imgUrl': imgUrl,
-      //             'quantity': quantity,
-      //             'attributes': inventorySet
-      //           }
-      //         ]);
+      snackBar(context, 'Item added to cart.');
       notifyListeners();
       return;
     }
 
-    // bool itemAbsent = false;
-    // _cartItems![id.toString()]!.forEach((element) {
-    //   itemAbsent =
-    //       element['attributes'] == inventorySet && inventorySet != null;
-    // });
-    // if (_cartItems!.containsKey(id.toString()) && itemAbsent) {
-    _cartItems![id.toString()]!.add({
-      'id': id,
-      'title': title,
-      'price': price,
-      'imgUrl': imgUrl,
-      'quantity': quantity,
-      'attributes': inventorySet
-    });
-    DbHelper.updateQuantity(
-      'cart',
-      id,
-      {
-        'data': jsonEncode({
-          id.toString(): cartList![id.toString()],
-        })
-      },
-    );
-    // }
+    snackBar(context, 'Multiple attribute set can\'t be added.',
+        backgroundColor: cc.orange);
     print(id);
     print(_cartItems![id.toString]);
-    // _cartItems![id.toString]!.add({
-    //     'id': id,
-    //     'title': title,
-    //     'price': price,
-    //     'imgUrl': imgUrl,
-    //     'quantity': quantity,
-    //     'attributes': inventorySet
-    //   });
+
     notifyListeners();
-    // } catch (error) {
-    //   print(error);
-    //   return;
-    // }
   }
 
   void fetchCarts() async {
     final dbData = await DbHelper.fetchDb('cart');
     Map<String, List<Map<String, Object?>>> dataList = {};
-    if (dbData == null) {
+    if (dbData == null || dbData.isEmpty) {
       print('cart db is empty');
       return;
     }
@@ -304,8 +207,10 @@ class CartDataService with ChangeNotifier {
   }
 
   void deleteCartItem(int id, {inventorySet}) async {
-    print(cartList![id.toString()]!.length);
     print(inventorySet);
+    if (!cartList!.containsKey(id.toString())) {
+      return;
+    }
     if (cartList![id.toString()]!.length == 1) {
       await DbHelper.deleteDbSI('cart', id);
       _cartItems!.remove(id.toString());
@@ -349,5 +254,11 @@ class CartDataService with ChangeNotifier {
         deleteCartItem(int.parse(key));
       }
     });
+  }
+
+  emptyCart() async {
+    await DbHelper.deleteDbTable('cart');
+    _cartItems = {};
+    notifyListeners();
   }
 }

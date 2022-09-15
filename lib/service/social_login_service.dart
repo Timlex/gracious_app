@@ -10,6 +10,13 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SocialLoginService with ChangeNotifier {
+  bool isLoding = false;
+
+  setIsLoading(value) {
+    isLoding = value;
+    notifyListeners();
+  }
+
   Future facebookLogin(BuildContext context) async {
     try {
       final AccessToken? accessToken = await FacebookAuth.instance.accessToken;

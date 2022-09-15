@@ -7,19 +7,24 @@ import 'package:gren_mart/view/utils/constant_name.dart';
 import 'package:http/http.dart' as http;
 
 class OrderListService with ChangeNotifier {
-  late OrderListModel orderListModel;
+  OrderListModel? orderListModel;
   bool noOrder = false;
   bool isLoding = false;
 
+  clearOrder() {}
   Future fetchOrderList() async {
     final url = Uri.parse('$baseApiUrl/user/order-list/');
     final header = {'Authorization': 'Bearer $globalUserToken'};
     final response = await http.get(url, headers: header);
-
+    print(response.body);
     if (response.statusCode == 200) {
-      orderListModel = OrderListModel.fromJson(jsonDecode(response.body));
+      final data = OrderListModel.fromJson(jsonDecode(response.body));
+      if (data.data.isEmpty) {
+        noOrder = true;
+        return;
+      }
       print(orderListModel);
-      noOrder = orderListModel.data.isEmpty;
+      orderListModel = data;
       return 'fetching success.';
     }
     print(jsonDecode(response.body));

@@ -10,7 +10,7 @@ class OrderListModel {
     required this.currentPage,
     required this.data,
     required this.firstPageUrl,
-    required this.from,
+    this.from,
     required this.lastPage,
     required this.lastPageUrl,
     required this.links,
@@ -25,7 +25,7 @@ class OrderListModel {
   int currentPage;
   List<Datum> data;
   String firstPageUrl;
-  int from;
+  int? from;
   int lastPage;
   String lastPageUrl;
   List<Link> links;
@@ -33,7 +33,7 @@ class OrderListModel {
   String path;
   int perPage;
   dynamic prevPageUrl;
-  int to;
+  int? to;
   int total;
 
   factory OrderListModel.fromJson(Map<String, dynamic> json) => OrderListModel(
@@ -80,13 +80,13 @@ class Datum {
   int orderId;
   String totalAmount;
   DateTime createdAt;
-  Status status;
+  String? status;
 
   factory Datum.fromJson(Map<String, dynamic> json) => Datum(
         orderId: json["id"],
         totalAmount: json["total_amount"],
         createdAt: DateTime.parse(json["created_at"]),
-        status: statusValues.map[json["status"]] ?? Status.PENDING,
+        status: json["status"],
       );
 
   Map<String, dynamic> toJson() => {
@@ -100,7 +100,7 @@ class Datum {
 enum Status { PENDING, COMPLETE, IN_PROGRESS }
 
 final statusValues = EnumValues({
-  "coplete": Status.COMPLETE,
+  "complete": Status.COMPLETE,
   "in_progress": Status.IN_PROGRESS,
   "pending": Status.PENDING
 });

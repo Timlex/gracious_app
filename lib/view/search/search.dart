@@ -1,103 +1,101 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import '../utils/constant_colors.dart';
 import '../../service/search_result_data_service.dart';
 import '../../view/auth/custom_text_field.dart';
 import '../../view/home/product_card.dart';
 import '../../view/utils/constant_name.dart';
 import '../../view/utils/constant_styles.dart';
-import 'package:provider/provider.dart';
-
-import '../utils/constant_colors.dart';
 
 class SearchView extends StatelessWidget {
   static const routeName = 'search';
   SearchView();
-
-//   @override
-//   State<SearchView> createState() => _SearchViewState();
-// }
-
-// class _SearchViewState extends State<SearchView> {
   ConstantColors cc = ConstantColors();
 
   ScrollController controller = ScrollController();
 
-  // @override
-  // void initState() {
-  //   // TODO: implement initState
-  //   super.initState();
-
-  // }
-
   @override
   Widget build(BuildContext context) {
+    initiateDeviceSize(context);
     double cardWidth = screenWidth / 3.3;
     // double cardHeight = screenHight / 5.4;
     double cardHeight = screenHight / 5.4 < 144 ? 130 : screenHight / 5.4;
     controller.addListener((() => scrollListener(context)));
-
-    // final routeData =
-    //     ModalRoute.of(context)!.settings.arguments as List<dynamic>;
-    return
-        // Scaffold(
-        // appBar: AppBars().appBarTitled('Search', () {
-        //   Navigator.of(context).pop();
-        // }, hasButton: true, hasElevation: true, actions: [
-        //   IconButton(
-        //       onPressed: () {
-        //         showMaterialModalBottomSheet(
-        //           context: context,
-        //           builder: (context) => SingleChildScrollView(
-        //             controller: ModalScrollController.of(context),
-        //             child: FilterBottomSheet(),
-        //           ),
-        //         );
-        //       },
-        //       icon: SvgPicture.asset('assets/images/icons/filter_setting.svg'))
-        // ]),
-        // body:
-        Consumer<SearchResultDataService>(builder: (context, srData, child) {
+    return Consumer<SearchResultDataService>(builder: (context, srData, child) {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
-            padding: const EdgeInsets.only(top: 20, right: 20, left: 20),
-            child: CustomTextField(
-              'Search your need here',
-              initialValue: srData.searchText,
-              leadingImage: 'assets/images/icons/search_normal.png',
-              onChanged: (value) {
-                srData.setSearchText(value);
-              },
-              onFieldSubmitted: (value) {
-                Provider.of<SearchResultDataService>(context, listen: false)
-                    .resetSerch();
-                Provider.of<SearchResultDataService>(context, listen: false)
-                    .fetchProductsBy(pageNo: '1');
-              },
-            ),
-          ),
-          // const SizedBox(height: 15),
-          // const Padding(
-          //   padding: EdgeInsets.only(right: 20, left: 20),
-          //   child: Text(
-          //     'Filter by:',
-          //     style: TextStyle(fontSize: 19, fontWeight: FontWeight.w600),
-          //   ),
-          // ),
-          // SingleChildScrollView(
-          //   scrollDirection: Axis.horizontal,
-          //   child: Padding(
-          //     padding: const EdgeInsets.only(right: 20, left: 20),
-          //     child: Row(
-          //       mainAxisAlignment: MainAxisAlignment.spaceAround,
-          //       children: [
-          //         FilterOption('ALl Categories', selectedCategorie, categories),
-          //         FilterOption('ALl Units', selectedUnit, units),
-          //         FilterOption('Price Range', selectedPriceRange, priceRange),
-          //       ],
-          //     ),
-          //   ),
-          // ),
+              padding: const EdgeInsets.only(top: 20, right: 20, left: 20),
+              child: Consumer<SearchResultDataService>(
+                  builder: (context, srService, child) {
+                return TextFormField(
+                  initialValue: srData.searchText,
+                  style: TextStyle(color: cc.greyTextFieldLebel, fontSize: 13),
+                  decoration: InputDecoration(
+                    contentPadding:
+                        const EdgeInsets.symmetric(horizontal: 8, vertical: 17),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      borderSide: BorderSide(color: cc.primaryColor, width: 2),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      borderSide: BorderSide(color: cc.greyBorder, width: 1),
+                    ),
+                    focusedErrorBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      borderSide: BorderSide(color: cc.orange, width: 1),
+                    ),
+                    errorBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      borderSide: BorderSide(color: cc.orange, width: 1),
+                    ),
+                    hintText: 'Search your need here',
+
+                    hintStyle:
+                        TextStyle(color: cc.greyTextFieldLebel, fontSize: 13),
+
+                    prefixIcon: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        SizedBox(
+                            height: 25,
+                            child: Image.asset(
+                              'assets/images/icons/search_normal.png',
+                            )),
+                      ],
+                    ),
+                    suffixIcon: GestureDetector(
+                      onTap: (() {
+                        Provider.of<SearchResultDataService>(context,
+                                listen: false)
+                            .resetSerch();
+                        Provider.of<SearchResultDataService>(context,
+                                listen: false)
+                            .fetchProductsBy(pageNo: '1');
+                      }),
+                      child: Icon(
+                        Icons.arrow_forward_ios,
+                        color: cc.blackColor,
+                        size: 17,
+                      ),
+                    ),
+                    //  if (leadingImage != null)?
+                  ),
+                  onFieldSubmitted: (_) {
+                    Provider.of<SearchResultDataService>(context, listen: false)
+                        .resetSerch();
+                    Provider.of<SearchResultDataService>(context, listen: false)
+                        .fetchProductsBy(pageNo: '1');
+                  },
+                  onChanged: (value) {
+                    Provider.of<SearchResultDataService>(context, listen: false)
+                        .setSearchText(value);
+                  },
+                );
+              })),
           const SizedBox(height: 15),
           Expanded(
             child: srData.resultMeta != null
@@ -153,16 +151,6 @@ class SearchView extends StatelessWidget {
           // if (srData.resultMeta!.lastPage >= pageNo) {
           return ProductCard(e.prdId, e.title, e.price, e.discountPrice,
               e.campaignPercentage, e.imgUrl, e.isCartAble);
-          // }
-          // else {
-          //   return const Center(
-          //     child: Text('No more product fonund'),
-          //   );
-          // }
-          // else if (srData.resultMeta!.lastPage > pageNo) {
-          //   return const Center(
-          //       child: Text('No more product available!'));
-          // }
         },
       );
     }

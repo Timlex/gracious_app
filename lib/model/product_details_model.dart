@@ -34,8 +34,8 @@ class ProductDetailsModel {
   AvailableAttributes? availableAttributes;
   List<dynamic> productInventorySet;
   Map<String, AdditionalInfoStore>? additionalInfoStore;
-  List<ProductColorElement> productColors;
-  List<ProductColorElement> productSizes;
+  dynamic productColors;
+  dynamic productSizes;
   SettingText settingText;
   bool userRatedAlready;
 
@@ -65,10 +65,8 @@ class ProductDetailsModel {
           : Map.from(json["additional_info_store"]).map((k, v) =>
               MapEntry<String, AdditionalInfoStore>(
                   k, AdditionalInfoStore.fromJson(v))),
-      productColors: List<ProductColorElement>.from(
-          json["productColors"].map((x) => ProductColorElement.fromJson(x))),
-      productSizes: List<ProductColorElement>.from(
-          json["productSizes"].map((x) => ProductColorElement.fromJson(x))),
+      productColors: json["productColors"],
+      productSizes: json["productSizes"],
       settingText: SettingText.fromJson(json["setting_text"]),
       userRatedAlready: json["user_rated_already"],
     );
@@ -183,6 +181,7 @@ class Product {
     required this.additionalInfo,
     required this.tags,
     required this.inventoryDetails,
+    required this.campaignPercentage,
   });
 
   int id;
@@ -215,6 +214,7 @@ class Product {
   List<AdditionalInfo> additionalInfo;
   List<Tag> tags;
   List<InventoryDetail> inventoryDetails;
+  dynamic campaignPercentage;
 
   factory Product.fromJson(Map<String, dynamic> json) => Product(
         id: json["id"],
@@ -225,8 +225,12 @@ class Product {
         subCategoryId: json["sub_category_id"],
         image: json["image"],
         productImageGallery: json["product_image_gallery"],
-        price: json["price"],
-        salePrice: json["sale_price"],
+        price: json["price"] is String
+            ? double.parse(json["price"]).toInt()
+            : json["price"],
+        salePrice: json["sale_price"] is String
+            ? double.parse(json["sale_price"]).toInt()
+            : json["sale_price"],
         taxPercentage: json["tax_percentage"],
         uom: json["uom"],
         unit: json["unit"],
@@ -254,6 +258,9 @@ class Product {
         tags: List<Tag>.from(json["tags"].map((x) => Tag.fromJson(x))),
         inventoryDetails: List<InventoryDetail>.from(
             json["inventory_details"].map((x) => InventoryDetail.fromJson(x))),
+        campaignPercentage: json['campaign_percentage'] is String
+            ? double.parse(json['campaign_percentage'])
+            : json['campaign_percentage'],
       );
 
   Map<String, dynamic> toJson() => {

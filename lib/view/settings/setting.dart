@@ -2,11 +2,14 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:gren_mart/service/common_service.dart';
-import 'package:gren_mart/service/country_dropdown_service.dart';
-import 'package:gren_mart/service/manage_account_service.dart';
-import 'package:gren_mart/service/navigation_bar_helper_service.dart';
-import 'package:gren_mart/service/state_dropdown_service.dart';
+import 'package:gren_mart/view/utils/constant_name.dart';
+import 'package:provider/provider.dart';
+
+import '../../service/cart_data_service.dart';
+import '../../service/country_dropdown_service.dart';
+import '../../service/navigation_bar_helper_service.dart';
+import '../../service/state_dropdown_service.dart';
+import '../../service/language_service.dart';
 import '../../service/shipping_addresses_service.dart';
 import '../../service/signin_signup_service.dart';
 import '../../service/user_profile_service.dart';
@@ -19,8 +22,6 @@ import '../../view/settings/shipping_addresses.dart';
 import '../../view/ticket/all_ticket_view.dart';
 import '../../view/utils/constant_colors.dart';
 import '../../view/utils/constant_styles.dart';
-import 'package:provider/provider.dart';
-
 import '../../service/auth_text_controller_service.dart';
 import '../../service/ticket_service.dart';
 import '../utils/text_themes.dart';
@@ -87,7 +88,6 @@ class SettingView extends StatelessWidget {
                 .then((value) {
               final userData =
                   Provider.of<UserProfileService>(context, listen: false);
-              print(userData.userProfileData.country!.id);
               if (userData.userProfileData.country != null) {
                 Provider.of<CountryDropdownService>(context, listen: false)
                     .setCountryIdAndValue(
@@ -104,7 +104,6 @@ class SettingView extends StatelessWidget {
               'assets/images/icons/support_ticket.svg', 'Support Ticket',
               icon: true,
               imagePath2: 'assets/images/change_pass.png', onTap: () {
-            Provider.of<TicketService>(context, listen: false).fetchTickets();
             Navigator.of(context).pushNamed(AllTicketsView.routeName);
           }),
           settingItem('assets/images/icons/change_pass.svg', 'Change Password',
@@ -134,6 +133,8 @@ class SettingView extends StatelessWidget {
                   .toggleLaodingSpinner(value: false);
               Provider.of<SignInSignUpService>(context, listen: false)
                   .getUserData();
+              Provider.of<CartDataService>(context, listen: false).emptyCart();
+              globalUserToken = null;
               Navigator.of(context).pushAndRemoveUntil(
                   MaterialPageRoute(builder: (context) => Auth()),
                   (Route<dynamic> route) => false);
@@ -179,7 +180,9 @@ class SettingView extends StatelessWidget {
                   ),
                 ),
                 trailing: Transform(
-                  transform: rtl ? Matrix4.rotationY(pi) : Matrix4.rotationY(0),
+                  transform: LanguageService().rtl
+                      ? Matrix4.rotationY(pi)
+                      : Matrix4.rotationY(0),
                   child: SvgPicture.asset(
                     'assets/images/icons/arrow_right.svg',
                   ),
@@ -192,27 +195,4 @@ class SettingView extends StatelessWidget {
       ),
     );
   }
-
-//   Future<void> setData(BuildContext context) async {
-//     final uData =
-//         Provider.of<UserProfileService>(context, listen: false).userProfileData;
-//     final controllers =
-//         Provider.of<AuthTextControllerService>(context, listen: false);
-//     await controllers.setEmail(uData.email);
-//     await controllers.setName(uData.name);
-//     await controllers.setUserName(uData.username);
-//     await controllers.setEmail(uData.email);
-//     await controllers.setZipCode(uData.zipcode);
-//     await Provider.of<CountryDropdownService>(context, listen: false)
-//         .setCountryIdAndValue(uData.country.name);
-//     if (uData.state != null) {
-//       await Provider.of<StateDropdownService>(context, listen: false)
-//           .setStateIdAndValue(uData.state!.name);
-//     }
-//     if (uData.state == null) {
-//       print('state is null');
-//       Provider.of<StateDropdownService>(context, listen: false)
-//           .setStateIdAndValueDefault();
-//     }
-//   }
 }

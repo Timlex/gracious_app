@@ -15,64 +15,22 @@ class ProductDetailsService with ChangeNotifier {
   bool aDescriptionExpand = false;
   bool reviewExpand = false;
   bool cartAble = false;
+  bool reviewing = false;
   int productSalePrice = 0;
   int quantity = 1;
   String? additionalInfoImage;
+  String? selectedInventoryHash;
   List<String> selectedInventorySetIndex = [];
   List<String> inventoryKeys = [];
   Map<String, Map<String, List<String>>> allAtrributes = {};
   List selectedAttributes = [];
   Map<String, List<Map<String, dynamic>>> inventorySet = {};
   Map<String, dynamic> selecteInventorySet = {};
+  List navigatorID = [];
+  bool refreshpage = false;
 
   setProductInventorySet(List<String>? value) {
-    // print(
-    //     selectedInventorySetIndex.toString() + 'inven........................');
-    // print(value.toString() + 'val........................');
-
-    if (selectedInventorySetIndex != value) {
-      // if (value!.length == 1) {
-      //   selectedInventorySetIndex = value;
-      // print(selectedInventorySetIndex);
-      // inventoryKeys.forEach((element) {
-      //   if (selectedSize != null) {
-      //   selectedSize =
-      //       deselect(value, allAtrributes[element][selectedSize]) ? selectedSize : null;
-      // }
-      // });
-      // if (selectedSize != null) {
-      //   selectedSize =
-      //       deselect(value, sizeAttributes[selectedSize]) ? selectedSize : null;
-      // }
-      // if (selectedColor != null) {
-      //   selectedColor = deselect(value, colorAttributes[selectedColor])
-      //       ? selectedColor
-      //       : null;
-      // }
-      // if (selectedSauce != null) {
-      //   selectedSauce = deselect(value, sauceAttributes[selectedSauce])
-      //       ? selectedSauce
-      //       : null;
-      // }
-      // if (selectedMayo != null) {
-      //   selectedMayo =
-      //       deselect(value, mayoAttributes[selectedMayo]) ? selectedMayo : null;
-      // }
-      // if ((selectedChese != null)) {
-      //   selectedChese = deselect(value, cheeseAttributes[selectedChese])
-      //       ? selectedChese
-      //       : null;
-      // }
-      //   print('Its here');
-      //   return;
-      // }
-      // print('Its here too');
-      // selectedSize = '';
-      // selectedColor = '';
-      // selectedSauce = '';
-      // selectedMayo = '';
-      // selectedChese = '';
-    }
+    if (selectedInventorySetIndex != value) {}
     if (selectedInventorySetIndex.isEmpty) {
       selectedInventorySetIndex = value ?? [];
       notifyListeners();
@@ -126,52 +84,22 @@ class ProductDetailsService with ChangeNotifier {
       });
       final mapData = {};
 
-      // if (selectedSize == selectedProduct.size &&
-      //     selectedColor == selectedProduct.color &&
-      //     selectedSauce == selectedProduct.sauce &&
-      //     selectedMayo == selectedProduct.mayo &&
-      //     selectedChese == selectedProduct.cheese &&
-      //     additionalInventoryInfo.isNotEmpty) {
-      //   final mapData = {};
-      //   if (selectedChese != null) {
-      //     mapData.putIfAbsent('Cheese', () => selectedChese);
-      //   }
-      //   if (selectedColor != null) {
-      //     mapData.putIfAbsent('Color', () => selectedColor);
-      //     mapData.putIfAbsent('Color_name', () => selectedProduct.colorName);
-      //   }
-      //   if (selectedMayo != null) {
-      //     mapData.putIfAbsent('Mayo', () => selectedMayo);
-      //   }
-      //   if (selectedSauce != null) {
-      //     mapData.putIfAbsent('Sauce', () => selectedSauce);
-      //   }
-      //   if (selectedSize != null) {
-      //     mapData.putIfAbsent('Size', () => selectedSize);
-      //   }
-      //   final key = md5.convert(utf8.encode(json.encode(mapData))).toString();
-      //   productSalePrice +=
-      //       productDetails!.additionalInfoStore![key]!.additionalPrice;
-
-      //   additionalInfoImage = productDetails!.additionalInfoStore![key]!.image;
-      //   additionalInfoImage =
-      //       additionalInfoImage == '' ? null : additionalInfoImage;
-      //   cartAble = true;
-      //   notifyListeners();
-      //   break;
-      // }
       if (setMatched) {
         break;
       }
     }
     if (setMatched) {
-      final key = selecteInventorySet['hash'];
-      productSalePrice += productDetails!.additionalInfoStore![key] == null
-          ? 0
-          : productDetails!.additionalInfoStore![key]!.additionalPrice;
-      additionalInfoImage = productDetails!.additionalInfoStore![key] == null
-          ? ''
-          : productDetails!.additionalInfoStore![key]!.image;
+      selectedInventoryHash = selecteInventorySet['hash'];
+      productSalePrice +=
+          productDetails!.additionalInfoStore![selectedInventoryHash] == null
+              ? 0
+              : productDetails!
+                  .additionalInfoStore![selectedInventoryHash]!.additionalPrice;
+      additionalInfoImage =
+          productDetails!.additionalInfoStore![selectedInventoryHash] == null
+              ? ''
+              : productDetails!
+                  .additionalInfoStore![selectedInventoryHash]!.image;
       additionalInfoImage =
           additionalInfoImage == '' ? null : additionalInfoImage;
       cartAble = true;
@@ -184,6 +112,7 @@ class ProductDetailsService with ChangeNotifier {
     productSalePrice = productDetails!.product.salePrice;
     additionalInfoImage = null;
     selecteInventorySet = {};
+    selectedInventoryHash = null;
     notifyListeners();
   }
 
@@ -238,22 +167,10 @@ class ProductDetailsService with ChangeNotifier {
     notifyListeners();
   }
 
-  // addToList(List list, value) {
-  //   if (list.contains(value)) {
-  //     return;
-  //   }
-  //   list.add(value);
-  // }
-
   addToMap(value, int index, Map<String, List<String>> map) {
     if (value == null || map == {}) {
       return;
     }
-
-    // if (!map.containsKey(value)) {
-    //   map.putIfAbsent(value, () => [index.toString()]);
-    //   return map;
-    // }
     if (!map[value]!.contains(index.toString())) {
       map.update(value, (valuee) {
         valuee.add(index.toString());
@@ -272,7 +189,10 @@ class ProductDetailsService with ChangeNotifier {
     return data.isEmpty ? {'1': 'No additional information available.'} : data;
   }
 
-  clearProdcutDetails() {
+  clearProdcutDetails({pop = false}) {
+    print('clearing product details');
+    productDetails = null;
+    reviewing = false;
     productSalePrice = 0;
     productDetails = null;
     descriptionExpand = false;
@@ -284,10 +204,33 @@ class ProductDetailsService with ChangeNotifier {
     // inventoryKeys = [];
     allAtrributes = {};
     selectedAttributes = [];
+    reviewing = false;
+    refreshpage = false;
+    if (pop) {
+      navigatorID.remove(navigatorID.last);
+    }
     notifyListeners();
   }
 
-  Future fetchProductDetails(id) async {
+  setRefresPage(value) {
+    refreshpage = true;
+    notifyListeners();
+  }
+
+  setReviewing(value) {
+    reviewing = value;
+  }
+
+  Future fetchProductDetails({id, bool nextProduct = false}) async {
+    if (nextProduct && navigatorID.isNotEmpty) {
+      clearProdcutDetails();
+    }
+    if (reviewing) {
+      return;
+    }
+    if (id != null) {
+      navigatorID.add(id);
+    }
     print(id);
     inventoryKeys = [];
     var header = {
@@ -296,11 +239,12 @@ class ProductDetailsService with ChangeNotifier {
       'Content-Type': 'application/json',
       "Authorization": "Bearer $globalUserToken",
     };
-    final url = Uri.parse('$baseApiUrl/product/$id');
+    final url = Uri.parse('$baseApiUrl/product/${navigatorID.last}');
 
     // try {
     final response = await http.get(url, headers: header);
     if (response.statusCode == 200) {
+      reviewing = true;
       var data = ProductDetailsModel.fromJson(jsonDecode(response.body));
       productDetails = data;
       productSalePrice = productDetails!.product.salePrice;

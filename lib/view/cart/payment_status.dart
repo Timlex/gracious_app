@@ -1,28 +1,25 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:gren_mart/service/checkout_service.dart';
+import 'package:provider/provider.dart';
 import '../../view/home/home_front.dart';
-import '../../view/utils/app_bars.dart';
 import '../../view/utils/constant_colors.dart';
 import '../../view/utils/constant_name.dart';
 import '../../view/utils/constant_styles.dart';
+import '../order/order_details.dart';
 import '../utils/text_themes.dart';
 
-class PaymentStatusView extends StatefulWidget {
+class PaymentStatusView extends StatelessWidget {
   static const routeName = 'pament status';
   bool isError;
-  PaymentStatusView(this.isError, {Key? key}) : super(key: key);
+  int? trackId;
+  PaymentStatusView(this.isError, {this.trackId, Key? key}) : super(key: key);
 
-  @override
-  State<PaymentStatusView> createState() => _PaymentStatusViewState();
-}
-
-class _PaymentStatusViewState extends State<PaymentStatusView> {
   ConstantColors cc = ConstantColors();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBars().appBarTitled('', () => Navigator.of(context).pop(),
-          hasButton: true, hasElevation: false),
       body: Padding(
         padding: const EdgeInsets.all(8),
         child: Column(
@@ -39,13 +36,13 @@ class _PaymentStatusViewState extends State<PaymentStatusView> {
                   children: [
                     SizedBox(
                       height: 150,
-                      child: Image.asset(widget.isError
+                      child: Image.asset(isError
                           ? 'assets/images/payment_error.png'
                           : 'assets/images/payment_success.png'),
                     ),
                     const SizedBox(height: 45),
                     Text(
-                      widget.isError ? 'Opps!' : 'Payment successful!',
+                      isError ? 'Opps!' : 'Payment successful!',
                       style: TextStyle(
                         fontSize: 23,
                         fontWeight: FontWeight.bold,
@@ -56,37 +53,50 @@ class _PaymentStatusViewState extends State<PaymentStatusView> {
                     RichText(
                       textAlign: TextAlign.center,
                       text: TextSpan(
-                        text: widget.isError
-                            ? 'We\'re getting problems with your payment methods and we couldn\'t proceed your order '
+                        text: isError
+                            ? 'We\'re getting problems with your payment methods but your order was successfully placed. Your order ID  is  '
                             : 'Your order has been successful! You\'ll receive ordered items in 3-5 days. Your order ID  is ',
                         style: TextThemeConstrants.paragraphText,
-                        children: widget.isError
-                            ? null
-                            : <TextSpan>[
-                                TextSpan(
-                                    text: ' #2385489',
-                                    style: TextStyle(color: cc.primaryColor)),
-                              ],
+                        children: <TextSpan>[
+                          TextSpan(
+                              recognizer: TapGestureRecognizer()
+                                ..onTap = () {
+                                  Navigator.of(context)
+                                      .push(MaterialPageRoute<void>(
+                                    builder: (BuildContext context) =>
+                                        OrderDetails(
+                                            Provider.of<CheckoutService>(
+                                                    context,
+                                                    listen: false)
+                                                .checkoutModel!
+                                                .id
+                                                .toString()),
+                                  ));
+                                },
+                              text:
+                                  ' #${Provider.of<CheckoutService>(context, listen: false).checkoutModel!.id}',
+                              style: TextStyle(color: cc.primaryColor)),
+                        ],
                       ),
                     ),
                   ],
                 ),
               ),
             )),
-            widget.isError
-                ? customRowButton('Back to home', 'Track your order', () {
-                    Navigator.of(context).pushAndRemoveUntil(
-                        MaterialPageRoute(builder: (context) => HomeFront()),
-                        (Route<dynamic> route) => false);
+            !(isError)
+                ? customRowButton(context, 'Back to home', 'Track your order',
+                    () {
+                    Navigator.of(context)
+                        .pushReplacementNamed(HomeFront.routeName);
                   }, () {
-                    setState(() {
-                      widget.isError = !(widget.isError);
-                    });
+                    Navigator.of(context).push(MaterialPageRoute<void>(
+                      builder: (BuildContext context) =>
+                          OrderDetails(trackId!.toString()),
+                    ));
                   })
                 : customContainerButton('Back to home', screenWidth - 50, () {
-                    setState(() {
-                      widget.isError = !(widget.isError);
-                    });
+                    Navigator.of(context)
+                        .pushReplacementNamed(HomeFront.routeName);
                   }),
             const SizedBox(height: 10),
           ],

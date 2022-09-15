@@ -1,16 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
-import 'package:gren_mart/service/checkout_service.dart';
-import 'package:gren_mart/service/menual_payment_service.dart';
-import 'package:gren_mart/service/review_service.dart';
-import 'package:gren_mart/service/social_login_service.dart';
-import 'package:gren_mart/view/home/all_camp_product_from_link.dart';
-import 'package:gren_mart/view/utils/text_themes.dart';
-import 'package:gren_mart/view/utils/web_view.dart';
+import 'package:gren_mart/service/language_service.dart';
+import 'package:gren_mart/service/terms_and_condition_service.dart';
+import 'package:gren_mart/view/home/category_page.dart';
+import 'package:gren_mart/view/home/category_product_page.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 
+import '../../service/checkout_service.dart';
+import '../../service/confirm_payment_service.dart';
+import '../../service/review_service.dart';
+import '../../service/social_login_service.dart';
+import '../../view/home/all_camp_product_from_link.dart';
+import '../../view/utils/text_themes.dart';
+import '../../view/utils/web_view.dart';
 import '../../service/payment_gateaway_service.dart';
 import '../../service/shipping_zone_service.dart';
 import '../../view/home/all_products.dart';
@@ -36,7 +40,6 @@ import '../../service/state_dropdown_service.dart';
 import '../../service/ticket_chat_service.dart';
 import '../../service/ticket_service.dart';
 import '../../service/user_profile_service.dart';
-import '../../view/auth/order_data.dart';
 import '../../view/auth/reset_password.dart';
 import '../../view/settings/shipping_addresses.dart';
 import '../../view/ticket/add_new_ticket.dart';
@@ -56,6 +59,7 @@ import '../../view/settings/new_address.dart';
 import '../../view/utils/constant_colors.dart';
 import '../../service/navigation_bar_helper_service.dart';
 import '../../service/order_details_service.dart';
+import 'view/utils/constant_name.dart';
 
 void main() {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
@@ -83,7 +87,6 @@ class _MyAppState extends State<MyApp> {
         ChangeNotifierProvider(create: (_) => OtherData()),
         ChangeNotifierProvider(create: (_) => CartDataService()),
         ChangeNotifierProvider(create: (_) => FavoriteDataService()),
-        ChangeNotifierProvider(create: (_) => OrderData()),
         ChangeNotifierProvider(create: (_) => CountryDropdownService()),
         ChangeNotifierProvider(create: (_) => StateDropdownService()),
         ChangeNotifierProvider(create: (_) => PosterCampaignSliderService()),
@@ -110,17 +113,24 @@ class _MyAppState extends State<MyApp> {
         ChangeNotifierProvider(create: (_) => SocialLoginService()),
         ChangeNotifierProvider(create: (_) => CheckoutService()),
         ChangeNotifierProvider(create: (_) => ReviewService()),
+        ChangeNotifierProvider(create: (_) => ConfirmPaymentService()),
+        ChangeNotifierProvider(create: (_) => TermsAndCondition()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'GrenMart',
-        // builder: (context, rtlchild) {
-        //   return Directionality(
-        //     textDirection: TextDirection.rtl,
-        //     child: rtlchild!,
-        //   );
-        // },
+        builder: (context, rtlchild) {
+          return Directionality(
+            textDirection:
+                LanguageService().rtl ? TextDirection.rtl : TextDirection.ltr,
+            child: rtlchild!,
+          );
+        },
         theme: ThemeData(
+          pageTransitionsTheme: PageTransitionsTheme(builders: {
+            TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
+            TargetPlatform.android: ZoomPageTransitionsBuilder(),
+          }),
           primarySwatch: Colors.blue,
           scaffoldBackgroundColor: ConstantColors().pureWhite,
           appBarTheme: AppBarTheme(backgroundColor: ConstantColors().pureWhite),
@@ -150,6 +160,8 @@ class _MyAppState extends State<MyApp> {
           AddNewTicket.routeName: (context) => AddNewTicket(),
           AllProducts.routeName: (context) => AllProducts(),
           WebViewScreen.routeName: (context) => WebViewScreen(),
+          CategoryProductPage.routeName: (context) => CategoryProductPage(),
+          CategoryPage.routeName: (context) => CategoryPage(),
           ALLCampProductFromLink.routeName: (context) =>
               ALLCampProductFromLink(),
         },

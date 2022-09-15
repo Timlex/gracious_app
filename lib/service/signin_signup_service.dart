@@ -12,7 +12,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 class SignInSignUpService with ChangeNotifier {
   SignInModel? signInData;
   SignUpModel? signUpData;
-  var _token;
+  String? _token;
   var password;
   var email;
   bool login = true;
@@ -68,50 +68,56 @@ class SignInSignUpService with ChangeNotifier {
     print('$email + $password');
     final url = Uri.parse('$baseApiUrl/login');
 
-    try {
-      final response = await http.post(url, body: {
-        'username': email!.toLowerCase().trim(),
-        'password': password,
+    // try {
+    final response = await http.post(url, body: {
+      'username': email!.toLowerCase().trim(),
+      'password': password,
+    });
+    if (response.statusCode == 200) {
+      print(response.body);
+      final data = SignInModel.fromJson(jsonDecode(response.body));
+      print(data);
+      signInData = data;
+      _token = signInData!.token;
+      globalUserToken = _token;
+
+      final pref = await SharedPreferences.getInstance();
+      print('working on pref');
+      final tokenData = json.encode({
+        'token': signInData!.token,
       });
-      if (response.statusCode == 200) {
-        print(response.body);
-        final data = SignInModel.fromJson(jsonDecode(response.body));
-        print(data);
-        signInData = data;
-        _token = signInData!.token;
-        globalUserToken = _token;
-
-        final pref = await SharedPreferences.getInstance();
-        print('working on pref');
-        final tokenData = json.encode({
-          'token': signInData!.token,
+      await pref.setString('token', tokenData);
+      if (rememberPass) {
+        final userData = json.encode({
+          'email': email,
+          'password': password,
         });
-        await pref.setString('token', tokenData);
-        if (rememberPass) {
-          final userData = json.encode({
-            'email': email,
-            'password': password,
-          });
-          pref.setString('userData', userData);
-        }
-        if (!rememberPass) {
-          resetEmailPassData();
-        }
-
-        notifyListeners();
-        return true;
+        pref.setString('userData', userData);
       }
-      if (response.statusCode == 422) {
-        print(response.body);
-        snackBar(context, jsonDecode(response.body)['message']);
+      if (!rememberPass) {
+        resetEmailPassData();
       }
 
-      return false;
-    } catch (error) {
-      print(error);
-      // snackBar(context, 'Login failed.');
-      rethrow;
+      notifyListeners();
+      return true;
     }
+    if (response.statusCode == 422) {
+      print('response.body');
+      print(jsonDecode(response.body));
+      snackBar(
+          context,
+          (jsonDecode(response.body)['validation_errors']
+                  as Map<String, String>)
+              .values
+              .first);
+    }
+
+    return false;
+    // } catch (error) {
+    //   print(error);
+    //   // snackBar(context, 'Login failed.');
+    //   rethrow;
+    // }
   }
 
   Future<bool> signUpOption(
@@ -223,7 +229,7 @@ class SignInSignUpService with ChangeNotifier {
     final signinData = json.decode(data.toString()) as Map<String, dynamic>;
     email = signinData['email'];
     password = signinData['password'];
-    print(email);
+    print(signinData);
     toggleRememberPass(true);
     notifyListeners();
     return true;
@@ -244,9 +250,10 @@ class SignInSignUpService with ChangeNotifier {
     }
     ref.remove('token');
     globalUserToken = null;
+    _token = '';
 
     notifyListeners();
     // print(token);
-    return _token;
+    return;
   }
 }

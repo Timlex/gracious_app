@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 
 import '../db/database_helper.dart';
 import '../model/favorite_data_model.dart';
+import '../view/utils/constant_styles.dart';
 import 'common_service.dart';
 
 class FavoriteDataService with ChangeNotifier {
@@ -17,6 +18,7 @@ class FavoriteDataService with ChangeNotifier {
   }
 
   void toggleFavorite(
+    BuildContext context,
     int id,
     String title,
     int price,
@@ -24,7 +26,7 @@ class FavoriteDataService with ChangeNotifier {
     String imgUrl,
   ) async {
     if (_favoriteItems.containsKey(id.toString())) {
-      deleteFavoriteItem(id);
+      deleteFavoriteItem(id, context);
       _favoriteItems.remove(id);
       notifyListeners();
       return;
@@ -38,6 +40,7 @@ class FavoriteDataService with ChangeNotifier {
     });
     _favoriteItems.putIfAbsent(id.toString(),
         () => Favorites(id, title, price, discountPrice, imgUrl));
+    snackBar(context, 'Item added to favorite.');
     notifyListeners();
   }
 
@@ -61,9 +64,11 @@ class FavoriteDataService with ChangeNotifier {
     print('fetching favorite');
   }
 
-  void deleteFavoriteItem(int id) async {
+  void deleteFavoriteItem(int id, BuildContext context) async {
     await DbHelper.deleteDbSI('favorite', id);
     _favoriteItems.removeWhere((key, value) => value.id == id);
+    snackBar(context, 'Item removed from favorite.',
+        backgroundColor: cc.orange);
     notifyListeners();
   }
 
@@ -74,7 +79,9 @@ class FavoriteDataService with ChangeNotifier {
       // try {
       final response = await http.get(url);
       if (response.statusCode != 200) {
-        deleteFavoriteItem(value.id);
+        await DbHelper.deleteDbSI('favorite', value.id);
+        _favoriteItems.removeWhere((key, value) => value.id == value.id);
+        notifyListeners();
       }
     });
   }

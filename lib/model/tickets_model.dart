@@ -14,7 +14,7 @@ class TicketsModel {
     required this.currentPage,
     required this.data,
     required this.firstPageUrl,
-    required this.from,
+    this.from,
     required this.lastPage,
     required this.lastPageUrl,
     required this.links,
@@ -22,14 +22,14 @@ class TicketsModel {
     required this.path,
     required this.perPage,
     this.prevPageUrl,
-    required this.to,
+    this.to,
     required this.total,
   });
 
   int currentPage;
   List<Datum> data;
   String firstPageUrl;
-  int from;
+  int? from;
   int lastPage;
   String lastPageUrl;
   List<Link> links;
@@ -37,7 +37,7 @@ class TicketsModel {
   String path;
   int perPage;
   dynamic prevPageUrl;
-  int to;
+  int? to;
   int total;
 
   factory TicketsModel.fromJson(Map<String, dynamic> json) => TicketsModel(

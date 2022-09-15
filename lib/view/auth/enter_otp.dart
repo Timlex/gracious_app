@@ -22,6 +22,7 @@ class EnterOTP extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    initiateDeviceSize(context);
     final defaultPinTheme = PinTheme(
       width: 85,
       height: 56,

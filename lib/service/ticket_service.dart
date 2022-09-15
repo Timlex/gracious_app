@@ -77,43 +77,51 @@ class TicketService with ChangeNotifier {
 
   clearTickets() {
     ticketsList = [];
-    notifyListeners();
+    noProduct = false;
   }
 
-  Future fetchTickets() async {
-    print(lastPage);
+  Future fetchTickets({bool noForceFetch = true}) async {
+    print(noProduct);
+    if (!noForceFetch) {
+      // if (lastPage != null && lastPage!) {
+      //   setIsLoading(false);
+      //   notifyListeners();
+      //   print('Leaving fetching___________');
+      //   return 'No more product found!';
+      // }
+      noForceFetch = true;
+      var header = {
+        //if header type is application/json then the data should be in jsonEncode method
+        "Accept": "application/json",
+        'Content-Type': 'application/json',
+        "Authorization": "Bearer $globalUserToken",
+      };
+      final url = Uri.parse('$baseApiUrl/user/ticket');
+      try {
+        final response = await http.get(url, headers: header);
+        print(response.body);
+        if (response.statusCode == 200) {
+          var data = TicketsModel.fromJson(jsonDecode(response.body));
 
-    // if (lastPage != null && lastPage!) {
-    //   setIsLoading(false);
-    //   notifyListeners();
-    //   print('Leaving fetching___________');
-    //   return 'No more product found!';
-    // }
+          ticketsList = data.data;
+          setIsLoading(false);
+          noProduct = ticketsList.isEmpty;
 
-    var header = {
-      //if header type is application/json then the data should be in jsonEncode method
-      "Accept": "application/json",
-      'Content-Type': 'application/json',
-      "Authorization": "Bearer $globalUserToken",
-    };
-    final url = Uri.parse('$baseApiUrl/user/ticket');
-    try {
-      final response = await http.get(url, headers: header);
+          if (ticketsList.isEmpty) {
+            print(ticketsList.isEmpty);
+            noProduct = true;
+            notifyListeners();
+            return 'null';
+          }
+          notifyListeners();
+          return;
+        }
+        throw '';
+      } catch (error) {
+        print(error);
 
-      if (response.statusCode == 200) {
-        var data = TicketsModel.fromJson(jsonDecode(response.body));
-
-        lastPage = data.lastPage == pageNo;
-        ticketsList = data.data;
-        setIsLoading(false);
-        // setNoProduct(resultMeta!.total == 0);
-
-        notifyListeners();
-      } else {}
-    } catch (error) {
-      print(error);
-
-      rethrow;
+        rethrow;
+      }
     }
   }
 

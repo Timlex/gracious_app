@@ -43,7 +43,7 @@ class Datum {
     required this.campaignPercentage,
     required this.price,
     required this.discountPrice,
-    required this.attributes,
+    // required this.attributes,
     required this.badge,
     required this.campaignProduct,
     required this.stockCount,
@@ -57,7 +57,7 @@ class Datum {
   double campaignPercentage;
   int price;
   int discountPrice;
-  List<dynamic> attributes;
+  // List<dynamic> attributes;
   String badge;
   bool campaignProduct;
   int stockCount;
@@ -71,7 +71,7 @@ class Datum {
         campaignPercentage: json["campaign_percentage"].toDouble(),
         price: json["price"],
         discountPrice: json["discount_price"],
-        attributes: List<dynamic>.from(json["attributes"].map((x) => x)),
+        // attributes: List<dynamic>.from(json["attributes"].map((x) => x)),
         badge: json["badge"],
         campaignProduct: json["campaign_product"],
         stockCount: json["stock_count"],
@@ -86,7 +86,7 @@ class Datum {
         "campaign_percentage": campaignPercentage,
         "price": price,
         "discount_price": discountPrice,
-        "attributes": List<dynamic>.from(attributes.map((x) => x)),
+        // "attributes": List<dynamic>.from(attributes.map((x) => x)),
         "badge": badge,
         "campaign_product": campaignProduct,
         "stock_count": stockCount,

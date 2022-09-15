@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
-import '../../view/utils/constant_name.dart';
+import 'package:flutter_html/flutter_html.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../utils/constant_styles.dart';
+import '../../view/utils/constant_name.dart';
 
 class AnimatedBox extends StatelessWidget {
   String title;
@@ -17,11 +19,12 @@ class AnimatedBox extends StatelessWidget {
       child: Column(
         children: [
           ListTile(
+            onTap: onPressed,
             dense: false,
             contentPadding: const EdgeInsets.symmetric(horizontal: 18),
             title: Text(
               title,
-              style: const TextStyle(fontSize: 19, fontWeight: FontWeight.w600),
+              style: const TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
             ),
             trailing: IconButton(
                 icon: Icon(
@@ -29,7 +32,8 @@ class AnimatedBox extends StatelessWidget {
                 ),
                 onPressed: onPressed),
           ),
-          if (expanded) ...?descriptions()
+          if (expanded) ...?descriptions(),
+          if (expanded) const SizedBox(height: 30)
         ],
       ),
     );
@@ -37,6 +41,21 @@ class AnimatedBox extends StatelessWidget {
 
   List<Widget>? descriptions() {
     List<Widget> descriptionList = [];
+    if (data!.keys.first == '1') {
+      descriptionList = [
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 28),
+          child: Html(
+              data: data!.values.first,
+              onLinkTap: (url, _, map, e) {
+                if (url != null) {
+                  launchUrl(Uri.parse(url));
+                }
+              }),
+        ),
+      ];
+      return descriptionList;
+    }
     data!.forEach((key, value) {
       descriptionList.add(Padding(
         padding: const EdgeInsets.symmetric(horizontal: 28),

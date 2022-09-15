@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:gren_mart/service/navigation_bar_helper_service.dart';
 import 'package:gren_mart/service/user_profile_service.dart';
 import '../../service/common_service.dart';
 import '../../view/home/all_products.dart';
@@ -135,39 +136,73 @@ PreferredSizeWidget helloAppBar(BuildContext context) {
     backgroundColor: ConstantColors().pureWhite,
     title: Padding(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
-      child: SizedBox(
-        height: 100,
-        // width: 100,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Hello,',
-              style: TextStyle(color: ConstantColors().greyHint, fontSize: 12),
-            ),
-            Consumer<UserProfileService>(builder: (context, uService, child) {
-              return Text(
-                uService.userProfileData.name == null
-                    ? ''
-                    : uService.userProfileData.name,
-                style: TextStyle(
-                    color: ConstantColors().titleTexts,
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold),
-              );
-            }),
-          ],
+      child: GestureDetector(
+        onTap: () {
+          Provider.of<NavigationBarHelperService>(context, listen: false)
+              .setNavigationIndex(4);
+        },
+        child: SizedBox(
+          height: 100,
+          // width: 100,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Hello,',
+                style:
+                    TextStyle(color: ConstantColors().greyHint, fontSize: 12),
+              ),
+              Consumer<UserProfileService>(builder: (context, uService, child) {
+                return Text(
+                  uService.userProfileData.name == null
+                      ? ''
+                      : uService.userProfileData.name,
+                  style: TextStyle(
+                      color: ConstantColors().titleTexts,
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold),
+                );
+              }),
+            ],
+          ),
         ),
       ),
     ),
-    // actions: [
-    //   customIconButton('notificationIcon', 'notification_bing.svg',
-    //       padding: 10),
-    //   const SizedBox(
-    //     width: 17,
-    //   )
-    // ],
+    actions: [
+      Consumer<UserProfileService>(
+        builder: (context, uService, child) {
+          return GestureDetector(
+            onTap: (() =>
+                Provider.of<NavigationBarHelperService>(context, listen: false)
+                    .setNavigationIndex(4)),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: CircleAvatar(
+                backgroundColor:
+                    uService.userProfileData.profileImageUrl == null
+                        ? cc.primaryColor
+                        : null,
+                child: uService.userProfileData.profileImageUrl == null
+                    ? Text(
+                        uService.userProfileData.name
+                            .substring(0, 2)
+                            .toUpperCase(),
+                        style: TextStyle(
+                            color: cc.pureWhite, fontWeight: FontWeight.bold),
+                      )
+                    : null,
+                backgroundImage:
+                    uService.userProfileData.profileImageUrl != null
+                        ? NetworkImage(
+                            uService.userProfileData.profileImageUrl as String)
+                        : null,
+              ),
+            ),
+          );
+        },
+      )
+    ],
   );
 }
 
@@ -189,7 +224,8 @@ Widget favoriteIcon(bool isFavorite,
   );
 }
 
-Widget seeAllTitle(BuildContext context, String title, List<dynamic> data) {
+Widget seeAllTitle(BuildContext context, String title,
+    {void Function()? onPressed}) {
   return Container(
     margin: const EdgeInsets.only(left: 5),
     child: Row(
@@ -202,14 +238,7 @@ Widget seeAllTitle(BuildContext context, String title, List<dynamic> data) {
         SizedBox(
             child: Row(children: [
           TextButton(
-            onPressed: () {
-              Provider.of<SearchResultDataService>(context, listen: false)
-                  .resetSerch();
-              Provider.of<SearchResultDataService>(context, listen: false)
-                  .fetchProductsBy(pageNo: '1');
-              Navigator.of(context)
-                  .pushNamed(AllProducts.routeName, arguments: [data]);
-            },
+            onPressed: onPressed,
             child: Text('See All',
                 textAlign: TextAlign.end,
                 style: TextStyle(color: cc.primaryColor, fontSize: 14)),
@@ -246,11 +275,13 @@ Widget discAmountRow(int discountAmount, int amount) {
 }
 
 Widget customRowButton(
+  BuildContext context,
   String buttonText1,
   String buttonText2,
   Function ontap,
   Function ontap2,
 ) {
+  initiateDeviceSize(context);
   return Row(
     mainAxisAlignment: MainAxisAlignment.spaceAround,
     children: [
@@ -266,7 +297,7 @@ Widget customRowButton(
 }
 
 snackBar(BuildContext context, String content,
-    {String? buttonText, void Function()? onTap}) {
+    {String? buttonText, void Function()? onTap, Color? backgroundColor}) {
   ScaffoldMessenger.of(context).removeCurrentSnackBar();
   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
 
@@ -274,7 +305,7 @@ snackBar(BuildContext context, String content,
       behavior: SnackBarBehavior.floating,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
       margin: const EdgeInsets.all(5),
-      backgroundColor: cc.orange,
+      backgroundColor: backgroundColor ?? cc.primaryColor,
       duration: const Duration(seconds: 1),
       content: Row(
         children: [
@@ -293,35 +324,8 @@ snackBar(BuildContext context, String content,
 }
 
 Widget loadingProgressBar({Color? color, double size = 35}) {
-  return
-      // Center(
-      //   child: SizedBox(
-      //     height: size,
-      //     child: Lottie.asset(
-      //       'assets/animations/lottie_loading_spinner_4.json',
-      //       height: size,
-      //       // delegates: LottieDelegates(
-      //       //   // text: (initialText) => '**$initialText**',
-      //       //   values: [
-      //       //     ValueDelegate.color(
-      //       //       const ['Shape Layer 1', 'Rectangle', 'Fill 1'],
-      //       //       value: cc.primaryColor,
-      //       //     ),
-      //       //     // ValueDelegate.opacity(
-      //       //     //   const ['Shape Layer 1', 'Rectangle'],
-      //       //     //   callback: (frameInfo) => (frameInfo.overallProgress * 100).round(),
-      //       //     // ),
-      //       //     // ValueDelegate.position(
-      //       //     //   const ['Shape Layer 1', 'Rectangle', '**'],
-      //       //     //   relative: const Offset(100, 200),
-      //       //     // ),
-      //       //   ],
-      //       // ),
-      //     ),
-      //   ),
-      // );
-      Center(
-          child: LoadingAnimationWidget.staggeredDotsWave(
+  return Center(
+      child: LoadingAnimationWidget.staggeredDotsWave(
     size: size,
     color: color ?? cc.primaryColor,
   ));

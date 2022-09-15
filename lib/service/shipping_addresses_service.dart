@@ -125,6 +125,7 @@ class ShippingAddressesService with ChangeNotifier {
 
   setNoData(value) {
     noData = value;
+    selectedAddress = null;
     notifyListeners();
   }
 
@@ -233,6 +234,7 @@ class ShippingAddressesService with ChangeNotifier {
       shippingAddresseList.removeWhere((element) => element.id == id);
       if (shippingAddresseList.isEmpty) {
         noData = true;
+        selectedAddress = null;
       }
       notifyListeners();
       return;

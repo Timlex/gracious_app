@@ -18,11 +18,12 @@ class AllProducts extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    initiateDeviceSize(context);
     final routeData =
         ModalRoute.of(context)!.settings.arguments as List<dynamic>;
     final data = routeData[0];
     double cardWidth = screenWidth / 3.3;
-    double cardHeight = screenHight / 4.9 < 165 ? 130 : screenHight / 4.9;
+    double cardHeight = screenHight / 5.4 < 144 ? 130 : screenHight / 5.4;
     controller.addListener((() => scrollListener(context)));
     return Scaffold(
       appBar: AppBars().appBarTitled('All Products', () {

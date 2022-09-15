@@ -56,13 +56,6 @@ class _FilterOptionState extends State<FilterOption> {
           );
         }).toList(),
       ),
-      // Row(children: [
-      //   Text(text, style: TextStyle(color: cc.greyHint)),
-      //   Icon(
-      //     Icons.keyboard_arrow_down_outlined,
-      //     color: cc.greyHint,
-      //   )
-      // ]),
     );
   }
 }

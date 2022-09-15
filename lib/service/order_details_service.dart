@@ -10,12 +10,15 @@ class OrderDetailsService with ChangeNotifier {
   late OrderDetailsModel orderDetailsModel;
 
   Future fetchOrderDetails(String id) async {
-    final url = Uri.parse('$baseApiUrl/user/order-list/${id.substring(1)}');
+    final url =
+        Uri.parse('$baseApiUrl/user/order-list/${id.replaceAll('#', '')}');
     final header = {'Authorization': 'Bearer $globalUserToken'};
     final response = await http.get(url, headers: header);
 
     if (response.statusCode == 200) {
+      print(response.body);
       orderDetailsModel = OrderDetailsModel.fromJson(jsonDecode(response.body));
+      print(orderDetailsModel.product);
 
       return 'fetching success.';
     }

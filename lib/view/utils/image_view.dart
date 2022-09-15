@@ -34,27 +34,6 @@ class ImageView extends StatelessWidget {
                 },
                 imageProvider: imageUrl.contains('http')
                     ? NetworkImage(imageUrl) as ImageProvider<Object>?
-                    //  Image.network(
-                    //     imageUrl,
-                    //     loadingBuilder: (BuildContext context, Widget child,
-                    //         ImageChunkEvent? loadingProgress) {
-                    //       if (loadingProgress == null) {
-                    //         return child;
-                    //       }
-                    //       return loadingProgressBar();
-                    //       // return Center(
-                    //       //   child: CircularProgressIndicator(
-                    //       //     value: loadingProgress.expectedTotalBytes != null
-                    //       //         ? loadingProgress.cumulativeBytesLoaded /
-                    //       //             loadingProgress.expectedTotalBytes!
-                    //       //         : null,
-                    //       //   ),
-                    //       // );
-                    //     },
-                    //     errorBuilder: (context, exception, stackTrace) {
-                    //       return const Text('Your error widget...');
-                    //     },
-                    //   )
                     : FileImage(File(imageUrl)),
               )),
         ));

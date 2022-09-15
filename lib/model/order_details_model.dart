@@ -168,13 +168,13 @@ class OrderDetail {
   OrderDetail({
     required this.id,
     required this.quantity,
-    required this.hash,
+    this.hash,
     this.attributes,
   });
 
   int id;
   int quantity;
-  String hash;
+  String? hash;
   dynamic attributes;
 
   factory OrderDetail.fromJson(Map<String, dynamic> json) => OrderDetail(

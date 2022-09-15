@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:gren_mart/service/common_service.dart';
-import 'package:gren_mart/service/product_details_service.dart';
 import 'package:provider/provider.dart';
+
+import '../../service/language_service.dart';
+import '../../service/product_details_service.dart';
 import '../../view/utils/constant_colors.dart';
 import '../../view/utils/constant_name.dart';
 
@@ -104,8 +105,8 @@ class PlusMinusCart extends StatelessWidget {
             ),
             SizedBox(width: 3),
             Positioned(
-              right: rtl ? null : 0,
-              left: rtl ? 0 : null,
+              right: LanguageService().rtl ? null : 0,
+              left: LanguageService().rtl ? 0 : null,
               child: Container(
                 height: 50,
                 width: screenWidth / 5.3,
