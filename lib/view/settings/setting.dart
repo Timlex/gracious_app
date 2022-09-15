@@ -35,127 +35,140 @@ class SettingView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<UserProfileService>(builder: (context, uData, child) {
-      return ListView(
-        padding: const EdgeInsets.all(0),
-        children: [
-          SettingScreenAppBar(uData.userProfileData.profileImageUrl),
-          const SizedBox(height: 20),
-          Center(
-            child: Text(
-              uData.userProfileData.name,
-              style: TextThemeConstrants.titleText,
-            ),
-          ),
-          const SizedBox(height: 7),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 25.0),
-            child: Center(
+    return WillPopScope(
+      onWillPop: () =>
+          Provider.of<NavigationBarHelperService>(context, listen: false)
+              .setNavigationIndex(0),
+      child: Consumer<UserProfileService>(builder: (context, uData, child) {
+        return ListView(
+          padding: const EdgeInsets.all(0),
+          children: [
+            SettingScreenAppBar(uData.userProfileData.profileImageUrl),
+            const SizedBox(height: 20),
+            Center(
               child: Text(
-                (uData.userProfileData.phone == null
-                        ? ''
-                        : uData.userProfileData.phone.toString() + '.') +
-                    uData.userProfileData.email.toString(),
-                style: TextStyle(
-                  fontSize: 14,
-                  color: cc.greyHint,
+                uData.userProfileData.name,
+                style: TextThemeConstrants.titleText,
+              ),
+            ),
+            const SizedBox(height: 7),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 25.0),
+              child: Center(
+                child: Text(
+                  (uData.userProfileData.phone == null
+                          ? ''
+                          : uData.userProfileData.phone.toString() + '.') +
+                      uData.userProfileData.email.toString(),
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: cc.greyHint,
+                  ),
                 ),
               ),
             ),
-          ),
-          const SizedBox(height: 40),
-          settingItem('assets/images/icons/orders.svg', 'My Orders', onTap: () {
-            Navigator.of(context).push(MaterialPageRoute<void>(
-              builder: (BuildContext context) => MyOrders(),
-            ));
-          }),
-          settingItem(
-              'assets/images/icons/shipping_address.svg', 'Shipping Address',
-              onTap: () {
-            Provider.of<ShippingAddressesService>(context, listen: false)
-                .fetchUsersShippingAddress(context);
-            Navigator.of(context).pushNamed(ShippingAdresses.routeName).then(
-                (value) => Provider.of<ShippingAddressesService>(context,
-                        listen: false)
-                    .setNoData(false));
-          }),
-          settingItem(
-              'assets/images/icons/manage_profile.svg', 'Manage Account',
-              onTap: () async {
-            // setData(context);
-            Provider.of<CountryDropdownService>(context, listen: false)
-                .getContries(context)
-                .then((value) {
-              final userData =
-                  Provider.of<UserProfileService>(context, listen: false);
-              if (userData.userProfileData.country != null) {
-                Provider.of<CountryDropdownService>(context, listen: false)
-                    .setCountryIdAndValue(
-                        userData.userProfileData.country!.name);
-              }
-              if (userData.userProfileData.state != null) {
-                Provider.of<StateDropdownService>(context, listen: false)
-                    .setStateIdAndValue(userData.userProfileData.state!.name);
-              }
-            });
-            Navigator.of(context).pushNamed(ManageAccount.routeName);
-          }),
-          settingItem(
-              'assets/images/icons/support_ticket.svg', 'Support Ticket',
-              icon: true,
-              imagePath2: 'assets/images/change_pass.png', onTap: () {
-            Navigator.of(context).pushNamed(AllTicketsView.routeName);
-          }),
-          settingItem('assets/images/icons/change_pass.svg', 'Change Password',
-              icon: false,
-              imagePath2: 'assets/images/change_pass.png', onTap: () {
-            Navigator.of(context).pushNamed(ChangePassword.routeName);
-          }),
-          const SizedBox(height: 70),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 25),
-            child: customContainerButton('Log Out', double.infinity, () {
-              Provider.of<NavigationBarHelperService>(context, listen: false)
-                  .setNavigationIndex(0);
-              Provider.of<SignInSignUpService>(context, listen: false)
-                  .signOut();
-              Provider.of<AuthTextControllerService>(context, listen: false)
-                      .setEmail(Provider.of<SignInSignUpService>(context,
-                              listen: false)
-                          .email) ??
-                  '';
-              Provider.of<AuthTextControllerService>(context, listen: false)
-                  .setPass(
-                      Provider.of<SignInSignUpService>(context, listen: false)
-                              .password ??
-                          '');
-              Provider.of<SignInSignUpService>(context, listen: false)
-                  .toggleLaodingSpinner(value: false);
-              Provider.of<SignInSignUpService>(context, listen: false)
-                  .getUserData();
-              Provider.of<CartDataService>(context, listen: false).emptyCart();
-              globalUserToken = null;
-              Navigator.of(context).pushAndRemoveUntil(
-                  MaterialPageRoute(builder: (context) => Auth()),
-                  (Route<dynamic> route) => false);
+            const SizedBox(height: 40),
+            settingItem('assets/images/icons/orders.svg', 'My Orders',
+                onTap: () {
+              Navigator.of(context).push(MaterialPageRoute<void>(
+                builder: (BuildContext context) => MyOrders(),
+              ));
             }),
-          ),
-          const SizedBox(height: 20),
-          const Text(
-            'v1.0',
-            textAlign: TextAlign.center,
-            style: TextStyle(
-                color: Color.fromARGB(127, 158, 158, 158),
-                fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(height: 20),
-        ],
-      );
-    });
+            settingItem(
+                'assets/images/icons/shipping_address.svg', 'Shipping Address',
+                onTap: () {
+              Provider.of<ShippingAddressesService>(context, listen: false)
+                  .fetchUsersShippingAddress(context);
+              Navigator.of(context).pushNamed(ShippingAdresses.routeName).then(
+                  (value) => Provider.of<ShippingAddressesService>(context,
+                          listen: false)
+                      .setNoData(false));
+            }),
+            settingItem(
+                'assets/images/icons/manage_profile.svg', 'Manage Account',
+                onTap: () async {
+              // setData(context);
+              Provider.of<CountryDropdownService>(context, listen: false)
+                  .getContries(context)
+                  .then((value) {
+                final userData =
+                    Provider.of<UserProfileService>(context, listen: false);
+                if (userData.userProfileData.country != null) {
+                  Provider.of<CountryDropdownService>(context, listen: false)
+                      .setCountryIdAndValue(
+                          userData.userProfileData.country!.name);
+                }
+                if (userData.userProfileData.state != null) {
+                  Provider.of<StateDropdownService>(context, listen: false)
+                      .setStateIdAndValue(userData.userProfileData.state!.name);
+                }
+              });
+              Navigator.of(context).pushNamed(ManageAccount.routeName);
+            }),
+            settingItem(
+                'assets/images/icons/support_ticket.svg', 'Support Ticket',
+                icon: true,
+                imagePath2: 'assets/images/change_pass.png', onTap: () {
+              Navigator.of(context).pushNamed(AllTicketsView.routeName);
+            }),
+            settingItem(
+                'assets/images/icons/change_pass.svg', 'Change Password',
+                icon: false,
+                imagePath2: 'assets/images/change_pass.png', onTap: () {
+              Navigator.of(context).pushNamed(ChangePassword.routeName);
+            }),
+            const SizedBox(height: 70),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 25),
+              child: customContainerButton('Log Out', double.infinity, () {
+                Provider.of<NavigationBarHelperService>(context, listen: false)
+                    .setNavigationIndex(0);
+                Provider.of<SignInSignUpService>(context, listen: false)
+                    .signOut();
+                Provider.of<AuthTextControllerService>(context, listen: false)
+                        .setEmail(Provider.of<SignInSignUpService>(context,
+                                listen: false)
+                            .email) ??
+                    '';
+                Provider.of<AuthTextControllerService>(context, listen: false)
+                    .setPass(
+                        Provider.of<SignInSignUpService>(context, listen: false)
+                                .password ??
+                            '');
+                Provider.of<SignInSignUpService>(context, listen: false)
+                    .toggleLaodingSpinner(value: false);
+                Provider.of<SignInSignUpService>(context, listen: false)
+                    .getUserData();
+                Provider.of<CartDataService>(context, listen: false)
+                    .emptyCart();
+                globalUserToken = null;
+                Navigator.of(context).pushAndRemoveUntil(
+                    MaterialPageRoute(builder: (context) => Auth()),
+                    (Route<dynamic> route) => false);
+              }),
+            ),
+            const SizedBox(height: 20),
+            const Text(
+              'v1.0',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                  color: Color.fromARGB(127, 158, 158, 158),
+                  fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 20),
+          ],
+        );
+      }),
+    );
   }
 
   Widget settingItem(String imagePath, String itemText,
-      {void Function()? onTap, bool icon = true, String? imagePath2}) {
+      {void Function()? onTap,
+      bool icon = true,
+      String? imagePath2,
+      double imageSize = 35,
+      double imageSize2 = 35,
+      double textSize = 16}) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 25),
       child: SizedBox(
@@ -169,13 +182,14 @@ class SettingView extends StatelessWidget {
                 leading: icon
                     ? SvgPicture.asset(
                         imagePath,
-                        height: 35,
+                        height: imageSize,
                       )
-                    : SizedBox(height: 35, child: Image.asset(imagePath2!)),
+                    : SizedBox(
+                        height: imageSize2, child: Image.asset(imagePath2!)),
                 title: Text(
                   itemText,
                   style: TextStyle(
-                    fontSize: 16,
+                    fontSize: textSize,
                     color: cc.blackColor,
                   ),
                 ),

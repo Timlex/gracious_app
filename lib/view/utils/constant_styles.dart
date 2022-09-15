@@ -1,15 +1,27 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:gren_mart/service/navigation_bar_helper_service.dart';
 import 'package:gren_mart/service/user_profile_service.dart';
+import 'package:gren_mart/view/settings/setting.dart';
+import 'package:gren_mart/view/utils/text_themes.dart';
 import '../../service/common_service.dart';
+import '../../service/country_dropdown_service.dart';
+import '../../service/shipping_addresses_service.dart';
+import '../../service/state_dropdown_service.dart';
 import '../../view/home/all_products.dart';
 import '../../view/utils/constant_colors.dart';
 import '../../view/utils/constant_name.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:provider/provider.dart';
+import 'package:backdrop/backdrop.dart';
 
 import '../../service/search_result_data_service.dart';
+import '../order/orders.dart';
+import '../settings/change_password.dart';
+import '../settings/manage_account.dart';
+import '../settings/shipping_addresses.dart';
+import '../ticket/all_ticket_view.dart';
 
 ConstantColors cc = ConstantColors();
 
@@ -136,36 +148,29 @@ PreferredSizeWidget helloAppBar(BuildContext context) {
     backgroundColor: ConstantColors().pureWhite,
     title: Padding(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
-      child: GestureDetector(
-        onTap: () {
-          Provider.of<NavigationBarHelperService>(context, listen: false)
-              .setNavigationIndex(4);
-        },
-        child: SizedBox(
-          height: 100,
-          // width: 100,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Hello,',
-                style:
-                    TextStyle(color: ConstantColors().greyHint, fontSize: 12),
-              ),
-              Consumer<UserProfileService>(builder: (context, uService, child) {
-                return Text(
-                  uService.userProfileData.name == null
-                      ? ''
-                      : uService.userProfileData.name,
-                  style: TextStyle(
-                      color: ConstantColors().titleTexts,
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold),
-                );
-              }),
-            ],
-          ),
+      child: SizedBox(
+        height: 100,
+        // width: 100,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Hello,',
+              style: TextStyle(color: ConstantColors().greyHint, fontSize: 12),
+            ),
+            Consumer<UserProfileService>(builder: (context, uService, child) {
+              return Text(
+                uService.userProfileData.name == null
+                    ? ''
+                    : uService.userProfileData.name,
+                style: TextStyle(
+                    color: ConstantColors().titleTexts,
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold),
+              );
+            }),
+          ],
         ),
       ),
     ),
@@ -173,16 +178,16 @@ PreferredSizeWidget helloAppBar(BuildContext context) {
       Consumer<UserProfileService>(
         builder: (context, uService, child) {
           return GestureDetector(
-            onTap: (() =>
-                Provider.of<NavigationBarHelperService>(context, listen: false)
-                    .setNavigationIndex(4)),
+            onTap: (() => showTopSlider(context, uService)),
+            // Provider.of<NavigationBarHelperService>(context, listen: false)
+            //     .setNavigationIndex(4)),
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: CircleAvatar(
                 backgroundColor:
                     uService.userProfileData.profileImageUrl == null
                         ? cc.primaryColor
-                        : null,
+                        : cc.pureWhite,
                 child: uService.userProfileData.profileImageUrl == null
                     ? Text(
                         uService.userProfileData.name
@@ -306,7 +311,7 @@ snackBar(BuildContext context, String content,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
       margin: const EdgeInsets.all(5),
       backgroundColor: backgroundColor ?? cc.primaryColor,
-      duration: const Duration(seconds: 1),
+      duration: const Duration(seconds: 2),
       content: Row(
         children: [
           Text(
@@ -329,4 +334,179 @@ Widget loadingProgressBar({Color? color, double size = 35}) {
     size: size,
     color: color ?? cc.primaryColor,
   ));
+}
+
+void showTopSlider(BuildContext context, UserProfileService uService) {
+  showGeneralDialog(
+    context: context,
+    barrierDismissible: true,
+    transitionDuration: Duration(milliseconds: 500),
+    barrierLabel: MaterialLocalizations.of(context).dialogLabel,
+    barrierColor: Colors.black.withOpacity(0.5),
+    pageBuilder: (context, _, __) {
+      return Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: <Widget>[
+          Container(
+            width: MediaQuery.of(context).size.width,
+            padding: EdgeInsets.all(20),
+            color: Colors.white,
+            child: Card(
+              elevation: 0,
+              child: ListView(
+                physics: NeverScrollableScrollPhysics(),
+                shrinkWrap: true,
+                children: <Widget>[
+                  Row(
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(10),
+                            child: Container(
+                              height: screenWidth / 5,
+                              width: screenWidth / 5,
+                              color: cc.primaryColor,
+                              child: CachedNetworkImage(
+                                placeholder: (context, url) => Center(
+                                  child: Text('placeHolder',
+                                      style: TextStyle(
+                                          fontSize: 25,
+                                          color: cc.pureWhite,
+                                          fontWeight: FontWeight.bold)),
+                                ),
+                                imageUrl:
+                                    uService.userProfileData.profileImageUrl ??
+                                        '',
+                                errorWidget: (context, str, dyn) => Center(
+                                  child: Text(
+                                      uService.userProfileData.name
+                                          .substring(0, 2)
+                                          .toUpperCase(),
+                                      style: TextStyle(
+                                          fontSize: 25,
+                                          color: cc.pureWhite,
+                                          fontWeight: FontWeight.bold)),
+                                ),
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            height: 3,
+                          ),
+                          Text(uService.userProfileData.name,
+                              style: TextThemeConstrants.greyHint13),
+                          SizedBox(
+                            height: 3,
+                          ),
+                          Text(uService.userProfileData.username,
+                              style: TextThemeConstrants.greyHint13),
+                          SizedBox(
+                            height: 3,
+                          ),
+                          Text(uService.userProfileData.email,
+                              style: TextThemeConstrants.greyHint13),
+                          SizedBox(
+                            height: 3,
+                          ),
+                          Text(uService.userProfileData.phone,
+                              style: TextThemeConstrants.greyHint13)
+                        ],
+                      ),
+                      Expanded(
+                        child: Column(
+                          children: [
+                            SettingView().settingItem(
+                                'assets/images/icons/orders.svg', 'My Orders',
+                                onTap: () {
+                              Navigator.of(context)
+                                  .push(MaterialPageRoute<void>(
+                                builder: (BuildContext context) => MyOrders(),
+                              ));
+                            }, imageSize: 25, textSize: 13),
+                            SettingView().settingItem(
+                                'assets/images/icons/shipping_address.svg',
+                                'Shipping Address', onTap: () {
+                              Provider.of<ShippingAddressesService>(context,
+                                      listen: false)
+                                  .fetchUsersShippingAddress(context);
+                              Navigator.of(context)
+                                  .pushNamed(ShippingAdresses.routeName)
+                                  .then((value) =>
+                                      Provider.of<ShippingAddressesService>(
+                                              context,
+                                              listen: false)
+                                          .setNoData(false));
+                            }, imageSize: 25, textSize: 13),
+                            SettingView().settingItem(
+                                'assets/images/icons/manage_profile.svg',
+                                'Manage Account', onTap: () async {
+                              // setData(context);
+                              Provider.of<CountryDropdownService>(context,
+                                      listen: false)
+                                  .getContries(context)
+                                  .then((value) {
+                                final userData =
+                                    Provider.of<UserProfileService>(context,
+                                        listen: false);
+                                if (userData.userProfileData.country != null) {
+                                  Provider.of<CountryDropdownService>(context,
+                                          listen: false)
+                                      .setCountryIdAndValue(userData
+                                          .userProfileData.country!.name);
+                                }
+                                if (userData.userProfileData.state != null) {
+                                  Provider.of<StateDropdownService>(context,
+                                          listen: false)
+                                      .setStateIdAndValue(
+                                          userData.userProfileData.state!.name);
+                                }
+                              });
+                              Navigator.of(context)
+                                  .pushNamed(ManageAccount.routeName);
+                            }, imageSize: 25, textSize: 13),
+                            SettingView().settingItem(
+                                'assets/images/icons/support_ticket.svg',
+                                'Support Ticket',
+                                icon: true,
+                                imagePath2: 'assets/images/change_pass.png',
+                                onTap: () {
+                              Navigator.of(context)
+                                  .pushNamed(AllTicketsView.routeName);
+                            }, imageSize: 25, textSize: 13),
+                            SettingView().settingItem(
+                                'assets/images/icons/change_pass.svg',
+                                'Change Password',
+                                icon: false,
+                                imagePath2: 'assets/images/change_pass.png',
+                                onTap: () {
+                              Navigator.of(context)
+                                  .pushNamed(ChangePassword.routeName);
+                            }, imageSize2: 25, textSize: 13),
+                          ],
+                        ),
+                      )
+                    ],
+                  )
+                ],
+              ),
+            ),
+          ),
+        ],
+      );
+    },
+    transitionBuilder: (context, animation, secondaryAnimation, child) {
+      return SlideTransition(
+        position: CurvedAnimation(
+          parent: animation,
+          curve: Curves.easeOut,
+        ).drive(Tween<Offset>(
+          begin: Offset(0, -1.0),
+          end: Offset.zero,
+        )),
+        child: child,
+      );
+    },
+  );
 }

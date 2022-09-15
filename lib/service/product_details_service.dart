@@ -28,6 +28,8 @@ class ProductDetailsService with ChangeNotifier {
   Map<String, dynamic> selecteInventorySet = {};
   List navigatorID = [];
   bool refreshpage = false;
+  int? selectedIndex;
+  List<String> inventoryHash = [];
 
   setProductInventorySet(List<String>? value) {
     if (selectedInventorySetIndex != value) {}
@@ -69,6 +71,7 @@ class ProductDetailsService with ChangeNotifier {
 
   addAdditionalPrice() {
     print(selectedInventorySetIndex);
+
     bool setMatched = true;
     for (int i = 0; i < selectedInventorySetIndex.length; i++) {
       setMatched = true;
@@ -77,7 +80,8 @@ class ProductDetailsService with ChangeNotifier {
       selecteInventorySet.values.forEach((e) {
         print(i);
         List<dynamic> confirmingSelectedDeta = selectedAttributes;
-        confirmingSelectedDeta.add(selecteInventorySet['hash']);
+        // confirmingSelectedDeta.add(selecteInventorySet['hash']);
+        // confirmingSelectedDeta.add(selecteInventorySet['Color_name']);
         if (!confirmingSelectedDeta.contains(e)) {
           setMatched = false;
         }
@@ -85,11 +89,19 @@ class ProductDetailsService with ChangeNotifier {
       final mapData = {};
 
       if (setMatched) {
+        print('Inventory..............');
+        selectedIndex = i;
+        print(productDetails!
+            .productInventorySet[int.parse(selectedInventorySetIndex[i])]);
+
         break;
       }
     }
     if (setMatched) {
-      selectedInventoryHash = selecteInventorySet['hash'];
+      selectedInventoryHash = inventoryHash[selectedIndex!];
+      // print('hash..............');
+      // print(selectedInventoryHash);
+      // print(productDetails!.productInventorySet[selectedIndex!]);
       productSalePrice +=
           productDetails!.additionalInfoStore![selectedInventoryHash] == null
               ? 0
@@ -104,10 +116,15 @@ class ProductDetailsService with ChangeNotifier {
           additionalInfoImage == '' ? null : additionalInfoImage;
       cartAble = true;
       selecteInventorySet.remove('hash');
-      print(selecteInventorySet);
+      // print(selecteInventorySet);
       notifyListeners();
       return;
     }
+    if (selectedIndex != null) {
+      print('Inventory..............');
+      print(productDetails!.productInventorySet[selectedIndex!]);
+    }
+    print('outside..............');
     cartAble = false;
     productSalePrice = productDetails!.product.salePrice;
     additionalInfoImage = null;
@@ -201,6 +218,7 @@ class ProductDetailsService with ChangeNotifier {
     additionalInfoImage = null;
     quantity = 1;
     selectedInventorySetIndex = [];
+    cartAble = false;
     // inventoryKeys = [];
     allAtrributes = {};
     selectedAttributes = [];
@@ -209,7 +227,7 @@ class ProductDetailsService with ChangeNotifier {
     if (pop) {
       navigatorID.remove(navigatorID.last);
     }
-    notifyListeners();
+    // notifyListeners();
   }
 
   setRefresPage(value) {
@@ -233,6 +251,7 @@ class ProductDetailsService with ChangeNotifier {
     }
     print(id);
     inventoryKeys = [];
+    inventoryHash = [];
     var header = {
       //if header type is application/json then the data should be in jsonEncode method
       "Accept": "application/json",
@@ -250,6 +269,9 @@ class ProductDetailsService with ChangeNotifier {
       productSalePrice = productDetails!.product.salePrice;
       final productInvenSet = productDetails!.productInventorySet;
       productInvenSet.forEach((element) {
+        inventoryHash.add(element['hash']);
+        element.remove('Color_name');
+        element.remove('hash');
         final keys = element.keys;
         for (var e in keys) {
           if (inventoryKeys.contains(e)) {
@@ -258,7 +280,7 @@ class ProductDetailsService with ChangeNotifier {
           inventoryKeys.add(e);
         }
       });
-      inventoryKeys.remove('hash');
+
       {
         inventoryKeys.forEach((e) {
           int index = 0;
@@ -298,22 +320,4 @@ class ProductDetailsService with ChangeNotifier {
     //   rethrow;
     // }
   }
-
-  final productInvenSet = {
-    'color': {
-      "#710404": [0, 2],
-    },
-    'sauce': {
-      "Tartar": [0],
-      "Soy": [1],
-    },
-    'mayo': {
-      "Lime": [0],
-      "Wasabi": [1],
-    },
-    'cheese': {
-      "mozzarella": [0],
-      "white": [1],
-    },
-  };
 }

@@ -164,8 +164,8 @@ class ProductCard extends StatelessWidget {
                                     _id,
                                     title,
                                     discountPrice,
-                                    discountPrice,
                                     imgUrl,
+                                    isCartable,
                                   )));
                 })
               ],

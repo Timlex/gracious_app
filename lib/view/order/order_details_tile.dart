@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../view/utils/constant_name.dart';
 import '../../service/language_service.dart';
 import '../../view/utils/constant_colors.dart';
+import '../details/product_details.dart';
 
 class OrderDetailsTile extends StatelessWidget {
   final String title;
@@ -10,9 +11,10 @@ class OrderDetailsTile extends StatelessWidget {
   final String image;
   final double price;
   final int quantity;
+  final int id;
 
   OrderDetailsTile(
-      this.title, this.price, this.quantity, this.image, this.subTitle,
+      this.title, this.price, this.quantity, this.image, this.subTitle, this.id,
       {Key? key})
       : super(key: key);
 
@@ -29,6 +31,10 @@ class OrderDetailsTile extends StatelessWidget {
       child: Column(
         children: [
           ListTile(
+            onTap: () {
+              Navigator.of(context)
+                  .pushNamed(ProductDetails.routeName, arguments: [id]);
+            },
             contentPadding: EdgeInsets.only(
                 left: LanguageService().rtl ? 0 : 20,
                 right: LanguageService().rtl ? 20 : 0),
@@ -96,6 +102,7 @@ class OrderDetailsTile extends StatelessWidget {
               ],
             ),
           ),
+          const Divider(),
         ],
       ),
     );

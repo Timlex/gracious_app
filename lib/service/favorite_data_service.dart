@@ -17,29 +17,24 @@ class FavoriteDataService with ChangeNotifier {
     return _favoriteItems.containsKey(id);
   }
 
-  void toggleFavorite(
-    BuildContext context,
-    int id,
-    String title,
-    int price,
-    int discountPrice,
-    String imgUrl,
-  ) async {
+  void toggleFavorite(BuildContext context, int id, String title, int price,
+      String imgUrl, bool isCartable) async {
     if (_favoriteItems.containsKey(id.toString())) {
       deleteFavoriteItem(id, context);
       _favoriteItems.remove(id);
       notifyListeners();
       return;
     }
+
     await DbHelper.insert('favorite', {
       'productId': id,
       'title': title,
       'price': price,
-      'discountPrice': discountPrice,
       'imgUrl': imgUrl,
+      'isCartable': isCartable ? 0 : 1
     });
-    _favoriteItems.putIfAbsent(id.toString(),
-        () => Favorites(id, title, price, discountPrice, imgUrl));
+    _favoriteItems.putIfAbsent(
+        id.toString(), () => Favorites(id, title, price, imgUrl, isCartable));
     snackBar(context, 'Item added to favorite.');
     notifyListeners();
   }
@@ -50,13 +45,8 @@ class FavoriteDataService with ChangeNotifier {
     for (var element in dbData) {
       dataList.putIfAbsent(
           element['productId'].toString(),
-          () => Favorites(
-                element['productId'],
-                element['title'],
-                element['price'],
-                element['discountPrice'],
-                element['imgUrl'],
-              ));
+          () => Favorites(element['productId'], element['title'],
+              element['price'], element['imgUrl'], element['isCartable'] == 0));
     }
     _favoriteItems = dataList;
     notifyListeners();

@@ -151,6 +151,7 @@ class SignInSignUpService with ChangeNotifier {
         'state_id': stateId,
         'terms_conditions': termsAndCondition,
       });
+      print(response.body);
       if (response.statusCode == 200) {
         final data = SignUpModel.fromJson(jsonDecode(response.body));
         print(data.token);
@@ -201,7 +202,7 @@ class SignInSignUpService with ChangeNotifier {
     } catch (error) {
       print(error);
 
-      throw 'Signup failed';
+      throw error;
     }
   }
 

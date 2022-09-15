@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:gren_mart/service/search_result_data_service.dart';
+import 'package:gren_mart/view/home/bottom_navigation_bar.dart';
 import 'package:gren_mart/view/utils/app_bars.dart';
 import 'package:provider/provider.dart';
 
+import '../../service/navigation_bar_helper_service.dart';
 import '../utils/constant_name.dart';
 import '../utils/constant_styles.dart';
 import 'product_card.dart';
@@ -67,6 +69,7 @@ class CategoryProductPage extends StatelessWidget {
           },
         ),
       ),
+      bottomNavigationBar: CustomNavigationBar(),
     );
   }
 

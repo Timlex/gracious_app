@@ -112,43 +112,11 @@ class OrderDetails extends StatelessWidget {
                             children: [Text('Loading failed')],
                           ))
                         : Expanded(
-                            child: ListView.separated(
+                            child: ListView(
                               physics: const BouncingScrollPhysics(
                                   parent: AlwaysScrollableScrollPhysics()),
                               padding: const EdgeInsets.only(top: 10),
-                              itemCount:
-                                  odService.orderDetailsModel.product.length,
-                              itemBuilder: (context, index) {
-                                if ((odService
-                                        .orderDetailsModel.product.length) <
-                                    index + 1) {
-                                  return SizedBox();
-                                }
-                                print(index);
-                                print(
-                                    odService.orderDetailsModel.product.length);
-                                final productItem =
-                                    odService.orderDetailsModel.product[index];
-                                final e = odService.orderDetailsModel.orderInfo
-                                        .orderDetails[
-                                    productItem.id.toString()]![0];
-                                final price = e.attributes['price'];
-                                e.attributes.remove('price');
-                                e.attributes.remove('price');
-                                e.attributes.remove('type');
-                                return OrderDetailsTile(
-                                  productItem.title,
-                                  productItem.price.toDouble(),
-                                  e.quantity,
-                                  productItem.image,
-                                  e.attributes.toString() == '{}'
-                                      ? ''
-                                      : ' (' + e.attributes.toString() + ') ',
-                                );
-                              },
-                              separatorBuilder: (context, index) {
-                                return const Divider();
-                              },
+                              children: detailTileList(odService),
                             ),
                           ),
                     Container(
@@ -196,6 +164,40 @@ class OrderDetails extends StatelessWidget {
             }),
       ),
     );
+  }
+
+  List<Widget> detailTileList(OrderDetailsService odService) {
+    List<Widget> list = [];
+    odService.orderDetailsModel.product.forEach((ele) {
+      final attributeItem = odService
+          .orderDetailsModel.orderInfo.orderDetails[ele.id.toString()]!;
+      attributeItem.forEach((element) {
+        final price = element.attributes['price'];
+        element.attributes.remove('price');
+        element.attributes.remove('Color');
+        element.attributes.remove('type');
+        list.add(OrderDetailsTile(
+            ele.title,
+            price.toDouble(),
+            element.quantity,
+            ele.image,
+            element.attributes.toString() == '{}'
+                ? ''
+                : ' (' + element.attributes.toString() + ') ',
+            ele.id));
+      });
+    });
+
+    return list;
+    // return OrderDetailsTile(
+    //     productItem.title,
+    //     productItem.price.toDouble(),
+    //     e.quantity,
+    //     productItem.image,
+    //     e.attributes.toString() == '{}'
+    //         ? ''
+    //         : ' (' + e.attributes.toString() + ') ',
+    //     productItem.id);
   }
 
   Widget rows(String leading, {String? trailing}) {

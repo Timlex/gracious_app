@@ -59,15 +59,17 @@ class CartDataService with ChangeNotifier {
     return map;
   }
 
-  void addItem(int id, {int? extraQuantity, inventorySet}) async {
+  void addItem(BuildContext context, int id,
+      {int? extraQuantity, inventorySet}) async {
     _cartItems![id.toString()]!.forEach((element) {
       if (element['id'] == id &&
           (element.containsValue(inventorySet) ||
-              (inventorySet == null && element['attributes'] == null))) {
+              (jsonEncode(inventorySet) ==
+                  jsonEncode(element['attributes'])))) {
         element.update('quantity', (value) {
           int sum = (value as int) + (extraQuantity ?? 1);
           print(sum);
-
+          snackBar(context, 'Item added to cart');
           return sum;
         });
       }
@@ -86,11 +88,12 @@ class CartDataService with ChangeNotifier {
     notifyListeners();
   }
 
-  void minusItem(int id, {inventorySet}) {
+  void minusItem(int id, BuildContext context, {inventorySet}) {
     _cartItems![id.toString()]!.forEach((element) {
       if (element['id'] == id &&
           (element.containsValue(inventorySet) ||
               (inventorySet == null && element['attributes'] == null))) {
+        print(element['quantity']);
         element.update('quantity', (value) {
           int sum = value as int;
           if (value != 1) {
@@ -101,6 +104,7 @@ class CartDataService with ChangeNotifier {
           // };
           return sum;
         });
+        print(element['quantity']);
       }
     });
 
@@ -113,6 +117,7 @@ class CartDataService with ChangeNotifier {
         })
       },
     );
+    snackBar(context, 'Item minused from cart', backgroundColor: cc.orange);
 
     notifyListeners();
   }
@@ -120,7 +125,7 @@ class CartDataService with ChangeNotifier {
   void addCartItem(BuildContext context, int id, String title, int price,
       int discountPrice, double campaignPercentage, int quantity, String imgUrl,
       {String? hash, inventorySet}) async {
-    print(inventorySet);
+    // print(inventorySet);
     Map<String, List<Map<String, Object?>>>? map = {
       id.toString(): [
         {
@@ -134,24 +139,6 @@ class CartDataService with ChangeNotifier {
         },
       ]
     };
-    bool haveData = false;
-    if (_cartItems!.containsKey(id.toString()))
-      cartList![id.toString()]!.forEach((element) {
-        print(element);
-        if (element.containsValue(inventorySet)) {
-          haveData = true;
-        }
-      });
-    print(id);
-    print(_cartItems!.containsKey(id.toString()) && haveData);
-    if (haveData) {
-      addItem(id, extraQuantity: quantity);
-      notifyListeners();
-      return;
-    }
-
-    // try {
-
     if (!_cartItems!.containsKey(id.toString())) {
       await DbHelper.insert('cart', {
         'productId': id,
@@ -173,12 +160,44 @@ class CartDataService with ChangeNotifier {
       return;
     }
 
-    snackBar(context, 'Multiple attribute set can\'t be added.',
-        backgroundColor: cc.orange);
+    bool haveData = false;
+    _cartItems![id.toString()]!.forEach((element) {
+      haveData = true;
+      if ((element.containsValue(inventorySet) ||
+          (jsonEncode(inventorySet) == jsonEncode(element['attributes'])))) {}
+    });
     print(id);
-    print(_cartItems![id.toString]);
+    print(haveData);
+    if (_cartItems!.containsKey(id.toString()) && haveData) {
+      addItem(context, id, extraQuantity: quantity, inventorySet: inventorySet);
+      notifyListeners();
+      return;
+    }
 
-    notifyListeners();
+    // try {
+    if (_cartItems!.containsKey(id.toString()) && !haveData) {
+      _cartItems![id.toString()]!.add({
+        'id': id,
+        'title': title,
+        'price': price,
+        'imgUrl': imgUrl,
+        'quantity': quantity,
+        'hash': hash,
+        'attributes': inventorySet
+      });
+      DbHelper.updateQuantity(
+        'cart',
+        id,
+        {
+          'data': jsonEncode({
+            id.toString(): cartList![id.toString()],
+          })
+        },
+      );
+      snackBar(context, 'Item added to cart');
+
+      notifyListeners();
+    }
   }
 
   void fetchCarts() async {
@@ -231,7 +250,7 @@ class CartDataService with ChangeNotifier {
       'data': jsonEncode({id.toString(): cartList![id.toString()]})
     });
 
-    // notifyListeners();
+    notifyListeners();
   }
 
   int totalQuantity() {

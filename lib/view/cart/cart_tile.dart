@@ -143,7 +143,8 @@ class CartTile extends StatelessWidget {
                             child: IconButton(
                                 // padding: EdgeInsets.zero,
                                 onPressed: () {
-                                  cart.minusItem(id);
+                                  cart.minusItem(id, context,
+                                      inventorySet: inventorySet);
                                 },
                                 icon: SvgPicture.asset(
                                   'assets/images/icons/minus.svg',
@@ -167,7 +168,8 @@ class CartTile extends StatelessWidget {
                               color: const Color.fromARGB(39, 0, 177, 6),
                             ),
                             child: IconButton(
-                                onPressed: () => cart.addItem(id),
+                                onPressed: () => cart.addItem(context, id,
+                                    inventorySet: inventorySet),
                                 icon: SvgPicture.asset(
                                   'assets/images/icons/add.svg',
                                   color: cc.primaryColor,

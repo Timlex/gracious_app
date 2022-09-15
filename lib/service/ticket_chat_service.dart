@@ -16,9 +16,15 @@ class TicketChatService with ChangeNotifier {
   File? pickedImage;
   bool notifyViaMail = false;
   bool noMessage = false;
+  bool msgSendingLoading = false;
 
   setIsLoading(value) {
     isLoading = value;
+    notifyListeners();
+  }
+
+  setMsgSendingLoading() {
+    msgSendingLoading = true;
     notifyListeners();
   }
 
@@ -120,7 +126,7 @@ class TicketChatService with ChangeNotifier {
       var response = await http.Response.fromStream(streamedResponse);
       print(response.statusCode);
       if (response.statusCode == 200) {
-        fetchSingleTickets(id);
+        await fetchOnlyMessages(id);
         // var data = TicketChatModel.fromJson(jsonDecode(response.body));
 
         // setNoProduct(resultMeta!.total == 0);
@@ -151,8 +157,11 @@ class TicketChatService with ChangeNotifier {
       final response = await http.get(url, headers: header);
 
       if (response.statusCode == 200) {
-        var data = onlyMessagesModelFromJson(response.body);
-
+        List<AllMessage> data = [];
+        jsonDecode(response.body).forEach((element) {
+          data.add(AllMessage.fromJson(element));
+        });
+        messagesList = data.reversed.toList();
         print(isLoading);
         print(messagesList.toString() + '-------------------');
         setIsLoading(false);

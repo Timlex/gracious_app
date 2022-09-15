@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:gren_mart/view/home/bottom_navigation_bar.dart';
 import '../../service/language_service.dart';
 import '../../service/product_card_data_service.dart';
 import '../../service/search_result_data_service.dart';
@@ -27,7 +28,7 @@ class CategoryPage extends StatelessWidget {
     final data = routeData[0];
     final title = routeData[1];
     double cardWidth = screenWidth / 3.3;
-    double cardHeight = 33;
+    double cardHeight = 40;
     controller.addListener((() => scrollListener(context)));
     return Scaffold(
       appBar: AppBars().appBarTitled(title, () {
@@ -61,6 +62,7 @@ class CategoryPage extends StatelessWidget {
           ],
         );
       }),
+      bottomNavigationBar: CustomNavigationBar(),
     );
   }
 

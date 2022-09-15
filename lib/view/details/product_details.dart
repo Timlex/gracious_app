@@ -225,13 +225,15 @@ class ProductDetails extends StatelessWidget {
                                                 product.id.toString()),
                                             size: 18, onPressed: () {
                                           favoriteData.toggleFavorite(
-                                            context,
-                                            product.id,
-                                            product.title,
-                                            product.salePrice,
-                                            pService.productSalePrice,
-                                            product.image,
-                                          );
+                                              context,
+                                              product.id,
+                                              product.title,
+                                              pService.productSalePrice,
+                                              product.image,
+                                              pService
+                                                  .productDetails!
+                                                  .productInventorySet
+                                                  .isNotEmpty);
                                         }
                                             // => favoriteData.toggleFavorite(
                                             //     product.id,
@@ -321,9 +323,7 @@ class ProductDetails extends StatelessWidget {
                                                       'assets/images/icons/star.svg',
                                                       color: cc.orangeRating,
                                                     ),
-                                                    onRatingUpdate: (rating) {
-                                                      print(rating);
-                                                    },
+                                                    onRatingUpdate: (rating) {},
                                                   ),
                                                 const SizedBox(height: 17),
                                                 Text(
@@ -368,16 +368,17 @@ class ProductDetails extends StatelessWidget {
                                                                         margin: EdgeInsets.only(
                                                                             bottom:
                                                                                 15),
-                                                                        child: SingleChildScrollView(
-                                                                            scrollDirection: Axis.horizontal,
-                                                                            child: Row(
-                                                                              crossAxisAlignment: CrossAxisAlignment.center,
-                                                                              children: [
-                                                                                Text('${e.replaceFirst('_', ' ')}:', style: attributeTitleTheme),
-                                                                                const SizedBox(width: 10),
-                                                                                Row(children: generateDynamicAttrribute(pdService, pdService.allAtrributes[e])),
-                                                                              ],
-                                                                            )),
+                                                                        child:
+                                                                            Row(
+                                                                          crossAxisAlignment:
+                                                                              CrossAxisAlignment.center,
+                                                                          children: [
+                                                                            Text('${e.replaceFirst('_', ' ')}:',
+                                                                                style: attributeTitleTheme),
+                                                                            const SizedBox(width: 10),
+                                                                            Expanded(child: SingleChildScrollView(scrollDirection: Axis.horizontal, child: Row(children: generateDynamicAttrribute(pdService, pdService.allAtrributes[e])))),
+                                                                          ],
+                                                                        ),
                                                                       ))
                                                               .toList()),
                                                 ),
@@ -496,14 +497,13 @@ class ProductDetails extends StatelessWidget {
                             child: PlusMinusCart(
                               onTap: pService.cartAble
                                   ? () {
-                                      print(pService.selecteInventorySet);
                                       Provider.of<CartDataService>(context,
                                               listen: false)
                                           .addCartItem(
                                         context,
                                         product.id,
                                         product.title,
-                                        product.salePrice,
+                                        pService.productSalePrice,
                                         pService.productSalePrice,
                                         0.0,
                                         pService.quantity,
@@ -517,7 +517,8 @@ class ProductDetails extends StatelessWidget {
                                       );
                                     }
                                   : () {
-                                      snackBar(context, 'Please select a set.');
+                                      snackBar(context, 'Please select a set.',
+                                          backgroundColor: cc.orange);
                                     },
                             ));
                       }),

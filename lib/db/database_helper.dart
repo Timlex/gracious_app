@@ -10,7 +10,7 @@ class DbHelper {
         onCreate: (db, version) {
       db.execute(dbName == 'cart'
           ? 'CREATE TABLE $dbName(id INTEGER PRIMARY KEY, productId INTEGER, data TEXT NOT NULL)'
-          : 'CREATE TABLE $dbName(id INTEGER PRIMARY KEY, productId INTEGER, title TEXT NOT NULL, price INTEGER, discountPrice INTEGER, imgUrl TEXT)');
+          : 'CREATE TABLE $dbName(id INTEGER PRIMARY KEY, productId INTEGER, title TEXT NOT NULL, price INTEGER, imgUrl TEXT, isCartable INTEGER)');
     });
   }
 

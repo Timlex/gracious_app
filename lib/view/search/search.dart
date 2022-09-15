@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gren_mart/service/navigation_bar_helper_service.dart';
 import 'package:provider/provider.dart';
 
 import '../utils/constant_colors.dart';
@@ -22,106 +23,118 @@ class SearchView extends StatelessWidget {
     // double cardHeight = screenHight / 5.4;
     double cardHeight = screenHight / 5.4 < 144 ? 130 : screenHight / 5.4;
     controller.addListener((() => scrollListener(context)));
-    return Consumer<SearchResultDataService>(builder: (context, srData, child) {
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-              padding: const EdgeInsets.only(top: 20, right: 20, left: 20),
-              child: Consumer<SearchResultDataService>(
-                  builder: (context, srService, child) {
-                return TextFormField(
-                  initialValue: srData.searchText,
-                  style: TextStyle(color: cc.greyTextFieldLebel, fontSize: 13),
-                  decoration: InputDecoration(
-                    contentPadding:
-                        const EdgeInsets.symmetric(horizontal: 8, vertical: 17),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide: BorderSide(color: cc.primaryColor, width: 2),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide: BorderSide(color: cc.greyBorder, width: 1),
-                    ),
-                    focusedErrorBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide: BorderSide(color: cc.orange, width: 1),
-                    ),
-                    errorBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide: BorderSide(color: cc.orange, width: 1),
-                    ),
-                    hintText: 'Search your need here',
-
-                    hintStyle:
+    return WillPopScope(
+      onWillPop: () =>
+          Provider.of<NavigationBarHelperService>(context, listen: false)
+              .setNavigationIndex(0),
+      child:
+          Consumer<SearchResultDataService>(builder: (context, srData, child) {
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+                padding: const EdgeInsets.only(top: 20, right: 20, left: 20),
+                child: Consumer<SearchResultDataService>(
+                    builder: (context, srService, child) {
+                  return TextFormField(
+                    initialValue: srData.searchText,
+                    style:
                         TextStyle(color: cc.greyTextFieldLebel, fontSize: 13),
-
-                    prefixIcon: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        SizedBox(
-                            height: 25,
-                            child: Image.asset(
-                              'assets/images/icons/search_normal.png',
-                            )),
-                      ],
-                    ),
-                    suffixIcon: GestureDetector(
-                      onTap: (() {
-                        Provider.of<SearchResultDataService>(context,
-                                listen: false)
-                            .resetSerch();
-                        Provider.of<SearchResultDataService>(context,
-                                listen: false)
-                            .fetchProductsBy(pageNo: '1');
-                      }),
-                      child: Icon(
-                        Icons.arrow_forward_ios,
-                        color: cc.blackColor,
-                        size: 17,
+                    decoration: InputDecoration(
+                      contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 8, vertical: 17),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide:
+                            BorderSide(color: cc.primaryColor, width: 2),
                       ),
-                    ),
-                    //  if (leadingImage != null)?
-                  ),
-                  onFieldSubmitted: (_) {
-                    Provider.of<SearchResultDataService>(context, listen: false)
-                        .resetSerch();
-                    Provider.of<SearchResultDataService>(context, listen: false)
-                        .fetchProductsBy(pageNo: '1');
-                  },
-                  onChanged: (value) {
-                    Provider.of<SearchResultDataService>(context, listen: false)
-                        .setSearchText(value);
-                  },
-                );
-              })),
-          const SizedBox(height: 15),
-          Expanded(
-            child: srData.resultMeta != null
-                ? newMethod(cardWidth, cardHeight, srData)
-                : FutureBuilder(
-                    future: showTimout(),
-                    builder: ((context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return loadingProgressBar();
-                      }
-                      snackBar(context, 'Timeout!');
-                      return Center(
-                        child: Text(
-                          'Something went wrong!',
-                          style: TextStyle(color: cc.greyHint),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: BorderSide(color: cc.greyBorder, width: 1),
+                      ),
+                      focusedErrorBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: BorderSide(color: cc.orange, width: 1),
+                      ),
+                      errorBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: BorderSide(color: cc.orange, width: 1),
+                      ),
+                      hintText: 'Search your need here',
+
+                      hintStyle:
+                          TextStyle(color: cc.greyTextFieldLebel, fontSize: 13),
+
+                      prefixIcon: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          SizedBox(
+                              height: 25,
+                              child: Image.asset(
+                                'assets/images/icons/search_normal.png',
+                              )),
+                        ],
+                      ),
+                      suffixIcon: GestureDetector(
+                        onTap: (() {
+                          Provider.of<SearchResultDataService>(context,
+                                  listen: false)
+                              .resetSerch();
+                          Provider.of<SearchResultDataService>(context,
+                                  listen: false)
+                              .fetchProductsBy(pageNo: '1');
+                        }),
+                        child: Icon(
+                          Icons.arrow_forward_ios,
+                          color: cc.blackColor,
+                          size: 17,
                         ),
-                      );
-                    }),
-                  ),
-          ),
-          if (srData.isLoading) loadingProgressBar(),
-          // if (srData.resultMeta!.lastPage < pageNo)
-        ],
-        // ),
-      );
-    });
+                      ),
+                      //  if (leadingImage != null)?
+                    ),
+                    onFieldSubmitted: (_) {
+                      Provider.of<SearchResultDataService>(context,
+                              listen: false)
+                          .resetSerch();
+                      Provider.of<SearchResultDataService>(context,
+                              listen: false)
+                          .fetchProductsBy(pageNo: '1');
+                    },
+                    onChanged: (value) {
+                      Provider.of<SearchResultDataService>(context,
+                              listen: false)
+                          .setSearchText(value);
+                    },
+                  );
+                })),
+            const SizedBox(height: 15),
+            Expanded(
+              child: srData.resultMeta != null
+                  ? newMethod(cardWidth, cardHeight, srData)
+                  : FutureBuilder(
+                      future: showTimout(),
+                      builder: ((context, snapshot) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return loadingProgressBar();
+                        }
+                        snackBar(context, 'Timeout!');
+                        return Center(
+                          child: Text(
+                            'Something went wrong!',
+                            style: TextStyle(color: cc.greyHint),
+                          ),
+                        );
+                      }),
+                    ),
+            ),
+            if (srData.isLoading) loadingProgressBar(),
+            // if (srData.resultMeta!.lastPage < pageNo)
+          ],
+          // ),
+        );
+      }),
+    );
   }
 
   Widget newMethod(

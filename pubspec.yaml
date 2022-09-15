@@ -70,6 +70,7 @@ dependencies:
   shared_preferences: ^2.0.15
   cashfree_pg: ^2.0.12+32
   url_launcher: ^6.1.5
+  backdrop: ^0.7.2
 
   
   provider: ^6.0.3

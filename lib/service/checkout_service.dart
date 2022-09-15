@@ -251,6 +251,7 @@ class CheckoutService with ChangeNotifier {
       'products_ids': jsonEncode(cartData.cartList!.keys.toList()),
       'all_cart_items': jsonEncode(cartData.formatItems()),
     };
+    print(jsonEncode(body));
     final header = {
       "Accept": "application/json",
       "Authorization": 'Bearer $globalUserToken',

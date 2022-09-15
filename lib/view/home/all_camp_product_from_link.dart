@@ -1,10 +1,16 @@
+import 'package:badges/badges.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:gren_mart/service/product_card_data_service.dart';
 import 'package:gren_mart/view/utils/app_bars.dart';
 import 'package:provider/provider.dart';
 
+import '../../service/cart_data_service.dart';
+import '../../service/favorite_data_service.dart';
+import '../../service/navigation_bar_helper_service.dart';
 import '../utils/constant_name.dart';
 import '../utils/constant_styles.dart';
+import 'bottom_navigation_bar.dart';
 import 'product_card.dart';
 
 class ALLCampProductFromLink extends StatelessWidget {
@@ -54,6 +60,7 @@ class ALLCampProductFromLink extends StatelessWidget {
           });
         },
       ),
+      bottomNavigationBar: CustomNavigationBar(),
     );
   }
 

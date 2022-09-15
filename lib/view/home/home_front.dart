@@ -153,7 +153,7 @@ class HomeFront extends StatelessWidget {
     return null;
   }
 
-  Widget navigationWidget = const Home();
+  Widget navigationWidget = Home();
   @override
   Widget build(BuildContext context) {
     searchHelper(context);
@@ -197,7 +197,7 @@ class HomeFront extends StatelessWidget {
     nData.setNavigationIndex(v);
     if (nData.navigationIndex == 0) {
       nData.setSearchText('');
-      navigationWidget = const Home();
+      navigationWidget = Home();
 
       return;
     }
@@ -232,7 +232,7 @@ class HomeFront extends StatelessWidget {
         Provider.of<NavigationBarHelperService>(context).navigationIndex;
     if (_navigationIndex == 0) {
       productsGetter(context);
-      navigationWidget = const Home();
+      navigationWidget = Home();
     }
     if (_navigationIndex == 1) {
       navigationWidget = SearchView();

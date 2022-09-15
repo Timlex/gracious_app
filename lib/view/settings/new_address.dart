@@ -51,8 +51,6 @@ class AddNewAddress extends StatelessWidget {
         .getContries(context);
     return Scaffold(
       appBar: AppBars().appBarTitled('Add New Address', () {
-        Provider.of<ShippingAddressesService>(context, listen: false)
-            .clearAll();
         Navigator.of(context).pop();
       }, hasButton: true),
       body:

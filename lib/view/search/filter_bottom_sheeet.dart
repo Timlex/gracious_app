@@ -62,6 +62,7 @@ class FilterBottomSheet extends StatelessWidget {
                           onTap: () {
                             if (isSelected) {
                               catData.setSelectedCategory('');
+                              catData.setSelectedSubCategory('');
                               return;
                             }
                             catData.setSelectedCategory(e.id.toString());

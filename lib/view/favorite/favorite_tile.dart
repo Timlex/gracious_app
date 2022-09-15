@@ -2,9 +2,13 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:gren_mart/service/paypal_service.dart';
+import 'package:gren_mart/service/product_details_service.dart';
 import 'package:gren_mart/view/details/product_details.dart';
 import 'package:gren_mart/view/utils/constant_name.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import '../../service/favorite_data_service.dart';
+import '../../service/language_service.dart';
 import '../../view/utils/constant_colors.dart';
 import 'package:provider/provider.dart';
 
@@ -93,7 +97,7 @@ class FavoriteTile extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           SizedBox(
-                            width: screenWidth / 2,
+                            width: screenWidth / 2.5,
                             child: Text(
                               favoriteItem.title,
                               style: const TextStyle(
@@ -113,6 +117,106 @@ class FavoriteTile extends StatelessWidget {
                     const Spacer(),
                     GestureDetector(
                       onTap: (() async {
+                        if (!favoriteItem.attribute) {
+                          print(favoriteItem.attribute);
+                          showMaterialModalBottomSheet(
+                              context: context,
+                              enableDrag: true,
+                              builder: (context) {
+                                bool fetchAttribute = true;
+                                return Consumer<ProductDetailsService>(
+                                  builder: (context, pdService, child) {
+                                    return SingleChildScrollView(
+                                      child: FutureBuilder(
+                                        future: pdService.fetchProductDetails(
+                                            id: id,
+                                            nextProduct: fetchAttribute),
+                                        builder: (context, snapshot) {
+                                          fetchAttribute = false;
+                                          if (snapshot.connectionState ==
+                                              ConnectionState.waiting) {
+                                            return SizedBox(
+                                                height: 60,
+                                                child: loadingProgressBar());
+                                          }
+                                          return Padding(
+                                            padding: const EdgeInsets.symmetric(
+                                                horizontal: 20, vertical: 10),
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Container(
+                                                  margin: EdgeInsets.symmetric(
+                                                      vertical: 15),
+                                                  child: Text(
+                                                    'Select attributes:',
+                                                    style: TextStyle(
+                                                        fontSize: 19,
+                                                        fontWeight:
+                                                            FontWeight.w600),
+                                                  ),
+                                                ),
+                                                SingleChildScrollView(
+                                                  child: Column(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment.start,
+                                                    children:
+                                                        pdService.inventoryKeys
+                                                            .map(
+                                                                (e) =>
+                                                                    Container(
+                                                                      alignment: LanguageService().rtl
+                                                                          ? Alignment
+                                                                              .centerRight
+                                                                          : Alignment
+                                                                              .centerLeft,
+                                                                      margin: EdgeInsets.only(
+                                                                          bottom:
+                                                                              15),
+                                                                      child:
+                                                                          Row(
+                                                                        crossAxisAlignment:
+                                                                            CrossAxisAlignment.center,
+                                                                        children: [
+                                                                          Text(
+                                                                              '${e.replaceFirst('_', ' ')}:',
+                                                                              style: ProductDetails().attributeTitleTheme),
+                                                                          const SizedBox(
+                                                                              width: 10),
+                                                                          Expanded(
+                                                                            child:
+                                                                                SingleChildScrollView(scrollDirection: Axis.horizontal, child: Row(children: ProductDetails().generateDynamicAttrribute(pdService, pdService.allAtrributes[e]))),
+                                                                          ),
+                                                                        ],
+                                                                      ),
+                                                                    ))
+                                                            .toList(),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          );
+                                        },
+                                      ),
+                                    );
+                                  },
+                                );
+                              });
+                        }
+                      }),
+                      child: Container(
+                        padding: const EdgeInsets.only(left: 7),
+                        margin: EdgeInsets.symmetric(horizontal: 10),
+                        child: SvgPicture.asset(
+                          'assets/images/icons/send_to_cart.svg',
+                          height: 26,
+                          color: cc.primaryColor,
+                        ),
+                      ),
+                    ),
+                    GestureDetector(
+                      onTap: (() async {
                         bool deleteItem = false;
                         await confirmDialouge(context,
                             onPressed: () => deleteItem = true);
@@ -126,7 +230,7 @@ class FavoriteTile extends StatelessWidget {
                           'assets/images/icons/trash.svg',
                           height: 22,
                           width: 22,
-                          color: const Color(0xffFF4065),
+                          color: cc.pink,
                         ),
                       ),
                     ),
