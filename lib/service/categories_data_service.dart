@@ -96,7 +96,6 @@ class CategoriesDataService with ChangeNotifier {
       maxPrice = data['max_price'].toDouble();
       print(minPrice);
       print(maxPrice);
-      categorydataList = data.categories;
 
       notifyListeners();
     } else {

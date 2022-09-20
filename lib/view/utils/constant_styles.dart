@@ -350,29 +350,79 @@ void showTopSlider(BuildContext context, UserProfileService uService) {
           Container(
             width: MediaQuery.of(context).size.width,
             padding: EdgeInsets.all(20),
-            color: Colors.white,
+            decoration: BoxDecoration(
+                color: Colors.white, borderRadius: BorderRadius.circular(15)),
             child: Card(
-              elevation: 0,
-              child: ListView(
-                physics: NeverScrollableScrollPhysics(),
-                shrinkWrap: true,
-                children: <Widget>[
-                  Row(
-                    children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          ClipRRect(
+                elevation: 0,
+                child: ListView(
+                  physics: NeverScrollableScrollPhysics(),
+                  shrinkWrap: true,
+                  children: <Widget>[
+                    // Row(
+                    //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    //   children: [
+                    //     Column(
+                    //       crossAxisAlignment: CrossAxisAlignment.start,
+                    //       children: [
+
+                    //         SizedBox(
+                    //           height: 3,
+                    //         ),
+                    //         Text(uService.userProfileData.username,
+                    //             style: TextThemeConstrants.greyHint13),
+                    //         SizedBox(
+                    //           height: 3,
+                    //         ),
+                    //         Text(uService.userProfileData.email,
+                    //             style: TextThemeConstrants.greyHint13),
+                    //         SizedBox(
+                    //           height: 3,
+                    //         ),
+                    //         Text(uService.userProfileData.phone,
+                    //             style: TextThemeConstrants.greyHint13)
+                    //       ],
+                    //     ),
+                    //     Column(
+                    //       children: [
+                    Row(
+                      children: [
+                        GestureDetector(
+                          onTap: (() {
+                            Provider.of<CountryDropdownService>(context,
+                                    listen: false)
+                                .getContries(context)
+                                .then((value) {
+                              final userData = Provider.of<UserProfileService>(
+                                  context,
+                                  listen: false);
+                              print(userData.userProfileData.country!.id);
+                              if (userData.userProfileData.country != null) {
+                                Provider.of<CountryDropdownService>(context,
+                                        listen: false)
+                                    .setCountryIdAndValue(
+                                        userData.userProfileData.country!.name);
+                              }
+                              if (userData.userProfileData.state != null) {
+                                Provider.of<StateDropdownService>(context,
+                                        listen: false)
+                                    .setStateIdAndValue(
+                                        userData.userProfileData.state!.name);
+                              }
+                            });
+                            Navigator.of(context)
+                                .pushNamed(ManageAccount.routeName);
+                          }),
+                          child: ClipRRect(
                             borderRadius: BorderRadius.circular(10),
                             child: Container(
-                              height: screenWidth / 5,
-                              width: screenWidth / 5,
+                              height: 50,
+                              width: 50,
                               color: cc.primaryColor,
                               child: CachedNetworkImage(
                                 placeholder: (context, url) => Center(
                                   child: Text('placeHolder',
                                       style: TextStyle(
-                                          fontSize: 25,
+                                          fontSize: 15,
                                           color: cc.pureWhite,
                                           fontWeight: FontWeight.bold)),
                                 ),
@@ -385,113 +435,97 @@ void showTopSlider(BuildContext context, UserProfileService uService) {
                                           .substring(0, 2)
                                           .toUpperCase(),
                                       style: TextStyle(
-                                          fontSize: 25,
+                                          fontSize: 15,
                                           color: cc.pureWhite,
                                           fontWeight: FontWeight.bold)),
                                 ),
                               ),
                             ),
                           ),
-                          SizedBox(
-                            height: 3,
-                          ),
-                          Text(uService.userProfileData.name,
-                              style: TextThemeConstrants.greyHint13),
-                          SizedBox(
-                            height: 3,
-                          ),
-                          Text(uService.userProfileData.username,
-                              style: TextThemeConstrants.greyHint13),
-                          SizedBox(
-                            height: 3,
-                          ),
-                          Text(uService.userProfileData.email,
-                              style: TextThemeConstrants.greyHint13),
-                          SizedBox(
-                            height: 3,
-                          ),
-                          Text(uService.userProfileData.phone,
-                              style: TextThemeConstrants.greyHint13)
-                        ],
-                      ),
-                      Expanded(
-                        child: Column(
+                        ),
+                        SizedBox(width: 10),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            SettingView().settingItem(
-                                'assets/images/icons/orders.svg', 'My Orders',
-                                onTap: () {
-                              Navigator.of(context)
-                                  .push(MaterialPageRoute<void>(
-                                builder: (BuildContext context) => MyOrders(),
-                              ));
-                            }, imageSize: 25, textSize: 13),
-                            SettingView().settingItem(
-                                'assets/images/icons/shipping_address.svg',
-                                'Shipping Address', onTap: () {
-                              Provider.of<ShippingAddressesService>(context,
-                                      listen: false)
-                                  .fetchUsersShippingAddress(context);
-                              Navigator.of(context)
-                                  .pushNamed(ShippingAdresses.routeName)
-                                  .then((value) =>
-                                      Provider.of<ShippingAddressesService>(
-                                              context,
-                                              listen: false)
-                                          .setNoData(false));
-                            }, imageSize: 25, textSize: 13),
-                            SettingView().settingItem(
-                                'assets/images/icons/manage_profile.svg',
-                                'Manage Account', onTap: () async {
-                              // setData(context);
-                              Provider.of<CountryDropdownService>(context,
-                                      listen: false)
-                                  .getContries(context)
-                                  .then((value) {
-                                final userData =
-                                    Provider.of<UserProfileService>(context,
-                                        listen: false);
-                                if (userData.userProfileData.country != null) {
-                                  Provider.of<CountryDropdownService>(context,
-                                          listen: false)
-                                      .setCountryIdAndValue(userData
-                                          .userProfileData.country!.name);
-                                }
-                                if (userData.userProfileData.state != null) {
-                                  Provider.of<StateDropdownService>(context,
-                                          listen: false)
-                                      .setStateIdAndValue(
-                                          userData.userProfileData.state!.name);
-                                }
-                              });
-                              Navigator.of(context)
-                                  .pushNamed(ManageAccount.routeName);
-                            }, imageSize: 25, textSize: 13),
-                            SettingView().settingItem(
-                                'assets/images/icons/support_ticket.svg',
-                                'Support Ticket',
-                                icon: true,
-                                imagePath2: 'assets/images/change_pass.png',
-                                onTap: () {
-                              Navigator.of(context)
-                                  .pushNamed(AllTicketsView.routeName);
-                            }, imageSize: 25, textSize: 13),
-                            SettingView().settingItem(
-                                'assets/images/icons/change_pass.svg',
-                                'Change Password',
-                                icon: false,
-                                imagePath2: 'assets/images/change_pass.png',
-                                onTap: () {
-                              Navigator.of(context)
-                                  .pushNamed(ChangePassword.routeName);
-                            }, imageSize2: 25, textSize: 13),
+                            Text(uService.userProfileData.name,
+                                style: TextStyle(
+                                    fontSize: 15, fontWeight: FontWeight.bold)),
+                            SizedBox(height: 3),
+                            Text(uService.userProfileData.email,
+                                style: TextStyle(
+                                    color: cc.greyHint, fontSize: 11)),
                           ],
                         ),
-                      )
-                    ],
-                  )
-                ],
-              ),
-            ),
+                      ],
+                    ),
+                    SizedBox(height: 10),
+                    topSlidrOption(context,
+                        optionText: 'My Orders',
+                        svgpath: 'assets/images/icons/orders.svg', onTap: () {
+                      Navigator.of(context).push(MaterialPageRoute<void>(
+                        builder: (BuildContext context) => MyOrders(),
+                      ));
+                    }),
+                    topSlidrOption(context,
+                        optionText: 'Shipping Address',
+                        svgpath: 'assets/images/icons/shipping_address.svg',
+                        onTap: () {
+                      Provider.of<ShippingAddressesService>(context,
+                              listen: false)
+                          .fetchUsersShippingAddress(context);
+                      Navigator.of(context)
+                          .pushNamed(ShippingAdresses.routeName)
+                          .then((value) =>
+                              Provider.of<ShippingAddressesService>(context,
+                                      listen: false)
+                                  .setNoData(false));
+                    }),
+                    topSlidrOption(context,
+                        optionText: 'Manage Account',
+                        svgpath: 'assets/images/icons/manage_profile.svg',
+                        onTap: () {
+                      // setData(context);
+                      Provider.of<CountryDropdownService>(context,
+                              listen: false)
+                          .getContries(context)
+                          .then((value) {
+                        final userData = Provider.of<UserProfileService>(
+                            context,
+                            listen: false);
+                        if (userData.userProfileData.country != null) {
+                          Provider.of<CountryDropdownService>(context,
+                                  listen: false)
+                              .setCountryIdAndValue(
+                                  userData.userProfileData.country!.name);
+                        }
+                        if (userData.userProfileData.state != null) {
+                          Provider.of<StateDropdownService>(context,
+                                  listen: false)
+                              .setStateIdAndValue(
+                                  userData.userProfileData.state!.name);
+                        }
+                      });
+                      Navigator.of(context).pushNamed(ManageAccount.routeName);
+                    }),
+                    topSlidrOption(context,
+                        optionText: 'Support Ticket',
+                        svgpath: 'assets/images/icons/support_ticket.svg',
+                        onTap: () {
+                      Navigator.of(context).pushNamed(AllTicketsView.routeName);
+                    }),
+                    topSlidrOption(context,
+                        optionText: 'Change Password',
+                        svgpath: 'assets/images/icons/change_pass.svg',
+                        onTap: () {
+                      Navigator.of(context).pushNamed(ChangePassword.routeName);
+                    }),
+                  ],
+                )
+                //             ],
+                //           )
+                //         ],
+                //       ),
+                ),
           ),
         ],
       );
@@ -508,5 +542,51 @@ void showTopSlider(BuildContext context, UserProfileService uService) {
         child: child,
       );
     },
+  );
+}
+
+Widget topSlidrOption(
+  BuildContext context, {
+  String? svgpath,
+  String? imagePath,
+  required String optionText,
+  void Function()? onTap,
+}) {
+  initiateDeviceSize(context);
+  return GestureDetector(
+    onTap: onTap,
+    child: Container(
+      width: screenWidth / 2.3,
+      height: 40,
+      padding: EdgeInsets.all(10),
+      margin: EdgeInsets.symmetric(vertical: 3),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(15),
+        border: Border.all(color: cc.greyBorder),
+      ),
+      child: Row(
+        children: [
+          if (svgpath != null)
+            SvgPicture.asset(
+              '$svgpath',
+              // height: 25,
+            ),
+          if (imagePath != null)
+            Image.asset(
+              '$imagePath',
+              // height: 25,
+            ),
+          SizedBox(
+            width: 5,
+          ),
+          FittedBox(
+            child: Text(
+              optionText,
+              style: TextStyle(fontSize: 13),
+            ),
+          )
+        ],
+      ),
+    ),
   );
 }

@@ -2,9 +2,11 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:gren_mart/service/cart_data_service.dart';
 import 'package:gren_mart/service/paypal_service.dart';
 import 'package:gren_mart/service/product_details_service.dart';
 import 'package:gren_mart/view/details/product_details.dart';
+import 'package:gren_mart/view/favorite/favorite_to_cart.dart';
 import 'package:gren_mart/view/utils/constant_name.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import '../../service/favorite_data_service.dart';
@@ -118,92 +120,48 @@ class FavoriteTile extends StatelessWidget {
                     GestureDetector(
                       onTap: (() async {
                         if (!favoriteItem.attribute) {
+                          Provider.of<ProductDetailsService>(context,
+                                  listen: false)
+                              .resetDetails();
                           print(favoriteItem.attribute);
                           showMaterialModalBottomSheet(
                               context: context,
                               enableDrag: true,
                               builder: (context) {
                                 bool fetchAttribute = true;
-                                return Consumer<ProductDetailsService>(
-                                  builder: (context, pdService, child) {
-                                    return SingleChildScrollView(
-                                      child: FutureBuilder(
-                                        future: pdService.fetchProductDetails(
-                                            id: id,
-                                            nextProduct: fetchAttribute),
-                                        builder: (context, snapshot) {
-                                          fetchAttribute = false;
-                                          if (snapshot.connectionState ==
-                                              ConnectionState.waiting) {
-                                            return SizedBox(
-                                                height: 60,
-                                                child: loadingProgressBar());
-                                          }
-                                          return Padding(
-                                            padding: const EdgeInsets.symmetric(
-                                                horizontal: 20, vertical: 10),
-                                            child: Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                Container(
-                                                  margin: EdgeInsets.symmetric(
-                                                      vertical: 15),
-                                                  child: Text(
-                                                    'Select attributes:',
-                                                    style: TextStyle(
-                                                        fontSize: 19,
-                                                        fontWeight:
-                                                            FontWeight.w600),
-                                                  ),
-                                                ),
-                                                SingleChildScrollView(
-                                                  child: Column(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment.start,
-                                                    children:
-                                                        pdService.inventoryKeys
-                                                            .map(
-                                                                (e) =>
-                                                                    Container(
-                                                                      alignment: LanguageService().rtl
-                                                                          ? Alignment
-                                                                              .centerRight
-                                                                          : Alignment
-                                                                              .centerLeft,
-                                                                      margin: EdgeInsets.only(
-                                                                          bottom:
-                                                                              15),
-                                                                      child:
-                                                                          Row(
-                                                                        crossAxisAlignment:
-                                                                            CrossAxisAlignment.center,
-                                                                        children: [
-                                                                          Text(
-                                                                              '${e.replaceFirst('_', ' ')}:',
-                                                                              style: ProductDetails().attributeTitleTheme),
-                                                                          const SizedBox(
-                                                                              width: 10),
-                                                                          Expanded(
-                                                                            child:
-                                                                                SingleChildScrollView(scrollDirection: Axis.horizontal, child: Row(children: ProductDetails().generateDynamicAttrribute(pdService, pdService.allAtrributes[e]))),
-                                                                          ),
-                                                                        ],
-                                                                      ),
-                                                                    ))
-                                                            .toList(),
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          );
-                                        },
-                                      ),
-                                    );
-                                  },
+                                return SingleChildScrollView(
+                                  child: FavoriteToCart(id),
                                 );
                               });
+                          Provider.of<FavoriteDataService>(context,
+                                  listen: false)
+                              .toggleFavorite(
+                                  context,
+                                  id,
+                                  favoriteItem.title,
+                                  favoriteItem.price,
+                                  favoriteItem.imgUrl,
+                                  favoriteItem.attribute);
+                          return;
                         }
+                        Provider.of<CartDataService>(context, listen: false)
+                            .addCartItem(
+                                context,
+                                id,
+                                favoriteItem.title,
+                                favoriteItem.price,
+                                favoriteItem.price,
+                                0.0,
+                                1,
+                                favoriteItem.imgUrl);
+                        Provider.of<FavoriteDataService>(context, listen: false)
+                            .toggleFavorite(
+                                context,
+                                id,
+                                favoriteItem.title,
+                                favoriteItem.price,
+                                favoriteItem.imgUrl,
+                                favoriteItem.attribute);
                       }),
                       child: Container(
                         padding: const EdgeInsets.only(left: 7),

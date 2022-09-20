@@ -79,7 +79,7 @@ class ProductDetails extends StatelessWidget {
                                 expandedHeight: screenWidth / 1.37,
                                 pinned: true,
                                 flexibleSpace: Container(
-                                  margin: EdgeInsets.only(top: 10),
+                                  margin: EdgeInsets.only(top: 40),
                                   child: FlexibleSpaceBar(
                                     background: pService.additionalInfoImage !=
                                                 null ||
@@ -99,8 +99,23 @@ class ProductDetails extends StatelessWidget {
                                               );
                                             },
                                             child: Image.network(
-                                                pService.additionalInfoImage ??
-                                                    product.image),
+                                              pService.additionalInfoImage ??
+                                                  product.image,
+                                              loadingBuilder: (context, child,
+                                                  loadingProgress) {
+                                                if (loadingProgress == null) {
+                                                  return child;
+                                                }
+                                                return SvgPicture.asset(
+                                                  'assets/images/image_empty.svg',
+                                                  height: 250,
+                                                );
+                                              },
+                                              errorBuilder: (context, o, st) {
+                                                return SvgPicture.asset(
+                                                    'assets/images/image_empty.svg');
+                                              },
+                                            ),
                                           )
                                         : Swiper(
                                             itemBuilder: (BuildContext context,
@@ -517,7 +532,8 @@ class ProductDetails extends StatelessWidget {
                                       );
                                     }
                                   : () {
-                                      snackBar(context, 'Please select a set.',
+                                      snackBar(context,
+                                          'Select all attribute to proceed.',
                                           backgroundColor: cc.orange);
                                     },
                             ));

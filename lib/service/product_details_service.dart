@@ -26,10 +26,10 @@ class ProductDetailsService with ChangeNotifier {
   List selectedAttributes = [];
   Map<String, List<Map<String, dynamic>>> inventorySet = {};
   Map<String, dynamic> selecteInventorySet = {};
-  List navigatorID = [];
   bool refreshpage = false;
   int? selectedIndex;
   List<String> inventoryHash = [];
+  bool loadingFailed = false;
 
   setProductInventorySet(List<String>? value) {
     if (selectedInventorySetIndex != value) {}
@@ -224,10 +224,13 @@ class ProductDetailsService with ChangeNotifier {
     selectedAttributes = [];
     reviewing = false;
     refreshpage = false;
-    if (pop) {
-      navigatorID.remove(navigatorID.last);
-    }
+    // productDetails!.product.productGalleryImage = [];
+
     // notifyListeners();
+  }
+
+  resetDetails() {
+    productDetails = null;
   }
 
   setRefresPage(value) {
@@ -240,14 +243,11 @@ class ProductDetailsService with ChangeNotifier {
   }
 
   Future fetchProductDetails({id, bool nextProduct = false}) async {
-    if (nextProduct && navigatorID.isNotEmpty) {
+    if (nextProduct) {
       clearProdcutDetails();
     }
     if (reviewing) {
       return;
-    }
-    if (id != null) {
-      navigatorID.add(id);
     }
     print(id);
     inventoryKeys = [];
@@ -258,7 +258,7 @@ class ProductDetailsService with ChangeNotifier {
       'Content-Type': 'application/json',
       "Authorization": "Bearer $globalUserToken",
     };
-    final url = Uri.parse('$baseApiUrl/product/${navigatorID.last}');
+    final url = Uri.parse('$baseApiUrl/product/$id');
 
     // try {
     final response = await http.get(url, headers: header);
@@ -311,9 +311,10 @@ class ProductDetailsService with ChangeNotifier {
       }
 
       notifyListeners();
-    } else {
-      //something went wrong
+      return;
     }
+    loadingFailed = true;
+    notifyListeners();
     // } catch (error) {
     //   print(error);
 

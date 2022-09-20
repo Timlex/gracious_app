@@ -162,13 +162,16 @@ class SettingView extends StatelessWidget {
     );
   }
 
-  Widget settingItem(String imagePath, String itemText,
-      {void Function()? onTap,
-      bool icon = true,
-      String? imagePath2,
-      double imageSize = 35,
-      double imageSize2 = 35,
-      double textSize = 16}) {
+  Widget settingItem(
+    String imagePath,
+    String itemText, {
+    void Function()? onTap,
+    bool icon = true,
+    String? imagePath2,
+    double imageSize = 35,
+    double imageSize2 = 35,
+    double textSize = 16,
+  }) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 25),
       child: SizedBox(

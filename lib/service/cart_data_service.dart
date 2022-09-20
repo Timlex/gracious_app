@@ -162,12 +162,13 @@ class CartDataService with ChangeNotifier {
 
     bool haveData = false;
     _cartItems![id.toString()]!.forEach((element) {
-      haveData = true;
       if ((element.containsValue(inventorySet) ||
-          (jsonEncode(inventorySet) == jsonEncode(element['attributes'])))) {}
+          (jsonEncode(inventorySet) == jsonEncode(element['attributes'])))) {
+        haveData = true;
+      }
     });
     print(id);
-    print(haveData);
+    print('have data on cart--$haveData');
     if (_cartItems!.containsKey(id.toString()) && haveData) {
       addItem(context, id, extraQuantity: quantity, inventorySet: inventorySet);
       notifyListeners();

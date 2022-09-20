@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:gren_mart/service/user_profile_service.dart';
 import 'package:provider/provider.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:http/http.dart' as http;
@@ -139,12 +140,17 @@ class SquareUpPayment extends StatelessWidget {
             "location_id": "LE9C12TNM5HAS",
             "name": "grenmart items",
             "price_money": {
-              "amount": checkoutInfo!.totalAmount,
+              "amount": double.parse(checkoutInfo.totalAmount).toInt(),
               "currency": "USD"
             }
           },
           "payment_note": "grenmart groceries",
-          "pre_populated_data": {"buyer_email": checkoutInfo!.email}
+          "pre_populated_data": {
+            "buyer_email":
+                Provider.of<UserProfileService>(context, listen: false)
+                    .userProfileData
+                    .email,
+          }
         }));
     print(response.body);
     if (response.statusCode == 200) {
