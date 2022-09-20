@@ -204,8 +204,9 @@ class ReviewBox extends StatelessWidget {
                   rService.toggleLaodingSpinner(true);
                   FocusScope.of(context).unfocus();
                   rService.submitReview(id.toString(), context).onError(
-                      (error, stackTrace) =>
-                          snackBar(context, 'Connection failed'));
+                      (error, stackTrace) => snackBar(
+                          context, 'Connection failed',
+                          backgroundColor: cc.orange));
                   rService.toggleLaodingSpinner(false);
                 },
               );
@@ -229,8 +230,9 @@ class ReviewBox extends StatelessWidget {
                           FocusScope.of(context).unfocus();
                           await rService
                               .submitReview(id.toString(), context)
-                              .onError((error, stackTrace) =>
-                                  snackBar(context, 'Connection failed'));
+                              .onError((error, stackTrace) => snackBar(
+                                  context, 'Connection failed',
+                                  backgroundColor: cc.orange));
                           rService.toggleLaodingSpinner(false);
                         },
                 ),

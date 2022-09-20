@@ -139,7 +139,12 @@ class Checkout extends StatelessWidget {
               GestureDetector(
                 onTap: () {
                   Navigator.of(context).pop();
-                  Navigator.of(context).pushNamed(AddNewAddress.routeName);
+                  Navigator.of(context).push(
+                    MaterialPageRoute<void>(
+                      builder: (BuildContext context) =>
+                          AddNewAddress(dontPop: true),
+                    ),
+                  );
                 },
                 child: Container(
                     // margin: const EdgeInsets.all(8),
@@ -533,7 +538,7 @@ class Checkout extends StatelessWidget {
                                                 content: const Text(
                                                     'Please add Shipping address to proceed your payment.'),
                                                 actions: [
-                                                  FlatButton(
+                                                  TextButton(
                                                       onPressed: (() {
                                                         Navigator.pop(context);
                                                       }),
@@ -542,25 +547,23 @@ class Checkout extends StatelessWidget {
                                                         style: TextStyle(
                                                             color: cc.pink),
                                                       )),
-                                                  FlatButton(
+                                                  TextButton(
                                                       onPressed: () {
                                                         Navigator.of(context)
                                                             .pop();
                                                         Navigator.of(context)
                                                             .pop();
                                                         Navigator.of(context)
-                                                            .pushNamed(
-                                                                AddNewAddress
-                                                                    .routeName)
-                                                            .then((value) {
-                                                          Provider.of<ShippingAddressesService>(
-                                                                  context,
-                                                                  listen: false)
-                                                              .fetchUsersShippingAddress(
-                                                                  context,
-                                                                  loadShippingZone:
-                                                                      true);
-                                                        });
+                                                            .push(
+                                                          MaterialPageRoute<
+                                                              void>(
+                                                            builder: (BuildContext
+                                                                    context) =>
+                                                                AddNewAddress(
+                                                                    dontPop:
+                                                                        true),
+                                                          ),
+                                                        );
                                                       },
                                                       child: Text(
                                                         'Add now',
@@ -587,7 +590,8 @@ class Checkout extends StatelessWidget {
                                       if (error == '') {
                                         return;
                                       }
-                                      snackBar(context, 'Connection failed!');
+                                      snackBar(context, 'Connection failed!',
+                                          backgroundColor: cc.orange);
                                     });
 
                                     Provider.of<PaymentGateawayService>(context,

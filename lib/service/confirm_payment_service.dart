@@ -55,7 +55,7 @@ class ConfirmPaymentService with ChangeNotifier {
     if (response.statusCode == 422) {
       final data = json.decode(response.body);
       print(response.body);
-      snackBar(context, 'Connection failed');
+      snackBar(context, 'Connection failed', backgroundColor: cc.orange);
       return data['message'];
     }
 

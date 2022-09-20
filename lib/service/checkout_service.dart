@@ -87,7 +87,7 @@ class CheckoutService with ChangeNotifier {
               title: Text('Insufficient data?'),
               content: Text('Pleae provide all the profile Information.'),
               actions: [
-                FlatButton(
+                TextButton(
                     onPressed: (() {
                       Navigator.pop(context);
                     }),
@@ -95,7 +95,7 @@ class CheckoutService with ChangeNotifier {
                       'Not now',
                       style: TextStyle(color: cc.pink),
                     )),
-                FlatButton(
+                TextButton(
                     onPressed: () {
                       Navigator.of(context)
                           .pushNamed(ManageAccount.routeName)
@@ -198,7 +198,7 @@ class CheckoutService with ChangeNotifier {
         await paytmChekout(context);
       }
       print(jsonDecode(response.body));
-      Provider.of<CartDataService>(context, listen: false).emptyCart();
+      // Provider.of<CartDataService>(context, listen: false).emptyCart();
       notifyListeners();
       return;
     }
@@ -233,7 +233,7 @@ class CheckoutService with ChangeNotifier {
     Map<String, List<Map<String, Object?>>>? formatedCartItem = clist;
     final subTotal = cartData.calculateSubtotal().toString();
 
-    Map<String, dynamic> body = {
+    Map<String, dynamic> fieldss = {
       'name': userData.name,
       'email': userData.email,
       'country':
@@ -251,20 +251,39 @@ class CheckoutService with ChangeNotifier {
       'products_ids': jsonEncode(cartData.cartList!.keys.toList()),
       'all_cart_items': jsonEncode(cartData.formatItems()),
     };
-    print(jsonEncode(body));
-    final header = {
-      "Accept": "application/json",
-      "Authorization": 'Bearer $globalUserToken',
-    };
-    final url = Uri.parse(
-        'https://zahid.xgenious.com/grenmart-api/api/v1/user/checkout-paytm');
 
+    final url = Uri.parse('$baseApiUrl/user/checkout-paytm');
+    var request = http.MultipartRequest('POST', url);
+
+    fieldss.forEach((key, value) {
+      request.fields[key] = value;
+    });
+    request.headers.addAll(
+      {
+        "Accept": "application/json",
+        "Authorization": "Bearer $globalUserToken",
+      },
+    );
+    print(pickedImage);
+    if (pickedImage != null &&
+        (selectedGateaway.name.contains('bank_transfer') ||
+            selectedGateaway.name.contains('cheque_payment'))) {
+      print('pickedImage!.path');
+      var multiport = await http.MultipartFile.fromPath(
+        selectedGateaway.name.contains('bank_transfer')
+            ? 'bank_payment_input'
+            : 'check_payment_input',
+        pickedImage!.path,
+      );
+
+      request.files.add(multiport);
+    }
+    var streamedResponse = await request.send();
     // try {
-    var response =
-        await http.post(url, headers: header, body: jsonEncode(body));
+    var response = await http.Response.fromStream(streamedResponse);
 
     print(response.statusCode.toString() + '++++++++++++++');
-    if (response.statusCode == 201) {
+    if (response.statusCode == 200) {
       paytmResponse = response.body;
       return;
     }

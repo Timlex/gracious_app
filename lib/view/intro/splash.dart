@@ -79,7 +79,8 @@ class _SplashScreenState extends State<SplashScreen> {
               .fetchProfileService()
               .then((value) async {
             if (value == null) {
-              snackBar(context, 'Connection failed!');
+              snackBar(context, 'Connection failed!',
+                  backgroundColor: cc.orange);
               return;
             }
             Provider.of<PosterCampaignSliderService>(context, listen: false)
@@ -96,8 +97,9 @@ class _SplashScreenState extends State<SplashScreen> {
             Navigator.of(context).pushReplacementNamed(HomeFront.routeName);
 
             return;
-          }).onError((error, stackTrace) =>
-                  snackBar(context, "Connection failed!"));
+          }).onError((error, stackTrace) => snackBar(
+                  context, "Connection failed!",
+                  backgroundColor: cc.orange));
         } catch (error) {
           print(error);
         }

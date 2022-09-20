@@ -170,7 +170,7 @@ class RazorpayPayment extends StatelessWidget {
       print(url);
       return;
     }
-    snackBar(context, 'Connection failed');
+    snackBar(context, 'Connection failed', backgroundColor: cc.orange);
   }
 
   Future<bool> verifyPayment(String url) async {

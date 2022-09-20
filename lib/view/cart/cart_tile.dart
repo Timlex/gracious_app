@@ -223,7 +223,7 @@ class CartTile extends StatelessWidget {
               title: const Text('Are you sure?'),
               content: const Text('This Item will be Deleted.'),
               actions: [
-                FlatButton(
+                TextButton(
                     onPressed: (() {
                       Navigator.pop(context);
                     }),
@@ -231,7 +231,7 @@ class CartTile extends StatelessWidget {
                       'No',
                       style: TextStyle(color: cc.primaryColor),
                     )),
-                FlatButton(
+                TextButton(
                     onPressed: () {
                       onPressed();
                       Navigator.of(context).pop();

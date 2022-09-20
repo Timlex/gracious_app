@@ -1,5 +1,6 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:gren_mart/service/cart_data_service.dart';
 import 'package:gren_mart/service/checkout_service.dart';
 import 'package:provider/provider.dart';
 import '../../view/home/home_front.dart';
@@ -54,28 +55,32 @@ class PaymentStatusView extends StatelessWidget {
                       textAlign: TextAlign.center,
                       text: TextSpan(
                         text: isError
-                            ? 'We\'re getting problems with your payment methods but your order was successfully placed. Your order ID  is  '
-                            : 'Your order has been successful! You\'ll receive ordered items in 3-5 days. Your order ID  is ',
+                            ? 'We\'re getting problems with your payment methods and we couldn\'t proceed your order.'
+                            : 'Your order has been successful! You\'ll receive ordered items in 3-5 days. Your order ID is ',
                         style: TextThemeConstrants.paragraphText,
                         children: <TextSpan>[
-                          TextSpan(
-                              recognizer: TapGestureRecognizer()
-                                ..onTap = () {
-                                  Navigator.of(context)
-                                      .push(MaterialPageRoute<void>(
-                                    builder: (BuildContext context) =>
-                                        OrderDetails(
-                                            Provider.of<CheckoutService>(
-                                                    context,
-                                                    listen: false)
-                                                .checkoutModel!
-                                                .id
-                                                .toString()),
-                                  ));
-                                },
-                              text:
-                                  ' #${Provider.of<CheckoutService>(context, listen: false).checkoutModel!.id}',
-                              style: TextStyle(color: cc.primaryColor)),
+                          if (!isError)
+                            TextSpan(
+                                recognizer: TapGestureRecognizer()
+                                  ..onTap = () {
+                                    Provider.of<CartDataService>(context,
+                                            listen: false)
+                                        .emptyCart();
+                                    Navigator.of(context)
+                                        .push(MaterialPageRoute<void>(
+                                      builder: (BuildContext context) =>
+                                          OrderDetails(
+                                              Provider.of<CheckoutService>(
+                                                      context,
+                                                      listen: false)
+                                                  .checkoutModel!
+                                                  .id
+                                                  .toString()),
+                                    ));
+                                  },
+                                text:
+                                    ' #${Provider.of<CheckoutService>(context, listen: false).checkoutModel!.id}',
+                                style: TextStyle(color: cc.primaryColor)),
                         ],
                       ),
                     ),
@@ -86,9 +91,13 @@ class PaymentStatusView extends StatelessWidget {
             !(isError)
                 ? customRowButton(context, 'Back to home', 'Track your order',
                     () {
+                    Provider.of<CartDataService>(context, listen: false)
+                        .emptyCart();
                     Navigator.of(context)
                         .pushReplacementNamed(HomeFront.routeName);
                   }, () {
+                    Provider.of<CartDataService>(context, listen: false)
+                        .emptyCart();
                     Navigator.of(context).push(MaterialPageRoute<void>(
                       builder: (BuildContext context) =>
                           OrderDetails(trackId!.toString()),

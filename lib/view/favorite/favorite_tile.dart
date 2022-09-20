@@ -124,7 +124,7 @@ class FavoriteTile extends StatelessWidget {
                                   listen: false)
                               .resetDetails();
                           print(favoriteItem.attribute);
-                          showMaterialModalBottomSheet(
+                          await showMaterialModalBottomSheet(
                               context: context,
                               enableDrag: true,
                               builder: (context) {
@@ -133,15 +133,7 @@ class FavoriteTile extends StatelessWidget {
                                   child: FavoriteToCart(id),
                                 );
                               });
-                          Provider.of<FavoriteDataService>(context,
-                                  listen: false)
-                              .toggleFavorite(
-                                  context,
-                                  id,
-                                  favoriteItem.title,
-                                  favoriteItem.price,
-                                  favoriteItem.imgUrl,
-                                  favoriteItem.attribute);
+
                           return;
                         }
                         Provider.of<CartDataService>(context, listen: false)
@@ -154,14 +146,7 @@ class FavoriteTile extends StatelessWidget {
                                 0.0,
                                 1,
                                 favoriteItem.imgUrl);
-                        Provider.of<FavoriteDataService>(context, listen: false)
-                            .toggleFavorite(
-                                context,
-                                id,
-                                favoriteItem.title,
-                                favoriteItem.price,
-                                favoriteItem.imgUrl,
-                                favoriteItem.attribute);
+                        favoriteData.deleteFavoriteItem(id, context);
                       }),
                       child: Container(
                         padding: const EdgeInsets.only(left: 7),
@@ -211,7 +196,7 @@ class FavoriteTile extends StatelessWidget {
               title: const Text('Are you sure?'),
               content: const Text('This Item will be Deleted.'),
               actions: [
-                FlatButton(
+                TextButton(
                     onPressed: (() {
                       Navigator.pop(context);
                     }),
@@ -219,7 +204,7 @@ class FavoriteTile extends StatelessWidget {
                       'No',
                       style: TextStyle(color: cc.primaryColor),
                     )),
-                FlatButton(
+                TextButton(
                     onPressed: () {
                       onPressed();
                       Navigator.of(context).pop();

@@ -97,48 +97,90 @@ class _ShippingAdressesState extends State<ShippingAdresses> {
                           content: const Text(
                               'This address will be deleted permenently.'),
                           actions: [
-                            FlatButton(
-                                onPressed: (() {
-                                  Navigator.pop(context);
-                                }),
-                                child: Text(
-                                  'No',
-                                  style: TextStyle(color: cc.primaryColor),
-                                )),
-                            FlatButton(
-                                onPressed:
-                                    Provider.of<ShippingAddressesService>(
-                                                context)
-                                            .alertBoxLoading
-                                        ? () {}
-                                        : (() async {
-                                            Provider.of<ShippingAddressesService>(
-                                                    context,
-                                                    listen: false)
-                                                .setAlertBoxLoading(true);
-                                            await Provider.of<
-                                                        ShippingAddressesService>(
-                                                    context,
-                                                    listen: false)
-                                                .deleteSingleAddress(id);
+                            TextButton(
+                              style: ButtonStyle(
+                                foregroundColor:
+                                    MaterialStateProperty.all<Color>(
+                                        cc.primaryColor),
+                              ),
+                              onPressed: () {
+                                Navigator.pop(context);
+                              },
+                              child: Text('No'),
+                            ),
+                            TextButton(
+                              style: ButtonStyle(
+                                foregroundColor:
+                                    MaterialStateProperty.all<Color>(
+                                        cc.primaryColor),
+                              ),
+                              onPressed:
+                                  Provider.of<ShippingAddressesService>(context)
+                                          .alertBoxLoading
+                                      ? () {}
+                                      : (() async {
+                                          Provider.of<ShippingAddressesService>(
+                                                  context,
+                                                  listen: false)
+                                              .setAlertBoxLoading(true);
+                                          await Provider.of<
+                                                      ShippingAddressesService>(
+                                                  context,
+                                                  listen: false)
+                                              .deleteSingleAddress(id);
 
-                                            Provider.of<ShippingAddressesService>(
-                                                    context,
-                                                    listen: false)
-                                                .setAlertBoxLoading(false);
-                                            Navigator.pop(context);
-                                          }),
-                                child: Provider.of<ShippingAddressesService>(
-                                            context)
-                                        .alertBoxLoading
-                                    ? SizedBox(
-                                        height: 20,
-                                        width: 40,
-                                        child: loadingProgressBar(size: 15))
-                                    : Text(
-                                        'Yes',
-                                        style: TextStyle(color: cc.pink),
-                                      ))
+                                          Provider.of<ShippingAddressesService>(
+                                                  context,
+                                                  listen: false)
+                                              .setAlertBoxLoading(false);
+                                          Navigator.pop(context);
+                                        }),
+                              child:
+                                  Provider.of<ShippingAddressesService>(context)
+                                          .alertBoxLoading
+                                      ? SizedBox(
+                                          height: 20,
+                                          width: 40,
+                                          child: loadingProgressBar(size: 15))
+                                      : Text(
+                                          'Yes',
+                                          style: TextStyle(color: cc.pink),
+                                        ),
+                            ),
+                            // FlatButton(
+                            //     onPressed:
+                            //         Provider.of<ShippingAddressesService>(
+                            //                     context)
+                            //                 .alertBoxLoading
+                            //             ? () {}
+                            //             : (() async {
+                            //                 Provider.of<ShippingAddressesService>(
+                            //                         context,
+                            //                         listen: false)
+                            //                     .setAlertBoxLoading(true);
+                            //                 await Provider.of<
+                            //                             ShippingAddressesService>(
+                            //                         context,
+                            //                         listen: false)
+                            //                     .deleteSingleAddress(id);
+
+                            //                 Provider.of<ShippingAddressesService>(
+                            //                         context,
+                            //                         listen: false)
+                            //                     .setAlertBoxLoading(false);
+                            //                 Navigator.pop(context);
+                            //               }),
+                            //     child: Provider.of<ShippingAddressesService>(
+                            //                 context)
+                            //             .alertBoxLoading
+                            //         ? SizedBox(
+                            //             height: 20,
+                            //             width: 40,
+                            //             child: loadingProgressBar(size: 15))
+                            //         : Text(
+                            //             'Yes',
+                            //             style: TextStyle(color: cc.pink),
+                            //           ))
                           ],
                         ));
               }),

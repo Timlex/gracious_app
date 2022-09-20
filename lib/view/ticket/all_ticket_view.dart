@@ -79,8 +79,9 @@ class AllTicketsView extends StatelessWidget {
                       'Add new ticket', double.infinity, () {
                     Provider.of<AddNewTicketService>(context, listen: false)
                         .fetchDepartments()
-                        .onError((error, stackTrace) =>
-                            snackBar(context, 'Connection failed!'));
+                        .onError((error, stackTrace) => snackBar(
+                            context, 'Connection failed!',
+                            backgroundColor: cc.orange));
                     Navigator.of(context)
                         .pushNamed(AddNewTicket.routeName)
                         .then((value) {

@@ -245,7 +245,7 @@ class Home extends StatelessWidget {
                   return Consumer<CategoriesDataService>(
                     builder: (context, catService, child) {
                       return SizedBox(
-                        height: 50,
+                        height: 60,
                         child: ListView.builder(
                             padding: EdgeInsets.only(
                               left: LanguageService().rtl ? 0 : 20.0,
@@ -288,8 +288,8 @@ class Home extends StatelessWidget {
                                       ClipRRect(
                                         borderRadius: BorderRadius.circular(50),
                                         child: CachedNetworkImage(
-                                          height: 37,
-                                          width: 37,
+                                          height: 42,
+                                          width: 42,
                                           imageUrl: element.imageUrl ?? '',
                                           errorWidget: (context, url, error) =>
                                               const Icon(Icons.category),

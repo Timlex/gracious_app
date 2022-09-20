@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:gren_mart/service/favorite_data_service.dart';
 import 'package:provider/provider.dart';
 
 import '../../service/cart_data_service.dart';
@@ -142,8 +143,14 @@ class FavoriteToCart extends StatelessWidget {
                                         : pdService.selecteInventorySet,
                                 hash: pdService.selectedInventoryHash,
                               );
+                              Provider.of<FavoriteDataService>(context,
+                                      listen: false)
+                                  .deleteFavoriteItem(id, context);
                               Navigator.of(context).pop();
-                            })
+                            },
+                                color: pdService.cartAble
+                                    ? cc.primaryColor
+                                    : cc.greyBorder)
                           ],
                         ),
                       )

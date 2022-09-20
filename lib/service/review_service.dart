@@ -62,7 +62,7 @@ class ReviewService with ChangeNotifier {
       print(data['message']);
       return data['message'];
     }
-    snackBar(context, 'Connection failed');
+    snackBar(context, 'Connection failed', backgroundColor: cc.orange);
     return 'Someting went wrong';
     // } catch (error) {
     //   print(error);

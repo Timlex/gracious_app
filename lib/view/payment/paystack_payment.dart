@@ -217,7 +217,7 @@ class PaystackPayment extends StatelessWidget {
       print(url);
       return;
     }
-    snackBar(context, 'Connection failed');
+    snackBar(context, 'Connection failed', backgroundColor: cc.orange);
     // print(response.statusCode);
     // if (response.statusCode == 201) {
     // this.url =
