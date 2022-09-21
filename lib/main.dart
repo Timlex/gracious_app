@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
+import 'package:gren_mart/service/campaign_card_list_service.dart';
 import 'package:gren_mart/service/language_service.dart';
 import 'package:gren_mart/service/terms_and_condition_service.dart';
 import 'package:gren_mart/view/home/category_page.dart';
@@ -115,6 +116,7 @@ class _MyAppState extends State<MyApp> {
         ChangeNotifierProvider(create: (_) => ReviewService()),
         ChangeNotifierProvider(create: (_) => ConfirmPaymentService()),
         ChangeNotifierProvider(create: (_) => TermsAndCondition()),
+        ChangeNotifierProvider(create: (_) => CampaignCardListService()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,

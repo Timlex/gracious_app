@@ -86,7 +86,7 @@ class CartView extends StatelessWidget {
                         .pushNamed(Checkout.routeName)
                         .then((value) {
                       Provider.of<ShippingZoneService>(context, listen: false)
-                          .resetChecout();
+                          .resetChecout(backingout: true);
                     });
                   },
                 ),

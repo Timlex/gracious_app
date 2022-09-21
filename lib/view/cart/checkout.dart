@@ -1,5 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:gren_mart/model/shipping_addresses_model.dart';
+import 'package:gren_mart/service/user_profile_service.dart';
 import 'package:gren_mart/view/cart/cart_tile.dart';
 import 'package:provider/provider.dart';
 
@@ -48,6 +50,8 @@ class Checkout extends StatelessWidget {
           appBar: AppBars().appBarTitled('Checkout', () {
             Provider.of<ShippingAddressesService>(context, listen: false)
                 .clearSelectedAddress();
+            Provider.of<ShippingZoneService>(context, listen: false)
+                .resetChecout(backingout: true);
             Provider.of<PaymentGateawayService>(context, listen: false)
                 .resetGateaway();
             Navigator.of(context).pop();
@@ -83,57 +87,61 @@ class Checkout extends StatelessWidget {
                     }
                     return Consumer<ShippingAddressesService>(
                         builder: (context, saService, child) {
-                      return Column(
-                          children: saService.shippingAddresseList.map(((e) {
-                        final shippingAddress = saService.shippingAddresseList
-                            .firstWhere((element) => element.id == e.id);
-                        final selected =
-                            shippingAddress.id == saService.selectedAddress!.id;
-                        return GestureDetector(
-                            onTap: () {
-                              if (saService.selectedAddress!.id == e.id) {
-                                return;
-                              }
-                              saService.setSelectedAddress(e, context);
-                            },
-                            child: Container(
-                              margin: const EdgeInsets.only(bottom: 15),
-                              padding: const EdgeInsets.symmetric(vertical: 12),
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(10),
-                                  color: selected
-                                      ? cc.lightPrimery3
-                                      : cc.whiteGrey,
-                                  border: Border.all(
-                                      color: selected
-                                          ? cc.primaryColor
-                                          : cc.greyHint,
-                                      width: .5)),
-                              child: Stack(children: [
-                                ListTile(
-                                  title: Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 5, vertical: 5),
-                                    child: Text(shippingAddress.name),
-                                  ),
-                                  subtitle: Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 5, vertical: 5),
-                                    child: Text(shippingAddress.address),
-                                  ),
-                                ),
-                                if (selected)
-                                  Positioned(
-                                      top: 10,
-                                      right: LanguageService().rtl ? null : 15,
-                                      left: LanguageService().rtl ? 15 : null,
-                                      child: Icon(
-                                        Icons.check_box,
-                                        color: cc.primaryColor,
-                                      ))
-                              ]),
-                            ));
-                      })).toList());
+                      return Column(children: shippingAddress(context)
+                          //     saService.shippingAddresseList.map(((e) {
+                          //   final shippingAddress = saService.shippingAddresseList
+                          //       .firstWhere((element) => element.id == e.id);
+                          //   final selected = shippingAddress.id ==
+                          //       (saService.selectedAddress == null
+                          //           ? null
+                          //           : saService.selectedAddress!.id);
+                          //   return GestureDetector(
+                          //       onTap: () {
+                          //         if (saService.selectedAddress != null &&
+                          //             saService.selectedAddress!.id == e.id) {
+                          //           return;
+                          //         }
+                          //         saService.setSelectedAddress(e, context);
+                          //       },
+                          //       child: Container(
+                          //         margin: const EdgeInsets.only(bottom: 15),
+                          //         padding: const EdgeInsets.symmetric(vertical: 12),
+                          //         decoration: BoxDecoration(
+                          //             borderRadius: BorderRadius.circular(10),
+                          //             color: selected
+                          //                 ? cc.lightPrimery3
+                          //                 : cc.whiteGrey,
+                          //             border: Border.all(
+                          //                 color: selected
+                          //                     ? cc.primaryColor
+                          //                     : cc.greyHint,
+                          //                 width: .5)),
+                          //         child: Stack(children: [
+                          //           ListTile(
+                          //             title: Padding(
+                          //               padding: const EdgeInsets.symmetric(
+                          //                   horizontal: 5, vertical: 5),
+                          //               child: Text(shippingAddress.name),
+                          //             ),
+                          //             subtitle: Padding(
+                          //               padding: const EdgeInsets.symmetric(
+                          //                   horizontal: 5, vertical: 5),
+                          //               child: Text(shippingAddress.address),
+                          //             ),
+                          //           ),
+                          //           if (selected)
+                          //             Positioned(
+                          //                 top: 10,
+                          //                 right: LanguageService().rtl ? null : 15,
+                          //                 left: LanguageService().rtl ? 15 : null,
+                          //                 child: Icon(
+                          //                   Icons.check_box,
+                          //                   color: cc.primaryColor,
+                          //                 ))
+                          //         ]),
+                          //       ));
+                          // })).toList()
+                          );
                     });
                   }),
               GestureDetector(
@@ -525,18 +533,20 @@ class Checkout extends StatelessWidget {
                                     Provider.of<PaymentGateawayService>(context,
                                             listen: false)
                                         .setIsLoading(true);
-                                    if (Provider.of<ShippingAddressesService>(
-                                                context,
-                                                listen: false)
-                                            .selectedAddress ==
-                                        null) {
+                                    final shippingService =
+                                        Provider.of<ShippingAddressesService>(
+                                            context,
+                                            listen: false);
+                                    if (shippingService.selectedAddress ==
+                                            null &&
+                                        !shippingService.currentAddress) {
                                       showDialog(
                                           context: context,
                                           builder: (context) => AlertDialog(
                                                 title: const Text(
                                                     'No shipping address selected?'),
                                                 content: const Text(
-                                                    'Please add Shipping address to proceed your payment.'),
+                                                    'Please add or select Shipping address to proceed your payment.'),
                                                 actions: [
                                                   TextButton(
                                                       onPressed: (() {
@@ -908,5 +918,94 @@ class Checkout extends StatelessWidget {
             ),
           );
         });
+  }
+
+  List<Widget> shippingAddress(BuildContext context) {
+    List<Widget> list = [];
+    final saService =
+        Provider.of<ShippingAddressesService>(context, listen: false);
+    final userData =
+        Provider.of<UserProfileService>(context, listen: false).userProfileData;
+    if (userData.country != null) {
+      list.add(shippingBar(
+          saService.currentAddress,
+          saService,
+          context,
+          null,
+          'Current address',
+          Provider.of<UserProfileService>(context, listen: false)
+              .userProfileData
+              .address));
+      // saService.setSelectedAddress(null, context);
+    } else {
+      // Provider.of<ShippingZoneService>(context, listen: false).setNoData(true);
+    }
+    saService.shippingAddresseList.forEach((element) {
+      list.add(shippingBar(saService.selectedAddress == element, saService,
+          context, element, element.name, element.address));
+    });
+    if (list.isEmpty) {
+      list.add(Container(
+          margin: const EdgeInsets.symmetric(vertical: 20),
+          child: Text('Add shipping address or all the account informations')));
+      Provider.of<ShippingZoneService>(context, listen: false).setNoData(true);
+      // Provider.of<ShippingAddressesService>(context, listen: false)
+      //     .setNoData(true);
+      return list;
+    }
+    return list;
+  }
+
+  Widget shippingBar(bool selected, ShippingAddressesService saService,
+      BuildContext context, Datum? e, String addressName, String address) {
+    return GestureDetector(
+        onTap: () {
+          print(e);
+          if (e == null) {
+            saService.setSelectedAddress(null, context);
+            return;
+          }
+          if (saService.selectedAddress != null &&
+              saService.selectedAddress == e) {
+            print(saService.selectedAddress!.name);
+            return;
+          }
+          saService.setSelectedAddress(e, context);
+        },
+        child: Container(
+          margin: const EdgeInsets.only(bottom: 15),
+          padding: const EdgeInsets.symmetric(vertical: 12),
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10),
+              color: saService.selectedAddress == e
+                  ? cc.lightPrimery3
+                  : cc.whiteGrey,
+              border: Border.all(
+                  color: saService.selectedAddress == e
+                      ? cc.primaryColor
+                      : cc.greyHint,
+                  width: .5)),
+          child: Stack(children: [
+            ListTile(
+              title: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+                child: Text(addressName),
+              ),
+              subtitle: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+                child: Text(address),
+              ),
+            ),
+            if (saService.selectedAddress == e)
+              Positioned(
+                  top: 10,
+                  right: LanguageService().rtl ? null : 15,
+                  left: LanguageService().rtl ? 15 : null,
+                  child: Icon(
+                    Icons.check_box,
+                    color: cc.primaryColor,
+                  ))
+          ]),
+        ));
   }
 }

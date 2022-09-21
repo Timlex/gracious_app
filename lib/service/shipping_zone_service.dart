@@ -15,7 +15,8 @@ class ShippingZoneService with ChangeNotifier {
   int shippingCost = 0;
   double taxParcentage = 0;
   bool isLoading = true;
-  bool noData = false;
+  bool noData = true;
+  bool fetchStates = true;
   List<DefaultShipping>? shippingOptionsList;
   DefaultShipping? selectedOption;
 
@@ -30,12 +31,18 @@ class ShippingZoneService with ChangeNotifier {
     notifyListeners();
   }
 
-  resetChecout() {
+  resetChecout({backingout}) {
     shippingCost = 0;
     taxParcentage = 0;
     isLoading = true;
     shippingOptionsList = null;
     selectedOption = null;
+    if (backingout == null) {
+      noData = false;
+    } else {
+      noData = backingout;
+    }
+    fetchStates = true;
     notifyListeners();
   }
 
@@ -99,19 +106,23 @@ class ShippingZoneService with ChangeNotifier {
         var data = CountryShippingZoneModel.fromJson(jsonDecode(response.body));
         countryShippingZoneData = data;
         print('jsfasehfoiihewreljshdfhawf');
-        fetchStatesZone(stateId);
+        print(fetchStates);
+        if (fetchStates) {
+          fetchStates = false;
+          await fetchStatesZone(stateId);
+          return;
+        }
         return;
-      } else {
-        //something went wrong
       }
+      noData = true;
+      notifyListeners();
     } catch (error) {
       print(error);
-
-      rethrow;
     }
   }
 
   Future fetchStatesZone(id) async {
+    fetchStates = false;
     final url = Uri.parse('$baseApiUrl/state-info?id=$id');
     // try {
     print(url);

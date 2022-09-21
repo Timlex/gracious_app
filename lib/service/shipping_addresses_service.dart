@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gren_mart/service/country_dropdown_service.dart';
 import 'package:gren_mart/service/state_dropdown_service.dart';
+import 'package:gren_mart/service/user_profile_service.dart';
 import 'package:provider/provider.dart';
 import '../../model/shipping_addresses_model.dart';
 import 'dart:convert';
@@ -21,12 +22,14 @@ class ShippingAddressesService with ChangeNotifier {
   String? phone;
   String? countryCode;
   String countryId = '1';
-  String stateID = '1';
+  String stateID = '143';
   String? zipCode;
   String? address;
   String? city;
   bool alertBoxLoading = false;
   bool noData = false;
+  bool firstLoad = true;
+  bool currentAddress = false;
 
   setName(value) {
     name = value;
@@ -38,6 +41,7 @@ class ShippingAddressesService with ChangeNotifier {
         shippingAddresseList.isNotEmpty ? shippingAddresseList[0] : null;
     noData = false;
     isLoading = false;
+    firstLoad = true;
     notifyListeners();
   }
 
@@ -53,6 +57,7 @@ class ShippingAddressesService with ChangeNotifier {
     stateID = '1';
     address = null;
     city = null;
+    firstLoad = true;
     notifyListeners();
   }
 
@@ -91,11 +96,33 @@ class ShippingAddressesService with ChangeNotifier {
     notifyListeners();
   }
 
-  setSelectedAddress(value, BuildContext context) {
+  setSelectedAddress(value, BuildContext context) async {
+    final userProfile =
+        Provider.of<UserProfileService>(context, listen: false).userProfileData;
+    if (userProfile.city == null) {
+      Provider.of<ShippingZoneService>(context, listen: false).setNoData(true);
+      return;
+    }
+    if (value == null && (selectedAddress != null || firstLoad)) {
+      selectedAddress = value;
+      firstLoad = false;
+      await Provider.of<ShippingZoneService>(context, listen: false)
+        ..resetChecout()
+        ..fetchContriesZone(userProfile.country!.id, userProfile.state!.id);
+      currentAddress = true;
+      notifyListeners();
+      return;
+    }
+    if (value == null && selectedAddress == null) {
+      return;
+    }
+    currentAddress = false;
+    print('selecting $value');
     selectedAddress = value;
     Provider.of<ShippingZoneService>(context, listen: false)
       ..resetChecout()
       ..fetchContriesZone(selectedAddress!.countryId, selectedAddress!.stateId);
+    print('selection done $value');
     notifyListeners();
   }
 
@@ -126,6 +153,7 @@ class ShippingAddressesService with ChangeNotifier {
   setNoData(value) {
     noData = value;
     selectedAddress = null;
+    isLoading = false;
     notifyListeners();
   }
 
@@ -144,21 +172,20 @@ class ShippingAddressesService with ChangeNotifier {
     if (response.statusCode == 200) {
       final data = ShippingAddressesModel.fromJson(jsonDecode(response.body));
       shippingAddresseList = data.data;
-      setNoData(shippingAddresseList.isEmpty);
-      Provider.of<ShippingZoneService>(context, listen: false)
-          .setNoData(shippingAddresseList.isEmpty);
+      // setNoData(shippingAddresseList.isEmpty);
+      // Provider.of<ShippingZoneService>(context, listen: false)
+      //     .setNoData(shippingAddresseList.isEmpty);
       if (shippingAddresseList.isEmpty) {
         notifyListeners();
-        return 'Select a shipping address.';
       }
-      selectedAddress ??= shippingAddresseList[0];
-      if (loadShippingZone) {
-        Provider.of<ShippingZoneService>(
-          context,
-          listen: false,
-        ).fetchContriesZone(
-            selectedAddress!.countryId, selectedAddress!.stateId);
-      }
+      // selectedAddress ??= shippingAddresseList[0];
+      // if (loadShippingZone) {
+      //   Provider.of<ShippingZoneService>(
+      //     context,
+      //     listen: false,
+      //   ).fetchContriesZone(
+      //       selectedAddress!.countryId, selectedAddress!.stateId);
+      // }
 
       notifyListeners();
       return;

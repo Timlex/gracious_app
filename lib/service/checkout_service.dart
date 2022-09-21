@@ -67,19 +67,17 @@ class CheckoutService with ChangeNotifier {
     final clist = Provider.of<CartDataService>(context, listen: false).cartList;
     Map<String, List<Map<String, Object?>>>? formatedCartItem = clist;
     final subTotal = cartData.calculateSubtotal().toString();
-    if (userData.city == null ||
-        userData.city!.isEmpty ||
-        userData.address == null ||
-        userData.address.isEmpty ||
-        userData.zipcode == null ||
-        userData.zipcode!.isEmpty ||
-        userData.phone == null ||
-        userData.phone!.isEmpty ||
-        userData.country == null ||
-        userData.state == null) {
-      print('printing account information');
-      print(
-          '${userData.city} ${userData.address}${userData.zipcode}${userData.phone}${userData.country}${userData.state} ');
+    if (shippingAddress.selectedAddress == null &&
+        (userData.city == null ||
+            userData.city!.isEmpty ||
+            userData.address == null ||
+            userData.address.isEmpty ||
+            userData.zipcode == null ||
+            userData.zipcode!.isEmpty ||
+            userData.phone == null ||
+            userData.phone!.isEmpty ||
+            userData.country == null ||
+            userData.state == null)) {
       await showDialog(
           context: context,
           builder: (ctx) {
@@ -136,17 +134,33 @@ class CheckoutService with ChangeNotifier {
           });
       throw '';
     }
+    bool notCurrent = shippingAddress.selectedAddress != null;
     Map<String, dynamic> fieldss = {
-      'name': userData.name,
-      'email': userData.email,
-      'country':
-          userData.country == null ? '' : userData.country!.id.toString(),
-      'address': userData.address,
-      'city': userData.city ?? '',
-      'state': userData.state == null ? '' : userData.state!.id.toString(),
-      'zipcode': userData.zipcode ?? '',
-      'phone': userData.phone ?? '',
-      'shipping_address_id': shippingAddress.selectedAddress!.id.toString(),
+      'name':
+          notCurrent ? shippingAddress.selectedAddress!.name : userData.name,
+      'email':
+          notCurrent ? shippingAddress.selectedAddress!.email : userData.email,
+      'country': notCurrent
+          ? shippingAddress.selectedAddress!.countryId
+          : (userData.country == null ? '' : userData.country!.id.toString()),
+      'address': notCurrent
+          ? shippingAddress.selectedAddress!.address
+          : userData.address,
+      'city': notCurrent
+          ? shippingAddress.selectedAddress!.city
+          : userData.city ?? '',
+      'state': notCurrent
+          ? shippingAddress.selectedAddress!.stateId
+          : (userData.state == null ? '' : userData.state!.id.toString()),
+      'zipcode': notCurrent
+          ? shippingAddress.selectedAddress!.zipCode
+          : userData.zipcode ?? '',
+      'phone': notCurrent
+          ? shippingAddress.selectedAddress!.phone
+          : userData.phone ?? '',
+      'shipping_address_id':
+          notCurrent ? shippingAddress.selectedAddress!.id.toString() : '',
+      'selected_shipping_option': shippingZone.selectedOption!.id.toString(),
       'tax_amount': taxAmount.toString(),
       'coupon': cuponData.cuponText ?? '',
       'agree': 'on',
@@ -232,18 +246,33 @@ class CheckoutService with ChangeNotifier {
     final clist = Provider.of<CartDataService>(context, listen: false).cartList;
     Map<String, List<Map<String, Object?>>>? formatedCartItem = clist;
     final subTotal = cartData.calculateSubtotal().toString();
-
+    bool notCurrent = shippingAddress.selectedAddress != null;
     Map<String, dynamic> fieldss = {
-      'name': userData.name,
-      'email': userData.email,
-      'country':
-          userData.country == null ? '' : userData.country!.id.toString(),
-      'address': userData.address,
-      'city': userData.city ?? '',
-      'state': userData.state == null ? '' : userData.state!.id.toString(),
-      'zipcode': userData.zipcode ?? '',
-      'phone': userData.phone ?? '',
-      'shipping_address_id': shippingAddress.selectedAddress!.id.toString(),
+      'name':
+          notCurrent ? shippingAddress.selectedAddress!.name : userData.name,
+      'email':
+          notCurrent ? shippingAddress.selectedAddress!.email : userData.email,
+      'country': notCurrent
+          ? shippingAddress.selectedAddress!.countryId
+          : (userData.country == null ? '' : userData.country!.id.toString()),
+      'address': notCurrent
+          ? shippingAddress.selectedAddress!.address
+          : userData.address,
+      'city': notCurrent
+          ? shippingAddress.selectedAddress!.city
+          : userData.city ?? '',
+      'state': notCurrent
+          ? shippingAddress.selectedAddress!.stateId
+          : (userData.state == null ? '' : userData.state!.id.toString()),
+      'zipcode': notCurrent
+          ? shippingAddress.selectedAddress!.zipCode
+          : userData.zipcode ?? '',
+      'phone': notCurrent
+          ? shippingAddress.selectedAddress!.phone
+          : userData.phone ?? '',
+      'shipping_address_id':
+          notCurrent ? shippingAddress.selectedAddress!.id.toString() : '',
+      'selected_shipping_option': shippingZone.selectedOption!.id.toString(),
       'tax_amount': taxAmount.toString(),
       'coupon': cuponData.cuponText ?? '',
       'agree': 'on',

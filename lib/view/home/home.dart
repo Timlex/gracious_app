@@ -1,7 +1,9 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:card_swiper/card_swiper.dart';
 import 'package:flutter/material.dart';
+import 'package:gren_mart/service/campaign_card_list_service.dart';
 import 'package:gren_mart/service/categories_data_service.dart';
+import 'package:gren_mart/view/home/campaign_smaller_card.dart';
 import 'package:gren_mart/view/home/categories.dart';
 import 'package:gren_mart/view/home/category_page.dart';
 import 'package:gren_mart/view/home/category_product_page.dart';
@@ -22,9 +24,7 @@ import 'package:slide_countdown/slide_countdown.dart';
 import 'poster_card.dart';
 
 class Home extends StatelessWidget {
-  Home({
-    Key? key,
-  }) : super(key: key);
+  Home({Key? key}) : super(key: key);
   DateTime? currentBackPressTime;
 
   @override
@@ -427,7 +427,33 @@ class Home extends StatelessWidget {
                         : loadingProgressBar());
               }),
             ),
-            const SizedBox(height: 20),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: seeAllTitle(context, 'Top campaigns'),
+            ),
+            // const SizedBox(height: 20),
+            SizedBox(
+              height: screenHight / 3.4 < 221 ? 195 : screenHight / 3.4,
+              child: Consumer<CampaignCardListService>(
+                builder: (context, cclService, child) {
+                  return FutureBuilder(builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return SizedBox();
+                    }
+                    return ListView.builder(
+                      physics: const BouncingScrollPhysics(
+                          parent: AlwaysScrollableScrollPhysics()),
+                      padding: const EdgeInsets.only(left: 20),
+                      shrinkWrap: true,
+                      scrollDirection: Axis.horizontal,
+                      itemCount: cclService.list.length,
+                      itemBuilder: (context, index) => CampaignSmallerCard(),
+                    );
+                  });
+                },
+              ),
+            ),
+            const SizedBox(height: 40),
           ],
         ),
       ),
