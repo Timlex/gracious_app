@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:gren_mart/service/payment_gateaway_service.dart';
 import 'package:provider/provider.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:http/http.dart' as http;
@@ -129,18 +130,20 @@ class RazorpayPayment extends StatelessWidget {
   }
 
   Future<void> waitForIt(BuildContext context) async {
+    final selectedGateaway =
+        Provider.of<PaymentGateawayService>(context, listen: false)
+            .selectedGateaway!;
     final uri = Uri.parse('https://api.razorpay.com/v1/payment_links');
-    String username = "rzp_test_qfnlVh6GDZoveL";
-    String password = "1BKI89076hFeXRsbGuSaj29C";
-    // final username = selectedGateaway.serverKey;
-    // final password = selectedGateaway.clientKey;
+    // String username = "rzp_test_qfnlVh6GDZoveL";
+    // String password = "1BKI89076hFeXRsbGuSaj29C";
+    final username = selectedGateaway.apiKey;
+    final password = selectedGateaway.apiSecret;
     final basicAuth =
         'Basic ${base64Encode(utf8.encode('$username:$password'))}';
     final header = {
       "Content-Type": "application/json",
       "Accept": "application/json",
       "Authorization": basicAuth,
-      // Above is API server key for the Midtrans account, encoded to base64
     };
     final checkoutInfo =
         Provider.of<CheckoutService>(context, listen: false).checkoutModel;

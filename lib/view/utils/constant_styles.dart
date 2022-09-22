@@ -422,7 +422,10 @@ void showTopSlider(BuildContext context, UserProfileService uService) {
                               child: CachedNetworkImage(
                                 fit: BoxFit.cover,
                                 placeholder: (context, url) => Center(
-                                  child: Text('placeHolder',
+                                  child: Text(
+                                      uService.userProfileData.name
+                                          .substring(0, 2)
+                                          .toUpperCase(),
                                       style: TextStyle(
                                           fontSize: 15,
                                           color: cc.pureWhite,

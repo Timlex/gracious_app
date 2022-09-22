@@ -1,24 +1,32 @@
+import 'package:flutter/cupertino.dart';
+import 'package:gren_mart/service/payment_gateaway_service.dart';
 import 'package:http/http.dart' as http;
 import 'dart:async';
 import 'dart:convert' as convert;
 
 import 'package:http_auth/http_auth.dart';
+import 'package:provider/provider.dart';
 
 class PaypalServices {
   String domain = "https://api.sandbox.paypal.com"; // for sandbox mode
   // String domain = "https://api.paypal.com"; // for production mode
 
   // change clientId and secret with your own, provided by paypal
-  String clientId =
-      'AUP7AuZMwJbkee-2OmsSZrU-ID1XUJYE-YB-2JOrxeKV-q9ZJZYmsr-UoKuJn4kwyCv5ak26lrZyb-gb';
-  String secret =
-      'EEIxCuVnbgING9EyzcF2q-gpacLneVbngQtJ1mbx-42Lbq-6Uf6PEjgzF7HEayNsI4IFmB9_CZkECc3y';
+
+  // String clientId =
+  //     'AUP7AuZMwJbkee-2OmsSZrU-ID1XUJYE-YB-2JOrxeKV-q9ZJZYmsr-UoKuJn4kwyCv5ak26lrZyb-gb';
+  // String secret =
+  //     'EEIxCuVnbgING9EyzcF2q-gpacLneVbngQtJ1mbx-42Lbq-6Uf6PEjgzF7HEayNsI4IFmB9_CZkECc3y';
 
   // for getting the access token from Paypal
-  Future<String> getAccessToken() async {
+  Future<String> getAccessToken(BuildContext context) async {
     final url = Uri.parse('$domain/v1/oauth2/token');
+    final selectedGateaway =
+        Provider.of<PaymentGateawayService>(context, listen: false)
+            .selectedGateaway!;
     try {
-      var client = BasicAuthClient(clientId, secret);
+      var client = BasicAuthClient(selectedGateaway.clientId as String,
+          selectedGateaway.secretId as String);
       var response = await client.post(
           Uri.parse('$domain/v1/oauth2/token?grant_type=client_credentials'));
       print(response.body);

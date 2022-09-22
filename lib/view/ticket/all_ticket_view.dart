@@ -109,7 +109,8 @@ class AllTicketsView extends StatelessWidget {
       );
     } else {
       return ListView.builder(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
+          padding:
+              const EdgeInsets.only(right: 20, left: 20, bottom: 30, top: 10),
           // controller: controller,
           physics: const BouncingScrollPhysics(
               parent: AlwaysScrollableScrollPhysics()),

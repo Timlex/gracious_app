@@ -114,6 +114,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
       validator: widget.validator == null ? null : (_) => widget.validator!(_),
       onSaved: widget.onSaved == null ? null : (_) => widget.onSaved!(_),
       onChanged: widget.onChanged == null ? null : (_) => widget.onChanged!(_),
+      onEditingComplete: () => FocusScope.of(context).unfocus(),
     );
   }
 }

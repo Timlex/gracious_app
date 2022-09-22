@@ -292,6 +292,8 @@ class Home extends StatelessWidget {
                                         child: CachedNetworkImage(
                                           height: 42,
                                           width: 42,
+                                          placeholder: (context, url) =>
+                                              const Icon(Icons.category),
                                           imageUrl: element.imageUrl ?? '',
                                           errorWidget: (context, url, error) =>
                                               const Icon(Icons.category),

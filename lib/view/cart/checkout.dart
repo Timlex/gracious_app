@@ -572,36 +572,36 @@ class Checkout extends StatelessWidget {
                                                   content: const Text(
                                                       'Please add or select Shipping address to proceed your payment.'),
                                                   actions: [
-                                                    TextButton(
-                                                        onPressed: (() {
-                                                          Navigator.pop(
-                                                              context);
-                                                        }),
-                                                        child: Text(
-                                                          'Not now',
-                                                          style: TextStyle(
-                                                              color: cc.pink),
-                                                        )),
+                                                    // TextButton(
+                                                    //     onPressed: (() {
+                                                    //       Navigator.pop(
+                                                    //           context);
+                                                    //     }),
+                                                    //     child: Text(
+                                                    //       'Not now',
+                                                    //       style: TextStyle(
+                                                    //           color: cc.pink),
+                                                    //     )),
                                                     TextButton(
                                                         onPressed: () {
                                                           Navigator.of(context)
                                                               .pop();
-                                                          Navigator.of(context)
-                                                              .pop();
-                                                          Navigator.of(context)
-                                                              .push(
-                                                            MaterialPageRoute<
-                                                                void>(
-                                                              builder: (BuildContext
-                                                                      context) =>
-                                                                  AddNewAddress(
-                                                                      dontPop:
-                                                                          true),
-                                                            ),
-                                                          );
+                                                          // Navigator.of(context)
+                                                          //     .pop();
+                                                          // Navigator.of(context)
+                                                          //     .push(
+                                                          //   MaterialPageRoute<
+                                                          //       void>(
+                                                          //     builder: (BuildContext
+                                                          //             context) =>
+                                                          //         AddNewAddress(
+                                                          //             dontPop:
+                                                          //                 true),
+                                                          //   ),
+                                                          // );
                                                         },
                                                         child: Text(
-                                                          'Add now',
+                                                          'Ok',
                                                           style: TextStyle(
                                                               color: cc
                                                                   .primaryColor),

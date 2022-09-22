@@ -2,9 +2,12 @@ import 'package:flutter/cupertino.dart';
 
 class AuthTextControllerService with ChangeNotifier {
   var _email;
+  var _newEmail;
   var _password;
+  var _newPassword;
   var _name;
   var _userName;
+  var _newUsername;
   var _cityAddress;
   var city;
   var _phoneNumber;
@@ -20,6 +23,21 @@ class AuthTextControllerService with ChangeNotifier {
 
   setPass(value) {
     _password = value;
+    notifyListeners();
+  }
+
+  setNewEmail(value) {
+    _newEmail = value;
+    notifyListeners();
+  }
+
+  setNewUsername(value) {
+    _newUsername = value;
+    notifyListeners();
+  }
+
+  setNewPassword(value) {
+    _newPassword = value;
     notifyListeners();
   }
 
@@ -77,6 +95,18 @@ class AuthTextControllerService with ChangeNotifier {
 
   String get email {
     return _email;
+  }
+
+  String get newEmai {
+    return _newEmail;
+  }
+
+  String get newPassword {
+    return _newPassword;
+  }
+
+  String get newUsername {
+    return _newUsername;
   }
 
   String get name {

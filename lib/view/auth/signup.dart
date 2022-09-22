@@ -47,6 +47,7 @@ class SignUp extends StatelessWidget {
               return null;
             },
             onFieldSubmitted: (_) {
+              FocusScope.of(context).unfocus();
               FocusScope.of(context).requestFocus(_userNameFN);
             },
             onChanged: (name) {
@@ -71,9 +72,10 @@ class SignUp extends StatelessWidget {
               return null;
             },
             onChanged: (username) {
-              authController.setUserName(username);
+              authController.setNewUsername(username);
             },
             onFieldSubmitted: (_) {
+              FocusScope.of(context).unfocus();
               FocusScope.of(context).requestFocus(_emailFN);
             },
           ),
@@ -92,7 +94,7 @@ class SignUp extends StatelessWidget {
               return null;
             },
             onChanged: (email) {
-              authController.setEmail(email);
+              authController.setNewEmail(email);
             },
           ),
           textFieldTitle('Phone Number'),
@@ -199,6 +201,7 @@ class SignUp extends StatelessWidget {
               return null;
             },
             onFieldSubmitted: (_) {
+              FocusScope.of(context).unfocus();
               FocusScope.of(context).requestFocus(_passFN);
             },
             onChanged: (city) {
@@ -220,10 +223,11 @@ class SignUp extends StatelessWidget {
               return null;
             },
             onFieldSubmitted: (_) {
+              FocusScope.of(context).unfocus();
               FocusScope.of(context).requestFocus(_rePassFN);
             },
             onChanged: (pass) {
-              authController.setPass(pass);
+              authController.setNewPassword(pass);
             },
           ),
           textFieldTitle('Confirm Password'),
@@ -233,7 +237,7 @@ class SignUp extends StatelessWidget {
             focusNode: _rePassFN,
             keyboardType: TextInputType.number,
             validator: (password) {
-              if (password != authController.password) {
+              if (password != authController.newPassword) {
                 return 'Enter the same password';
               }
               return null;
@@ -263,6 +267,7 @@ class SignUp extends StatelessWidget {
                     value:
                         Provider.of<SignInSignUpService>(context).termsAndCondi,
                     onChanged: (value) {
+                      FocusScope.of(context).unfocus();
                       Provider.of<SignInSignUpService>(context, listen: false)
                           .toggleTermsAndCondi();
                     }),

@@ -72,7 +72,7 @@ class ResetPassEmail extends StatelessWidget {
                     onChanged: (value) {
                       Provider.of<AuthTextControllerService>(context,
                               listen: false)
-                          .setEmail(value);
+                          .setNewEmail(value);
                     },
                     onFieldSubmitted: (value) async {
                       _sendRequest(context, resetData, value);
@@ -92,7 +92,7 @@ class ResetPassEmail extends StatelessWidget {
                                       Provider.of<AuthTextControllerService>(
                                               context,
                                               listen: false)
-                                          .email;
+                                          .newEmai;
                                   _sendRequest(context, resetData, value);
                                 }),
                       if (resetData.isLoading)

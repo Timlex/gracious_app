@@ -37,12 +37,11 @@ class ResetPassOTPService with ChangeNotifier {
         notifyListeners();
         return true;
       }
-      if (response.statusCode == 422) {
-        final data = json.decode(response.body);
+      final data = json.decode(response.body);
+      if (data.contaisKey('message')) {
         return data['message'];
       }
-
-      return 'Someting went wrong';
+      return 'Request failed';
     } catch (error) {
       print(error);
 

@@ -2,7 +2,9 @@ import 'dart:convert';
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:gren_mart/service/payment_gateaway_service.dart';
 import 'package:http/http.dart' as http;
+import 'package:path/path.dart';
 import 'package:provider/provider.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
@@ -19,6 +21,7 @@ class InstamojoPayment extends StatelessWidget {
   }) : super(key: key);
   String? selectedUrl;
   String? prevUrl;
+  String? token;
 
   @override
   @override
@@ -80,43 +83,52 @@ class InstamojoPayment extends StatelessWidget {
                 }
                 if (snapshot.connectionState == ConnectionState.done) {
                   print(selectedUrl);
-                  return WebView(
-                    initialUrl: selectedUrl as String,
-                    javascriptMode: JavascriptMode.unrestricted,
-                    onPageStarted: (url) async {
-                      print('proccessing...............................');
-                      print(url);
-                    },
-                    navigationDelegate: (navRequest) async {
-                      print(
-                          'nav req to .......................${navRequest.url}');
-                      if (navRequest.url.contains('xgenious')) {
-                        if (prevUrl!.contains('status')) {
-                          final response = await http.get(Uri.parse(prevUrl!));
-                          print(
-                              '---------------------------------------------------');
-                          print(prevUrl);
-                          print(response.statusCode);
-                          print(response.body.contains('Payment Successful'));
-                          if (response.body.contains('Payment Successful')) {
-                            await Provider.of<ConfirmPaymentService>(context,
-                                    listen: false)
-                                .confirmPayment(context);
-                          }
-                          if (!response.body.contains('Payment Successful')) {
-                            Navigator.of(context).pushAndRemoveUntil(
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        PaymentStatusView(true)),
-                                (Route<dynamic> route) => false);
-                          }
-                        }
-                        return NavigationDecision.prevent;
-                      }
-                      prevUrl = navRequest.url;
-                      return NavigationDecision.navigate;
-                    },
-                  );
+                  return selectedUrl == null || selectedUrl == ''
+                      ? Center(
+                          child: Text('Connection failed'),
+                        )
+                      : WebView(
+                          initialUrl: selectedUrl as String,
+                          javascriptMode: JavascriptMode.unrestricted,
+                          onPageStarted: (url) async {
+                            print('proccessing...............................');
+                            print(url);
+                          },
+                          navigationDelegate: (navRequest) async {
+                            print(
+                                'nav req to .......................${navRequest.url}');
+                            if (navRequest.url.contains('xgenious')) {
+                              if (prevUrl!.contains('status')) {
+                                final response =
+                                    await http.get(Uri.parse(prevUrl!));
+                                print(
+                                    '---------------------------------------------------');
+                                print(prevUrl);
+                                print(response.statusCode);
+                                print(response.body
+                                    .contains('Payment Successful'));
+                                if (response.body
+                                    .contains('Payment Successful')) {
+                                  await Provider.of<ConfirmPaymentService>(
+                                          context,
+                                          listen: false)
+                                      .confirmPayment(context);
+                                }
+                                if (!response.body
+                                    .contains('Payment Successful')) {
+                                  Navigator.of(context).pushAndRemoveUntil(
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              PaymentStatusView(true)),
+                                      (Route<dynamic> route) => false);
+                                }
+                              }
+                              return NavigationDecision.prevent;
+                            }
+                            prevUrl = navRequest.url;
+                            return NavigationDecision.navigate;
+                          },
+                        );
                 }
                 return loadingProgressBar();
               }),
@@ -128,7 +140,8 @@ class InstamojoPayment extends StatelessWidget {
       "Accept": "application/json",
       "Content-Type": "application/x-www-form-urlencoded",
       "X-Api-Key": "test_b678a7048c8a9e5f69663c2e4fa",
-      "X-Auth-Token": "test_41af76995b230611b2c3b72b8cc"
+      "X-Auth-Token":
+          "wSXg7QepdaLgATQ9tVmR7yCNxYGjoJi1q425-_P7qvM.er2quueQzVx-xajZn9sCva4ASoe8gENF-hLUfZXeEtU"
     };
     // final selectrdGateaway =
     //     Provider.of<PaymentGateawayService>(context, listen: false)
@@ -170,6 +183,9 @@ class InstamojoPayment extends StatelessWidget {
   Future createRequest(BuildContext context) async {
     final checkoutInfo =
         Provider.of<CheckoutService>(context, listen: false).checkoutModel;
+    final selectedGateaway =
+        Provider.of<PaymentGateawayService>(context, listen: false)
+            .selectedGateaway!;
     final orderId = checkoutInfo!.id;
     print(checkoutInfo.phone.toString().length);
     Map<String, String> body = {
@@ -191,6 +207,8 @@ class InstamojoPayment extends StatelessWidget {
       "Content-Type": "application/x-www-form-urlencoded",
       "X-Api-Key": "test_b678a7048c8a9e5f69663c2e4fa",
       "X-Auth-Token": "test_41af76995b230611b2c3b72b8cc"
+      // "X-Api-Key": selectedGateaway.clientId as String,
+      // "X-Auth-Token": token ?? ''
     };
 
     var resp = await http.post(
@@ -204,6 +222,7 @@ class InstamojoPayment extends StatelessWidget {
       selectedUrl =
           json.decode(resp.body)["payment_request"]['longurl'].toString() +
               "?embed=form";
+      return;
 
 //If something is wrong with the data we provided to
 //create the Payment_Request. For Example, the email is in incorrect format, the payment_Request creation will fail.

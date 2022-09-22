@@ -199,7 +199,7 @@ class MolliePayment extends StatelessWidget {
     final header = {
       "Content-Type": "application/json",
       "Accept": "application/json",
-      "Authorization": "Bearer test_fVk76gNbAp6ryrtRjfAVvzjxSHxC2v",
+      "Authorization": "Bearer ${selectedGateaway.publicKey}",
       // Above is API server key for the Midtrans account, encoded to base64
     };
     final checkoutInfo =

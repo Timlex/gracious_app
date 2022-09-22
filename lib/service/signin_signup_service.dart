@@ -102,14 +102,8 @@ class SignInSignUpService with ChangeNotifier {
       return true;
     }
     if (response.statusCode == 422) {
-      print('response.body');
-      print(jsonDecode(response.body));
-      snackBar(
-          context,
-          (jsonDecode(response.body)['validation_errors']
-                  as Map<String, String>)
-              .values
-              .first);
+      snackBar(context, jsonDecode(response.body)['message'],
+          backgroundColor: cc.orange);
     }
 
     return false;
@@ -182,6 +176,10 @@ class SignInSignUpService with ChangeNotifier {
       if (response.statusCode == 422) {
         final data = json.decode(response.body);
         final errors = data['validation_errors'];
+        if (response.body.contains('message')) {
+          toggleLaodingSpinner();
+          throw data['message'];
+        }
         if (errors!.containsKey('email')) {
           toggleLaodingSpinner();
           throw errors['email']![0];

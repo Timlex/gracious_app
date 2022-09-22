@@ -50,7 +50,6 @@ class _AuthState extends State<Auth> {
       snackBar(context, 'Please provide all the information');
       return;
     }
-
     final ssService = Provider.of<SignInSignUpService>(context, listen: false);
     final authTextControllers =
         Provider.of<AuthTextControllerService>(context, listen: false);
@@ -94,10 +93,10 @@ class _AuthState extends State<Auth> {
     ssService.toggleLaodingSpinner(value: true);
     await ssService
         .signUpOption(
-            authTextControllers.email,
-            authTextControllers.password,
+            authTextControllers.newEmai,
+            authTextControllers.newPassword,
             authTextControllers.name,
-            authTextControllers.username,
+            authTextControllers.newUsername,
             authTextControllers.phoneNumber,
             authTextControllers.countryCode,
             (authTextControllers.country ?? 1).toString(),
@@ -184,6 +183,7 @@ class _AuthState extends State<Auth> {
                             ? Login(
                                 _formKeySignin,
                                 () {
+                                  FocusScope.of(context).unfocus();
                                   _onSubmit(
                                       context, ssData.login, _formKeySignin);
                                 },

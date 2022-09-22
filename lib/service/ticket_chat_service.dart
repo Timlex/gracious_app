@@ -162,11 +162,9 @@ class TicketChatService with ChangeNotifier {
           data.add(AllMessage.fromJson(element));
         });
         messagesList = data.reversed.toList();
-        print(isLoading);
-        print(messagesList.toString() + '-------------------');
         setIsLoading(false);
         // setNoProduct(resultMeta!.total == 0);
-
+        noMessage = messagesList.isEmpty;
         notifyListeners();
       } else {}
     } catch (error) {
