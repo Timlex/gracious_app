@@ -38,7 +38,7 @@ class ResetPassEmail extends StatelessWidget {
   Widget build(BuildContext context) {
     initiateDeviceSize(context);
     return Scaffold(
-      appBar: AppBars().appBarTitled(null, () {
+      appBar: AppBars().appBarTitled(context, '', () {
         Navigator.of(context).pop();
       }, hasElevation: false),
       body: Padding(

@@ -15,7 +15,7 @@ class WebViewScreen extends StatelessWidget {
     final title = routeData[0];
     String url = routeData[1];
     return Scaffold(
-        appBar: AppBars().appBarTitled(title, () {
+        appBar: AppBars().appBarTitled(context, title, () {
           Navigator.of(context).pop();
         }),
         body: FutureBuilder(

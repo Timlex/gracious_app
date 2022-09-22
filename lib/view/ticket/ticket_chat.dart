@@ -74,9 +74,11 @@ class TicketChat extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Transform(
-                      transform: LanguageService().rtl
-                          ? Matrix4.rotationY(pi)
-                          : Matrix4.rotationY(0),
+                      transform:
+                          Provider.of<LanguageService>(context, listen: false)
+                                  .rtl
+                              ? Matrix4.rotationY(pi)
+                              : Matrix4.rotationY(0),
                       child: SvgPicture.asset(
                         'assets/images/icons/back_button.svg',
                         color: cc.blackColor,
@@ -303,14 +305,18 @@ class TicketChat extends StatelessWidget {
                             borderRadius: BorderRadius.only(
                               topLeft: const Radius.circular(20),
                               topRight: const Radius.circular(20),
-                              bottomLeft: LanguageService().rtl
+                              bottomLeft: Provider.of<LanguageService>(context,
+                                          listen: false)
+                                      .rtl
                                   ? (usersMessage
                                       ? Radius.zero
                                       : const Radius.circular(20))
                                   : (usersMessage
                                       ? const Radius.circular(20)
                                       : Radius.zero),
-                              bottomRight: LanguageService().rtl
+                              bottomRight: Provider.of<LanguageService>(context,
+                                          listen: false)
+                                      .rtl
                                   ? (usersMessage
                                       ? Radius.circular(20)
                                       : Radius.zero)

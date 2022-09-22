@@ -94,7 +94,7 @@ class PaypalPaymentState extends State<PaypalPayment> {
 
     if (checkoutUrl != null) {
       return Scaffold(
-        appBar: AppBars().appBarTitled('', () async {
+        appBar: AppBars().appBarTitled(context, '', () async {
           await showDialog(
               context: context,
               builder: (ctx) {
@@ -174,7 +174,7 @@ class PaypalPaymentState extends State<PaypalPayment> {
       );
     } else {
       return Scaffold(
-        appBar: AppBars().appBarTitled('', () async {
+        appBar: AppBars().appBarTitled(context, '', () async {
           await showDialog(
               context: context,
               builder: (ctx) {

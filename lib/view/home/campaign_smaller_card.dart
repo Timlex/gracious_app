@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gren_mart/view/utils/constant_colors.dart';
 import 'package:gren_mart/view/utils/constant_name.dart';
 import 'package:gren_mart/view/utils/text_themes.dart';
+import 'package:provider/provider.dart';
 import 'package:slide_countdown/slide_countdown.dart';
 
 import '../../service/language_service.dart';
@@ -23,8 +24,12 @@ class CampaignSmallerCard extends StatelessWidget {
       width: screenWidth / 2.5,
       margin: margin
           ? EdgeInsets.only(
-              right: LanguageService().rtl ? 0 : 20,
-              left: LanguageService().rtl ? 20 : 0,
+              right: Provider.of<LanguageService>(context, listen: false).rtl
+                  ? 0
+                  : 20,
+              left: Provider.of<LanguageService>(context, listen: false).rtl
+                  ? 20
+                  : 0,
               top: 10)
           : EdgeInsets.symmetric(horizontal: 20),
       decoration: BoxDecoration(

@@ -29,8 +29,14 @@ class FilterBottomSheet extends StatelessWidget {
           : Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               Padding(
                 padding: EdgeInsets.only(
-                    left: LanguageService().rtl ? 0 : 25.0,
-                    right: LanguageService().rtl ? 25 : 0,
+                    left:
+                        Provider.of<LanguageService>(context, listen: false).rtl
+                            ? 0
+                            : 25.0,
+                    right:
+                        Provider.of<LanguageService>(context, listen: false).rtl
+                            ? 25
+                            : 0,
                     top: 15),
                 child: Text(
                   'Filter by:',
@@ -39,8 +45,13 @@ class FilterBottomSheet extends StatelessWidget {
               ),
               Padding(
                 padding: EdgeInsets.only(
-                  left: LanguageService().rtl ? 0 : 25.0,
-                  right: LanguageService().rtl ? 25 : 0,
+                  left: Provider.of<LanguageService>(context, listen: false).rtl
+                      ? 0
+                      : 25.0,
+                  right:
+                      Provider.of<LanguageService>(context, listen: false).rtl
+                          ? 25
+                          : 0,
                 ),
                 child: textFieldTitle('All categories', fontSize: 13),
               ),
@@ -48,8 +59,15 @@ class FilterBottomSheet extends StatelessWidget {
                 height: 44,
                 child: ListView.builder(
                     padding: EdgeInsets.only(
-                      left: LanguageService().rtl ? 0 : 25.0,
-                      right: LanguageService().rtl ? 25 : 0,
+                      left: Provider.of<LanguageService>(context, listen: false)
+                              .rtl
+                          ? 0
+                          : 25.0,
+                      right:
+                          Provider.of<LanguageService>(context, listen: false)
+                                  .rtl
+                              ? 25
+                              : 0,
                     ),
                     scrollDirection: Axis.horizontal,
                     itemCount: catData.categorydataList.length,
@@ -73,8 +91,14 @@ class FilterBottomSheet extends StatelessWidget {
               if (catData.selectedCategorieId.isNotEmpty)
                 Padding(
                   padding: EdgeInsets.only(
-                    left: LanguageService().rtl ? 0 : 25.0,
-                    right: LanguageService().rtl ? 25 : 0,
+                    left:
+                        Provider.of<LanguageService>(context, listen: false).rtl
+                            ? 0
+                            : 25.0,
+                    right:
+                        Provider.of<LanguageService>(context, listen: false).rtl
+                            ? 25
+                            : 0,
                   ),
                   child: textFieldTitle('Sub-category', fontSize: 13),
                 ),
@@ -82,8 +106,14 @@ class FilterBottomSheet extends StatelessWidget {
                   (catData.loading || catData.noSubcategory))
                 Container(
                   padding: EdgeInsets.only(
-                    left: LanguageService().rtl ? 0 : 25.0,
-                    right: LanguageService().rtl ? 25 : 0,
+                    left:
+                        Provider.of<LanguageService>(context, listen: false).rtl
+                            ? 0
+                            : 25.0,
+                    right:
+                        Provider.of<LanguageService>(context, listen: false).rtl
+                            ? 25
+                            : 0,
                   ),
                   child: catData.noSubcategory
                       ? Container(
@@ -97,8 +127,14 @@ class FilterBottomSheet extends StatelessWidget {
               if (catData.subCategorydataList != null)
                 Container(
                   padding: EdgeInsets.only(
-                    left: LanguageService().rtl ? 0 : 25.0,
-                    right: LanguageService().rtl ? 25 : 0,
+                    left:
+                        Provider.of<LanguageService>(context, listen: false).rtl
+                            ? 0
+                            : 25.0,
+                    right:
+                        Provider.of<LanguageService>(context, listen: false).rtl
+                            ? 25
+                            : 0,
                   ),
                   height: 44,
                   child: Builder(builder: (context) {
@@ -125,26 +161,37 @@ class FilterBottomSheet extends StatelessWidget {
                         builder: (context, srService, child) {
                       return Container(
                         margin: EdgeInsets.only(
-                          left: LanguageService().rtl ? 0 : 25.0,
-                          right: LanguageService().rtl ? 25 : 0,
+                          left: Provider.of<LanguageService>(context,
+                                      listen: false)
+                                  .rtl
+                              ? 0
+                              : 25.0,
+                          right: Provider.of<LanguageService>(context,
+                                      listen: false)
+                                  .rtl
+                              ? 25
+                              : 0,
                         ),
-                        child: Text('${LanguageService().currencySymbol}' +
-                            (srService.minPrice.isNotEmpty
-                                ? MoneyFormatter(
-                                        amount:
-                                            double.parse(srService.minPrice))
-                                    .output
-                                    .withoutFractionDigits
-                                : startRange.output.withoutFractionDigits) +
-                            '-' +
-                            '${LanguageService().currencySymbol}' +
-                            (srService.maxPrice.isNotEmpty
-                                ? MoneyFormatter(
-                                        amount:
-                                            double.parse(srService.maxPrice))
-                                    .output
-                                    .withoutFractionDigits
-                                : endRange.output.withoutFractionDigits)),
+                        child: Text(
+                            '${Provider.of<LanguageService>(context, listen: false).currencySymbol}' +
+                                (srService
+                                        .minPrice.isNotEmpty
+                                    ? MoneyFormatter(
+                                            amount: double.parse(srService
+                                                .minPrice))
+                                        .output
+                                        .withoutFractionDigits
+                                    : startRange.output.withoutFractionDigits) +
+                                '-' +
+                                '${Provider.of<LanguageService>(context, listen: false).currencySymbol}' +
+                                (srService
+                                        .maxPrice.isNotEmpty
+                                    ? MoneyFormatter(
+                                            amount: double.parse(
+                                                srService.maxPrice))
+                                        .output
+                                        .withoutFractionDigits
+                                    : endRange.output.withoutFractionDigits)),
                       );
                     })
                   ],
@@ -186,8 +233,13 @@ class FilterBottomSheet extends StatelessWidget {
               }),
               Padding(
                 padding: EdgeInsets.only(
-                  left: LanguageService().rtl ? 0 : 25.0,
-                  right: LanguageService().rtl ? 25 : 0,
+                  left: Provider.of<LanguageService>(context, listen: false).rtl
+                      ? 0
+                      : 25.0,
+                  right:
+                      Provider.of<LanguageService>(context, listen: false).rtl
+                          ? 25
+                          : 0,
                 ),
                 child: textFieldTitle('Average Rating', fontSize: 13),
               ),

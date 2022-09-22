@@ -259,17 +259,17 @@ Widget seeAllTitle(BuildContext context, String title,
   );
 }
 
-Widget discAmountRow(int discountAmount, int amount) {
+Widget discAmountRow(int discountAmount, int amount, String curency) {
   return Row(
     children: [
       Text(
-        '${LanguageService().currencySymbol}${discountAmount <= 0 ? amount.toString() : discountAmount.toStringAsFixed(2)}',
+        '${curency}${discountAmount <= 0 ? amount.toString() : discountAmount.toStringAsFixed(2)}',
         style: TextStyle(
             color: cc.primaryColor, fontWeight: FontWeight.w600, fontSize: 13),
       ),
       const SizedBox(width: 4),
       Text(
-        '${LanguageService().currencySymbol}${amount.toStringAsFixed(2)}',
+        '${curency}${amount.toStringAsFixed(2)}',
         style: TextStyle(
             color: cc.cardGreyHint,
             decoration: TextDecoration.lineThrough,

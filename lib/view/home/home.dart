@@ -190,8 +190,16 @@ class Home extends StatelessWidget {
                         physics: const BouncingScrollPhysics(
                             parent: AlwaysScrollableScrollPhysics()),
                         padding: EdgeInsets.only(
-                          left: LanguageService().rtl ? 0 : 20.0,
-                          right: LanguageService().rtl ? 20 : 0,
+                          left: Provider.of<LanguageService>(context,
+                                      listen: false)
+                                  .rtl
+                              ? 0
+                              : 20.0,
+                          right: Provider.of<LanguageService>(context,
+                                      listen: false)
+                                  .rtl
+                              ? 20
+                              : 0,
                         ),
                         shrinkWrap: true,
                         scrollDirection: Axis.horizontal,
@@ -250,8 +258,16 @@ class Home extends StatelessWidget {
                         height: 60,
                         child: ListView.builder(
                             padding: EdgeInsets.only(
-                              left: LanguageService().rtl ? 0 : 20.0,
-                              right: LanguageService().rtl ? 20 : 0,
+                              left: Provider.of<LanguageService>(context,
+                                          listen: false)
+                                      .rtl
+                                  ? 0
+                                  : 20.0,
+                              right: Provider.of<LanguageService>(context,
+                                          listen: false)
+                                      .rtl
+                                  ? 20
+                                  : 0,
                             ),
                             scrollDirection: Axis.horizontal,
                             itemCount: catService.categorydataList.length,
@@ -273,8 +289,16 @@ class Home extends StatelessWidget {
                                 },
                                 child: Container(
                                   margin: EdgeInsets.only(
-                                    left: LanguageService().rtl ? 10 : 0,
-                                    right: LanguageService().rtl ? 0 : 10,
+                                    left: Provider.of<LanguageService>(context,
+                                                listen: false)
+                                            .rtl
+                                        ? 10
+                                        : 0,
+                                    right: Provider.of<LanguageService>(context,
+                                                listen: false)
+                                            .rtl
+                                        ? 0
+                                        : 10,
                                   ),
                                   padding: const EdgeInsets.symmetric(
                                       horizontal: 10, vertical: 5),
@@ -332,8 +356,16 @@ class Home extends StatelessWidget {
                       pcService.featureNoData
                   ? SingleChildScrollView(
                       padding: EdgeInsets.only(
-                          left: LanguageService().rtl ? 0 : 20,
-                          right: LanguageService().rtl ? 20 : 0),
+                          left: Provider.of<LanguageService>(context,
+                                      listen: false)
+                                  .rtl
+                              ? 0
+                              : 20,
+                          right: Provider.of<LanguageService>(context,
+                                      listen: false)
+                                  .rtl
+                              ? 20
+                              : 0),
                       physics: const BouncingScrollPhysics(
                           parent: AlwaysScrollableScrollPhysics()),
                       scrollDirection: Axis.horizontal,
@@ -412,8 +444,16 @@ class Home extends StatelessWidget {
                         physics: const BouncingScrollPhysics(
                             parent: AlwaysScrollableScrollPhysics()),
                         padding: EdgeInsets.only(
-                            left: LanguageService().rtl ? 0 : 20,
-                            right: LanguageService().rtl ? 20 : 0),
+                            left: Provider.of<LanguageService>(context,
+                                        listen: false)
+                                    .rtl
+                                ? 0
+                                : 20,
+                            right: Provider.of<LanguageService>(context,
+                                        listen: false)
+                                    .rtl
+                                ? 20
+                                : 0),
                         shrinkWrap: true,
                         scrollDirection: Axis.horizontal,
                         itemCount: products.campaignCardProductList.length,
@@ -462,8 +502,16 @@ class Home extends StatelessWidget {
                             physics: const BouncingScrollPhysics(
                                 parent: AlwaysScrollableScrollPhysics()),
                             padding: EdgeInsets.only(
-                                left: LanguageService().rtl ? 0 : 20,
-                                right: LanguageService().rtl ? 20 : 0),
+                                left: Provider.of<LanguageService>(context,
+                                            listen: false)
+                                        .rtl
+                                    ? 0
+                                    : 20,
+                                right: Provider.of<LanguageService>(context,
+                                            listen: false)
+                                        .rtl
+                                    ? 20
+                                    : 0),
                             shrinkWrap: true,
                             scrollDirection: Axis.horizontal,
                             itemCount: cclService.list.length,

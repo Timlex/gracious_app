@@ -68,15 +68,14 @@ class SettingView extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 40),
-            settingItem('assets/images/icons/orders.svg', 'My Orders',
+            settingItem(context, 'assets/images/icons/orders.svg', 'My Orders',
                 onTap: () {
               Navigator.of(context).push(MaterialPageRoute<void>(
                 builder: (BuildContext context) => MyOrders(),
               ));
             }),
-            settingItem(
-                'assets/images/icons/shipping_address.svg', 'Shipping Address',
-                onTap: () {
+            settingItem(context, 'assets/images/icons/shipping_address.svg',
+                'Shipping Address', onTap: () {
               Provider.of<ShippingAddressesService>(context, listen: false)
                   .fetchUsersShippingAddress(context);
               Navigator.of(context).pushNamed(ShippingAdresses.routeName).then(
@@ -84,9 +83,8 @@ class SettingView extends StatelessWidget {
                           listen: false)
                       .setNoData(false));
             }),
-            settingItem(
-                'assets/images/icons/manage_profile.svg', 'Manage Account',
-                onTap: () async {
+            settingItem(context, 'assets/images/icons/manage_profile.svg',
+                'Manage Account', onTap: () async {
               // setData(context);
               Provider.of<CountryDropdownService>(context, listen: false)
                   .getContries(context)
@@ -105,14 +103,14 @@ class SettingView extends StatelessWidget {
               });
               Navigator.of(context).pushNamed(ManageAccount.routeName);
             }),
-            settingItem(
-                'assets/images/icons/support_ticket.svg', 'Support Ticket',
+            settingItem(context, 'assets/images/icons/support_ticket.svg',
+                'Support Ticket',
                 icon: true,
                 imagePath2: 'assets/images/change_pass.png', onTap: () {
               Navigator.of(context).pushNamed(AllTicketsView.routeName);
             }),
-            settingItem(
-                'assets/images/icons/change_pass.svg', 'Change Password',
+            settingItem(context, 'assets/images/icons/change_pass.svg',
+                'Change Password',
                 icon: false,
                 imagePath2: 'assets/images/change_pass.png', onTap: () {
               Navigator.of(context).pushNamed(ChangePassword.routeName);
@@ -163,6 +161,7 @@ class SettingView extends StatelessWidget {
   }
 
   Widget settingItem(
+    BuildContext context,
     String imagePath,
     String itemText, {
     void Function()? onTap,
@@ -197,9 +196,10 @@ class SettingView extends StatelessWidget {
                   ),
                 ),
                 trailing: Transform(
-                  transform: LanguageService().rtl
-                      ? Matrix4.rotationY(pi)
-                      : Matrix4.rotationY(0),
+                  transform:
+                      Provider.of<LanguageService>(context, listen: false).rtl
+                          ? Matrix4.rotationY(pi)
+                          : Matrix4.rotationY(0),
                   child: SvgPicture.asset(
                     'assets/images/icons/arrow_right.svg',
                   ),

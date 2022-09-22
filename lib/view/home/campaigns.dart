@@ -32,7 +32,7 @@ class Campaigns extends StatelessWidget {
     double cardHeight = screenHight / 5.5 < 141 ? 141 : screenHight / 5.5;
     print(cardWidth / cardHeight);
     return Scaffold(
-      appBar: AppBars().appBarTitled(title, () {
+      appBar: AppBars().appBarTitled(context, title, () {
         controller.dispose();
         Navigator.of(context).pop();
       }),

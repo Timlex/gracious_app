@@ -14,7 +14,7 @@ class ImageView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBars().appBarTitled('', () {
+        appBar: AppBars().appBarTitled(context, '', () {
           Navigator.of(context).pop();
         }),
         body: Center(

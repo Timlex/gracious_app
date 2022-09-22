@@ -104,8 +104,18 @@ class TicketTile extends StatelessWidget {
                               return PopupMenuButton(
                                   child: Container(
                                     padding: EdgeInsets.only(
-                                        left: LanguageService().rtl ? 0 : 7,
-                                        right: LanguageService().rtl ? 7 : 0,
+                                        left: Provider.of<LanguageService>(
+                                                    context,
+                                                    listen: false)
+                                                .rtl
+                                            ? 0
+                                            : 7,
+                                        right: Provider.of<LanguageService>(
+                                                    context,
+                                                    listen: false)
+                                                .rtl
+                                            ? 7
+                                            : 0,
                                         top: 3,
                                         bottom: 3),
                                     decoration: BoxDecoration(
@@ -161,8 +171,16 @@ class TicketTile extends StatelessWidget {
                           PopupMenuButton(
                             child: Container(
                               padding: EdgeInsets.only(
-                                  left: LanguageService().rtl ? 0 : 7,
-                                  right: LanguageService().rtl ? 7 : 0,
+                                  left: Provider.of<LanguageService>(context,
+                                              listen: false)
+                                          .rtl
+                                      ? 0
+                                      : 7,
+                                  right: Provider.of<LanguageService>(context,
+                                              listen: false)
+                                          .rtl
+                                      ? 7
+                                      : 0,
                                   top: 3,
                                   bottom: 3),
                               decoration: BoxDecoration(

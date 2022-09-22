@@ -20,7 +20,7 @@ class ZitopayPayment extends StatelessWidget {
         Provider.of<CheckoutService>(context, listen: false).checkoutModel;
     final orderId = checkoutInfo!.id;
     return Scaffold(
-        appBar: AppBars().appBarTitled('', () async {
+        appBar: AppBars().appBarTitled(context, '', () async {
           await showDialog(
               context: context,
               builder: (ctx) {

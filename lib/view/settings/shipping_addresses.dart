@@ -22,7 +22,7 @@ class _ShippingAdressesState extends State<ShippingAdresses> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBars().appBarTitled('Shipping addresses', () {
+      appBar: AppBars().appBarTitled(context, 'Shipping addresses', () {
         Navigator.of(context).pop();
       }),
       body: Column(

@@ -105,15 +105,19 @@ class PlusMinusCart extends StatelessWidget {
             ),
             SizedBox(width: 3),
             Positioned(
-              right: LanguageService().rtl ? null : 0,
-              left: LanguageService().rtl ? 0 : null,
+              right: Provider.of<LanguageService>(context, listen: false).rtl
+                  ? null
+                  : 0,
+              left: Provider.of<LanguageService>(context, listen: false).rtl
+                  ? 0
+                  : null,
               child: Container(
                 height: 50,
                 width: screenWidth / 5.3,
                 color: const Color.fromARGB(24, 0, 0, 0),
                 child: Center(
                   child: Text(
-                    '${LanguageService().currencySymbol}${Provider.of<ProductDetailsService>(context).productSalePrice * Provider.of<ProductDetailsService>(context).quantity}',
+                    '${Provider.of<LanguageService>(context, listen: false).currencySymbol}${Provider.of<ProductDetailsService>(context).productSalePrice * Provider.of<ProductDetailsService>(context).quantity}',
                     style: TextStyle(
                       fontSize: 13,
                       color: cc.pureWhite,

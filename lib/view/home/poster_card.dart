@@ -89,8 +89,14 @@ class PosterCard extends StatelessWidget {
                 width: screenWidth / 3,
                 child: Padding(
                   padding: EdgeInsets.only(
-                    left: LanguageService().rtl ? 0 : 10,
-                    right: LanguageService().rtl ? 10 : 0,
+                    left:
+                        Provider.of<LanguageService>(context, listen: false).rtl
+                            ? 0
+                            : 10,
+                    right:
+                        Provider.of<LanguageService>(context, listen: false).rtl
+                            ? 10
+                            : 0,
                   ),
                   child: Text(
                     description,
@@ -142,8 +148,12 @@ class PosterCard extends StatelessWidget {
         const Spacer(),
         Container(
           margin: EdgeInsets.only(
-              right: LanguageService().rtl ? 0 : 3,
-              left: LanguageService().rtl ? 3 : 0,
+              right: Provider.of<LanguageService>(context, listen: false).rtl
+                  ? 0
+                  : 3,
+              left: Provider.of<LanguageService>(context, listen: false).rtl
+                  ? 3
+                  : 0,
               bottom: 2),
           child: SizedBox(
               // height: screenHight / 7,

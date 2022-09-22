@@ -60,7 +60,7 @@ class _ResetPasswordState extends State<ResetPassword> {
     }
 
     return Scaffold(
-      appBar: AppBars().appBarTitled('Reset Password', () {
+      appBar: AppBars().appBarTitled(context, 'Reset Password', () {
         Navigator.of(context).pushAndRemoveUntil(
             MaterialPageRoute(builder: (context) => Auth()),
             (Route<dynamic> route) => false);

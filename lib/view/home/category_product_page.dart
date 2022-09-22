@@ -24,7 +24,7 @@ class CategoryProductPage extends StatelessWidget {
     double cardHeight = screenHight / 5.5 < 130 ? 130 : screenHight / 5.5;
 
     return Scaffold(
-      appBar: AppBars().appBarTitled('$title', () {
+      appBar: AppBars().appBarTitled(context, '$title', () {
         Provider.of<SearchResultDataService>(context, listen: false)
             .resetSerch();
         Provider.of<SearchResultDataService>(context, listen: false)

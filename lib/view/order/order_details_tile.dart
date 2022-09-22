@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../../view/utils/constant_name.dart';
 import '../../service/language_service.dart';
@@ -36,8 +37,12 @@ class OrderDetailsTile extends StatelessWidget {
                   .pushNamed(ProductDetails.routeName, arguments: [id]);
             },
             contentPadding: EdgeInsets.only(
-                left: LanguageService().rtl ? 0 : 20,
-                right: LanguageService().rtl ? 20 : 0),
+                left: Provider.of<LanguageService>(context, listen: false).rtl
+                    ? 0
+                    : 20,
+                right: Provider.of<LanguageService>(context, listen: false).rtl
+                    ? 20
+                    : 0),
             leading: Container(
               height: 60,
               width: 60,
@@ -92,7 +97,7 @@ class OrderDetailsTile extends StatelessWidget {
                 // const Spacer(),
                 SizedBox(
                   child: Text(
-                    '${LanguageService().currencySymbol}${price.toStringAsFixed(2)}',
+                    '${Provider.of<LanguageService>(context, listen: false).currencySymbol}${price.toStringAsFixed(2)}',
                     style: TextStyle(
                         color: cc.primaryColor,
                         fontWeight: FontWeight.w600,

@@ -118,6 +118,7 @@ class _MyAppState extends State<MyApp> {
         ChangeNotifierProvider(create: (_) => ConfirmPaymentService()),
         ChangeNotifierProvider(create: (_) => TermsAndCondition()),
         ChangeNotifierProvider(create: (_) => CampaignCardListService()),
+        ChangeNotifierProvider(create: (_) => LanguageService()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
@@ -125,7 +126,9 @@ class _MyAppState extends State<MyApp> {
         builder: (context, rtlchild) {
           return Directionality(
             textDirection:
-                LanguageService().rtl ? TextDirection.rtl : TextDirection.ltr,
+                Provider.of<LanguageService>(context, listen: false).rtl
+                    ? TextDirection.rtl
+                    : TextDirection.ltr,
             child: rtlchild!,
           );
         },

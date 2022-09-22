@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gren_mart/model/order_list_model.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
 import '../../service/language_service.dart';
 import '../../view/order/order_details.dart';
@@ -40,7 +41,7 @@ class OrderTile extends StatelessWidget {
           ));
         },
         title: Text(
-          '${LanguageService().currencySymbol}${totalAmount.toStringAsFixed(2)}',
+          '${Provider.of<LanguageService>(context, listen: false).currencySymbol}${totalAmount.toStringAsFixed(2)}',
           style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
         ),
         subtitle: Row(

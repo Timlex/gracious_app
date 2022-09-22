@@ -101,7 +101,10 @@ class FavoriteToCart extends StatelessWidget {
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: pdService.inventoryKeys
                                   .map((e) => Container(
-                                        alignment: LanguageService().rtl
+                                        alignment: Provider.of<LanguageService>(
+                                                    context,
+                                                    listen: false)
+                                                .rtl
                                             ? Alignment.centerRight
                                             : Alignment.centerLeft,
                                         margin: EdgeInsets.only(bottom: 15),
@@ -131,7 +134,7 @@ class FavoriteToCart extends StatelessWidget {
                             ),
                             customContainerButton(
                                 pdService.cartAble
-                                    ? '${LanguageService().currencySymbol}${pdService.productSalePrice} Add to cart.'
+                                    ? '${Provider.of<LanguageService>(context, listen: false).currencySymbol}${pdService.productSalePrice} Add to cart.'
                                     : 'Select all attribute to proceed',
                                 double.infinity, () {
                               if (!pdService.cartAble) {

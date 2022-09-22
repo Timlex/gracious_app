@@ -20,7 +20,7 @@ class OrderDetails extends StatelessWidget {
     // final tracker =
     // (ModalRoute.of(context)!.settings.arguments! as List)[0] as String;
     return Scaffold(
-      appBar: AppBars().appBarTitled(tracker, () {
+      appBar: AppBars().appBarTitled(context, tracker, () {
         if (goHome!) {
           Navigator.of(context).pushAndRemoveUntil(
               MaterialPageRoute(builder: (context) => HomeFront()),
@@ -60,8 +60,16 @@ class OrderDetails extends StatelessWidget {
                   children: [
                     Padding(
                       padding: EdgeInsets.only(
-                          left: LanguageService().rtl ? 0 : 20,
-                          right: LanguageService().rtl ? 20 : 0),
+                          left: Provider.of<LanguageService>(context,
+                                      listen: false)
+                                  .rtl
+                              ? 0
+                              : 20,
+                          right: Provider.of<LanguageService>(context,
+                                      listen: false)
+                                  .rtl
+                              ? 20
+                              : 0),
                       child: Row(
                         children: [
                           SizedBox(
@@ -75,8 +83,16 @@ class OrderDetails extends StatelessWidget {
                           Container(
                             width: screenWidth / 3,
                             padding: EdgeInsets.only(
-                                left: LanguageService().rtl ? 0 : 15,
-                                right: LanguageService().rtl ? 15 : 0),
+                                left: Provider.of<LanguageService>(context,
+                                            listen: false)
+                                        .rtl
+                                    ? 0
+                                    : 15,
+                                right: Provider.of<LanguageService>(context,
+                                            listen: false)
+                                        .rtl
+                                    ? 15
+                                    : 0),
                             child: Text(
                               'Name',
                               style: titleTextTheme,
@@ -132,25 +148,25 @@ class OrderDetails extends StatelessWidget {
                       child: Column(children: [
                         rows('Subtotal',
                             trailing:
-                                '${LanguageService().currencySymbol}${odService.orderDetailsModel.orderInfo.paymentMeta!.subtotal}'),
+                                '${Provider.of<LanguageService>(context, listen: false).currencySymbol}${odService.orderDetailsModel.orderInfo.paymentMeta!.subtotal}'),
                         const SizedBox(height: 15),
                         rows('Shipping',
                             trailing:
-                                '${LanguageService().currencySymbol}${odService.orderDetailsModel.orderInfo.paymentMeta!.shippingCost}'),
+                                '${Provider.of<LanguageService>(context, listen: false).currencySymbol}${odService.orderDetailsModel.orderInfo.paymentMeta!.shippingCost}'),
                         const SizedBox(height: 15),
                         rows('Tax',
                             trailing:
-                                '${LanguageService().currencySymbol}${odService.orderDetailsModel.orderInfo.paymentMeta!.taxAmount}'),
+                                '${Provider.of<LanguageService>(context, listen: false).currencySymbol}${odService.orderDetailsModel.orderInfo.paymentMeta!.taxAmount}'),
                         const SizedBox(height: 15),
                         rows('Discount',
                             trailing:
-                                '${LanguageService().currencySymbol}${odService.orderDetailsModel.orderInfo.paymentMeta!.couponAmount}'),
+                                '${Provider.of<LanguageService>(context, listen: false).currencySymbol}${odService.orderDetailsModel.orderInfo.paymentMeta!.couponAmount}'),
                         const SizedBox(height: 15),
                         const Divider(),
                         const SizedBox(height: 25),
                         rows('Total',
                             trailing:
-                                '${LanguageService().currencySymbol}${odService.orderDetailsModel.orderInfo.paymentMeta!.total}'),
+                                '${Provider.of<LanguageService>(context, listen: false).currencySymbol}${odService.orderDetailsModel.orderInfo.paymentMeta!.total}'),
                         const SizedBox(height: 15),
                         rows('Payment status',
                             trailing: (odService.orderDetailsModel.orderInfo

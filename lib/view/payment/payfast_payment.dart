@@ -20,7 +20,7 @@ class PayfastPayment extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBars().appBarTitled('', () async {
+      appBar: AppBars().appBarTitled(context, '', () async {
         await showDialog(
             context: context,
             builder: (ctx) {

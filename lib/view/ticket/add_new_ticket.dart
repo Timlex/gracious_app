@@ -44,7 +44,7 @@ class AddNewTicket extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBars().appBarTitled('Add new ticket', () {
+        appBar: AppBars().appBarTitled(context, 'Add new ticket', () {
           Navigator.of(context).pop();
         }, hasButton: true),
         body:

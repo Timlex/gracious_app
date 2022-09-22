@@ -31,7 +31,7 @@ class CategoryPage extends StatelessWidget {
     double cardHeight = 40;
     controller.addListener((() => scrollListener(context)));
     return Scaffold(
-      appBar: AppBars().appBarTitled(title, () {
+      appBar: AppBars().appBarTitled(context, title, () {
         controller.dispose();
         Navigator.of(context).pop();
       }),

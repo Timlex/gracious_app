@@ -41,7 +41,7 @@ class EnterOTP extends StatelessWidget {
     );
     return Scaffold(
       key: _scaffoldKey,
-      appBar: AppBars().appBarTitled(null, () {
+      appBar: AppBars().appBarTitled(context, '', () {
         Navigator.of(context).pop();
       }, hasElevation: false),
       body: Padding(

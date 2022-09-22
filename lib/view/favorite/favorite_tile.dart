@@ -122,7 +122,7 @@ class FavoriteTile extends StatelessWidget {
                           ),
                           const SizedBox(height: 13),
                           Text(
-                            '${LanguageService().currencySymbol}${favoriteItem.price}',
+                            '${Provider.of<LanguageService>(context, listen: false).currencySymbol}${favoriteItem.price}',
                             style: TextThemeConstrants.primary13,
                           ),
                         ],

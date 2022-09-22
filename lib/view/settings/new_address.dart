@@ -56,7 +56,7 @@ class AddNewAddress extends StatelessWidget {
     Provider.of<CountryDropdownService>(context, listen: false)
         .getContries(context);
     return Scaffold(
-      appBar: AppBars().appBarTitled('Add New Address', () {
+      appBar: AppBars().appBarTitled(context, 'Add New Address', () {
         Navigator.of(context).pop();
         if (dontPop) {
           Navigator.of(context).pushNamed(Checkout.routeName);

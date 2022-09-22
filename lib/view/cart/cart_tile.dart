@@ -124,7 +124,7 @@ class CartTile extends StatelessWidget {
                         FittedBox(
                           fit: BoxFit.cover,
                           child: Text(
-                            '${LanguageService().currencySymbol}$price ',
+                            '${Provider.of<LanguageService>(context, listen: false).currencySymbol}$price ',
                             style: TextThemeConstrants.primary13,
                           ),
                         ),
@@ -205,8 +205,16 @@ class CartTile extends StatelessWidget {
                     }),
                     child: Padding(
                       padding: EdgeInsets.only(
-                        left: LanguageService().rtl ? 0 : 7,
-                        right: LanguageService().rtl ? 7 : 0,
+                        left:
+                            Provider.of<LanguageService>(context, listen: false)
+                                    .rtl
+                                ? 0
+                                : 7,
+                        right:
+                            Provider.of<LanguageService>(context, listen: false)
+                                    .rtl
+                                ? 7
+                                : 0,
                       ),
                       child: SvgPicture.asset(
                         'assets/images/icons/trash.svg',

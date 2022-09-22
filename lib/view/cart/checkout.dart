@@ -5,7 +5,9 @@ import 'package:gren_mart/service/user_profile_service.dart';
 import 'package:gren_mart/view/cart/cart_tile.dart';
 import 'package:provider/provider.dart';
 
+import '../../service/common_service.dart';
 import '../../service/language_service.dart';
+import '../utils/web_view.dart';
 import 'payment_grid_tile.dart';
 import '../utils/text_themes.dart';
 import '../payment/paypal_payment.dart';
@@ -55,7 +57,7 @@ class Checkout extends StatelessWidget {
       child: Stack(
         children: [
           Scaffold(
-            appBar: AppBars().appBarTitled('Checkout', () {
+            appBar: AppBars().appBarTitled(context, 'Checkout', () {
               Provider.of<ShippingAddressesService>(context, listen: false)
                   .clearSelectedAddress();
               Provider.of<ShippingZoneService>(context, listen: false)
@@ -140,8 +142,8 @@ class Checkout extends StatelessWidget {
                             //           if (selected)
                             //             Positioned(
                             //                 top: 10,
-                            //                 right: LanguageService().rtl ? null : 15,
-                            //                 left: LanguageService().rtl ? 15 : null,
+                            //                 right: Provider.of<LanguageService>(context, listen: false).rtl ? null : 15,
+                            //                 left: Provider.of<LanguageService>(context, listen: false).rtl ? 15 : null,
                             //                 child: Icon(
                             //                   Icons.check_box,
                             //                   color: cc.primaryColor,
@@ -220,14 +222,14 @@ class Checkout extends StatelessWidget {
                           child: Consumer<CartDataService>(
                               builder: (context, cService, child) {
                             return Column(
-                              children: productList(cService),
+                              children: productList(context, cService),
                             );
                           }),
                         ),
                         const SizedBox(height: 15),
                         rows('Subtotal',
                             trailing:
-                                '${LanguageService().currencySymbol}${Provider.of<CartDataService>(context, listen: false).calculateSubtotal()}'),
+                                '${Provider.of<LanguageService>(context, listen: false).currencySymbol}${Provider.of<CartDataService>(context, listen: false).calculateSubtotal()}'),
                         const SizedBox(height: 15),
                         rows('Shipping cost', trailing: ''),
                         const SizedBox(height: 15),
@@ -273,7 +275,7 @@ class Checkout extends StatelessWidget {
                                                   Text(element.name),
                                                   const Spacer(),
                                                   Text(
-                                                      '${LanguageService().currencySymbol}${element.availableOptions.cost}')
+                                                      '${Provider.of<LanguageService>(context, listen: false).currencySymbol}${element.availableOptions.cost}')
                                                 ],
                                               );
                                             })
@@ -288,14 +290,14 @@ class Checkout extends StatelessWidget {
                             builder: (context, szService, child) {
                           return rows('Tax',
                               trailing:
-                                  '${LanguageService().currencySymbol}${szService.taxMoney(context).toStringAsFixed(2)}');
+                                  '${Provider.of<LanguageService>(context, listen: false).currencySymbol}${szService.taxMoney(context).toStringAsFixed(2)}');
                         }),
                         const SizedBox(height: 15),
                         Consumer<CuponDiscountService>(
                             builder: (context, cupService, child) {
                           return rows('Coupon discount',
                               trailing:
-                                  '${LanguageService().currencySymbol}${cupService.cuponDiscount.toStringAsFixed(2)}');
+                                  '${Provider.of<LanguageService>(context, listen: false).currencySymbol}${cupService.cuponDiscount.toStringAsFixed(2)}');
                         }),
                         const SizedBox(height: 15),
                         const Divider(),
@@ -304,7 +306,7 @@ class Checkout extends StatelessWidget {
                             builder: (context, szService, child) {
                           return rows('Total',
                               trailing:
-                                  '${LanguageService().currencySymbol}${szService.totalCounter(context).toStringAsFixed(2)}');
+                                  '${Provider.of<LanguageService>(context, listen: false).currencySymbol}${szService.totalCounter(context).toStringAsFixed(2)}');
                         }),
                         const SizedBox(height: 25),
                         rows('Cupon code'),
@@ -527,6 +529,16 @@ class Checkout extends StatelessWidget {
                                       ),
                                       children: [
                                         TextSpan(
+                                            recognizer: TapGestureRecognizer()
+                                              ..onTap = () =>
+                                                  Navigator.of(context)
+                                                      .pushNamed(
+                                                          WebViewScreen
+                                                              .routeName,
+                                                          arguments: [
+                                                        'Terms and Conditions',
+                                                        '$baseApiUrl/terms-and-condition-page'
+                                                      ]),
                                             text: ' Terms and Conditions',
                                             style: TextStyle(
                                                 color: cc.primaryColor)),
@@ -535,6 +547,16 @@ class Checkout extends StatelessWidget {
                                             style:
                                                 TextStyle(color: cc.greyHint)),
                                         TextSpan(
+                                            recognizer: TapGestureRecognizer()
+                                              ..onTap = () =>
+                                                  Navigator.of(context)
+                                                      .pushNamed(
+                                                          WebViewScreen
+                                                              .routeName,
+                                                          arguments: [
+                                                        'Privacy Policy',
+                                                        '$baseApiUrl/privacy-policy-page'
+                                                      ]),
                                             text: ' Privacy Policy',
                                             style: TextStyle(
                                                 color: cc.primaryColor)),
@@ -666,7 +688,7 @@ class Checkout extends StatelessWidget {
     );
   }
 
-  List<Widget> productList(CartDataService cService) {
+  List<Widget> productList(BuildContext context, CartDataService cService) {
     List<Widget> list = [];
     cService.cartList!.forEach((key, value) {
       value.forEach((e) {
@@ -695,7 +717,7 @@ class Checkout extends StatelessWidget {
                 ),
               ),
               Text(
-                '${LanguageService().currencySymbol}${(e['price'] as int) * (e['quantity'] as int)}',
+                '${Provider.of<LanguageService>(context, listen: false).currencySymbol}${(e['price'] as int) * (e['quantity'] as int)}',
                 style: TextThemeConstrants.greyHint13Eclipse,
               )
             ],
@@ -978,7 +1000,7 @@ class Checkout extends StatelessWidget {
       list.add(Container(
           margin: const EdgeInsets.symmetric(vertical: 20),
           child: Text('Add shipping address or all the account informations')));
-      Provider.of<ShippingZoneService>(context, listen: false).setNoData(true);
+      // Provider.of<ShippingZoneService>(context, listen: false).setNoData(true);
       // Provider.of<ShippingAddressesService>(context, listen: false)
       //     .setNoData(true);
       return list;
@@ -1035,8 +1057,13 @@ class Checkout extends StatelessWidget {
                 : saService.selectedAddress == e))
               Positioned(
                   top: 10,
-                  right: LanguageService().rtl ? null : 15,
-                  left: LanguageService().rtl ? 15 : null,
+                  right:
+                      Provider.of<LanguageService>(context, listen: false).rtl
+                          ? null
+                          : 15,
+                  left: Provider.of<LanguageService>(context, listen: false).rtl
+                      ? 15
+                      : null,
                   child: Icon(
                     Icons.check_box,
                     color: cc.primaryColor,

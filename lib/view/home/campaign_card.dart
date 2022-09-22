@@ -27,12 +27,15 @@ class CampaignCard extends StatelessWidget {
     initiateDeviceSize(context);
     return Container(
       margin: EdgeInsets.only(
-        right: LanguageService().rtl ? 0 : 20,
-        left: LanguageService().rtl ? 20 : 0,
+        right:
+            Provider.of<LanguageService>(context, listen: false).rtl ? 0 : 20,
+        left: Provider.of<LanguageService>(context, listen: false).rtl ? 20 : 0,
       ),
       padding: EdgeInsets.only(
-          left: LanguageService().rtl ? 0 : 20,
-          right: LanguageService().rtl ? 20 : 0,
+          left:
+              Provider.of<LanguageService>(context, listen: false).rtl ? 0 : 20,
+          right:
+              Provider.of<LanguageService>(context, listen: false).rtl ? 20 : 0,
           top: 25),
       height: 160,
       width: screenWidth / 1.3 < 300 ? 300 : screenWidth / 1.3,
@@ -126,8 +129,15 @@ class CampaignCard extends StatelessWidget {
                   // height: screenHight / 7,
                   width: screenHight / 6.5,
                   margin: EdgeInsets.only(
-                      right: LanguageService().rtl ? 0 : 3,
-                      left: LanguageService().rtl ? 3 : 0,
+                      right:
+                          Provider.of<LanguageService>(context, listen: false)
+                                  .rtl
+                              ? 0
+                              : 3,
+                      left: Provider.of<LanguageService>(context, listen: false)
+                              .rtl
+                          ? 3
+                          : 0,
                       bottom: 2),
                   child: Image.network(
                     image,

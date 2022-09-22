@@ -27,7 +27,7 @@ class ALLCampProductFromLink extends StatelessWidget {
     double cardWidth = screenWidth / 3.3;
     double cardHeight = screenHight / 5.5 < 130 ? 130 : screenHight / 5.5;
     return Scaffold(
-      appBar: AppBars().appBarTitled('$title', () {
+      appBar: AppBars().appBarTitled(context, '$title', () {
         Navigator.of(context).pop();
       }),
       body: FutureBuilder(

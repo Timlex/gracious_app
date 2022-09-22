@@ -13,7 +13,7 @@ class MyOrders extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBars().appBarTitled('My orders', () {
+      appBar: AppBars().appBarTitled(context, 'My orders', () {
         Navigator.of(context).pop();
       }),
       body: FutureBuilder(

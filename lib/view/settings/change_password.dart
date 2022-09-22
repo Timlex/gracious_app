@@ -51,7 +51,7 @@ class _ChangePasswordState extends State<ChangePassword> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBars().appBarTitled('Change Password', () {
+      appBar: AppBars().appBarTitled(context, 'Change Password', () {
         Navigator.of(context).pop();
       }, hasButton: true),
       body: LayoutBuilder(builder: (context, constraints) {

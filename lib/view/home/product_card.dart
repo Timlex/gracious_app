@@ -116,18 +116,26 @@ class ProductCard extends StatelessWidget {
                       const EdgeInsets.symmetric(vertical: 3, horizontal: 6),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.only(
-                      topRight: LanguageService().rtl
-                          ? Radius.zero
-                          : Radius.circular(5),
-                      bottomRight: LanguageService().rtl
-                          ? Radius.zero
-                          : Radius.circular(5),
-                      topLeft: LanguageService().rtl
-                          ? Radius.circular(5)
-                          : Radius.zero,
-                      bottomLeft: LanguageService().rtl
-                          ? Radius.circular(5)
-                          : Radius.zero,
+                      topRight:
+                          Provider.of<LanguageService>(context, listen: false)
+                                  .rtl
+                              ? Radius.zero
+                              : Radius.circular(5),
+                      bottomRight:
+                          Provider.of<LanguageService>(context, listen: false)
+                                  .rtl
+                              ? Radius.zero
+                              : Radius.circular(5),
+                      topLeft:
+                          Provider.of<LanguageService>(context, listen: false)
+                                  .rtl
+                              ? Radius.circular(5)
+                              : Radius.zero,
+                      bottomLeft:
+                          Provider.of<LanguageService>(context, listen: false)
+                                  .rtl
+                              ? Radius.circular(5)
+                              : Radius.zero,
                     ),
                     color: cc.pureWhite,
                   ),
@@ -147,18 +155,26 @@ class ProductCard extends StatelessWidget {
                         const EdgeInsets.symmetric(vertical: 3, horizontal: 6),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.only(
-                        topRight: LanguageService().rtl
-                            ? Radius.zero
-                            : Radius.circular(5),
-                        bottomRight: LanguageService().rtl
-                            ? Radius.zero
-                            : Radius.circular(5),
-                        topLeft: LanguageService().rtl
-                            ? Radius.circular(5)
-                            : Radius.zero,
-                        bottomLeft: LanguageService().rtl
-                            ? Radius.circular(5)
-                            : Radius.zero,
+                        topRight:
+                            Provider.of<LanguageService>(context, listen: false)
+                                    .rtl
+                                ? Radius.zero
+                                : Radius.circular(5),
+                        bottomRight:
+                            Provider.of<LanguageService>(context, listen: false)
+                                    .rtl
+                                ? Radius.zero
+                                : Radius.circular(5),
+                        topLeft:
+                            Provider.of<LanguageService>(context, listen: false)
+                                    .rtl
+                                ? Radius.circular(5)
+                                : Radius.zero,
+                        bottomLeft:
+                            Provider.of<LanguageService>(context, listen: false)
+                                    .rtl
+                                ? Radius.circular(5)
+                                : Radius.zero,
                       ),
                       color: cc.orange,
                     ),
@@ -173,8 +189,15 @@ class ProductCard extends StatelessWidget {
                 Consumer<FavoriteDataService>(
                     builder: (context, favoriteData, child) {
                   return Positioned(
-                      right: LanguageService().rtl ? null : 0,
-                      left: LanguageService().rtl ? 0 : null,
+                      right:
+                          Provider.of<LanguageService>(context, listen: false)
+                                  .rtl
+                              ? null
+                              : 0,
+                      left: Provider.of<LanguageService>(context, listen: false)
+                              .rtl
+                          ? 0
+                          : null,
                       child:
                           favoriteIcon(favoriteData.isfavorite(_id.toString()),
                               onPressed: () => favoriteData.toggleFavorite(
@@ -202,7 +225,11 @@ class ProductCard extends StatelessWidget {
                     overflow: TextOverflow.ellipsis,
                   ),
                   const SizedBox(height: 10),
-                  discAmountRow(discountPrice, price),
+                  discAmountRow(
+                      discountPrice,
+                      price,
+                      Provider.of<LanguageService>(context, listen: false)
+                          .currencySymbol),
                   const SizedBox(height: 10),
                   GestureDetector(
                     onTap: () {

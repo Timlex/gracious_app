@@ -29,6 +29,8 @@ class _SplashScreenState extends State<SplashScreen> {
   Future<void> initialize() async {
     await getDatabegeData(context);
 
+    // await Provider.of<LanguageService>(context, listen: false).setLanguage();
+    // await Provider.of<LanguageService>(context, listen: false).setCurrency();
     await initiateAutoSignIn(context);
   }
 
@@ -67,8 +69,8 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   initiateAutoSignIn(BuildContext context) async {
-    await LanguageService().setLanguage();
-    await LanguageService().setCurrency();
+    await Provider.of<LanguageService>(context, listen: false).setLanguage();
+    await Provider.of<LanguageService>(context, listen: false).setCurrency();
     await Provider.of<SignInSignUpService>(context, listen: false)
         .getToken()
         .then((value) async {

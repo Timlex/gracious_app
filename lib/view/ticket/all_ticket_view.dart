@@ -26,7 +26,7 @@ class AllTicketsView extends StatelessWidget {
     double cardHeight = screenHight / 4.9;
 
     return Scaffold(
-        appBar: AppBars().appBarTitled('All tickets', () {
+        appBar: AppBars().appBarTitled(context, 'All tickets', () {
           Provider.of<TicketService>(context, listen: false).clearTickets();
           Navigator.of(context).pop();
         }),

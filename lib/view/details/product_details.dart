@@ -238,9 +238,13 @@ class ProductDetails extends StatelessWidget {
                                           MainAxisAlignment.center,
                                       children: [
                                         Transform(
-                                          transform: LanguageService().rtl
-                                              ? Matrix4.rotationY(pi)
-                                              : Matrix4.rotationY(0),
+                                          transform:
+                                              Provider.of<LanguageService>(
+                                                          context,
+                                                          listen: false)
+                                                      .rtl
+                                                  ? Matrix4.rotationY(pi)
+                                                  : Matrix4.rotationY(0),
                                           child: SvgPicture.asset(
                                             'assets/images/icons/back_button.svg',
                                             color: cc.blackColor,
@@ -310,6 +314,7 @@ class ProductDetails extends StatelessWidget {
                                                 ),
                                                 const SizedBox(height: 17),
                                                 discountAmountRow(
+                                                    context,
                                                     pService.productSalePrice,
                                                     product.price,
                                                     campDisc: product
@@ -397,7 +402,7 @@ class ProductDetails extends StatelessWidget {
                                                               .map(
                                                                   (e) =>
                                                                       Container(
-                                                                        alignment: LanguageService().rtl
+                                                                        alignment: Provider.of<LanguageService>(context, listen: false).rtl
                                                                             ? Alignment.centerRight
                                                                             : Alignment.centerLeft,
                                                                         margin: EdgeInsets.only(
@@ -699,11 +704,12 @@ class ProductDetails extends StatelessWidget {
     );
   }
 
-  Widget discountAmountRow(int discountAmount, int amount, {campDisc}) {
+  Widget discountAmountRow(BuildContext context, int discountAmount, int amount,
+      {campDisc}) {
     return Row(
       children: [
         Text(
-          '${LanguageService().currencySymbol}${discountAmount <= 0 ? amount.toString() : discountAmount.toStringAsFixed(2)}',
+          '${Provider.of<LanguageService>(context, listen: false).currencySymbol}${discountAmount <= 0 ? amount.toString() : discountAmount.toStringAsFixed(2)}',
           style: TextStyle(
               color: cc.primaryColor,
               fontWeight: FontWeight.w600,
@@ -711,7 +717,7 @@ class ProductDetails extends StatelessWidget {
         ),
         const SizedBox(width: 4),
         Text(
-          '${LanguageService().currencySymbol}${amount.toStringAsFixed(2)}',
+          '${Provider.of<LanguageService>(context, listen: false).currencySymbol}${amount.toStringAsFixed(2)}',
           style: TextStyle(
               color: cc.cardGreyHint,
               decoration: TextDecoration.lineThrough,

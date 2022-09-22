@@ -79,7 +79,7 @@ class ManageAccount extends StatelessWidget {
       userData.profileImageUrl,
     );
     return Scaffold(
-      appBar: AppBars().appBarTitled('Manage Account', () {
+      appBar: AppBars().appBarTitled(context, 'Manage Account', () {
         initiateDeviceSize(context);
         Provider.of<ManageAccountService>(context, listen: false)
             .clearPickedImage();

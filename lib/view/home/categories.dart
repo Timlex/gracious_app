@@ -72,8 +72,16 @@ class Categories extends StatelessWidget {
                             alignment: Alignment.center,
                             width: width,
                             margin: EdgeInsets.only(
-                              right: !(LanguageService().rtl) ? marginRight : 0,
-                              left: !(LanguageService().rtl) ? 0 : marginRight,
+                              right: !(Provider.of<LanguageService>(context,
+                                          listen: false)
+                                      .rtl)
+                                  ? marginRight
+                                  : 0,
+                              left: !(Provider.of<LanguageService>(context,
+                                          listen: false)
+                                      .rtl)
+                                  ? 0
+                                  : marginRight,
                             ),
                             decoration: BoxDecoration(
                                 border: Border.all(color: cc.borderColor),

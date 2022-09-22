@@ -34,7 +34,7 @@ class AllProducts extends StatelessWidget {
     double cardHeight = screenHight / 5.4 < 144 ? 130 : screenHight / 5.4;
     controller.addListener((() => scrollListener(context)));
     return Scaffold(
-      appBar: AppBars().appBarTitled('All Products', () {
+      appBar: AppBars().appBarTitled(context, 'All Products', () {
         controller.dispose();
         Navigator.of(context).pop();
       }),
