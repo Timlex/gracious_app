@@ -21,6 +21,7 @@ class AllProducts extends StatelessWidget {
   ConstantColors cc = ConstantColors();
 
   ScrollController controller = ScrollController();
+  bool doPop = false;
 
   @override
   Widget build(BuildContext context) {
@@ -28,6 +29,7 @@ class AllProducts extends StatelessWidget {
     final routeData =
         ModalRoute.of(context)!.settings.arguments as List<dynamic>;
     final data = routeData[0];
+    doPop = routeData.length == 2;
     double cardWidth = screenWidth / 3.3;
     double cardHeight = screenHight / 5.4 < 144 ? 130 : screenHight / 5.4;
     controller.addListener((() => scrollListener(context)));
@@ -92,8 +94,16 @@ class AllProducts extends StatelessWidget {
         itemBuilder: (context, index) {
           final e = data[index];
           // if (srData.resultMeta!.lastPage >= pageNo) {
-          return ProductCard(e.prdId, e.title, e.price, e.discountPrice,
-              e.campaignPercentage.toDouble(), e.imgUrl, e.isCartAble);
+          return ProductCard(
+            e.prdId,
+            e.title,
+            e.price,
+            e.discountPrice,
+            e.campaignPercentage.toDouble(),
+            e.imgUrl,
+            e.isCartAble,
+            popProductList: doPop,
+          );
           // }
           // else {
           //   return const Center(

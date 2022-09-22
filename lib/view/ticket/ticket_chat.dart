@@ -368,11 +368,25 @@ class TicketChat extends StatelessWidget {
           margin: const EdgeInsets.symmetric(horizontal: 10),
           child: CachedNetworkImage(
             placeholder: (context, url) {
-              return SvgPicture.asset('assets/images/image_empty.svg');
+              return Container(
+                margin: EdgeInsets.symmetric(vertical: 15),
+                decoration: BoxDecoration(
+                    image: DecorationImage(
+                        image:
+                            AssetImage('assets/images/product_skelleton.png'),
+                        opacity: .4)),
+              );
             },
             imageUrl: url,
             errorWidget: (context, str, some) {
-              return SvgPicture.asset('assets/images/image_empty.svg');
+              return Container(
+                margin: EdgeInsets.symmetric(vertical: 15),
+                decoration: BoxDecoration(
+                    image: DecorationImage(
+                        image:
+                            AssetImage('assets/images/product_skelleton.png'),
+                        opacity: .4)),
+              );
             },
           ),
         ),

@@ -21,6 +21,7 @@ class ProductCard extends StatelessWidget {
   final int discountPrice;
   final bool isCartable;
   bool popFirst;
+  bool popProductList;
 
   EdgeInsetsGeometry? margin;
 
@@ -35,6 +36,7 @@ class ProductCard extends StatelessWidget {
     Key? key,
     this.margin = const EdgeInsets.only(right: 18),
     this.popFirst = false,
+    this.popProductList = false,
   }) : super(key: key);
 
   ConstantColors cc = ConstantColors();
@@ -47,8 +49,12 @@ class ProductCard extends StatelessWidget {
         if (popFirst) {
           Navigator.of(context).pop();
         }
-        Navigator.of(context)
-            .pushNamed(ProductDetails.routeName, arguments: [_id]);
+        Navigator.of(context).pushNamed(ProductDetails.routeName,
+            arguments: [_id]).then((value) {
+          if (popProductList) {
+            Navigator.of(context).pop();
+          }
+        });
       },
       child: Container(
         width: screenWidth / 2.57,
@@ -84,10 +90,22 @@ class ProductCard extends StatelessWidget {
                     child: CachedNetworkImage(
                       fit: BoxFit.cover,
                       imageUrl: imgUrl,
-                      placeholder: (context, url) =>
-                          SvgPicture.asset('assets/images/image_empty.svg'),
-                      errorWidget: (context, url, error) =>
-                          SvgPicture.asset('assets/images/image_empty.svg'),
+                      placeholder: (context, url) => Container(
+                        margin: EdgeInsets.symmetric(vertical: 15),
+                        decoration: BoxDecoration(
+                            image: DecorationImage(
+                                image: AssetImage(
+                                    'assets/images/product_skelleton.png'),
+                                opacity: .4)),
+                      ),
+                      errorWidget: (context, url, error) => Container(
+                        margin: EdgeInsets.symmetric(vertical: 15),
+                        decoration: BoxDecoration(
+                            image: DecorationImage(
+                                image: AssetImage(
+                                    'assets/images/product_skelleton.png'),
+                                opacity: .4)),
+                      ),
                     ),
                   ),
                   // ),

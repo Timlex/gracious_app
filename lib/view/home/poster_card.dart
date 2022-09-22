@@ -88,7 +88,10 @@ class PosterCard extends StatelessWidget {
             SizedBox(
                 width: screenWidth / 3,
                 child: Padding(
-                  padding: const EdgeInsets.only(left: 10),
+                  padding: EdgeInsets.only(
+                    left: LanguageService().rtl ? 0 : 10,
+                    right: LanguageService().rtl ? 10 : 0,
+                  ),
                   child: Text(
                     description,
                     style: TextStyle(
@@ -98,12 +101,10 @@ class PosterCard extends StatelessWidget {
                     maxLines: 3,
                   ),
                 )),
-            if (showButton) const SizedBox(height: 15),
+            if (showButton) const SizedBox(height: 10),
             if (showButton)
               ElevatedButton(
                 onPressed: () {
-                  print(capm);
-                  print(cat);
                   if (capm != null) {
                     Navigator.of(context).pushNamed(
                         ALLCampProductFromLink.routeName,

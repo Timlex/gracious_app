@@ -92,7 +92,7 @@ class OrderDetailsTile extends StatelessWidget {
                 // const Spacer(),
                 SizedBox(
                   child: Text(
-                    '\$${price.toStringAsFixed(2)}',
+                    '${LanguageService().currencySymbol}${price.toStringAsFixed(2)}',
                     style: TextStyle(
                         color: cc.primaryColor,
                         fontWeight: FontWeight.w600,

@@ -68,7 +68,7 @@ class CampaignCard extends StatelessWidget {
                   ),
                   const SizedBox(height: 12),
                   SizedBox(
-                    width: screenWidth / 4.5,
+                    width: screenWidth / 3,
                     child: SafeArea(
                       child: Text(
                         title,
@@ -82,7 +82,7 @@ class CampaignCard extends StatelessWidget {
                       ),
                     ),
                   ),
-                  if (showButton) const SizedBox(height: 15),
+                  if (showButton) const SizedBox(height: 10),
                   if (showButton)
                     ElevatedButton(
                       onPressed: () {

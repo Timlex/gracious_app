@@ -68,6 +68,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
   initiateAutoSignIn(BuildContext context) async {
     await LanguageService().setLanguage();
+    await LanguageService().setCurrency();
     await Provider.of<SignInSignUpService>(context, listen: false)
         .getToken()
         .then((value) async {

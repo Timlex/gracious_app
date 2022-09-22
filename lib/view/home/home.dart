@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:gren_mart/service/campaign_card_list_service.dart';
 import 'package:gren_mart/service/categories_data_service.dart';
 import 'package:gren_mart/view/home/campaign_smaller_card.dart';
+import 'package:gren_mart/view/home/campaigns.dart';
 import 'package:gren_mart/view/home/categories.dart';
 import 'package:gren_mart/view/home/category_page.dart';
 import 'package:gren_mart/view/home/category_product_page.dart';
@@ -14,6 +15,7 @@ import '../../service/navigation_bar_helper_service.dart';
 import '../../service/poster_campaign_slider_service.dart';
 import '../../service/product_card_data_service.dart';
 import '../../service/search_result_data_service.dart';
+import 'all_camp_product_from_link.dart';
 import 'all_products.dart';
 import 'campaign_card.dart';
 import '../../view/home/product_card.dart';
@@ -407,7 +409,9 @@ class Home extends StatelessWidget {
                     ? ListView.builder(
                         physics: const BouncingScrollPhysics(
                             parent: AlwaysScrollableScrollPhysics()),
-                        padding: const EdgeInsets.only(left: 20),
+                        padding: EdgeInsets.only(
+                            left: LanguageService().rtl ? 0 : 20,
+                            right: LanguageService().rtl ? 20 : 0),
                         shrinkWrap: true,
                         scrollDirection: Axis.horizontal,
                         itemCount: products.campaignCardProductList.length,
@@ -427,32 +431,56 @@ class Home extends StatelessWidget {
                         : loadingProgressBar());
               }),
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: seeAllTitle(context, 'Top campaigns'),
-            ),
-            // const SizedBox(height: 20),
-            SizedBox(
-              height: screenHight / 3.4 < 221 ? 195 : screenHight / 3.4,
-              child: Consumer<CampaignCardListService>(
+            Consumer<CampaignCardListService>(
                 builder: (context, cclService, child) {
-                  return FutureBuilder(builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return SizedBox();
-                    }
-                    return ListView.builder(
-                      physics: const BouncingScrollPhysics(
-                          parent: AlwaysScrollableScrollPhysics()),
-                      padding: const EdgeInsets.only(left: 20),
-                      shrinkWrap: true,
-                      scrollDirection: Axis.horizontal,
-                      itemCount: cclService.list.length,
-                      itemBuilder: (context, index) => CampaignSmallerCard(),
+              return cclService.list.isEmpty
+                  ? SizedBox()
+                  : Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child:
+                          seeAllTitle(context, 'Top campaigns', onPressed: (() {
+                        Navigator.of(context).pushNamed(Campaigns.routeName,
+                            arguments: [cclService.list, 'Top campaigns']);
+                      })),
                     );
-                  });
-                },
-              ),
+            }),
+            // const SizedBox(height: 20),
+            Consumer<CampaignCardListService>(
+              builder: (context, cclService, child) {
+                return FutureBuilder(builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return SizedBox();
+                  }
+                  return cclService.list.isEmpty
+                      ? SizedBox()
+                      : SizedBox(
+                          height:
+                              screenHight / 3.4 < 221 ? 195 : screenHight / 3.4,
+                          child: ListView.builder(
+                            physics: const BouncingScrollPhysics(
+                                parent: AlwaysScrollableScrollPhysics()),
+                            padding: EdgeInsets.only(
+                                left: LanguageService().rtl ? 0 : 20,
+                                right: LanguageService().rtl ? 20 : 0),
+                            shrinkWrap: true,
+                            scrollDirection: Axis.horizontal,
+                            itemCount: cclService.list.length,
+                            itemBuilder: (context, index) => GestureDetector(
+                              onTap: () {
+                                Navigator.of(context).pushNamed(
+                                    ALLCampProductFromLink.routeName,
+                                    arguments: ['29', 'New year sale']);
+                              },
+                              child: CampaignSmallerCard(
+                                  'New year sale',
+                                  'Big new year eve sale.',
+                                  'https://zahid.xgenious.com/grenmart-api/assets/uploads/media-uploader/011642229673.png'),
+                            ),
+                          ));
+                });
+              },
             ),
+
             const SizedBox(height: 40),
           ],
         ),

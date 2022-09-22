@@ -37,11 +37,11 @@ class ShippingAddressesService with ChangeNotifier {
   }
 
   clearSelectedAddress() {
-    selectedAddress =
-        shippingAddresseList.isNotEmpty ? shippingAddresseList[0] : null;
+    selectedAddress = null;
     noData = false;
     isLoading = false;
     firstLoad = true;
+    currentAddress = false;
     notifyListeners();
   }
 

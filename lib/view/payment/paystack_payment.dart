@@ -204,7 +204,7 @@ class PaystackPayment extends StatelessWidget {
     final response = await http.post(uri,
         headers: header,
         body: jsonEncode({
-          "amount": checkoutInfo.totalAmount,
+          "amount": double.parse(checkoutInfo.totalAmount).toInt() * 100,
           "currency": "NGN",
           "email": checkoutInfo.email,
           "reference_id": orderId.toString(),

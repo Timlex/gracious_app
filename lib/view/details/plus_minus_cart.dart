@@ -113,7 +113,7 @@ class PlusMinusCart extends StatelessWidget {
                 color: const Color.fromARGB(24, 0, 0, 0),
                 child: Center(
                   child: Text(
-                    '\$${Provider.of<ProductDetailsService>(context).productSalePrice * Provider.of<ProductDetailsService>(context).quantity}',
+                    '${LanguageService().currencySymbol}${Provider.of<ProductDetailsService>(context).productSalePrice * Provider.of<ProductDetailsService>(context).quantity}',
                     style: TextStyle(
                       fontSize: 13,
                       color: cc.pureWhite,

@@ -56,6 +56,7 @@ class PosterCampaignSliderService with ChangeNotifier {
       final data = MobileSliderModel.fromJson(jsonDecode(response.body));
       // var stateData = [];
 
+      print(data);
       campaignDataList = data.data;
       print(campaignDataList[0].title);
       print('-------------------------------------');

@@ -44,597 +44,625 @@ class Checkout extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        Scaffold(
-          appBar: AppBars().appBarTitled('Checkout', () {
-            Provider.of<ShippingAddressesService>(context, listen: false)
-                .clearSelectedAddress();
-            Provider.of<ShippingZoneService>(context, listen: false)
-                .resetChecout(backingout: true);
-            Provider.of<PaymentGateawayService>(context, listen: false)
-                .resetGateaway();
-            Navigator.of(context).pop();
-          }, hasButton: true, hasElevation: true),
-          body: ListView(
-            padding: const EdgeInsets.all(20),
-            physics: const BouncingScrollPhysics(
-                parent: AlwaysScrollableScrollPhysics()),
-            children: [
-              // CustomTextField(
-              //   'enter new address',
-              //   controller: TextEditingController(),
-              //   leadingImage: 'assets/images/icons/location.png',
-              // ),
-              // const SizedBox(height: 10),
+    return WillPopScope(
+      onWillPop: () async {
+        Provider.of<ShippingAddressesService>(context, listen: false)
+            .clearSelectedAddress();
+        Provider.of<ShippingZoneService>(context, listen: false)
+            .resetChecout(backingout: true);
+        return true;
+      },
+      child: Stack(
+        children: [
+          Scaffold(
+            appBar: AppBars().appBarTitled('Checkout', () {
+              Provider.of<ShippingAddressesService>(context, listen: false)
+                  .clearSelectedAddress();
+              Provider.of<ShippingZoneService>(context, listen: false)
+                  .resetChecout(backingout: true);
+              Provider.of<PaymentGateawayService>(context, listen: false)
+                  .resetGateaway();
+              Navigator.of(context).pop();
+            }, hasButton: true, hasElevation: true),
+            body: ListView(
+              padding: const EdgeInsets.all(20),
+              physics: const BouncingScrollPhysics(
+                  parent: AlwaysScrollableScrollPhysics()),
+              children: [
+                // CustomTextField(
+                //   'enter new address',
+                //   controller: TextEditingController(),
+                //   leadingImage: 'assets/images/icons/location.png',
+                // ),
+                // const SizedBox(height: 10),
 
-              FutureBuilder(
-                  future: Provider.of<ShippingAddressesService>(context,
-                          listen: false)
-                      .fetchUsersShippingAddress(context,
-                          loadShippingZone: true),
-                  builder: (context, snapShot) {
-                    if (snapShot.connectionState == ConnectionState.waiting) {
-                      return loadingProgressBar();
-                    }
-                    if (snapShot.hasData) {
-                      return Container(
-                        margin: EdgeInsets.symmetric(vertical: 25),
-                        child: Center(
-                          child: Text(snapShot.data.toString()),
-                        ),
-                      );
-                    }
-                    return Consumer<ShippingAddressesService>(
-                        builder: (context, saService, child) {
-                      return Column(children: shippingAddress(context)
-                          //     saService.shippingAddresseList.map(((e) {
-                          //   final shippingAddress = saService.shippingAddresseList
-                          //       .firstWhere((element) => element.id == e.id);
-                          //   final selected = shippingAddress.id ==
-                          //       (saService.selectedAddress == null
-                          //           ? null
-                          //           : saService.selectedAddress!.id);
-                          //   return GestureDetector(
-                          //       onTap: () {
-                          //         if (saService.selectedAddress != null &&
-                          //             saService.selectedAddress!.id == e.id) {
-                          //           return;
-                          //         }
-                          //         saService.setSelectedAddress(e, context);
-                          //       },
-                          //       child: Container(
-                          //         margin: const EdgeInsets.only(bottom: 15),
-                          //         padding: const EdgeInsets.symmetric(vertical: 12),
-                          //         decoration: BoxDecoration(
-                          //             borderRadius: BorderRadius.circular(10),
-                          //             color: selected
-                          //                 ? cc.lightPrimery3
-                          //                 : cc.whiteGrey,
-                          //             border: Border.all(
-                          //                 color: selected
-                          //                     ? cc.primaryColor
-                          //                     : cc.greyHint,
-                          //                 width: .5)),
-                          //         child: Stack(children: [
-                          //           ListTile(
-                          //             title: Padding(
-                          //               padding: const EdgeInsets.symmetric(
-                          //                   horizontal: 5, vertical: 5),
-                          //               child: Text(shippingAddress.name),
-                          //             ),
-                          //             subtitle: Padding(
-                          //               padding: const EdgeInsets.symmetric(
-                          //                   horizontal: 5, vertical: 5),
-                          //               child: Text(shippingAddress.address),
-                          //             ),
-                          //           ),
-                          //           if (selected)
-                          //             Positioned(
-                          //                 top: 10,
-                          //                 right: LanguageService().rtl ? null : 15,
-                          //                 left: LanguageService().rtl ? 15 : null,
-                          //                 child: Icon(
-                          //                   Icons.check_box,
-                          //                   color: cc.primaryColor,
-                          //                 ))
-                          //         ]),
-                          //       ));
-                          // })).toList()
-                          );
-                    });
-                  }),
-              GestureDetector(
-                onTap: () {
-                  Navigator.of(context).pop();
-                  Navigator.of(context).push(
-                    MaterialPageRoute<void>(
-                      builder: (BuildContext context) =>
-                          AddNewAddress(dontPop: true),
-                    ),
-                  );
-                },
-                child: Container(
-                    // margin: const EdgeInsets.all(8),
-                    height: 50,
-                    width: double.infinity,
-                    alignment: Alignment.center,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      border: Border.all(
-                        width: 1,
-                        color: ConstantColors().primaryColor,
+                FutureBuilder(
+                    future: Provider.of<ShippingAddressesService>(context,
+                            listen: false)
+                        .fetchUsersShippingAddress(context,
+                            loadShippingZone: true),
+                    builder: (context, snapShot) {
+                      if (snapShot.connectionState == ConnectionState.waiting) {
+                        return loadingProgressBar();
+                      }
+                      if (snapShot.hasData) {
+                        return Container(
+                          margin: EdgeInsets.symmetric(vertical: 25),
+                          child: Center(
+                            child: Text(snapShot.data.toString()),
+                          ),
+                        );
+                      }
+                      return Consumer<ShippingAddressesService>(
+                          builder: (context, saService, child) {
+                        return Column(children: shippingAddress(context)
+                            //     saService.shippingAddresseList.map(((e) {
+                            //   final shippingAddress = saService.shippingAddresseList
+                            //       .firstWhere((element) => element.id == e.id);
+                            //   final selected = shippingAddress.id ==
+                            //       (saService.selectedAddress == null
+                            //           ? null
+                            //           : saService.selectedAddress!.id);
+                            //   return GestureDetector(
+                            //       onTap: () {
+                            //         if (saService.selectedAddress != null &&
+                            //             saService.selectedAddress!.id == e.id) {
+                            //           return;
+                            //         }
+                            //         saService.setSelectedAddress(e, context);
+                            //       },
+                            //       child: Container(
+                            //         margin: const EdgeInsets.only(bottom: 15),
+                            //         padding: const EdgeInsets.symmetric(vertical: 12),
+                            //         decoration: BoxDecoration(
+                            //             borderRadius: BorderRadius.circular(10),
+                            //             color: selected
+                            //                 ? cc.lightPrimery3
+                            //                 : cc.whiteGrey,
+                            //             border: Border.all(
+                            //                 color: selected
+                            //                     ? cc.primaryColor
+                            //                     : cc.greyHint,
+                            //                 width: .5)),
+                            //         child: Stack(children: [
+                            //           ListTile(
+                            //             title: Padding(
+                            //               padding: const EdgeInsets.symmetric(
+                            //                   horizontal: 5, vertical: 5),
+                            //               child: Text(shippingAddress.name),
+                            //             ),
+                            //             subtitle: Padding(
+                            //               padding: const EdgeInsets.symmetric(
+                            //                   horizontal: 5, vertical: 5),
+                            //               child: Text(shippingAddress.address),
+                            //             ),
+                            //           ),
+                            //           if (selected)
+                            //             Positioned(
+                            //                 top: 10,
+                            //                 right: LanguageService().rtl ? null : 15,
+                            //                 left: LanguageService().rtl ? 15 : null,
+                            //                 child: Icon(
+                            //                   Icons.check_box,
+                            //                   color: cc.primaryColor,
+                            //                 ))
+                            //         ]),
+                            //       ));
+                            // })).toList()
+                            );
+                      });
+                    }),
+                GestureDetector(
+                  onTap: () {
+                    Provider.of<ShippingAddressesService>(context,
+                            listen: false)
+                        .clearSelectedAddress();
+                    Provider.of<ShippingZoneService>(context, listen: false)
+                        .resetChecout(backingout: true);
+                    Navigator.of(context).pop();
+                    Navigator.of(context).push(
+                      MaterialPageRoute<void>(
+                        builder: (BuildContext context) =>
+                            AddNewAddress(dontPop: true),
                       ),
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Image.asset(
-                          'assets/images/icons/location.png',
-                          height: 30,
-                          color: cc.primaryColor,
+                    );
+                  },
+                  child: Container(
+                      // margin: const EdgeInsets.all(8),
+                      height: 50,
+                      width: double.infinity,
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        border: Border.all(
+                          width: 1,
+                          color: ConstantColors().primaryColor,
                         ),
-                        const SizedBox(width: 10),
-                        Text(
-                          'Add new address',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                              color: ConstantColors().primaryColor,
-                              fontWeight: FontWeight.w700),
-                        ),
-                      ],
-                    )),
-              ),
-              const SizedBox(height: 20),
-              Container(
-                // height: 300,
-                padding: const EdgeInsets.all(20),
-                decoration: BoxDecoration(
-                  borderRadius: const BorderRadius.only(
-                    topLeft: Radius.circular(15),
-                    topRight: Radius.circular(15),
-                    bottomLeft: Radius.circular(15),
-                    bottomRight: Radius.circular(15),
-                  ),
-                  color: cc.whiteGrey,
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Image.asset(
+                            'assets/images/icons/location.png',
+                            height: 30,
+                            color: cc.primaryColor,
+                          ),
+                          const SizedBox(width: 10),
+                          Text(
+                            'Add new address',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                color: ConstantColors().primaryColor,
+                                fontWeight: FontWeight.w700),
+                          ),
+                        ],
+                      )),
                 ),
-                child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      rows('Product', trailing: 'Subtotal'),
-                      const SizedBox(height: 15),
-                      SizedBox(
-                        child: Consumer<CartDataService>(
-                            builder: (context, cService, child) {
-                          return Column(
-                            children: productList(cService),
-                          );
+                const SizedBox(height: 20),
+                Container(
+                  // height: 300,
+                  padding: const EdgeInsets.all(20),
+                  decoration: BoxDecoration(
+                    borderRadius: const BorderRadius.only(
+                      topLeft: Radius.circular(15),
+                      topRight: Radius.circular(15),
+                      bottomLeft: Radius.circular(15),
+                      bottomRight: Radius.circular(15),
+                    ),
+                    color: cc.whiteGrey,
+                  ),
+                  child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        rows('Product', trailing: 'Subtotal'),
+                        const SizedBox(height: 15),
+                        SizedBox(
+                          child: Consumer<CartDataService>(
+                              builder: (context, cService, child) {
+                            return Column(
+                              children: productList(cService),
+                            );
+                          }),
+                        ),
+                        const SizedBox(height: 15),
+                        rows('Subtotal',
+                            trailing:
+                                '${LanguageService().currencySymbol}${Provider.of<CartDataService>(context, listen: false).calculateSubtotal()}'),
+                        const SizedBox(height: 15),
+                        rows('Shipping cost', trailing: ''),
+                        const SizedBox(height: 15),
+                        Consumer<ShippingZoneService>(
+                          builder: (context, sService, child) {
+                            return sService.noData
+                                ? const Text('Select a shipping address.')
+                                : (sService.isLoading
+                                    ? loadingProgressBar()
+                                    : Column(
+                                        children: sService.shippingOptionsList!
+                                            .map((element) {
+                                              return Row(
+                                                children: [
+                                                  Transform.scale(
+                                                    scale: 1.3,
+                                                    child: Checkbox(
+                                                        // splashRadius: 30,
+                                                        materialTapTargetSize:
+                                                            MaterialTapTargetSize
+                                                                .shrinkWrap,
+                                                        activeColor:
+                                                            ConstantColors()
+                                                                .primaryColor,
+                                                        value: sService
+                                                                .selectedOption!
+                                                                .id ==
+                                                            element.id,
+                                                        shape:
+                                                            const CircleBorder(),
+                                                        side: BorderSide(
+                                                          width: 1.5,
+                                                          color:
+                                                              ConstantColors()
+                                                                  .greyBorder,
+                                                        ),
+                                                        onChanged: (v) {
+                                                          sService
+                                                              .setSelectedOption(
+                                                                  element);
+                                                        }),
+                                                  ),
+                                                  Text(element.name),
+                                                  const Spacer(),
+                                                  Text(
+                                                      '${LanguageService().currencySymbol}${element.availableOptions.cost}')
+                                                ],
+                                              );
+                                            })
+                                            .toList()
+                                            .reversed
+                                            .toList(),
+                                      ));
+                          },
+                        ),
+                        const SizedBox(height: 15),
+                        Consumer<ShippingZoneService>(
+                            builder: (context, szService, child) {
+                          return rows('Tax',
+                              trailing:
+                                  '${LanguageService().currencySymbol}${szService.taxMoney(context).toStringAsFixed(2)}');
                         }),
-                      ),
-                      const SizedBox(height: 15),
-                      rows('Subtotal',
-                          trailing:
-                              '\$${Provider.of<CartDataService>(context, listen: false).calculateSubtotal()}'),
-                      const SizedBox(height: 15),
-                      rows('Shipping cost', trailing: ''),
-                      const SizedBox(height: 15),
-                      Consumer<ShippingZoneService>(
-                        builder: (context, sService, child) {
-                          return sService.noData
-                              ? const Text('Select a shipping address.')
-                              : (sService.isLoading
-                                  ? loadingProgressBar()
-                                  : Column(
-                                      children: sService.shippingOptionsList!
-                                          .map((element) {
-                                            return Row(
-                                              children: [
-                                                Transform.scale(
-                                                  scale: 1.3,
-                                                  child: Checkbox(
-                                                      // splashRadius: 30,
-                                                      materialTapTargetSize:
-                                                          MaterialTapTargetSize
-                                                              .shrinkWrap,
-                                                      activeColor:
-                                                          ConstantColors()
-                                                              .primaryColor,
-                                                      value: sService
-                                                              .selectedOption!
-                                                              .id ==
-                                                          element.id,
-                                                      shape:
-                                                          const CircleBorder(),
-                                                      side: BorderSide(
-                                                        width: 1.5,
-                                                        color: ConstantColors()
-                                                            .greyBorder,
-                                                      ),
-                                                      onChanged: (v) {
-                                                        sService
-                                                            .setSelectedOption(
-                                                                element);
-                                                      }),
-                                                ),
-                                                Text(element.name),
-                                                const Spacer(),
-                                                Text(
-                                                    '\$${element.availableOptions.cost}')
-                                              ],
-                                            );
-                                          })
-                                          .toList()
-                                          .reversed
-                                          .toList(),
-                                    ));
-                        },
-                      ),
-                      const SizedBox(height: 15),
-                      Consumer<ShippingZoneService>(
-                          builder: (context, szService, child) {
-                        return rows('Tax',
-                            trailing:
-                                '\$${szService.taxMoney(context).toStringAsFixed(2)}');
-                      }),
-                      const SizedBox(height: 15),
-                      Consumer<CuponDiscountService>(
-                          builder: (context, cupService, child) {
-                        return rows('Coupon discount',
-                            trailing:
-                                '\$${cupService.cuponDiscount.toStringAsFixed(2)}');
-                      }),
-                      const SizedBox(height: 15),
-                      const Divider(),
-                      const SizedBox(height: 25),
-                      Consumer<ShippingZoneService>(
-                          builder: (context, szService, child) {
-                        return rows('Total',
-                            trailing:
-                                '\$${szService.totalCounter(context).toStringAsFixed(2)}');
-                      }),
-                      const SizedBox(height: 25),
-                      rows('Cupon code'),
-                      const SizedBox(height: 15),
-                      Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            SizedBox(
-                                width: screenWidth / 2,
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(10),
-                                    color: Colors.white,
-                                  ),
-                                  child: TextField(
-                                    style: TextThemeConstrants.greyHint13,
-                                    decoration: InputDecoration(
-                                        hintText: 'Enter Coupon code',
-                                        hintStyle:
-                                            TextThemeConstrants.greyHint13,
-                                        enabledBorder: OutlineInputBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(10),
-                                          borderSide: BorderSide(
-                                              color:
-                                                  ConstantColors().greyBorder,
-                                              width: 1),
-                                        ),
-                                        focusedBorder: OutlineInputBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(10),
-                                          borderSide: BorderSide(
-                                              color:
-                                                  ConstantColors().greyBorder,
-                                              width: 1),
-                                        ),
-                                        errorBorder: OutlineInputBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(10),
-                                          borderSide: BorderSide(
-                                              color: ConstantColors().orange,
-                                              width: 1),
-                                        ),
-                                        focusedErrorBorder: OutlineInputBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(10),
-                                          borderSide: BorderSide(
-                                              color: ConstantColors().orange,
-                                              width: 1),
-                                        ),
-                                        contentPadding:
-                                            const EdgeInsets.all(15)),
-                                    onChanged: (value) {
-                                      Provider.of<CuponDiscountService>(context,
-                                              listen: false)
-                                          .setCuponText(value.trim());
-                                    },
-                                  ),
-                                )
-                                //  CustomTextField(
-                                //     'Enter promo code', TextEditingController()),
-                                ),
-                            Consumer<CuponDiscountService>(
-                                builder: (context, cService, child) {
-                              return GestureDetector(
-                                onTap: cService.isLoading
-                                    ? () {}
-                                    : () {
-                                        cService.setTotalAmount(0);
-                                        cService
-                                            .getCuponDiscontAmount()
-                                            .then((value) {
-                                          if (value != null) {
-                                            snackBar(context, value,
-                                                backgroundColor: cc.orange);
-                                          }
-                                        }).onError((error, stackTrace) {
-                                          cService.setIsLoading(false);
-                                          snackBar(
-                                              context, 'Connection failed.',
-                                              backgroundColor: cc.orange);
-                                        });
-                                        FocusScope.of(context).unfocus();
+                        const SizedBox(height: 15),
+                        Consumer<CuponDiscountService>(
+                            builder: (context, cupService, child) {
+                          return rows('Coupon discount',
+                              trailing:
+                                  '${LanguageService().currencySymbol}${cupService.cuponDiscount.toStringAsFixed(2)}');
+                        }),
+                        const SizedBox(height: 15),
+                        const Divider(),
+                        const SizedBox(height: 25),
+                        Consumer<ShippingZoneService>(
+                            builder: (context, szService, child) {
+                          return rows('Total',
+                              trailing:
+                                  '${LanguageService().currencySymbol}${szService.totalCounter(context).toStringAsFixed(2)}');
+                        }),
+                        const SizedBox(height: 25),
+                        rows('Cupon code'),
+                        const SizedBox(height: 15),
+                        Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              SizedBox(
+                                  width: screenWidth / 2,
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(10),
+                                      color: Colors.white,
+                                    ),
+                                    child: TextField(
+                                      style: TextThemeConstrants.greyHint13,
+                                      decoration: InputDecoration(
+                                          hintText: 'Enter Coupon code',
+                                          hintStyle:
+                                              TextThemeConstrants.greyHint13,
+                                          enabledBorder: OutlineInputBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(10),
+                                            borderSide: BorderSide(
+                                                color:
+                                                    ConstantColors().greyBorder,
+                                                width: 1),
+                                          ),
+                                          focusedBorder: OutlineInputBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(10),
+                                            borderSide: BorderSide(
+                                                color:
+                                                    ConstantColors().greyBorder,
+                                                width: 1),
+                                          ),
+                                          errorBorder: OutlineInputBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(10),
+                                            borderSide: BorderSide(
+                                                color: ConstantColors().orange,
+                                                width: 1),
+                                          ),
+                                          focusedErrorBorder:
+                                              OutlineInputBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(10),
+                                            borderSide: BorderSide(
+                                                color: ConstantColors().orange,
+                                                width: 1),
+                                          ),
+                                          contentPadding:
+                                              const EdgeInsets.all(15)),
+                                      onChanged: (value) {
+                                        Provider.of<CuponDiscountService>(
+                                                context,
+                                                listen: false)
+                                            .setCuponText(value.trim());
                                       },
-                                child: Stack(
-                                  alignment: Alignment.center,
-                                  children: [
-                                    Padding(
-                                      padding: const EdgeInsets.only(left: 10),
-                                      child: SizedBox(
-                                        width: screenWidth / 4,
-                                        child: FittedBox(
-                                          child: Text(
-                                            'Apply Cupon code',
-                                            style: TextStyle(
-                                              color: Colors.transparent,
-                                              shadows: [
-                                                Shadow(
-                                                    offset: const Offset(0, -5),
-                                                    color: cc.primaryColor)
-                                              ],
-                                              decoration:
-                                                  TextDecoration.underline,
-                                              decorationColor: cc.primaryColor,
-                                              decorationThickness: 1.5,
-                                              // fontWeight: FontWeight.w600,
+                                    ),
+                                  )
+                                  //  CustomTextField(
+                                  //     'Enter promo code', TextEditingController()),
+                                  ),
+                              Consumer<CuponDiscountService>(
+                                  builder: (context, cService, child) {
+                                return GestureDetector(
+                                  onTap: cService.isLoading
+                                      ? () {}
+                                      : () {
+                                          cService.setTotalAmount(0);
+                                          cService
+                                              .getCuponDiscontAmount()
+                                              .then((value) {
+                                            if (value != null) {
+                                              snackBar(context, value,
+                                                  backgroundColor: cc.orange);
+                                            }
+                                          }).onError((error, stackTrace) {
+                                            cService.setIsLoading(false);
+                                            snackBar(
+                                                context, 'Connection failed.',
+                                                backgroundColor: cc.orange);
+                                          });
+                                          FocusScope.of(context).unfocus();
+                                        },
+                                  child: Stack(
+                                    alignment: Alignment.center,
+                                    children: [
+                                      Padding(
+                                        padding:
+                                            const EdgeInsets.only(left: 10),
+                                        child: SizedBox(
+                                          width: screenWidth / 4,
+                                          child: FittedBox(
+                                            child: Text(
+                                              'Apply Cupon code',
+                                              style: TextStyle(
+                                                color: Colors.transparent,
+                                                shadows: [
+                                                  Shadow(
+                                                      offset:
+                                                          const Offset(0, -5),
+                                                      color: cc.primaryColor)
+                                                ],
+                                                decoration:
+                                                    TextDecoration.underline,
+                                                decorationColor:
+                                                    cc.primaryColor,
+                                                decorationThickness: 1.5,
+                                                // fontWeight: FontWeight.w600,
+                                              ),
                                             ),
                                           ),
                                         ),
                                       ),
-                                    ),
-                                    if (cService.isLoading)
-                                      Container(
-                                          width: screenWidth / 4,
-                                          color: Colors.white60,
-                                          alignment: Alignment.center,
-                                          margin:
-                                              const EdgeInsets.only(left: 10),
-                                          child: loadingProgressBar(size: 20))
-                                  ],
-                                ),
-                              );
-                            }),
-                          ]),
-                      const SizedBox(height: 15),
-                      Text(
-                        'Chose a payment method',
-                        style: TextThemeConstrants.titleText,
-                      ),
-                      const SizedBox(height: 20),
-                      FutureBuilder(
-                          future: Provider.of<PaymentGateawayService>(context,
-                                  listen: false)
-                              .fetchPaymentGetterData(),
-                          builder: (context, snapshot) {
-                            if (snapshot.connectionState ==
-                                ConnectionState.waiting) {
-                              return const SizedBox();
-                            }
-                            if (snapshot.hasError) {
-                              snackBar(context, 'An error occured');
-                              return Text(snapshot.error.toString());
-                            }
-                            return Consumer<PaymentGateawayService>(
-                                builder: (context, pgService, child) {
-                              return SizedBox(
-                                  height:
-                                      (pgService.gatawayList.length / 3) * 60,
-                                  child: GridView(
-                                    physics:
-                                        const NeverScrollableScrollPhysics(),
-                                    gridDelegate:
-                                        const SliverGridDelegateWithFixedCrossAxisCount(
-                                            crossAxisCount: 3,
-                                            childAspectRatio: 3 / 1.2,
-                                            crossAxisSpacing: 8,
-                                            mainAxisSpacing: 12),
-                                    children: pgService.gatawayList
-                                        .map((e) => GestureDetector(
-                                            onTap: () {
-                                              if (pgService.selectedGateaway ==
-                                                  e) {
-                                                return;
-                                              }
-                                              pgService.setSelectedGareaway(e);
-                                            },
-                                            child: CartGridTile(e.logoLink,
-                                                pgService.itemSelected(e))))
-                                        .toList(),
-                                  ));
-                            });
-                          }),
-                      const SizedBox(height: 20),
-                      Row(
-                        children: [
-                          Transform.scale(
-                            scale: 1.3,
-                            child: Consumer<CheckoutService>(
-                                builder: (context, cService, child) {
-                              return Checkbox(
-
-                                  // splashRadius: 30,
-                                  materialTapTargetSize:
-                                      MaterialTapTargetSize.shrinkWrap,
-                                  side: BorderSide(
-                                    width: 1,
-                                    color: cc.greyBorder,
+                                      if (cService.isLoading)
+                                        Container(
+                                            width: screenWidth / 4,
+                                            color: Colors.white60,
+                                            alignment: Alignment.center,
+                                            margin:
+                                                const EdgeInsets.only(left: 10),
+                                            child: loadingProgressBar(size: 20))
+                                    ],
                                   ),
-                                  activeColor: cc.primaryColor,
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(6),
-                                      side: BorderSide(
-                                        width: 1,
-                                        color: cc.greyBorder,
-                                      )),
-                                  value: cService.termsAcondi,
-                                  onChanged: (value) {
-                                    cService.setTermsACondi();
-                                  });
+                                );
+                              }),
+                            ]),
+                        const SizedBox(height: 15),
+                        Text(
+                          'Chose a payment method',
+                          style: TextThemeConstrants.titleText,
+                        ),
+                        const SizedBox(height: 20),
+                        FutureBuilder(
+                            future: Provider.of<PaymentGateawayService>(context,
+                                    listen: false)
+                                .fetchPaymentGetterData(),
+                            builder: (context, snapshot) {
+                              if (snapshot.connectionState ==
+                                  ConnectionState.waiting) {
+                                return const SizedBox();
+                              }
+                              if (snapshot.hasError) {
+                                snackBar(context, 'An error occured');
+                                return Text(snapshot.error.toString());
+                              }
+                              return Consumer<PaymentGateawayService>(
+                                  builder: (context, pgService, child) {
+                                return SizedBox(
+                                    height:
+                                        (pgService.gatawayList.length / 3) * 60,
+                                    child: GridView(
+                                      physics:
+                                          const NeverScrollableScrollPhysics(),
+                                      gridDelegate:
+                                          const SliverGridDelegateWithFixedCrossAxisCount(
+                                              crossAxisCount: 3,
+                                              childAspectRatio: 3 / 1.2,
+                                              crossAxisSpacing: 8,
+                                              mainAxisSpacing: 12),
+                                      children: pgService.gatawayList
+                                          .map((e) => GestureDetector(
+                                              onTap: () {
+                                                if (pgService
+                                                        .selectedGateaway ==
+                                                    e) {
+                                                  return;
+                                                }
+                                                pgService
+                                                    .setSelectedGareaway(e);
+                                              },
+                                              child: CartGridTile(e.logoLink,
+                                                  pgService.itemSelected(e))))
+                                          .toList(),
+                                    ));
+                              });
                             }),
-                          ),
-                          const SizedBox(width: 5),
-                          SizedBox(
-                            width: screenWidth - 130,
-                            child: FittedBox(
-                              child: RichText(
-                                softWrap: true,
-                                text: TextSpan(
-                                    text: 'Accept all',
-                                    style: TextStyle(
-                                      color: cc.greyHint,
-                                      fontWeight: FontWeight.w600,
+                        const SizedBox(height: 20),
+                        Row(
+                          children: [
+                            Transform.scale(
+                              scale: 1.3,
+                              child: Consumer<CheckoutService>(
+                                  builder: (context, cService, child) {
+                                return Checkbox(
+
+                                    // splashRadius: 30,
+                                    materialTapTargetSize:
+                                        MaterialTapTargetSize.shrinkWrap,
+                                    side: BorderSide(
+                                      width: 1,
+                                      color: cc.greyBorder,
                                     ),
-                                    children: [
-                                      TextSpan(
-                                          text: ' Terms and Conditions',
-                                          style: TextStyle(
-                                              color: cc.primaryColor)),
-                                      TextSpan(
-                                          text: ' & ',
-                                          style: TextStyle(color: cc.greyHint)),
-                                      TextSpan(
-                                          text: ' Privacy Policy',
-                                          style: TextStyle(
-                                              color: cc.primaryColor)),
-                                    ]),
+                                    activeColor: cc.primaryColor,
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(6),
+                                        side: BorderSide(
+                                          width: 1,
+                                          color: cc.greyBorder,
+                                        )),
+                                    value: cService.termsAcondi,
+                                    onChanged: (value) {
+                                      cService.setTermsACondi();
+                                    });
+                              }),
+                            ),
+                            const SizedBox(width: 5),
+                            SizedBox(
+                              width: screenWidth - 130,
+                              child: FittedBox(
+                                child: RichText(
+                                  softWrap: true,
+                                  text: TextSpan(
+                                      text: 'Accept all',
+                                      style: TextStyle(
+                                        color: cc.greyHint,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                      children: [
+                                        TextSpan(
+                                            text: ' Terms and Conditions',
+                                            style: TextStyle(
+                                                color: cc.primaryColor)),
+                                        TextSpan(
+                                            text: ' & ',
+                                            style:
+                                                TextStyle(color: cc.greyHint)),
+                                        TextSpan(
+                                            text: ' Privacy Policy',
+                                            style: TextStyle(
+                                                color: cc.primaryColor)),
+                                      ]),
+                                ),
                               ),
                             ),
-                          ),
-                        ],
-                      ),
-                      SizedBox(height: 10),
-                      Consumer<CheckoutService>(
-                          builder: (context, cService, child) {
-                        return customContainerButton(
-                            'Pay & Confirm',
-                            double.maxFinite,
-                            cService.termsAcondi
-                                ? () async {
-                                    Provider.of<PaymentGateawayService>(context,
-                                            listen: false)
-                                        .setIsLoading(true);
-                                    final shippingService =
-                                        Provider.of<ShippingAddressesService>(
-                                            context,
-                                            listen: false);
-                                    if (shippingService.selectedAddress ==
-                                            null &&
-                                        !shippingService.currentAddress) {
-                                      showDialog(
-                                          context: context,
-                                          builder: (context) => AlertDialog(
-                                                title: const Text(
-                                                    'No shipping address selected?'),
-                                                content: const Text(
-                                                    'Please add or select Shipping address to proceed your payment.'),
-                                                actions: [
-                                                  TextButton(
-                                                      onPressed: (() {
-                                                        Navigator.pop(context);
-                                                      }),
-                                                      child: Text(
-                                                        'Not now',
-                                                        style: TextStyle(
-                                                            color: cc.pink),
-                                                      )),
-                                                  TextButton(
-                                                      onPressed: () {
-                                                        Navigator.of(context)
-                                                            .pop();
-                                                        Navigator.of(context)
-                                                            .pop();
-                                                        Navigator.of(context)
-                                                            .push(
-                                                          MaterialPageRoute<
-                                                              void>(
-                                                            builder: (BuildContext
-                                                                    context) =>
-                                                                AddNewAddress(
-                                                                    dontPop:
-                                                                        true),
-                                                          ),
-                                                        );
-                                                      },
-                                                      child: Text(
-                                                        'Add now',
-                                                        style: TextStyle(
-                                                            color: cc
-                                                                .primaryColor),
-                                                      ))
-                                                ],
-                                              ));
+                          ],
+                        ),
+                        SizedBox(height: 10),
+                        Consumer<CheckoutService>(
+                            builder: (context, cService, child) {
+                          return customContainerButton(
+                              'Pay & Confirm',
+                              double.maxFinite,
+                              cService.termsAcondi
+                                  ? () async {
+                                      Provider.of<PaymentGateawayService>(
+                                              context,
+                                              listen: false)
+                                          .setIsLoading(true);
+                                      final shippingService =
+                                          Provider.of<ShippingAddressesService>(
+                                              context,
+                                              listen: false);
+                                      print(shippingService.currentAddress);
+                                      if (shippingService.selectedAddress ==
+                                              null &&
+                                          !shippingService.currentAddress) {
+                                        showDialog(
+                                            context: context,
+                                            builder: (context) => AlertDialog(
+                                                  title: const Text(
+                                                      'No shipping address selected?'),
+                                                  content: const Text(
+                                                      'Please add or select Shipping address to proceed your payment.'),
+                                                  actions: [
+                                                    TextButton(
+                                                        onPressed: (() {
+                                                          Navigator.pop(
+                                                              context);
+                                                        }),
+                                                        child: Text(
+                                                          'Not now',
+                                                          style: TextStyle(
+                                                              color: cc.pink),
+                                                        )),
+                                                    TextButton(
+                                                        onPressed: () {
+                                                          Navigator.of(context)
+                                                              .pop();
+                                                          Navigator.of(context)
+                                                              .pop();
+                                                          Navigator.of(context)
+                                                              .push(
+                                                            MaterialPageRoute<
+                                                                void>(
+                                                              builder: (BuildContext
+                                                                      context) =>
+                                                                  AddNewAddress(
+                                                                      dontPop:
+                                                                          true),
+                                                            ),
+                                                          );
+                                                        },
+                                                        child: Text(
+                                                          'Add now',
+                                                          style: TextStyle(
+                                                              color: cc
+                                                                  .primaryColor),
+                                                        ))
+                                                  ],
+                                                ));
+                                        Provider.of<PaymentGateawayService>(
+                                                context,
+                                                listen: false)
+                                            .setIsLoading(false);
+                                        return;
+                                      }
+                                      final selecteGatway =
+                                          Provider.of<PaymentGateawayService>(
+                                                  context,
+                                                  listen: false)
+                                              .selectedGateaway!
+                                              .name;
+                                      await startPayment(context, cService)
+                                          .onError((error, stackTrace) {
+                                        if (error == '') {
+                                          return;
+                                        }
+                                        snackBar(context, 'Connection failed!',
+                                            backgroundColor: cc.orange);
+                                      });
+
                                       Provider.of<PaymentGateawayService>(
                                               context,
                                               listen: false)
                                           .setIsLoading(false);
-                                      return;
+                                      // DbHelper.deleteDbTable('cart');
+                                      // Navigator.push(
+                                      //   context,
+                                      //   MaterialPageRoute(
+                                      //       builder: (context) => PaymentStatusView(error)),
+                                      // );
+                                      // error = true;
                                     }
-                                    final selecteGatway =
-                                        Provider.of<PaymentGateawayService>(
-                                                context,
-                                                listen: false)
-                                            .selectedGateaway!
-                                            .name;
-                                    await startPayment(context, cService)
-                                        .onError((error, stackTrace) {
-                                      if (error == '') {
-                                        return;
-                                      }
-                                      snackBar(context, 'Connection failed!',
-                                          backgroundColor: cc.orange);
+                                  : () {
+                                      snackBar(context,
+                                          'You have agree to our Terms & Conditions.');
                                     });
-
-                                    Provider.of<PaymentGateawayService>(context,
-                                            listen: false)
-                                        .setIsLoading(false);
-                                    // DbHelper.deleteDbTable('cart');
-                                    // Navigator.push(
-                                    //   context,
-                                    //   MaterialPageRoute(
-                                    //       builder: (context) => PaymentStatusView(error)),
-                                    // );
-                                    // error = true;
-                                  }
-                                : () {
-                                    snackBar(context,
-                                        'You have agree to our Terms & Conditions.');
-                                  });
-                      }),
-                      const SizedBox(height: 30),
-                    ]),
-              ),
-            ],
+                        }),
+                        const SizedBox(height: 30),
+                      ]),
+                ),
+              ],
+            ),
           ),
-        ),
-        Consumer<PaymentGateawayService>(builder: (context, pgService, child) {
-          return pgService.isLoading
-              ? Container(
-                  color: Colors.white60,
-                  child: loadingProgressBar(),
-                )
-              : SizedBox();
-        })
-      ],
+          Consumer<PaymentGateawayService>(
+              builder: (context, pgService, child) {
+            return pgService.isLoading
+                ? Container(
+                    color: Colors.white60,
+                    child: loadingProgressBar(),
+                  )
+                : SizedBox();
+          })
+        ],
+      ),
     );
   }
 
@@ -667,7 +695,7 @@ class Checkout extends StatelessWidget {
                 ),
               ),
               Text(
-                '\$${(e['price'] as int) * (e['quantity'] as int)}',
+                '${LanguageService().currencySymbol}${(e['price'] as int) * (e['quantity'] as int)}',
                 style: TextThemeConstrants.greyHint13Eclipse,
               )
             ],
@@ -829,7 +857,9 @@ class Checkout extends StatelessWidget {
       return;
     }
     if (selectedGateaway.name.toLowerCase().contains('cashfree')) {
-      await CashFreePayment().doPayment(context);
+      await CashFreePayment()
+          .doPayment(context)
+          .onError((error, stackTrace) => null);
       return;
     }
 
@@ -977,11 +1007,15 @@ class Checkout extends StatelessWidget {
           padding: const EdgeInsets.symmetric(vertical: 12),
           decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(10),
-              color: saService.selectedAddress == e
+              color: (addressName == 'Current address'
+                      ? saService.currentAddress
+                      : saService.selectedAddress == e)
                   ? cc.lightPrimery3
                   : cc.whiteGrey,
               border: Border.all(
-                  color: saService.selectedAddress == e
+                  color: (addressName == 'Current address'
+                          ? saService.currentAddress
+                          : saService.selectedAddress == e)
                       ? cc.primaryColor
                       : cc.greyHint,
                   width: .5)),
@@ -996,7 +1030,9 @@ class Checkout extends StatelessWidget {
                 child: Text(address),
               ),
             ),
-            if (saService.selectedAddress == e)
+            if ((addressName == 'Current address'
+                ? saService.currentAddress
+                : saService.selectedAddress == e))
               Positioned(
                   top: 10,
                   right: LanguageService().rtl ? null : 15,

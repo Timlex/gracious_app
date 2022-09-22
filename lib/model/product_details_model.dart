@@ -168,7 +168,7 @@ class Product {
     required this.status,
     required this.slug,
     required this.attributes,
-    required this.soldCount,
+    this.soldCount,
     this.deletedAt,
     required this.createdAt,
     required this.updatedAt,
@@ -201,7 +201,7 @@ class Product {
   String status;
   String slug;
   String attributes;
-  int soldCount;
+  int? soldCount;
   dynamic deletedAt;
   DateTime createdAt;
   DateTime updatedAt;

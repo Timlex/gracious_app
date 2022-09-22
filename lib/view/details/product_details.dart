@@ -106,14 +106,26 @@ class ProductDetails extends StatelessWidget {
                                                 if (loadingProgress == null) {
                                                   return child;
                                                 }
-                                                return SvgPicture.asset(
-                                                  'assets/images/image_empty.svg',
-                                                  height: 250,
+                                                return Container(
+                                                  margin: EdgeInsets.symmetric(
+                                                      vertical: 15),
+                                                  decoration: BoxDecoration(
+                                                      image: DecorationImage(
+                                                          image: AssetImage(
+                                                              'assets/images/product_skelleton.png'),
+                                                          opacity: .4)),
                                                 );
                                               },
                                               errorBuilder: (context, o, st) {
-                                                return SvgPicture.asset(
-                                                    'assets/images/image_empty.svg');
+                                                return Container(
+                                                  margin: EdgeInsets.symmetric(
+                                                      vertical: 15),
+                                                  decoration: BoxDecoration(
+                                                      image: DecorationImage(
+                                                          image: AssetImage(
+                                                              'assets/images/product_skelleton.png'),
+                                                          opacity: .4)),
+                                                );
                                               },
                                             ),
                                           )
@@ -145,10 +157,18 @@ class ProductDetails extends StatelessWidget {
                                                           Radius.circular(15),
                                                     ),
                                                     child: CachedNetworkImage(
-                                                      placeholder: (context,
-                                                              url) =>
-                                                          SvgPicture.asset(
-                                                              'assets/images/image_empty.svg'),
+                                                      placeholder:
+                                                          (context, url) =>
+                                                              Container(
+                                                        margin: EdgeInsets
+                                                            .symmetric(
+                                                                vertical: 15),
+                                                        decoration: BoxDecoration(
+                                                            image: DecorationImage(
+                                                                image: AssetImage(
+                                                                    'assets/images/product_skelleton.png'),
+                                                                opacity: .4)),
+                                                      ),
                                                       imageUrl: pService
                                                               .additionalInfoImage ??
                                                           (product.productGalleryImage
@@ -446,7 +466,8 @@ class ProductDetails extends StatelessWidget {
                                               AllProducts.routeName,
                                               arguments: [
                                                 pService.productDetails!
-                                                    .relatedProducts
+                                                    .relatedProducts,
+                                                true
                                               ]);
                                         }),
                                       ),
@@ -682,7 +703,7 @@ class ProductDetails extends StatelessWidget {
     return Row(
       children: [
         Text(
-          '\$${discountAmount <= 0 ? amount.toString() : discountAmount.toStringAsFixed(2)}',
+          '${LanguageService().currencySymbol}${discountAmount <= 0 ? amount.toString() : discountAmount.toStringAsFixed(2)}',
           style: TextStyle(
               color: cc.primaryColor,
               fontWeight: FontWeight.w600,
@@ -690,7 +711,7 @@ class ProductDetails extends StatelessWidget {
         ),
         const SizedBox(width: 4),
         Text(
-          '\$${amount.toStringAsFixed(2)}',
+          '${LanguageService().currencySymbol}${amount.toStringAsFixed(2)}',
           style: TextStyle(
               color: cc.cardGreyHint,
               decoration: TextDecoration.lineThrough,

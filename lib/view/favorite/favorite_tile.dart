@@ -84,10 +84,22 @@ class FavoriteTile extends StatelessWidget {
                       child: CachedNetworkImage(
                         fit: BoxFit.cover,
                         imageUrl: favoriteItem.imgUrl,
-                        placeholder: (context, url) =>
-                            SvgPicture.asset('assets/images/image_empty.svg'),
-                        errorWidget: (context, url, error) =>
-                            SvgPicture.asset('assets/images/image_empty.svg'),
+                        placeholder: (context, url) => Container(
+                          margin: EdgeInsets.symmetric(vertical: 15),
+                          decoration: BoxDecoration(
+                              image: DecorationImage(
+                                  image: AssetImage(
+                                      'assets/images/product_skelleton.png'),
+                                  opacity: .4)),
+                        ),
+                        errorWidget: (context, url, error) => Container(
+                          margin: EdgeInsets.symmetric(vertical: 15),
+                          decoration: BoxDecoration(
+                              image: DecorationImage(
+                                  image: AssetImage(
+                                      'assets/images/product_skelleton.png'),
+                                  opacity: .4)),
+                        ),
                       ),
                     )),
                 title: Row(
@@ -110,7 +122,7 @@ class FavoriteTile extends StatelessWidget {
                           ),
                           const SizedBox(height: 13),
                           Text(
-                            '\$${favoriteItem.price}',
+                            '${LanguageService().currencySymbol}${favoriteItem.price}',
                             style: TextThemeConstrants.primary13,
                           ),
                         ],

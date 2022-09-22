@@ -3,12 +3,14 @@ import 'dart:math';
 
 import 'package:cashfree_pg/cashfree_pg.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
 
 import '../../service/checkout_service.dart';
 import '../../service/confirm_payment_service.dart';
 import '../../service/payment_gateaway_service.dart';
+import '../cart/payment_status.dart';
 import '../utils/constant_styles.dart';
 
 class CashFreePayment {
@@ -67,6 +69,20 @@ class CashFreePayment {
             print('Cashfree Payment successfull. Do something here');
             Provider.of<ConfirmPaymentService>(context, listen: false)
                 .confirmPayment(context);
+          }
+          if (value['txStatus'] == "CANCELLED") {
+            print('Cashfree Payment successfull. Do something here');
+            Navigator.of(context).pushAndRemoveUntil(
+                MaterialPageRoute(
+                    builder: (context) => PaymentStatusView(true)),
+                (Route<dynamic> route) => false);
+          }
+          if (value['txStatus'] == "FAILED") {
+            print('Cashfree Payment successfull. Do something here');
+            Navigator.of(context).pushAndRemoveUntil(
+                MaterialPageRoute(
+                    builder: (context) => PaymentStatusView(true)),
+                (Route<dynamic> route) => false);
           }
         }
       });

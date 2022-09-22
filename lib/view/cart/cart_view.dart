@@ -1,6 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:gren_mart/service/payment_gateaway_service.dart';
+import 'package:gren_mart/service/shipping_addresses_service.dart';
 import 'package:provider/provider.dart';
 
 import '../../service/checkout_service.dart';
@@ -80,6 +81,11 @@ class CartView extends StatelessWidget {
                   double.infinity,
                   () {
                     print(cuponData.toString());
+                    Provider.of<ShippingZoneService>(context, listen: false)
+                        .resetChecout(backingout: true);
+                    Provider.of<ShippingAddressesService>(context,
+                            listen: false)
+                        .clearSelectedAddress();
                     Provider.of<CuponDiscountService>(context, listen: false)
                         .setCarData(cuponData.toString().replaceAll(' ', ''));
                     Navigator.of(context)
@@ -87,6 +93,9 @@ class CartView extends StatelessWidget {
                         .then((value) {
                       Provider.of<ShippingZoneService>(context, listen: false)
                           .resetChecout(backingout: true);
+                      Provider.of<ShippingAddressesService>(context,
+                              listen: false)
+                          .clearSelectedAddress();
                     });
                   },
                 ),

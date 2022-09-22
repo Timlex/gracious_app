@@ -128,7 +128,7 @@ class FilterBottomSheet extends StatelessWidget {
                           left: LanguageService().rtl ? 0 : 25.0,
                           right: LanguageService().rtl ? 25 : 0,
                         ),
-                        child: Text('\$' +
+                        child: Text('${LanguageService().currencySymbol}' +
                             (srService.minPrice.isNotEmpty
                                 ? MoneyFormatter(
                                         amount:
@@ -137,7 +137,7 @@ class FilterBottomSheet extends StatelessWidget {
                                     .withoutFractionDigits
                                 : startRange.output.withoutFractionDigits) +
                             '-' +
-                            '\$' +
+                            '${LanguageService().currencySymbol}' +
                             (srService.maxPrice.isNotEmpty
                                 ? MoneyFormatter(
                                         amount:

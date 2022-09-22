@@ -85,9 +85,10 @@ class MolliePayment extends StatelessWidget {
               return WebView(
                 initialUrl: url,
                 javascriptMode: JavascriptMode.unrestricted,
-                onPageStarted: (value) async {
-                  print("on progress.........................$value");
-                  if (value.contains('xgenious')) {
+                navigationDelegate: (navRequest) async {
+                  print('nav req to .......................${navRequest.url}');
+                  if (navRequest.url.contains('xgenious')) {
+                    print('preventing navigation');
                     String status = await verifyPayment();
                     if (status == 'paid') {
                       await Provider.of<ConfirmPaymentService>(context,
@@ -117,8 +118,10 @@ class MolliePayment extends StatelessWidget {
                               ],
                             );
                           });
-
-                      return;
+                      Navigator.of(context).pushAndRemoveUntil(
+                          MaterialPageRoute(
+                              builder: (context) => PaymentStatusView(true)),
+                          (Route<dynamic> route) => false);
                     }
                     if (status == 'failed') {
                       await showDialog(
@@ -142,8 +145,10 @@ class MolliePayment extends StatelessWidget {
                               ],
                             );
                           });
-
-                      return;
+                      Navigator.of(context).pushAndRemoveUntil(
+                          MaterialPageRoute(
+                              builder: (context) => PaymentStatusView(true)),
+                          (Route<dynamic> route) => false);
                     }
                     if (status == 'expired') {
                       await showDialog(
@@ -168,14 +173,17 @@ class MolliePayment extends StatelessWidget {
                               ],
                             );
                           });
-
-                      return;
+                      Navigator.of(context).pushAndRemoveUntil(
+                          MaterialPageRoute(
+                              builder: (context) => PaymentStatusView(true)),
+                          (Route<dynamic> route) => false);
                     }
-                    print('closing payment......');
-                    print('closing payment.............');
-                    print('closing payment...................');
-                    print('closing payment..........................');
+                    return NavigationDecision.prevent;
                   }
+                  if (navRequest.url.contains('mollie')) {
+                    return NavigationDecision.navigate;
+                  }
+                  return NavigationDecision.prevent;
                 },
               );
             }),

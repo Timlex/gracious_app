@@ -64,14 +64,26 @@ class FavoriteToCart extends StatelessWidget {
                                       if (loadingProgress == null) {
                                         return child;
                                       }
-                                      return SvgPicture.asset(
-                                        'assets/images/image_empty.svg',
-                                        height: 250,
+                                      return Container(
+                                        margin:
+                                            EdgeInsets.symmetric(vertical: 15),
+                                        decoration: BoxDecoration(
+                                            image: DecorationImage(
+                                                image: AssetImage(
+                                                    'assets/images/product_skelleton.png'),
+                                                opacity: .4)),
                                       );
                                     },
                                     errorBuilder: (context, o, st) {
-                                      return SvgPicture.asset(
-                                          'assets/images/image_empty.svg');
+                                      return Container(
+                                        margin:
+                                            EdgeInsets.symmetric(vertical: 15),
+                                        decoration: BoxDecoration(
+                                            image: DecorationImage(
+                                                image: AssetImage(
+                                                    'assets/images/product_skelleton.png'),
+                                                opacity: .4)),
+                                      );
                                     },
                                   ),
                                 ),
@@ -119,7 +131,7 @@ class FavoriteToCart extends StatelessWidget {
                             ),
                             customContainerButton(
                                 pdService.cartAble
-                                    ? '\$${pdService.productSalePrice} Add to cart.'
+                                    ? '${LanguageService().currencySymbol}${pdService.productSalePrice} Add to cart.'
                                     : 'Select all attribute to proceed',
                                 double.infinity, () {
                               if (!pdService.cartAble) {

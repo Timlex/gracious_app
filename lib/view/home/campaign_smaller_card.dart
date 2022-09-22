@@ -4,8 +4,16 @@ import 'package:gren_mart/view/utils/constant_name.dart';
 import 'package:gren_mart/view/utils/text_themes.dart';
 import 'package:slide_countdown/slide_countdown.dart';
 
+import '../../service/language_service.dart';
+
 class CampaignSmallerCard extends StatelessWidget {
-  CampaignSmallerCard({Key? key}) : super(key: key);
+  final String title;
+  final String subTitle;
+  final String imgUrl;
+  bool margin;
+  CampaignSmallerCard(this.title, this.subTitle, this.imgUrl,
+      {this.margin = true, Key? key})
+      : super(key: key);
   final cc = ConstantColors();
   @override
   Widget build(BuildContext context) {
@@ -13,18 +21,23 @@ class CampaignSmallerCard extends StatelessWidget {
     return Container(
       height: (screenHight / 3.4 < 221 ? 195 : screenHight / 3.4),
       width: screenWidth / 2.5,
-      margin: EdgeInsets.only(right: 20),
+      margin: margin
+          ? EdgeInsets.only(
+              right: LanguageService().rtl ? 0 : 20,
+              left: LanguageService().rtl ? 20 : 0,
+              top: 10)
+          : EdgeInsets.symmetric(horizontal: 20),
       decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(20), color: cc.lightPrimery3),
+          borderRadius: BorderRadius.circular(10), color: cc.lightPrimery3),
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(10),
         child: Stack(
           children: [
             SizedBox(
               height: (screenHight / 3.4 < 221 ? 195 : screenHight / 3.4),
               width: screenWidth / 2.5,
               child: Image.network(
-                'https://zahid.xgenious.com/grenmart-api/assets/uploads/media-uploader/011642229673.png',
+                imgUrl,
                 fit: BoxFit.fill,
                 // color: cc.pureWhite.withOpacity(.5),
                 // colorBlendMode: BlendMode.luminosity,
@@ -37,7 +50,7 @@ class CampaignSmallerCard extends StatelessWidget {
                 gradient: LinearGradient(
                     colors: [
                       cc.pureWhite.withOpacity(.1),
-                      cc.blackColor.withOpacity(1),
+                      cc.blackColor.withOpacity(.8),
                     ],
                     begin: Alignment.bottomCenter,
                     end: Alignment.topCenter,
@@ -59,17 +72,22 @@ class CampaignSmallerCard extends StatelessWidget {
                     duration: Duration(days: 150),
                   )),
                   SizedBox(height: 5),
-                  Text('New year sale',
-                      style: TextStyle(
-                        color: cc.pureWhite,
-                        fontSize: screenWidth / 24,
-                        fontWeight: FontWeight.w600,
-                      )),
+                  FittedBox(
+                    child: Text(title,
+                        style: TextStyle(
+                          color: cc.pureWhite,
+                          fontSize: screenWidth / 24,
+                          fontWeight: FontWeight.w600,
+                        )),
+                  ),
                   SizedBox(height: 5),
                   Text(
-                    'New Year\'s Eve Sale',
-                    style: TextThemeConstrants.paragraphText
-                        .copyWith(color: cc.pureWhite.withOpacity(.8)),
+                    subTitle,
+                    maxLines: 3,
+                    style: TextThemeConstrants.paragraphText.copyWith(
+                      color: cc.pureWhite.withOpacity(.8),
+                      overflow: TextOverflow.ellipsis,
+                    ),
                   ),
                   SizedBox(height: 10),
                 ],

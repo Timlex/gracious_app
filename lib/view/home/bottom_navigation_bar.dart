@@ -8,6 +8,7 @@ import 'package:provider/provider.dart';
 import '../../service/cart_data_service.dart';
 import '../../service/favorite_data_service.dart';
 import '../../service/navigation_bar_helper_service.dart';
+import 'home_front.dart';
 
 class CustomNavigationBar extends StatelessWidget {
   CustomNavigationBar({Key? key}) : super(key: key);
@@ -18,8 +19,10 @@ class CustomNavigationBar extends StatelessWidget {
         builder: (context, nData, child) {
       return BottomNavigationBar(
           onTap: (v) {
-            Navigator.of(context).pop();
             nData.setNavigationIndex(v);
+            Navigator.of(context).pushAndRemoveUntil(
+                MaterialPageRoute(builder: (context) => HomeFront()),
+                (Route<dynamic> route) => false);
             return;
           },
           // fixedColor: cc.blackColor,
@@ -39,9 +42,11 @@ class CustomNavigationBar extends StatelessWidget {
   List<BottomNavigationBarItem> get items => [
         BottomNavigationBarItem(
             activeIcon: SvgPicture.asset(
-              'assets/images/icons/home_selected.svg',
+              // 'assets/images/icons/home_selected.svg',
+              'assets/images/icons/home.svg',
               height: 27,
-              color: cc.primaryColor,
+              // color: cc.primaryColor,
+              color: cc.greyHint,
             ),
             icon: SvgPicture.asset(
               'assets/images/icons/home.svg',

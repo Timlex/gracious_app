@@ -7,6 +7,7 @@ import 'package:gren_mart/view/settings/setting.dart';
 import 'package:gren_mart/view/utils/text_themes.dart';
 import '../../service/common_service.dart';
 import '../../service/country_dropdown_service.dart';
+import '../../service/language_service.dart';
 import '../../service/shipping_addresses_service.dart';
 import '../../service/state_dropdown_service.dart';
 import '../../view/home/all_products.dart';
@@ -262,13 +263,13 @@ Widget discAmountRow(int discountAmount, int amount) {
   return Row(
     children: [
       Text(
-        '\$${discountAmount <= 0 ? amount.toString() : discountAmount.toStringAsFixed(2)}',
+        '${LanguageService().currencySymbol}${discountAmount <= 0 ? amount.toString() : discountAmount.toStringAsFixed(2)}',
         style: TextStyle(
             color: cc.primaryColor, fontWeight: FontWeight.w600, fontSize: 13),
       ),
       const SizedBox(width: 4),
       Text(
-        '\$${amount.toStringAsFixed(2)}',
+        '${LanguageService().currencySymbol}${amount.toStringAsFixed(2)}',
         style: TextStyle(
             color: cc.cardGreyHint,
             decoration: TextDecoration.lineThrough,
@@ -419,6 +420,7 @@ void showTopSlider(BuildContext context, UserProfileService uService) {
                               width: 50,
                               color: cc.primaryColor,
                               child: CachedNetworkImage(
+                                fit: BoxFit.cover,
                                 placeholder: (context, url) => Center(
                                   child: Text('placeHolder',
                                       style: TextStyle(

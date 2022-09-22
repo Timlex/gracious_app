@@ -132,25 +132,25 @@ class OrderDetails extends StatelessWidget {
                       child: Column(children: [
                         rows('Subtotal',
                             trailing:
-                                '\$${odService.orderDetailsModel.orderInfo.paymentMeta!.subtotal}'),
+                                '${LanguageService().currencySymbol}${odService.orderDetailsModel.orderInfo.paymentMeta!.subtotal}'),
                         const SizedBox(height: 15),
                         rows('Shipping',
                             trailing:
-                                '\$${odService.orderDetailsModel.orderInfo.paymentMeta!.shippingCost}'),
+                                '${LanguageService().currencySymbol}${odService.orderDetailsModel.orderInfo.paymentMeta!.shippingCost}'),
                         const SizedBox(height: 15),
                         rows('Tax',
                             trailing:
-                                '\$${odService.orderDetailsModel.orderInfo.paymentMeta!.taxAmount}'),
+                                '${LanguageService().currencySymbol}${odService.orderDetailsModel.orderInfo.paymentMeta!.taxAmount}'),
                         const SizedBox(height: 15),
                         rows('Discount',
                             trailing:
-                                '-\$${odService.orderDetailsModel.orderInfo.paymentMeta!.couponAmount}'),
+                                '${LanguageService().currencySymbol}${odService.orderDetailsModel.orderInfo.paymentMeta!.couponAmount}'),
                         const SizedBox(height: 15),
                         const Divider(),
                         const SizedBox(height: 25),
                         rows('Total',
                             trailing:
-                                '\$${odService.orderDetailsModel.orderInfo.paymentMeta!.total}'),
+                                '${LanguageService().currencySymbol}${odService.orderDetailsModel.orderInfo.paymentMeta!.total}'),
                         const SizedBox(height: 15),
                         rows('Payment status',
                             trailing: (odService.orderDetailsModel.orderInfo

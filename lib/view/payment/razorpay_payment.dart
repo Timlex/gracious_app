@@ -150,7 +150,7 @@ class RazorpayPayment extends StatelessWidget {
     final response = await http.post(uri,
         headers: header,
         body: jsonEncode({
-          "amount": double.parse(checkoutInfo.totalAmount).toInt(),
+          "amount": double.parse(checkoutInfo.totalAmount).toInt() * 100,
           "currency": "USD",
           "accept_partial": false,
           "reference_id": orderId.toString(),
