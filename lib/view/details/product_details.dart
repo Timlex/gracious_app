@@ -108,7 +108,7 @@ class ProductDetails extends StatelessWidget {
                                                 }
                                                 return Container(
                                                   margin: EdgeInsets.symmetric(
-                                                      vertical: 15),
+                                                      vertical: 60),
                                                   decoration: BoxDecoration(
                                                       image: DecorationImage(
                                                           image: AssetImage(
@@ -119,7 +119,7 @@ class ProductDetails extends StatelessWidget {
                                               errorBuilder: (context, o, st) {
                                                 return Container(
                                                   margin: EdgeInsets.symmetric(
-                                                      vertical: 15),
+                                                      vertical: 60),
                                                   decoration: BoxDecoration(
                                                       image: DecorationImage(
                                                           image: AssetImage(
@@ -167,7 +167,7 @@ class ProductDetails extends StatelessWidget {
                                                               Container(
                                                         margin: EdgeInsets
                                                             .symmetric(
-                                                                vertical: 15),
+                                                                vertical: 60),
                                                         decoration: BoxDecoration(
                                                             image: DecorationImage(
                                                                 image: AssetImage(

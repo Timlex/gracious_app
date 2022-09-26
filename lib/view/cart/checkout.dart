@@ -40,6 +40,7 @@ class Checkout extends StatelessWidget {
   static const routeName = 'checkout';
 
   ConstantColors cc = ConstantColors();
+  ScrollController controller = ScrollController();
 
   bool error = false;
   bool loading = false;
@@ -67,6 +68,7 @@ class Checkout extends StatelessWidget {
               Navigator.of(context).pop();
             }, hasButton: true, hasElevation: true),
             body: ListView(
+              controller: controller,
               padding: const EdgeInsets.all(20),
               physics: const BouncingScrollPhysics(
                   parent: AlwaysScrollableScrollPhysics()),
@@ -594,33 +596,18 @@ class Checkout extends StatelessWidget {
                                                   content: const Text(
                                                       'Please add or select Shipping address to proceed your payment.'),
                                                   actions: [
-                                                    // TextButton(
-                                                    //     onPressed: (() {
-                                                    //       Navigator.pop(
-                                                    //           context);
-                                                    //     }),
-                                                    //     child: Text(
-                                                    //       'Not now',
-                                                    //       style: TextStyle(
-                                                    //           color: cc.pink),
-                                                    //     )),
                                                     TextButton(
                                                         onPressed: () {
                                                           Navigator.of(context)
                                                               .pop();
-                                                          // Navigator.of(context)
-                                                          //     .pop();
-                                                          // Navigator.of(context)
-                                                          //     .push(
-                                                          //   MaterialPageRoute<
-                                                          //       void>(
-                                                          //     builder: (BuildContext
-                                                          //             context) =>
-                                                          //         AddNewAddress(
-                                                          //             dontPop:
-                                                          //                 true),
-                                                          //   ),
-                                                          // );
+                                                          controller.animateTo(
+                                                              0.0,
+                                                              curve:
+                                                                  Curves.easeIn,
+                                                              duration:
+                                                                  const Duration(
+                                                                      milliseconds:
+                                                                          300));
                                                         },
                                                         child: Text(
                                                           'Ok',
@@ -647,7 +634,7 @@ class Checkout extends StatelessWidget {
                                         if (error == '') {
                                           return;
                                         }
-                                        snackBar(context, 'Connection failed!',
+                                        snackBar(context, 'Payment failed!',
                                             backgroundColor: cc.orange);
                                       });
 

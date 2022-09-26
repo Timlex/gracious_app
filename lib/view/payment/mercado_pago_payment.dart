@@ -75,13 +75,13 @@ class MercadopagoPayment extends StatelessWidget {
               }
               if (snapshot.hasData) {
                 return const Center(
-                  child: Text('Loadingfailed.'),
+                  child: Text('Loading failed.'),
                 );
               }
               if (snapshot.hasError) {
                 print(snapshot.error);
                 return const Center(
-                  child: Text('Loadingfailed.'),
+                  child: Text('Loading failed.'),
                 );
               }
               return WebView(
@@ -110,37 +110,55 @@ class MercadopagoPayment extends StatelessWidget {
                     }),
                 initialUrl: url,
                 javascriptMode: JavascriptMode.unrestricted,
-                onPageFinished: (value) async {
-                  print('on progress.........................$value');
-                  if (value.contains('success')) {
-                    print('closing payment......');
-                    print('closing payment.............');
-                    print('closing payment...................');
-                    print('closing payment..........................');
-                    await Provider.of<ConfirmPaymentService>(context,
-                            listen: false)
-                        .confirmPayment(context);
-                  }
-                },
-                onPageStarted: (value) async {
-                  final response = await http.get(Uri.parse(value));
-                  print(
-                      'Checking condition.............................${response.body.contains('other')}');
-                  print("on progress.........................$value");
-                  if (value.contains('success')) {
-                    await Provider.of<ConfirmPaymentService>(context,
-                            listen: false)
-                        .confirmPayment(context);
-                    print('closing payment......');
-                    print('closing payment.............');
-                    print('closing payment...................');
-                    print('closing payment..........................');
+                // onPageFinished: (value) async {
+                //   print('on progress.........................$value');
+                //   if (value.contains('success')) {
+                //     print('closing payment......');
+                //     print('closing payment.............');
+                //     print('closing payment...................');
+                //     print('closing payment..........................');
+                //     await Provider.of<ConfirmPaymentService>(context,
+                //             listen: false)
+                //         .confirmPayment(context);
+                //   }
+                // },
+                // onPageStarted: (value) async {
+                //   final response = await http.get(Uri.parse(value));
+                //   print(
+                //       'Checking condition.............................${response.body.contains('other')}');
+                //   print("on progress.........................$value");
+                //   if (value.contains('success')) {
+                //     await Provider.of<ConfirmPaymentService>(context,
+                //             listen: false)
+                //         .confirmPayment(context);
+                //     print('closing payment......');
+                //     print('closing payment.............');
+                //     print('closing payment...................');
+                //     print('closing payment..........................');
 
+                //     Navigator.of(context).pushAndRemoveUntil(
+                //         MaterialPageRoute(
+                //             builder: (context) => PaymentStatusView(true)),
+                //         (Route<dynamic> route) => false);
+                //   }
+                // },
+                navigationDelegate: (navData) {
+                  if (navData.url.contains('success')) {
+                    Navigator.of(context).pushAndRemoveUntil(
+                        MaterialPageRoute(
+                            builder: (context) => PaymentStatusView(false)),
+                        (Route<dynamic> route) => false);
+                    return NavigationDecision.prevent;
+                  }
+                  if (navData.url.contains('failure') ||
+                      navData.url.contains('pending')) {
                     Navigator.of(context).pushAndRemoveUntil(
                         MaterialPageRoute(
                             builder: (context) => PaymentStatusView(true)),
                         (Route<dynamic> route) => false);
+                    return NavigationDecision.prevent;
                   }
+                  return NavigationDecision.navigate;
                 },
               );
             }),
@@ -155,7 +173,7 @@ class MercadopagoPayment extends StatelessWidget {
     final checkoutInfo =
         Provider.of<CheckoutService>(context, listen: false).checkoutModel;
     if (selectrdGateaway.clientSecret == null) {
-      snackBar(context, 'Invalid developer keys');
+      snackBar(context, 'Invalid developer keys', backgroundColor: cc.orange);
     }
     var header = {
       "Accept": "application/json",
@@ -165,14 +183,19 @@ class MercadopagoPayment extends StatelessWidget {
     var data = jsonEncode({
       "items": [
         {
-          "title": "Grenmart",
+          "title": "Grenmart products",
           "description": "Grenmart cart items",
           "quantity": 1,
           "currency_id": "ARS",
           "unit_price": double.parse(checkoutInfo!.totalAmount).toInt()
         }
       ],
-      "payer": {"email": checkoutInfo.email}
+      "payer": {"email": checkoutInfo.email},
+      "back_urls": {
+        "failure": "failure.com",
+        "pending": "pending.com",
+        "success": "success.com"
+      }
     });
 
     var response = await http.post(
@@ -184,6 +207,7 @@ class MercadopagoPayment extends StatelessWidget {
     // print(response.body);
     if (response.statusCode == 201) {
       this.url = jsonDecode(response.body)['init_point'];
+      print(response.body);
 
       return;
     }
