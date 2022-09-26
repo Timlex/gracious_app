@@ -75,7 +75,7 @@ class StateDropdownService with ChangeNotifier {
       }
     } catch (error) {
       print(error);
-      snackBar(context!, 'Loding failed!');
+      snackBar(context!, 'Connection failed!', backgroundColor: cc.orange);
 
       return;
     }

@@ -379,7 +379,7 @@ class Checkout extends StatelessWidget {
                                       : () {
                                           cService.setTotalAmount(0);
                                           cService
-                                              .getCuponDiscontAmount()
+                                              .getCuponDiscontAmount(context)
                                               .then((value) {
                                             if (value != null) {
                                               snackBar(context, value,
@@ -458,8 +458,8 @@ class Checkout extends StatelessWidget {
                               return Consumer<PaymentGateawayService>(
                                   builder: (context, pgService, child) {
                                 return SizedBox(
-                                    height:
-                                        (pgService.gatawayList.length / 3) * 60,
+                                    height: 260,
+                                    // (pgService.gatawayList.length / 3) * 60,
                                     child: GridView(
                                       physics:
                                           const NeverScrollableScrollPhysics(),
@@ -665,7 +665,8 @@ class Checkout extends StatelessWidget {
                                     }
                                   : () {
                                       snackBar(context,
-                                          'You have agree to our Terms & Conditions.');
+                                          'You have agree to our Terms & Conditions.',
+                                          backgroundColor: cc.orange);
                                     });
                         }),
                         const SizedBox(height: 30),

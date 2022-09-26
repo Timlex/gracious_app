@@ -18,7 +18,7 @@ class AddNewTicket extends StatelessWidget {
   Future _onSubmit(BuildContext context, AddNewTicketService ntService) async {
     final validated = _formKey.currentState!.validate();
     if (!validated) {
-      snackBar(context, "Please give all the data properly",
+      snackBar(context, "Please give all the information properly",
           backgroundColor: cc.orange);
       return;
     }

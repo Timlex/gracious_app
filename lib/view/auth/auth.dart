@@ -47,7 +47,11 @@ class _AuthState extends State<Auth> {
       BuildContext context, bool login, GlobalKey<FormState> formKey) async {
     final validated = formKey.currentState!.validate();
     if (!validated) {
-      snackBar(context, 'Please provide all the information');
+      snackBar(context, 'Please provide all the information',
+          backgroundColor: cc.orange);
+      // formKey.currentContext!.visitChildElements((element) {
+      //   element.deactivate();
+      // });
       return;
     }
     final ssService = Provider.of<SignInSignUpService>(context, listen: false);
@@ -85,7 +89,8 @@ class _AuthState extends State<Auth> {
       return;
     }
     if (!(ssService.termsAndCondi)) {
-      snackBar(context, 'Please read and accept the terms and condition');
+      snackBar(context, 'Please read and accept the terms and condition',
+          backgroundColor: cc.orange);
       ssService.toggleLaodingSpinner(value: false);
 
       return;
@@ -117,7 +122,7 @@ class _AuthState extends State<Auth> {
       }
       ssService.toggleLaodingSpinner(value: false);
 
-      snackBar(context, 'SomeThing went wrong');
+      snackBar(context, 'Register failed.', backgroundColor: cc.orange);
     }).onError((error, stackTrace) {
       ssService.toggleLaodingSpinner(value: false);
       snackBar(context, error.toString(), backgroundColor: cc.orange);
@@ -419,7 +424,7 @@ class _AuthState extends State<Auth> {
         ),
         Consumer<SocialLoginService>(
           builder: (context, socialService, child) {
-            return socialService.isLoding
+            return socialService.isLoading
                 ? Container(
                     color: Colors.white54,
                     child: loadingProgressBar(),

@@ -59,7 +59,7 @@ class CountryDropdownService with ChangeNotifier {
         //something went wrong
       }
     } catch (error) {
-      snackBar(context, 'Loding failed!');
+      snackBar(context, 'Connection failed!', backgroundColor: cc.orange);
       print(error);
 
       return;

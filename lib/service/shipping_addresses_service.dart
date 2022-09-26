@@ -176,6 +176,7 @@ class ShippingAddressesService with ChangeNotifier {
       // Provider.of<ShippingZoneService>(context, listen: false)
       //     .setNoData(shippingAddresseList.isEmpty);
       if (shippingAddresseList.isEmpty) {
+        noData = true;
         notifyListeners();
       }
       // selectedAddress ??= shippingAddresseList[0];

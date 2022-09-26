@@ -116,9 +116,7 @@ class CartView extends StatelessWidget {
           e['imgUrl'] as String,
           e['quantity'] as int,
           e['price'] as int,
-          e['attributes'] == null
-              ? null
-              : e['attributes'] as Map<String, dynamic>,
+          e['attributes'] == {} ? null : e['attributes'] as Map,
         ));
       });
     });

@@ -10,8 +10,9 @@ class TicketService with ChangeNotifier {
   List<Datum> ticketsList = [];
   bool isLoading = false;
   bool? lastPage;
-  int pageNumber = 2;
+  TicketsModel? ticketsModel;
   bool noProduct = false;
+  bool nextPage = false;
   int pageNo = 1;
   String? title;
   String? subject;
@@ -37,6 +38,14 @@ class TicketService with ChangeNotifier {
 
   setIsLoading(value) {
     isLoading = value;
+    notifyListeners();
+  }
+
+  setNextPage(value) {
+    if (value == nextPage) {
+      return;
+    }
+    nextPage = value;
     notifyListeners();
   }
 
@@ -102,7 +111,7 @@ class TicketService with ChangeNotifier {
         print(response.body);
         if (response.statusCode == 200) {
           var data = TicketsModel.fromJson(jsonDecode(response.body));
-
+          ticketsModel = data;
           ticketsList = data.data;
           setIsLoading(false);
           noProduct = ticketsList.isEmpty;
@@ -113,6 +122,44 @@ class TicketService with ChangeNotifier {
             notifyListeners();
             return 'null';
           }
+          notifyListeners();
+          return;
+        }
+        throw '';
+      } catch (error) {
+        print(error);
+
+        rethrow;
+      }
+    }
+  }
+
+  Future fetchNextPage({bool noForceFetch = true}) async {
+    print(noProduct);
+    if (!noForceFetch) {
+      // if (lastPage != null && lastPage!) {
+      //   setIsLoading(false);
+      //   notifyListeners();
+      //   print('Leaving fetching___________');
+      //   return 'No more product found!';
+      // }
+      noForceFetch = true;
+      var header = {
+        //if header type is application/json then the data should be in jsonEncode method
+        "Accept": "application/json",
+        'Content-Type': 'application/json',
+        "Authorization": "Bearer $globalUserToken",
+      };
+      final url = Uri.parse(ticketsModel!.nextPageUrl);
+      try {
+        final response = await http.get(url, headers: header);
+        print(response.body);
+        if (response.statusCode == 200) {
+          var data = TicketsModel.fromJson(jsonDecode(response.body));
+          data.data.forEach((element) {
+            ticketsList.add(element);
+          });
+          ticketsModel = data;
           notifyListeners();
           return;
         }

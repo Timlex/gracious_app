@@ -9,9 +9,11 @@ import 'package:provider/provider.dart';
 class MyOrders extends StatelessWidget {
   MyOrders({Key? key}) : super(key: key);
   ConstantColors cc = ConstantColors();
+  ScrollController controller = ScrollController();
 
   @override
   Widget build(BuildContext context) {
+    controller.addListener((() => scrollListener(context)));
     return Scaffold(
       appBar: AppBars().appBarTitled(context, 'My orders', () {
         Navigator.of(context).pop();
@@ -36,25 +38,57 @@ class MyOrders extends StatelessWidget {
                   child: Text('No order found.'),
                 );
               }
-              return ListView.separated(
-                physics: const BouncingScrollPhysics(
-                    parent: AlwaysScrollableScrollPhysics()),
-                itemCount: oService.orderListModel!.data.length,
-                itemBuilder: (context, index) {
-                  final element = oService.orderListModel!.data[index];
-                  return OrderTile(
-                    double.parse(element.totalAmount),
-                    '#${element.orderId}',
-                    element.createdAt,
-                    element.status,
-                  );
-                },
-                separatorBuilder: (context, index) {
-                  return const Divider();
-                },
+              return Column(
+                children: [
+                  Expanded(
+                    child: ListView.separated(
+                      controller: controller,
+                      physics: const BouncingScrollPhysics(
+                          parent: AlwaysScrollableScrollPhysics()),
+                      itemCount: oService.orderListModel!.data.length,
+                      itemBuilder: (context, index) {
+                        final element = oService.orderListModel!.data[index];
+                        return OrderTile(
+                          double.parse(element.totalAmount),
+                          '#${element.orderId}',
+                          element.createdAt,
+                          element.status,
+                        );
+                      },
+                      separatorBuilder: (context, index) {
+                        return const Divider();
+                      },
+                    ),
+                  ),
+                  if (oService.loadingNextPage)
+                    Center(child: loadingProgressBar()),
+                ],
               );
             });
           })),
     );
+  }
+
+  scrollListener(BuildContext context) {
+    final oService = Provider.of<OrderListService>(context, listen: false);
+    final orderListData = oService.orderListModel;
+
+    if (controller.offset >= controller.position.maxScrollExtent &&
+        !controller.position.outOfRange) {
+      if (orderListData!.nextPageUrl != null) {
+        oService.setLodingNextPage(true);
+        oService
+            .fetchNextPage()
+            .then((value) => oService.setLodingNextPage(false))
+            .onError((error, stackTrace) => oService.setLodingNextPage(false));
+      } else {
+        snackBar(context, 'No more order found', backgroundColor: cc.orange);
+      }
+    }
+  }
+
+  Future<bool> showTimout() async {
+    await Future.delayed(const Duration(seconds: 10));
+    return true;
   }
 }

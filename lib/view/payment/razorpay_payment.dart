@@ -74,7 +74,7 @@ class RazorpayPayment extends StatelessWidget {
               }
               if (snapshot.hasData) {
                 return const Center(
-                  child: Text('Loding failed.'),
+                  child: Text('Loadingfailed.'),
                 );
               }
               return WebView(

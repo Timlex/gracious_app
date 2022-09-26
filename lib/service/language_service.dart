@@ -7,7 +7,7 @@ import 'package:http/http.dart' as http;
 
 class LanguageService with ChangeNotifier {
   bool rtl = false;
-  String currencySymbol = '';
+  String currencySymbol = '\$';
 
   Future setLanguage() async {
     final url = Uri.parse('$baseApiUrl/default-lang');

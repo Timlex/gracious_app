@@ -127,9 +127,11 @@ class PosterCard extends StatelessWidget {
                 child: FittedBox(
                   child: SizedBox(
                       width: screenWidth / 4,
-                      child: Text(
-                        btText,
-                        style: TextStyle(overflow: TextOverflow.ellipsis),
+                      child: Center(
+                        child: Text(
+                          btText,
+                          style: TextStyle(overflow: TextOverflow.ellipsis),
+                        ),
                       )),
                 ),
                 style: ElevatedButton.styleFrom(

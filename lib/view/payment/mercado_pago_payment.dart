@@ -75,13 +75,13 @@ class MercadopagoPayment extends StatelessWidget {
               }
               if (snapshot.hasData) {
                 return const Center(
-                  child: Text('Loding failed.'),
+                  child: Text('Loadingfailed.'),
                 );
               }
               if (snapshot.hasError) {
                 print(snapshot.error);
                 return const Center(
-                  child: Text('Loding failed.'),
+                  child: Text('Loadingfailed.'),
                 );
               }
               return WebView(

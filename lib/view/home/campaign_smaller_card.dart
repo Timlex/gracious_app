@@ -20,7 +20,7 @@ class CampaignSmallerCard extends StatelessWidget {
   Widget build(BuildContext context) {
     initiateDeviceSize(context);
     return Container(
-      height: (screenHight / 3.4 < 221 ? 195 : screenHight / 3.4),
+      height: (screenHight / 3.4 < 221 ? 221 : screenHight / 3.4),
       width: screenWidth / 2.5,
       margin: margin
           ? EdgeInsets.only(
@@ -39,7 +39,7 @@ class CampaignSmallerCard extends StatelessWidget {
         child: Stack(
           children: [
             SizedBox(
-              height: (screenHight / 3.4 < 221 ? 195 : screenHight / 3.4),
+              height: (screenHight / 3.4 < 221 ? 221 : screenHight / 3.4),
               width: screenWidth / 2.5,
               child: Image.network(
                 imgUrl,
@@ -49,7 +49,7 @@ class CampaignSmallerCard extends StatelessWidget {
               ),
             ),
             Container(
-              height: (screenHight / 3.4 < 221 ? 195 : screenHight / 3.4),
+              height: (screenHight / 3.4 < 221 ? 221 : screenHight / 3.4),
               width: screenWidth / 2.5,
               decoration: BoxDecoration(
                 gradient: LinearGradient(
@@ -73,7 +73,10 @@ class CampaignSmallerCard extends StatelessWidget {
                       child: SlideCountdownSeparated(
                     showZeroValue: true,
                     separator: '',
-                    decoration: BoxDecoration(color: cc.primaryColor),
+                    decoration: BoxDecoration(
+                      color: cc.primaryColor,
+                      borderRadius: BorderRadius.circular(5),
+                    ),
                     duration: Duration(days: 150),
                   )),
                   SizedBox(height: 5),

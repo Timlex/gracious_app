@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
+import 'package:gren_mart/view/utils/constant_styles.dart';
 import 'package:http/http.dart' as http;
 
 import '../../service/common_service.dart';
@@ -32,7 +33,7 @@ class CuponDiscountService with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<dynamic> getCuponDiscontAmount() async {
+  Future<dynamic> getCuponDiscontAmount(BuildContext context) async {
     if (cuponText == null || cuponText == '') {
       return 'Enter a valid cupon';
     }
@@ -50,6 +51,11 @@ class CuponDiscountService with ChangeNotifier {
     if (response.statusCode == 200) {
       print(response.body);
       cuponDiscount = json.decode(response.body)['coupon_amount'].toDouble();
+      if (cuponDiscount <= 0) {
+        snackBar(context, 'Invalid coupon!', backgroundColor: cc.orange);
+      } else {
+        snackBar(context, 'Coupon applied!');
+      }
       isLoading = false;
       notifyListeners();
       return;

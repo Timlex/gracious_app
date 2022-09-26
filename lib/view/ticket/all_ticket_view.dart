@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import '../../service/add_new_ticket_service.dart';
 import '../../service/search_result_data_service.dart';
 import '../../view/ticket/add_new_ticket.dart';
@@ -21,6 +22,7 @@ class AllTicketsView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    controller.addListener((() => scrollListener(context)));
     initiateDeviceSize(context);
     double cardWidth = screenWidth / 3.3;
     double cardHeight = screenHight / 4.9;
@@ -108,46 +110,51 @@ class AllTicketsView extends StatelessWidget {
         ),
       );
     } else {
-      return ListView.builder(
-          padding:
-              const EdgeInsets.only(right: 20, left: 20, bottom: 30, top: 10),
-          // controller: controller,
-          physics: const BouncingScrollPhysics(
-              parent: AlwaysScrollableScrollPhysics()),
-          itemCount: ticketsService.ticketsList.length,
-          itemBuilder: (context, index) {
-            return TicketTile(
-              ticketsService.ticketsList[index].title,
-              ticketsService.ticketsList[index].id,
-              ticketsService.ticketsList[index].createdAt,
-              ticketsService.ticketsList[index].priority,
-              ticketsService.ticketsList[index].status,
-              ticketsService.ticketsList[index].id !=
-                  ticketsService.ticketsList.last.id,
-            );
-          });
+      return Column(
+        children: [
+          Expanded(
+            child: ListView.builder(
+                controller: controller,
+                padding: const EdgeInsets.only(
+                    right: 20, left: 20, bottom: 30, top: 10),
+                // controller: controller,
+                physics: const BouncingScrollPhysics(
+                    parent: AlwaysScrollableScrollPhysics()),
+                itemCount: ticketsService.ticketsList.length,
+                itemBuilder: (context, index) {
+                  return TicketTile(
+                    ticketsService.ticketsList[index].title,
+                    ticketsService.ticketsList[index].id,
+                    ticketsService.ticketsList[index].createdAt,
+                    ticketsService.ticketsList[index].priority,
+                    ticketsService.ticketsList[index].status,
+                    ticketsService.ticketsList[index].id !=
+                        ticketsService.ticketsList.last.id,
+                  );
+                }),
+          ),
+          if (ticketsService.nextPage)
+            Center(
+              child: loadingProgressBar(),
+            ),
+        ],
+      );
     }
   }
 
-  scrollListener(BuildContext context) {
+  scrollListener(BuildContext context) async {
+    final tService = Provider.of<TicketService>(context, listen: false);
     if (controller.offset >= controller.position.maxScrollExtent &&
         !controller.position.outOfRange) {
-      Provider.of<SearchResultDataService>(context, listen: false)
-          .setIsLoading(true);
-
-      Provider.of<TicketService>(context, listen: false)
-          .fetchTickets()
-          .then((value) {
-        if (value != null) {
-          snackBar(context, value);
-        }
-      });
-      Provider.of<TicketService>(context, listen: false).setPageNo();
+      if (tService.ticketsModel!.nextPageUrl != null) {
+        tService.setNextPage(true);
+        await tService
+            .fetchNextPage(noForceFetch: false)
+            .then((value) => tService.setNextPage(false))
+            .onError((error, stackTrace) => tService.setNextPage(false));
+        return;
+      }
+      snackBar(context, 'No more ticket found', backgroundColor: cc.orange);
     }
-  }
-
-  Future<bool> showTimout() async {
-    await Future.delayed(const Duration(seconds: 10));
-    return true;
   }
 }

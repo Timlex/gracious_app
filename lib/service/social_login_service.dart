@@ -10,10 +10,10 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SocialLoginService with ChangeNotifier {
-  bool isLoding = false;
+  bool isLoading = false;
 
   setIsLoading(value) {
-    isLoding = value;
+    isLoading = value;
     notifyListeners();
   }
 

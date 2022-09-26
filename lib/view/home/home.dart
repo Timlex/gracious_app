@@ -411,22 +411,41 @@ class Home extends StatelessWidget {
 
                                 const Spacer(),
                                 if (campInfo.campaignInfo!.endDate != null)
-                                  SlideCountdown(
+                                  FittedBox(
+                                      child: SlideCountdownSeparated(
                                     showZeroValue: true,
-                                    textStyle: TextStyle(
-                                        color: cc.orange,
-                                        fontWeight: FontWeight.w500),
+                                    separator: '',
                                     decoration: BoxDecoration(
-                                        color: cc.pureWhite,
-                                        borderRadius: const BorderRadius.all(
-                                            Radius.circular(10)),
+                                        borderRadius: BorderRadius.circular(5),
                                         border: Border.all(
-                                          width: .7,
-                                          color: cc.orange,
+                                          width: 1,
+                                          color: cc.greyBorder,
                                         )),
-                                    duration: DateTime.now().difference(campInfo
-                                        .campaignInfo!.endDate as DateTime),
-                                  ),
+                                    duration: campInfo.campaignInfo!.endDate!
+                                            .isAfter(DateTime.now())
+                                        ? DateTime.now().difference(campInfo
+                                            .campaignInfo!.endDate as DateTime)
+                                        : Duration(seconds: 1),
+                                    textStyle: TextStyle(
+                                        color: cc.blackColor.withOpacity(.8),
+                                        fontWeight: FontWeight.bold),
+                                  )),
+                                // SlideCountdown(
+                                //   showZeroValue: true,
+                                //   textStyle: TextStyle(
+                                //       color: cc.orange,
+                                //       fontWeight: FontWeight.w500),
+                                //   decoration: BoxDecoration(
+                                //       color: cc.pureWhite,
+                                //       borderRadius: const BorderRadius.all(
+                                //           Radius.circular(10)),
+                                //       border: Border.all(
+                                //         width: .7,
+                                //         color: cc.orange,
+                                //       )),
+                                //   duration: DateTime.now().difference(campInfo
+                                //       .campaignInfo!.endDate as DateTime),
+                                // ),
                               ],
                             )
                           : null)
@@ -497,7 +516,7 @@ class Home extends StatelessWidget {
                       ? SizedBox()
                       : SizedBox(
                           height:
-                              screenHight / 3.4 < 221 ? 195 : screenHight / 3.4,
+                              screenHight / 3.4 < 221 ? 221 : screenHight / 3.4,
                           child: ListView.builder(
                             physics: const BouncingScrollPhysics(
                                 parent: AlwaysScrollableScrollPhysics()),

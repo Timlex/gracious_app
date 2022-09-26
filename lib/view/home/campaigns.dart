@@ -64,7 +64,7 @@ class Campaigns extends StatelessWidget {
         // controller: controller,
         physics: const BouncingScrollPhysics(
             parent: AlwaysScrollableScrollPhysics()),
-        padding: EdgeInsets.only(top: 15),
+        padding: EdgeInsets.only(top: 15, bottom: 30),
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 2,
             childAspectRatio: cardWidth / cardHeight,

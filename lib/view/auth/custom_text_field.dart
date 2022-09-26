@@ -43,9 +43,10 @@ class _CustomTextFieldState extends State<CustomTextField> {
       initialValue: widget.initialValue,
       key: widget.key,
       keyboardType: widget.keyboardType,
-      focusNode: widget.focusNode,
+      // focusNode: widget.focusNode,
       controller: widget.controller,
       obscureText: widget.obscureText,
+      // autovalidateMode: AutovalidateMode.always,
       style:
           TextStyle(color: ConstantColors().greyTextFieldLebel, fontSize: 13),
       decoration: InputDecoration(

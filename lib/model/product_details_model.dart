@@ -36,7 +36,7 @@ class ProductDetailsModel {
   Map<String, AdditionalInfoStore>? additionalInfoStore;
   dynamic productColors;
   dynamic productSizes;
-  SettingText settingText;
+  SettingText? settingText;
   bool userRatedAlready;
 
   factory ProductDetailsModel.fromJson(Map<String, dynamic> json) {
@@ -88,7 +88,7 @@ class ProductDetailsModel {
         "productColors":
             List<dynamic>.from(productColors.map((x) => x.toJson())),
         "productSizes": List<dynamic>.from(productSizes.map((x) => x.toJson())),
-        "setting_text": settingText.toJson(),
+        "setting_text": settingText!.toJson(),
         "user_rated_already": userRatedAlready,
       };
 }
@@ -107,7 +107,9 @@ class AdditionalInfoStore {
   factory AdditionalInfoStore.fromJson(Map<String, dynamic> json) =>
       AdditionalInfoStore(
         pidId: json["pid_id"],
-        additionalPrice: json["additional_price"],
+        additionalPrice: json["additional_price"] is double
+            ? json["additional_price"].toInt()
+            : json["additional_price"],
         image: json["image"],
       );
 
@@ -467,7 +469,9 @@ class InventoryDetail {
         color: json["color"],
         size: json["size"],
         hash: json["hash"],
-        additionalPrice: json["additional_price"],
+        additionalPrice: json["additional_price"] is double
+            ? json["additional_price"].toInt()
+            : json["additional_price"],
         image: json["image"],
         stockCount: json["stock_count"],
         soldCount: json["sold_count"],

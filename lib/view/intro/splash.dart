@@ -69,8 +69,20 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   initiateAutoSignIn(BuildContext context) async {
-    await Provider.of<LanguageService>(context, listen: false).setLanguage();
-    await Provider.of<LanguageService>(context, listen: false).setCurrency();
+    await Provider.of<LanguageService>(context, listen: false)
+        .setLanguage()
+        .onError((error, stackTrace) {
+      FlutterNativeSplash.remove();
+      return;
+      snackBar(context, 'Connection error', backgroundColor: cc.orange);
+    });
+    await Provider.of<LanguageService>(context, listen: false)
+        .setCurrency()
+        .onError((error, stackTrace) {
+      FlutterNativeSplash.remove();
+      return;
+      snackBar(context, 'Connection error', backgroundColor: cc.orange);
+    });
     await Provider.of<SignInSignUpService>(context, listen: false)
         .getToken()
         .then((value) async {
@@ -88,11 +100,8 @@ class _SplashScreenState extends State<SplashScreen> {
             }
             Provider.of<PosterCampaignSliderService>(context, listen: false)
                 .fetchPosters();
-            print('here');
             Provider.of<PosterCampaignSliderService>(context, listen: false)
                 .fetchCampaigns();
-            print('here2');
-            print('here2');
 
             FlutterNativeSplash.remove();
             Provider.of<NavigationBarHelperService>(context, listen: false)
@@ -100,11 +109,13 @@ class _SplashScreenState extends State<SplashScreen> {
             Navigator.of(context).pushReplacementNamed(HomeFront.routeName);
 
             return;
-          }).onError((error, stackTrace) => snackBar(
-                  context, "Connection failed!",
-                  backgroundColor: cc.orange));
+          }).onError((error, stackTrace) {
+            snackBar(context, "Connection failed!", backgroundColor: cc.orange);
+            throw '';
+          });
         } catch (error) {
           print(error);
+          throw error;
         }
 
         return;

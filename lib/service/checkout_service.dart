@@ -211,6 +211,11 @@ class CheckoutService with ChangeNotifier {
       if (selectedGateaway.name == 'paytm') {
         await paytmChekout(context);
       }
+      if (selectedGateaway.name == 'bank_transfer' ||
+          selectedGateaway.name == 'cheque_payment' ||
+          selectedGateaway.name == 'cash_on_delivery') {
+        cartData.emptyCart();
+      }
       print(jsonDecode(response.body));
       // Provider.of<CartDataService>(context, listen: false).emptyCart();
       notifyListeners();

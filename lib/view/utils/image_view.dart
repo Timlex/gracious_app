@@ -30,7 +30,7 @@ class ImageView extends StatelessWidget {
                   return loadingProgressBar();
                 },
                 errorBuilder: (context, exception, stackTrace) {
-                  return const Text('Loding failed!');
+                  return const Text('Connection failed!');
                 },
                 imageProvider: imageUrl.contains('http')
                     ? NetworkImage(imageUrl) as ImageProvider<Object>?

@@ -64,8 +64,8 @@ class CartDataService with ChangeNotifier {
     _cartItems![id.toString()]!.forEach((element) {
       if (element['id'] == id &&
           (element.containsValue(inventorySet) ||
-              (jsonEncode(inventorySet) ==
-                  jsonEncode(element['attributes'])))) {
+              (jsonEncode(inventorySet) == jsonEncode(element['attributes'])) ||
+              (inventorySet == null && element['attributes'] == null))) {
         element.update('quantity', (value) {
           int sum = (value as int) + (extraQuantity ?? 1);
           print(sum);
@@ -135,7 +135,7 @@ class CartDataService with ChangeNotifier {
           'imgUrl': imgUrl,
           'quantity': quantity,
           'hash': hash,
-          'attributes': inventorySet
+          'attributes': inventorySet ?? {}
         },
       ]
     };
@@ -152,7 +152,7 @@ class CartDataService with ChangeNotifier {
           'imgUrl': imgUrl,
           'quantity': quantity,
           'hash': hash,
-          'attributes': inventorySet
+          'attributes': inventorySet ?? {}
         }
       ];
       snackBar(context, 'Item added to cart.');
@@ -163,11 +163,12 @@ class CartDataService with ChangeNotifier {
     bool haveData = false;
     _cartItems![id.toString()]!.forEach((element) {
       if ((element.containsValue(inventorySet) ||
-          (jsonEncode(inventorySet) == jsonEncode(element['attributes'])))) {
+          (jsonEncode(inventorySet) == jsonEncode(element['attributes'])) ||
+          (inventorySet == null && element['attributes'] == null))) {
         haveData = true;
       }
     });
-    print(id);
+    print(inventorySet);
     print('have data on cart--$haveData');
     if (_cartItems!.containsKey(id.toString()) && haveData) {
       addItem(context, id, extraQuantity: quantity, inventorySet: inventorySet);
@@ -184,7 +185,7 @@ class CartDataService with ChangeNotifier {
         'imgUrl': imgUrl,
         'quantity': quantity,
         'hash': hash,
-        'attributes': inventorySet
+        'attributes': inventorySet ?? {}
       });
       DbHelper.updateQuantity(
         'cart',

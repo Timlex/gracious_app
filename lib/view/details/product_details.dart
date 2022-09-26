@@ -78,13 +78,13 @@ class ProductDetails extends StatelessWidget {
                                 foregroundColor: cc.greyHint,
                                 expandedHeight: screenWidth / 1.37,
                                 pinned: true,
-                                flexibleSpace: Container(
-                                  margin: EdgeInsets.only(top: 40),
-                                  child: FlexibleSpaceBar(
-                                    background: pService.additionalInfoImage !=
-                                                null ||
-                                            product.productGalleryImage.isEmpty
-                                        ? GestureDetector(
+                                flexibleSpace: FlexibleSpaceBar(
+                                  background: pService.additionalInfoImage !=
+                                              null ||
+                                          product.productGalleryImage.isEmpty
+                                      ? Container(
+                                          margin: EdgeInsets.only(top: 40),
+                                          child: GestureDetector(
                                             onTap: () {
                                               Navigator.of(context).push(
                                                 MaterialPageRoute<void>(
@@ -128,12 +128,17 @@ class ProductDetails extends StatelessWidget {
                                                 );
                                               },
                                             ),
-                                          )
-                                        : Swiper(
-                                            itemBuilder: (BuildContext context,
-                                                int index) {
-                                              return Hero(
-                                                tag: id,
+                                          ),
+                                        )
+                                      : Swiper(
+                                          loop: false,
+                                          itemBuilder: (BuildContext context,
+                                              int index) {
+                                            return Hero(
+                                              tag: id,
+                                              child: Container(
+                                                margin:
+                                                    EdgeInsets.only(top: 40),
                                                 child: GestureDetector(
                                                   onTap: () {
                                                     Navigator.of(context).push(
@@ -185,49 +190,53 @@ class ProductDetails extends StatelessWidget {
                                                     ),
                                                   ),
                                                 ),
-                                              );
-                                            },
-                                            itemCount: product
-                                                .productGalleryImage.length,
-                                            pagination:
-                                                pService.additionalInfoImage !=
-                                                            null ||
-                                                        product
-                                                            .productGalleryImage
-                                                            .isEmpty
-                                                    ? null
-                                                    : SwiperCustomPagination(
-                                                        builder: (BuildContext
-                                                                context,
-                                                            SwiperPluginConfig
-                                                                config) {
-                                                          return Align(
-                                                              alignment: Alignment
-                                                                  .bottomCenter,
-                                                              child: Padding(
-                                                                padding:
-                                                                    const EdgeInsets
-                                                                        .all(12),
-                                                                child: Row(
-                                                                    mainAxisAlignment:
-                                                                        MainAxisAlignment
-                                                                            .center,
-                                                                    children: [
-                                                                      for (int i =
-                                                                              0;
-                                                                          i <
-                                                                              product
-                                                                                  .productGalleryImage.length;
-                                                                          i++)
-                                                                        (i == config.activeIndex
-                                                                            ? DotIndicator(true)
-                                                                            : DotIndicator(false))
-                                                                    ]),
-                                                              ));
-                                                        },
-                                                      ),
-                                          ),
-                                  ),
+                                              ),
+                                            );
+                                          },
+                                          itemCount: product
+                                              .productGalleryImage.length,
+                                          pagination: pService
+                                                          .additionalInfoImage !=
+                                                      null ||
+                                                  product.productGalleryImage
+                                                      .isEmpty ||
+                                                  product.productGalleryImage
+                                                          .length <=
+                                                      1
+                                              ? null
+                                              : SwiperCustomPagination(
+                                                  builder:
+                                                      (BuildContext context,
+                                                          SwiperPluginConfig
+                                                              config) {
+                                                    return Align(
+                                                        alignment: Alignment
+                                                            .bottomCenter,
+                                                        child: Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                  .all(12),
+                                                          child: Row(
+                                                              mainAxisAlignment:
+                                                                  MainAxisAlignment
+                                                                      .center,
+                                                              children: [
+                                                                for (int i = 0;
+                                                                    i <
+                                                                        product
+                                                                            .productGalleryImage
+                                                                            .length;
+                                                                    i++)
+                                                                  (i == config.activeIndex
+                                                                      ? DotIndicator(
+                                                                          true)
+                                                                      : DotIndicator(
+                                                                          false))
+                                                              ]),
+                                                        ));
+                                                  },
+                                                ),
+                                        ),
                                 ),
                                 leading: GestureDetector(
                                   onTap: (() {

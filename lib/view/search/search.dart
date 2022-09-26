@@ -118,10 +118,11 @@ class SearchView extends StatelessWidget {
                             ConnectionState.waiting) {
                           return loadingProgressBar();
                         }
-                        snackBar(context, 'Timeout!');
+                        snackBar(context, 'Timeout!',
+                            backgroundColor: cc.orange);
                         return Center(
                           child: Text(
-                            'Something went wrong!',
+                            'Loading failed!',
                             style: TextStyle(color: cc.greyHint),
                           ),
                         );
@@ -183,7 +184,7 @@ class SearchView extends StatelessWidget {
                       .toString())
           .then((value) {
         if (value != null) {
-          snackBar(context, value);
+          snackBar(context, value, backgroundColor: cc.orange);
         }
       });
       Provider.of<SearchResultDataService>(context, listen: false).nextPage();

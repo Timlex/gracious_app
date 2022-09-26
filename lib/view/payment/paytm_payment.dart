@@ -83,31 +83,22 @@ class PaytmPayment extends StatelessWidget {
                   .confirmPayment(context);
             }
           },
-          onPageStarted: (value) async {
-            if (value.contains('success')) {
-              await showDialog(
-                  context: context,
-                  builder: (ctx) {
-                    return AlertDialog(
-                      title: Text('Payment failed!'),
-                      actions: [
-                        Spacer(),
-                        TextButton(
-                          onPressed: () => Navigator.of(context)
-                              .pushAndRemoveUntil(
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          PaymentStatusView(true)),
-                                  (Route<dynamic> route) => false),
-                          child: Text(
-                            'Ok',
-                            style: TextStyle(color: cc.primaryColor),
-                          ),
-                        )
-                      ],
-                    );
-                  });
+          navigationDelegate: (navData) {
+            if (navData.url.contains('success')) {
+              Navigator.of(context).pushAndRemoveUntil(
+                  MaterialPageRoute(
+                      builder: (context) => PaymentStatusView(false)),
+                  (Route<dynamic> route) => false);
+              return NavigationDecision.prevent;
             }
+            if (navData.url.contains('failed')) {
+              Navigator.of(context).pushAndRemoveUntil(
+                  MaterialPageRoute(
+                      builder: (context) => PaymentStatusView(true)),
+                  (Route<dynamic> route) => false);
+              return NavigationDecision.prevent;
+            }
+            return NavigationDecision.navigate;
           },
         ),
       ),

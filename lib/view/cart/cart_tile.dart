@@ -17,7 +17,7 @@ class CartTile extends StatelessWidget {
   final String image;
   final int quantity;
   final int price;
-  Map<String, dynamic>? inventorySet;
+  Map? inventorySet;
   CartTile(
     this.id,
     this.name,
@@ -58,7 +58,7 @@ class CartTile extends StatelessWidget {
       onDismissed: (direction) {
         snackBar(context, 'Item removed from cart.',
             backgroundColor: cc.orange);
-        carts.deleteCartItem(id, inventorySet: inventorySet);
+        carts.deleteCartItem(id, inventorySet: inventorySet ?? {});
       },
       key: Key(id.toString()),
       child: SizedBox(
@@ -156,7 +156,7 @@ class CartTile extends StatelessWidget {
                                 // padding: EdgeInsets.zero,
                                 onPressed: () {
                                   cart.minusItem(id, context,
-                                      inventorySet: inventorySet);
+                                      inventorySet: inventorySet ?? {});
                                 },
                                 icon: SvgPicture.asset(
                                   'assets/images/icons/minus.svg',
@@ -181,7 +181,7 @@ class CartTile extends StatelessWidget {
                             ),
                             child: IconButton(
                                 onPressed: () => cart.addItem(context, id,
-                                    inventorySet: inventorySet),
+                                    inventorySet: inventorySet ?? {}),
                                 icon: SvgPicture.asset(
                                   'assets/images/icons/add.svg',
                                   color: cc.primaryColor,
@@ -200,7 +200,8 @@ class CartTile extends StatelessWidget {
                       if (deleteItem) {
                         snackBar(context, 'Item removed from cart.',
                             backgroundColor: cc.orange);
-                        carts.deleteCartItem(id, inventorySet: inventorySet);
+                        carts.deleteCartItem(id,
+                            inventorySet: inventorySet ?? {});
                       }
                     }),
                     child: Padding(

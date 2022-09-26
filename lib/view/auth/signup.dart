@@ -15,10 +15,6 @@ import '../utils/constant_styles.dart';
 import 'custom_text_field.dart';
 
 class SignUp extends StatelessWidget {
-  final _userNameFN = FocusNode();
-  final _emailFN = FocusNode();
-  final _passFN = FocusNode();
-  final _rePassFN = FocusNode();
   final Key _formkey;
 
   SignUp(
@@ -48,7 +44,6 @@ class SignUp extends StatelessWidget {
             },
             onFieldSubmitted: (_) {
               FocusScope.of(context).unfocus();
-              FocusScope.of(context).requestFocus(_userNameFN);
             },
             onChanged: (name) {
               authController.setName(name);
@@ -58,7 +53,6 @@ class SignUp extends StatelessWidget {
           // const SizedBox(height: 8),
           CustomTextField(
             'Enter user name',
-            focusNode: _userNameFN,
             validator: (ussernameText) {
               if (ussernameText!.isEmpty) {
                 return 'Enter your userName';
@@ -76,14 +70,12 @@ class SignUp extends StatelessWidget {
             },
             onFieldSubmitted: (_) {
               FocusScope.of(context).unfocus();
-              FocusScope.of(context).requestFocus(_emailFN);
             },
           ),
           textFieldTitle('Email'),
           // const SizedBox(height: 8),
           CustomTextField(
             'Enter email address',
-            focusNode: _emailFN,
             validator: (emaiText) {
               if (emaiText!.isEmpty) {
                 return 'Enter your email';
@@ -202,7 +194,6 @@ class SignUp extends StatelessWidget {
             },
             onFieldSubmitted: (_) {
               FocusScope.of(context).unfocus();
-              FocusScope.of(context).requestFocus(_passFN);
             },
             onChanged: (city) {
               authController.setCityAddress(city);
@@ -211,7 +202,6 @@ class SignUp extends StatelessWidget {
           textFieldTitle('Password'),
           CustomTextField(
             'Enter password',
-            focusNode: _passFN,
             keyboardType: TextInputType.number,
             validator: (password) {
               if (password!.isEmpty) {
@@ -224,7 +214,6 @@ class SignUp extends StatelessWidget {
             },
             onFieldSubmitted: (_) {
               FocusScope.of(context).unfocus();
-              FocusScope.of(context).requestFocus(_rePassFN);
             },
             onChanged: (pass) {
               authController.setNewPassword(pass);
@@ -234,7 +223,6 @@ class SignUp extends StatelessWidget {
           // const SizedBox(height: 8),
           CustomTextField(
             'Re enter password',
-            focusNode: _rePassFN,
             keyboardType: TextInputType.number,
             validator: (password) {
               if (password != authController.newPassword) {

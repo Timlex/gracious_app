@@ -31,6 +31,8 @@ class AddNewAddress extends StatelessWidget {
       BuildContext context, ShippingAddressesService saData) async {
     final validated = _formKey.currentState!.validate();
     if (!validated || saData.phone == null) {
+      snackBar(context, "Please give all the information properly",
+          backgroundColor: cc.orange);
       return;
     }
     saData.setIsLoading(true);
@@ -45,7 +47,7 @@ class AddNewAddress extends StatelessWidget {
         saData.setIsLoading(false);
         return;
       }
-      snackBar(context, value);
+      snackBar(context, value, backgroundColor: cc.orange);
       saData.setIsLoading(false);
       return;
     });
@@ -57,8 +59,8 @@ class AddNewAddress extends StatelessWidget {
         .getContries(context);
     return Scaffold(
       appBar: AppBars().appBarTitled(context, 'Add New Address', () {
-        Navigator.of(context).pop();
         if (dontPop) {
+          Navigator.of(context).pop();
           Navigator.of(context).pushNamed(Checkout.routeName);
           return;
         }
@@ -67,6 +69,7 @@ class AddNewAddress extends StatelessWidget {
       }, hasButton: true),
       body: WillPopScope(
         onWillPop: () async {
+          print(dontPop);
           if (dontPop) {
             Navigator.of(context).pop();
             Navigator.of(context).pushNamed(Checkout.routeName);

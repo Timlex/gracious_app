@@ -21,94 +21,105 @@ class PaymentStatusView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.all(8),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Expanded(
-                child: Padding(
-              padding: const EdgeInsets.all(17.0),
-              child: Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    SizedBox(
-                      height: 150,
-                      child: Image.asset(isError
-                          ? 'assets/images/payment_error.png'
-                          : 'assets/images/payment_success.png'),
-                    ),
-                    const SizedBox(height: 45),
-                    Text(
-                      isError ? 'Opps!' : 'Payment successful!',
-                      style: TextStyle(
-                        fontSize: 23,
-                        fontWeight: FontWeight.bold,
-                        color: ConstantColors().titleTexts,
+      body: WillPopScope(
+        onWillPop: () async {
+          if (!isError) {
+            Provider.of<CartDataService>(context, listen: false).emptyCart();
+            Navigator.of(context).pushReplacementNamed(HomeFront.routeName);
+            return true;
+          }
+          Navigator.of(context).pushReplacementNamed(HomeFront.routeName);
+          return true;
+        },
+        child: Padding(
+          padding: const EdgeInsets.all(8),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Expanded(
+                  child: Padding(
+                padding: const EdgeInsets.all(17.0),
+                child: Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      SizedBox(
+                        height: 150,
+                        child: Image.asset(isError
+                            ? 'assets/images/payment_error.png'
+                            : 'assets/images/payment_success.png'),
                       ),
-                    ),
-                    const SizedBox(height: 15),
-                    RichText(
-                      textAlign: TextAlign.center,
-                      text: TextSpan(
-                        text: isError
-                            ? 'We\'re getting problems with your payment methods and we couldn\'t proceed your order.'
-                            : 'Your order has been successful! You\'ll receive ordered items in 3-5 days. Your order ID is ',
-                        style: TextThemeConstrants.paragraphText,
-                        children: <TextSpan>[
-                          if (!isError)
-                            TextSpan(
-                                recognizer: TapGestureRecognizer()
-                                  ..onTap = () {
-                                    Provider.of<CartDataService>(context,
-                                            listen: false)
-                                        .emptyCart();
-                                    Navigator.of(context)
-                                        .push(MaterialPageRoute<void>(
-                                      builder: (BuildContext context) =>
-                                          OrderDetails(
-                                              Provider.of<CheckoutService>(
-                                                      context,
-                                                      listen: false)
-                                                  .checkoutModel!
-                                                  .id
-                                                  .toString()),
-                                    ));
-                                  },
-                                text:
-                                    ' #${Provider.of<CheckoutService>(context, listen: false).checkoutModel!.id}',
-                                style: TextStyle(color: cc.primaryColor)),
-                        ],
+                      const SizedBox(height: 45),
+                      Text(
+                        isError ? 'Opps!' : 'Payment successful!',
+                        style: TextStyle(
+                          fontSize: 23,
+                          fontWeight: FontWeight.bold,
+                          color: ConstantColors().titleTexts,
+                        ),
                       ),
-                    ),
-                  ],
+                      const SizedBox(height: 15),
+                      RichText(
+                        textAlign: TextAlign.center,
+                        text: TextSpan(
+                          text: isError
+                              ? 'We\'re getting problems with your payment methods and we couldn\'t proceed your order.'
+                              : 'Your order has been successful! You\'ll receive ordered items in 3-5 days. Your order ID is ',
+                          style: TextThemeConstrants.paragraphText,
+                          children: <TextSpan>[
+                            if (!isError)
+                              TextSpan(
+                                  recognizer: TapGestureRecognizer()
+                                    ..onTap = () {
+                                      Provider.of<CartDataService>(context,
+                                              listen: false)
+                                          .emptyCart();
+                                      Navigator.of(context)
+                                          .push(MaterialPageRoute<void>(
+                                        builder: (BuildContext context) =>
+                                            OrderDetails(
+                                                Provider.of<CheckoutService>(
+                                                        context,
+                                                        listen: false)
+                                                    .checkoutModel!
+                                                    .id
+                                                    .toString()),
+                                      ));
+                                    },
+                                  text:
+                                      ' #${Provider.of<CheckoutService>(context, listen: false).checkoutModel!.id}',
+                                  style: TextStyle(color: cc.primaryColor)),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-            )),
-            !(isError)
-                ? customRowButton(context, 'Back to home', 'Track your order',
-                    () {
-                    Provider.of<CartDataService>(context, listen: false)
-                        .emptyCart();
-                    Navigator.of(context)
-                        .pushReplacementNamed(HomeFront.routeName);
-                  }, () {
-                    Provider.of<CartDataService>(context, listen: false)
-                        .emptyCart();
-                    Navigator.of(context).push(MaterialPageRoute<void>(
-                      builder: (BuildContext context) =>
-                          OrderDetails(trackId!.toString()),
-                    ));
-                  })
-                : customContainerButton('Back to home', screenWidth - 50, () {
-                    Navigator.of(context)
-                        .pushReplacementNamed(HomeFront.routeName);
-                  }),
-            const SizedBox(height: 10),
-          ],
+              )),
+              !(isError)
+                  ? customRowButton(context, 'Back to home', 'Track your order',
+                      () {
+                      Provider.of<CartDataService>(context, listen: false)
+                          .emptyCart();
+                      Navigator.of(context)
+                          .pushReplacementNamed(HomeFront.routeName);
+                    }, () {
+                      Provider.of<CartDataService>(context, listen: false)
+                          .emptyCart();
+                      Navigator.of(context).push(MaterialPageRoute<void>(
+                        builder: (BuildContext context) =>
+                            OrderDetails(trackId!.toString()),
+                      ));
+                    })
+                  : customContainerButton('Back to home', screenWidth - 50, () {
+                      Navigator.of(context)
+                          .pushReplacementNamed(HomeFront.routeName);
+                    }),
+              const SizedBox(height: 10),
+            ],
+          ),
         ),
       ),
     );
