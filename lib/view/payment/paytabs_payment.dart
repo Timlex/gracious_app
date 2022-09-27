@@ -213,7 +213,7 @@ class PayTabsPayment extends StatelessWidget {
       // Above is API server key for the Midtrans account, encoded to base64
     };
     final checkoutInfo = Provider.of<CheckoutService>(context, listen: false);
-    final orderId = checkoutInfo!.checkoutModel!.id;
+    final orderId = checkoutInfo.checkoutModel!.id;
     final response = await http.post(url,
         headers: header,
         body: jsonEncode({

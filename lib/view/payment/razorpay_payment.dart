@@ -74,7 +74,13 @@ class RazorpayPayment extends StatelessWidget {
               }
               if (snapshot.hasData) {
                 return const Center(
-                  child: Text('Loadingfailed.'),
+                  child: Text('Loading failed.'),
+                );
+              }
+              if (snapshot.hasError) {
+                print(snapshot.error);
+                return const Center(
+                  child: Text('Loading failed.'),
                 );
               }
               return WebView(
@@ -129,7 +135,7 @@ class RazorpayPayment extends StatelessWidget {
     );
   }
 
-  Future<void> waitForIt(BuildContext context) async {
+  Future waitForIt(BuildContext context) async {
     final selectedGateaway =
         Provider.of<PaymentGateawayService>(context, listen: false)
             .selectedGateaway!;
@@ -154,7 +160,8 @@ class RazorpayPayment extends StatelessWidget {
         headers: header,
         body: jsonEncode({
           "amount": double.parse(checkoutInfo.totalAmount).toInt() * 100,
-          "currency": "USD",
+          //NOTE: When used USD giving error page.
+          "currency": "INR",
           "accept_partial": false,
           "reference_id": orderId.toString(),
           "description": "Grenmart Payment",
@@ -170,10 +177,11 @@ class RazorpayPayment extends StatelessWidget {
     if (response.statusCode == 200) {
       this.url = jsonDecode(response.body)['short_url'];
       this.paynentID = jsonDecode(response.body)['id'];
-      print(url);
+      print(this.url);
       return;
     }
     snackBar(context, 'Connection failed', backgroundColor: cc.orange);
+    return 'skhfadi';
   }
 
   Future<bool> verifyPayment(String url) async {

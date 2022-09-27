@@ -150,7 +150,7 @@ class CartTile extends StatelessWidget {
                             width: 35,
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(10),
-                              color: const Color.fromARGB(33, 208, 47, 68),
+                              color: cc.pink.withOpacity(0.10),
                             ),
                             child: IconButton(
                                 // padding: EdgeInsets.zero,
@@ -160,16 +160,16 @@ class CartTile extends StatelessWidget {
                                 },
                                 icon: SvgPicture.asset(
                                   'assets/images/icons/minus.svg',
-                                  color: const Color.fromARGB(255, 208, 47, 68),
+                                  color: cc.pink,
                                 )),
                           ),
                           Expanded(
                               child: Text(
                             quantity.toString(),
                             textAlign: TextAlign.center,
-                            style: const TextStyle(
+                            style: TextStyle(
                                 fontSize: 15,
-                                color: Color(0xff475467),
+                                color: cc.blackColor,
                                 fontWeight: FontWeight.w600),
                           )),
                           Container(
@@ -177,7 +177,7 @@ class CartTile extends StatelessWidget {
                             width: 35,
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(10),
-                              color: const Color.fromARGB(39, 0, 177, 6),
+                              color: cc.primaryColor.withOpacity(.10),
                             ),
                             child: IconButton(
                                 onPressed: () => cart.addItem(context, id,

@@ -2,6 +2,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:gren_mart/service/cart_data_service.dart';
 import 'package:gren_mart/service/checkout_service.dart';
+import 'package:gren_mart/service/confirm_payment_service.dart';
 import 'package:provider/provider.dart';
 import '../../view/home/home_front.dart';
 import '../../view/utils/constant_colors.dart';
@@ -20,6 +21,13 @@ class PaymentStatusView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (isError) {
+      Provider.of<ConfirmPaymentService>(context, listen: false)
+          .reportPaymentFailed(
+              Provider.of<CheckoutService>(context, listen: false)
+                  .checkoutModel!
+                  .id);
+    }
     return Scaffold(
       body: WillPopScope(
         onWillPop: () async {

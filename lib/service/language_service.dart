@@ -27,17 +27,15 @@ class LanguageService with ChangeNotifier {
   }
 
   Future setCurrency() async {
-    // final url = Uri.parse('$baseApiUrl/default-lang');
+    final url = Uri.parse('$baseApiUrl/site_currency_symbol');
     // try {
-    // final response = await http.get(url);
-    // print(response.body);
-    // if (response.statusCode == 200) {
-    currencySymbol = '\$';
-    //       jsonDecode(response.body)['currency']['site_default_currency_symbol'];
-    //   notifyListeners();
-    // } else {
-    //   // print('something went wrong');
-    // }
+    final response = await http.get(url);
+    if (response.statusCode == 200) {
+      currencySymbol = jsonDecode(response.body)['symbol'];
+      notifyListeners();
+    } else {
+      // print('something went wrong');
+    }
     // } catch (error) {
     //   // print(error);
 

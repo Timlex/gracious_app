@@ -96,8 +96,8 @@ class Datum {
         image: json["image"],
         buttonUrl: json["button_url"],
         buttonText: json["button_text"],
-        campaign: json["campaign"] == null ? null : json["campaign"],
-        category: json["category"] == null ? null : json["category"],
+        campaign: json["campaign"],
+        category: json["category"],
       );
 
   Map<String, dynamic> toJson() => {
@@ -106,8 +106,8 @@ class Datum {
         "image": image,
         "button_url": buttonUrl,
         "button_text": buttonText,
-        "campaign": campaign == null ? null : campaign,
-        "category": category == null ? null : category,
+        "campaign": campaign,
+        "category": category,
       };
 }
 

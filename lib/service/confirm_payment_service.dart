@@ -64,4 +64,20 @@ class ConfirmPaymentService with ChangeNotifier {
     //   print(error);
     // }
   }
+
+  Future reportPaymentFailed(id) async {
+    var header = {
+      //if header type is application/json then the data should be in jsonEncode method
+      "Accept": "application/json",
+      "Authorization": "Bearer $globalUserToken",
+    };
+    final url = Uri.parse('$baseApiUrl/user/checkout/payment/failed');
+    final response = await http
+        .post(url, headers: header, body: {"order_id": id.toString()});
+
+    if (response.statusCode == 200) {
+      print('Payment failed report successfull');
+    } else {}
+    print(response.body);
+  }
 }

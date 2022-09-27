@@ -42,14 +42,14 @@ class Category {
   factory Category.fromJson(Map<String, dynamic> json) => Category(
         id: json["id"],
         title: json["title"],
-        image: json["image"] ?? null,
-        imageUrl: json["image_url"] ?? null,
+        image: json["image"],
+        imageUrl: json["image_url"],
       );
 
   Map<String, dynamic> toJson() => {
         "id": id,
         "title": title,
-        "image": image ?? null,
-        "image_url": imageUrl ?? null,
+        "image": image,
+        "image_url": imageUrl,
       };
 }

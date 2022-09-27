@@ -705,7 +705,7 @@ class RelatedProduct {
   String imgUrl;
   int price;
   int? discountPrice;
-  dynamic? campaignPercentage;
+  dynamic campaignPercentage;
   bool? isCartAble;
 
   RelatedProduct({

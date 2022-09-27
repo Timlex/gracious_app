@@ -73,13 +73,13 @@ class MolliePayment extends StatelessWidget {
               }
               if (snapshot.hasData) {
                 return const Center(
-                  child: Text('Loadingfailed.'),
+                  child: Text('Loading failed.'),
                 );
               }
               if (snapshot.hasError) {
                 print(snapshot.error);
                 return const Center(
-                  child: Text('Loadingfailed.'),
+                  child: Text('Loading failed.'),
                 );
               }
               return WebView(

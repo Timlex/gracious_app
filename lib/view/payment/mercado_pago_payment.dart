@@ -110,38 +110,6 @@ class MercadopagoPayment extends StatelessWidget {
                     }),
                 initialUrl: url,
                 javascriptMode: JavascriptMode.unrestricted,
-                // onPageFinished: (value) async {
-                //   print('on progress.........................$value');
-                //   if (value.contains('success')) {
-                //     print('closing payment......');
-                //     print('closing payment.............');
-                //     print('closing payment...................');
-                //     print('closing payment..........................');
-                //     await Provider.of<ConfirmPaymentService>(context,
-                //             listen: false)
-                //         .confirmPayment(context);
-                //   }
-                // },
-                // onPageStarted: (value) async {
-                //   final response = await http.get(Uri.parse(value));
-                //   print(
-                //       'Checking condition.............................${response.body.contains('other')}');
-                //   print("on progress.........................$value");
-                //   if (value.contains('success')) {
-                //     await Provider.of<ConfirmPaymentService>(context,
-                //             listen: false)
-                //         .confirmPayment(context);
-                //     print('closing payment......');
-                //     print('closing payment.............');
-                //     print('closing payment...................');
-                //     print('closing payment..........................');
-
-                //     Navigator.of(context).pushAndRemoveUntil(
-                //         MaterialPageRoute(
-                //             builder: (context) => PaymentStatusView(true)),
-                //         (Route<dynamic> route) => false);
-                //   }
-                // },
                 navigationDelegate: (navData) {
                   if (navData.url.contains('success')) {
                     Navigator.of(context).pushAndRemoveUntil(
@@ -195,7 +163,8 @@ class MercadopagoPayment extends StatelessWidget {
         "failure": "failure.com",
         "pending": "pending.com",
         "success": "success.com"
-      }
+      },
+      "auto_return": "approved"
     });
 
     var response = await http.post(

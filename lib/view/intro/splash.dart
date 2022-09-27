@@ -79,6 +79,7 @@ class _SplashScreenState extends State<SplashScreen> {
     await Provider.of<LanguageService>(context, listen: false)
         .setCurrency()
         .onError((error, stackTrace) {
+      print(error);
       FlutterNativeSplash.remove();
       return;
       snackBar(context, 'Connection error', backgroundColor: cc.orange);

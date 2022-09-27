@@ -86,7 +86,7 @@ class ZitopayPayment extends StatelessWidget {
                   );
                 }),
             initialUrl:
-                'https://zitopay.africa/sci/?currency=USD&amount=${checkoutInfo!.totalAmount}&receiver=$userName',
+                'https://zitopay.africa/sci/?currency=USD&amount=${checkoutInfo.totalAmount}&receiver=$userName',
             javascriptMode: JavascriptMode.unrestricted,
             onPageStarted: (value) async {
               print("on progress.........................$value");
@@ -97,7 +97,7 @@ class ZitopayPayment extends StatelessWidget {
               if (paySuccess) {
                 final checkoutInfo =
                     Provider.of<CheckoutService>(context, listen: false);
-                final orderId = checkoutInfo!.checkoutModel!.id;
+                final orderId = checkoutInfo.checkoutModel!.id;
                 Navigator.of(context).pop();
                 return;
               }

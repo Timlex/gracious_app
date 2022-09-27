@@ -31,7 +31,7 @@ class PlusMinusCart extends StatelessWidget {
                 width: screenWidth / 8,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
-                  color: const Color.fromARGB(33, 208, 47, 68),
+                  color: cc.pink.withOpacity(.10),
                 ),
                 child: IconButton(
                     onPressed: () {
@@ -40,23 +40,23 @@ class PlusMinusCart extends StatelessWidget {
                     },
                     icon: SvgPicture.asset(
                       'assets/images/icons/minus.svg',
-                      color: const Color.fromARGB(255, 208, 47, 68),
+                      color: cc.pink,
                     )),
               ),
               Expanded(
                   child: Text(
                 Provider.of<ProductDetailsService>(context).quantity.toString(),
                 textAlign: TextAlign.center,
-                style: const TextStyle(
+                style: TextStyle(
                     fontSize: 15,
-                    color: Color(0xff475467),
+                    color: cc.blackColor,
                     fontWeight: FontWeight.w600),
               )),
               Container(
                 width: screenWidth / 8,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
-                  color: const Color.fromARGB(39, 0, 177, 6),
+                  color: cc.primaryColor.withOpacity(.10),
                 ),
                 child: IconButton(
                     onPressed: () {
@@ -86,7 +86,10 @@ class PlusMinusCart extends StatelessWidget {
               width: screenWidth / 2.1,
               child: Row(
                 children: [
-                  SvgPicture.asset('assets/images/icons/bag.svg'),
+                  SvgPicture.asset(
+                    'assets/images/icons/bag.svg',
+                    width: 20,
+                  ),
                   // const SizedBox(width: 4),
                   SizedBox(
                     width: screenWidth / 5.2,
@@ -114,7 +117,7 @@ class PlusMinusCart extends StatelessWidget {
               child: Container(
                 height: 50,
                 width: screenWidth / 5.3,
-                color: const Color.fromARGB(24, 0, 0, 0),
+                color: cc.blackColor.withOpacity(.10),
                 child: Center(
                   child: Text(
                     '${Provider.of<LanguageService>(context, listen: false).currencySymbol}${Provider.of<ProductDetailsService>(context).productSalePrice * Provider.of<ProductDetailsService>(context).quantity}',

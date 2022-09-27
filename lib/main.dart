@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:gren_mart/service/campaign_card_list_service.dart';
 import 'package:gren_mart/service/language_service.dart';
 import 'package:gren_mart/service/terms_and_condition_service.dart';
@@ -61,7 +60,6 @@ import '../../view/settings/new_address.dart';
 import '../../view/utils/constant_colors.dart';
 import '../../service/navigation_bar_helper_service.dart';
 import '../../service/order_details_service.dart';
-import 'view/utils/constant_name.dart';
 
 void main() {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
@@ -133,7 +131,7 @@ class _MyAppState extends State<MyApp> {
           );
         },
         theme: ThemeData(
-          pageTransitionsTheme: PageTransitionsTheme(builders: {
+          pageTransitionsTheme: const PageTransitionsTheme(builders: {
             TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
             TargetPlatform.android: ZoomPageTransitionsBuilder(),
           }),
@@ -147,7 +145,7 @@ class _MyAppState extends State<MyApp> {
           textSelectionTheme: TextSelectionThemeData(
               cursorColor: ConstantColors().primaryColor),
         ),
-        home: SplashScreen(),
+        home: const SplashScreen(),
         routes: {
           Intro.routeName: (context) => Intro(),
           Auth.routeName: (context) => Auth(),
@@ -166,11 +164,12 @@ class _MyAppState extends State<MyApp> {
           AddNewTicket.routeName: (context) => AddNewTicket(),
           AllProducts.routeName: (context) => AllProducts(),
           WebViewScreen.routeName: (context) => WebViewScreen(),
-          CategoryProductPage.routeName: (context) => CategoryProductPage(),
+          CategoryProductPage.routeName: (context) =>
+              const CategoryProductPage(),
           CategoryPage.routeName: (context) => CategoryPage(),
           Campaigns.routeName: (context) => Campaigns(),
           ALLCampProductFromLink.routeName: (context) =>
-              ALLCampProductFromLink(),
+              const ALLCampProductFromLink(),
         },
       ),
     );

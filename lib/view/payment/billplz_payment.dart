@@ -158,9 +158,9 @@ class BillplzPayment extends StatelessWidget {
         body: jsonEncode({
           "collection_id": "kjj5ya006",
           "description": "Grenmart payment",
-          "email": checkoutInfo!.email,
-          "name": checkoutInfo!.name,
-          "amount": "${checkoutInfo!.totalAmount}",
+          "email": checkoutInfo.email,
+          "name": checkoutInfo.name,
+          "amount": "${checkoutInfo.totalAmount}",
           "reference_1_label": "Bank Code",
           "reference_1": "BP-FKR01",
           "callback_url": "http://www.gxenious.com"
