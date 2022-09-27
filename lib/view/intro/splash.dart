@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gren_mart/service/campaign_card_list_service.dart';
 import 'package:gren_mart/service/language_service.dart';
 import 'package:gren_mart/service/navigation_bar_helper_service.dart';
 import 'package:gren_mart/view/utils/constant_styles.dart';
@@ -95,14 +96,16 @@ class _SplashScreenState extends State<SplashScreen> {
               .fetchProfileService()
               .then((value) async {
             if (value == null) {
-              snackBar(context, 'Connection failed!',
-                  backgroundColor: cc.orange);
+              // snackBar(context, 'Connection failed!',
+              //     backgroundColor: cc.orange);
               return;
             }
             Provider.of<PosterCampaignSliderService>(context, listen: false)
                 .fetchPosters();
             Provider.of<PosterCampaignSliderService>(context, listen: false)
                 .fetchCampaigns();
+            Provider.of<CampaignCardListService>(context, listen: false)
+                .fetchCampaignCardList();
 
             FlutterNativeSplash.remove();
             Provider.of<NavigationBarHelperService>(context, listen: false)

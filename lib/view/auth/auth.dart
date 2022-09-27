@@ -8,6 +8,7 @@ import 'package:provider/provider.dart';
 
 import '../../db/database_helper.dart';
 import '../../service/auth_text_controller_service.dart';
+import '../../service/campaign_card_list_service.dart';
 import '../../service/cart_data_service.dart';
 import '../../service/favorite_data_service.dart';
 import '../../service/navigation_bar_helper_service.dart';
@@ -36,6 +37,7 @@ class Auth extends StatefulWidget {
 
 class _AuthState extends State<Auth> {
   ConstantColors cc = ConstantColors();
+  ScrollController scrollController = ScrollController();
 
   final GlobalKey<FormState> _formKeySignin = GlobalKey();
 
@@ -49,6 +51,8 @@ class _AuthState extends State<Auth> {
     if (!validated) {
       snackBar(context, 'Please provide all the information',
           backgroundColor: cc.orange);
+      scrollController.animateTo(0.0,
+          curve: Curves.easeIn, duration: const Duration(milliseconds: 300));
       // formKey.currentContext!.visitChildElements((element) {
       //   element.deactivate();
       // });
@@ -73,6 +77,14 @@ class _AuthState extends State<Auth> {
         if (value) {
           await Provider.of<UserProfileService>(context, listen: false)
               .fetchProfileService();
+          Provider.of<PosterCampaignSliderService>(context, listen: false)
+              .fetchPosters();
+          Provider.of<PosterCampaignSliderService>(context, listen: false)
+              .fetchCampaigns();
+          Provider.of<CampaignCardListService>(context, listen: false)
+              .fetchCampaignCardList();
+          Provider.of<NavigationBarHelperService>(context, listen: false)
+              .setNavigationIndex(0);
 
           ssService.toggleLaodingSpinner(value: false);
           Navigator.of(context).pushReplacementNamed(HomeFront.routeName);
@@ -112,7 +124,14 @@ class _AuthState extends State<Auth> {
       if (value) {
         await Provider.of<UserProfileService>(context, listen: false)
             .fetchProfileService();
-
+        Provider.of<PosterCampaignSliderService>(context, listen: false)
+            .fetchPosters();
+        Provider.of<PosterCampaignSliderService>(context, listen: false)
+            .fetchCampaigns();
+        Provider.of<CampaignCardListService>(context, listen: false)
+            .fetchCampaignCardList();
+        Provider.of<NavigationBarHelperService>(context, listen: false)
+            .setNavigationIndex(0);
         ssService.toggleLaodingSpinner(value: false);
         Provider.of<NavigationBarHelperService>(context, listen: false)
             .setNavigationIndex(0);
@@ -140,6 +159,7 @@ class _AuthState extends State<Auth> {
           body:
               Consumer<SignInSignUpService>(builder: (context, ssData, child) {
             return SingleChildScrollView(
+              controller: scrollController,
               child: ListView(
                   padding: const EdgeInsets.all(0),
                   physics: const NeverScrollableScrollPhysics(),
@@ -345,6 +365,12 @@ class _AuthState extends State<Auth> {
                               Provider.of<PosterCampaignSliderService>(context,
                                       listen: false)
                                   .fetchCampaigns();
+                              Provider.of<CampaignCardListService>(context,
+                                      listen: false)
+                                  .fetchCampaignCardList();
+                              Provider.of<NavigationBarHelperService>(context,
+                                      listen: false)
+                                  .setNavigationIndex(0);
                               Provider.of<SocialLoginService>(context,
                                       listen: false)
                                   .setIsLoading(false);
@@ -390,10 +416,13 @@ class _AuthState extends State<Auth> {
                               Provider.of<PosterCampaignSliderService>(context,
                                       listen: false)
                                   .fetchCampaigns();
-
+                              Provider.of<CampaignCardListService>(context,
+                                      listen: false)
+                                  .fetchCampaignCardList();
                               Provider.of<NavigationBarHelperService>(context,
                                       listen: false)
                                   .setNavigationIndex(0);
+
                               Provider.of<SocialLoginService>(context,
                                       listen: false)
                                   .setIsLoading(false);
@@ -438,6 +467,6 @@ class _AuthState extends State<Auth> {
 
   countryStateInitiate(BuildContext context) {
     Provider.of<CountryDropdownService>(context, listen: false)
-        .getContries(context);
+        .getContries(context, notFromAuth: false);
   }
 }

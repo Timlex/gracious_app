@@ -375,8 +375,8 @@ class TicketChat extends StatelessWidget {
           child: CachedNetworkImage(
             placeholder: (context, url) {
               return Container(
-                margin: EdgeInsets.symmetric(vertical: 15),
-                decoration: BoxDecoration(
+                margin: const EdgeInsets.symmetric(vertical: 15),
+                decoration: const BoxDecoration(
                     image: DecorationImage(
                         image:
                             AssetImage('assets/images/product_skelleton.png'),
@@ -386,8 +386,8 @@ class TicketChat extends StatelessWidget {
             imageUrl: url,
             errorWidget: (context, str, some) {
               return Container(
-                margin: EdgeInsets.symmetric(vertical: 15),
-                decoration: BoxDecoration(
+                margin: const EdgeInsets.symmetric(vertical: 15),
+                decoration: const BoxDecoration(
                     image: DecorationImage(
                         image:
                             AssetImage('assets/images/product_skelleton.png'),

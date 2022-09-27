@@ -21,6 +21,7 @@ class AddNewAddress extends StatelessWidget {
   ConstantColors cc = ConstantColors();
 
   final GlobalKey<FormState> _formKey = GlobalKey();
+  ScrollController scrollController = ScrollController();
   final _emailFN = FocusNode();
   final _phonelFN = FocusNode();
   final _cityFN = FocusNode();
@@ -33,6 +34,8 @@ class AddNewAddress extends StatelessWidget {
     if (!validated || saData.phone == null) {
       snackBar(context, "Please give all the information properly",
           backgroundColor: cc.orange);
+      scrollController.animateTo(0.0,
+          curve: Curves.easeIn, duration: const Duration(milliseconds: 300));
       return;
     }
     saData.setIsLoading(true);
@@ -80,6 +83,7 @@ class AddNewAddress extends StatelessWidget {
         child: Consumer<ShippingAddressesService>(
             builder: (context, saData, child) {
           return ListView(
+            controller: scrollController,
             physics: const BouncingScrollPhysics(
                 parent: AlwaysScrollableScrollPhysics()),
             children: [
@@ -140,49 +144,63 @@ class AddNewAddress extends StatelessWidget {
                           // imagePath: 'assets/images/icons/mail.png',
                         ),
                         textFieldTitle('Phone Number'),
-                        IntlPhoneField(
-                          focusNode: _phonelFN,
-                          style: TextThemeConstrants.greyHint13,
+                        CustomTextField(
+                          'Enter Phone number with country code',
                           keyboardType: TextInputType.number,
-                          initialCountryCode: 'BD',
-                          decoration: InputDecoration(
-                            hintText: 'Enter your number',
-                            hintStyle: TextStyle(
-                                color: cc.greyTextFieldLebel, fontSize: 13),
-                            contentPadding: const EdgeInsets.symmetric(
-                                horizontal: 8, vertical: 17),
-                            border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10),
-                                borderSide:
-                                    BorderSide(color: cc.greyHint, width: 2)),
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10),
-                              borderSide:
-                                  BorderSide(color: cc.primaryColor, width: 2),
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10),
-                              borderSide:
-                                  BorderSide(color: cc.greyBorder, width: 1),
-                            ),
-                            errorBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10),
-                              borderSide:
-                                  BorderSide(color: cc.orange, width: 1),
-                            ),
-                          ),
-                          onChanged: (phone) {
-                            saData.setPhone(phone.number);
-                            print(phone.number);
+                          validator: (emailText) {
+                            if (emailText!.isEmpty) {
+                              return 'Enter your number';
+                            }
+
+                            return null;
                           },
-                          onCountryChanged: (country) {
-                            saData.setCountryCode(country.code);
-                            print('Country changed to: ' + country.code);
-                          },
-                          onSubmitted: (_) {
-                            FocusScope.of(context).requestFocus(_cityFN);
+                          onChanged: (value) {
+                            saData.setPhone(value);
                           },
                         ),
+                        // IntlPhoneField(
+                        //   focusNode: _phonelFN,
+                        //   style: TextThemeConstrants.greyHint13,
+                        //   keyboardType: TextInputType.number,
+                        //   initialCountryCode: 'BD',
+                        //   decoration: InputDecoration(
+                        //     hintText: 'Enter your number',
+                        //     hintStyle: TextStyle(
+                        //         color: cc.greyTextFieldLebel, fontSize: 13),
+                        //     contentPadding: const EdgeInsets.symmetric(
+                        //         horizontal: 8, vertical: 17),
+                        //     border: OutlineInputBorder(
+                        //         borderRadius: BorderRadius.circular(10),
+                        //         borderSide:
+                        //             BorderSide(color: cc.greyHint, width: 2)),
+                        //     focusedBorder: OutlineInputBorder(
+                        //       borderRadius: BorderRadius.circular(10),
+                        //       borderSide:
+                        //           BorderSide(color: cc.primaryColor, width: 2),
+                        //     ),
+                        //     enabledBorder: OutlineInputBorder(
+                        //       borderRadius: BorderRadius.circular(10),
+                        //       borderSide:
+                        //           BorderSide(color: cc.greyBorder, width: 1),
+                        //     ),
+                        //     errorBorder: OutlineInputBorder(
+                        //       borderRadius: BorderRadius.circular(10),
+                        //       borderSide:
+                        //           BorderSide(color: cc.orange, width: 1),
+                        //     ),
+                        //   ),
+                        //   onChanged: (phone) {
+                        //     saData.setPhone(phone.number);
+                        //     print(phone.number);
+                        //   },
+                        //   onCountryChanged: (country) {
+                        //     saData.setCountryCode(country.code);
+                        //     print('Country changed to: ' + country.code);
+                        //   },
+                        //   onSubmitted: (_) {
+                        //     FocusScope.of(context).requestFocus(_cityFN);
+                        //   },
+                        // ),
 
                         textFieldTitle('Country'),
                         // const SizedBox(height: 8),

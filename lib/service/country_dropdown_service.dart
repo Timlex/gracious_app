@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
 import 'package:gren_mart/service/state_dropdown_service.dart';
+import 'package:gren_mart/service/user_profile_service.dart';
 import 'package:provider/provider.dart';
 import '../../model/country_dropdown_model.dart';
 import '../../service/common_service.dart';
@@ -26,7 +27,7 @@ class CountryDropdownService with ChangeNotifier {
     notifyListeners();
   }
 
-  Future getContries(BuildContext context) async {
+  Future getContries(BuildContext context, {notFromAuth}) async {
     // if (countryDropdownList.isNotEmpty) {
     //   return;
     // }
@@ -45,9 +46,16 @@ class CountryDropdownService with ChangeNotifier {
           countryDropdownList.add(data.countries[i].name);
           countryDropdownIdList.add(data.countries[i].id);
         }
-
-        selectedCountry = 'Bangladesh';
-        selectedCountryId = 1;
+        final countryData =
+            Provider.of<UserProfileService>(context, listen: false);
+        if (notFromAuth == null &&
+            countryData.userProfileData.country != null) {
+          selectedCountry = countryData.userProfileData.country!.name;
+          selectedCountryId = countryData.userProfileData.country!.id;
+        } else {
+          selectedCountry = countryDropdownList[0];
+          selectedCountryId = countryDropdownIdList[0];
+        }
         await Provider.of<StateDropdownService>(context, listen: false)
             .getStates(selectedCountryId, context: context);
         print(selectedCountry);
@@ -59,7 +67,7 @@ class CountryDropdownService with ChangeNotifier {
         //something went wrong
       }
     } catch (error) {
-      snackBar(context, 'Connection failed!', backgroundColor: cc.orange);
+      // snackBar(context, 'Connection failed!', backgroundColor: cc.orange);
       print(error);
 
       return;

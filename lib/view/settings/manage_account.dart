@@ -54,7 +54,7 @@ class ManageAccount extends StatelessWidget {
 
     maData.updateProfile().then((value) async {
       if (value != null) {
-        snackBar(context, value);
+        snackBar(context, value, backgroundColor: cc.orange);
         maData.setIsLoading(false);
         return;
       }
@@ -129,7 +129,8 @@ class ManageAccount extends StatelessWidget {
                                       .userProfileData
                                       .name
                                       .substring(0, 2)
-                                      .toUpperCase(),
+                                      .toUpperCase()
+                                      .trim(),
                                   style: TextStyle(
                                       color: cc.pureWhite,
                                       fontWeight: FontWeight.bold,
@@ -144,7 +145,8 @@ class ManageAccount extends StatelessWidget {
                                       .userProfileData
                                       .name
                                       .substring(0, 2)
-                                      .toUpperCase(),
+                                      .toUpperCase()
+                                      .trim(),
                                   style: TextStyle(
                                       color: cc.pureWhite,
                                       fontWeight: FontWeight.bold,
@@ -201,7 +203,7 @@ class ManageAccount extends StatelessWidget {
                           if (nameText!.isEmpty) {
                             return 'Enter your name';
                           }
-                          if (nameText.length <= 3) {
+                          if (nameText.length <= 2) {
                             return 'Enter a valid name';
                           }
                           return null;
@@ -235,45 +237,61 @@ class ManageAccount extends StatelessWidget {
                         // imagePath: 'assets/images/icons/mail.png',
                       ),
                       textFieldTitle('Phone Number'),
-                      IntlPhoneField(
-                        style: TextStyle(color: cc.greyHint, fontSize: 13),
+                      CustomTextField(
+                        'Enter Phone number with country code',
                         keyboardType: TextInputType.number,
                         initialValue: maData.phoneNumber,
-                        initialCountryCode: maData.countryCode,
-                        decoration: InputDecoration(
-                          hintText: 'Enter your number',
-                          hintStyle: TextStyle(
-                              color: cc.greyTextFieldLebel, fontSize: 13),
-                          contentPadding: const EdgeInsets.symmetric(
-                              horizontal: 8, vertical: 17),
-                          border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10),
-                              borderSide:
-                                  BorderSide(color: cc.greyHint, width: 2)),
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10),
-                            borderSide:
-                                BorderSide(color: cc.primaryColor, width: 2),
-                          ),
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10),
-                            borderSide:
-                                BorderSide(color: cc.greyBorder, width: 1),
-                          ),
-                          errorBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10),
-                            borderSide: BorderSide(color: cc.orange, width: 1),
-                          ),
-                        ),
-                        onChanged: (phone) {
-                          maData.setPhoneNumber(phone.number);
-                          print(phone.completeNumber);
+                        validator: (emailText) {
+                          if (emailText!.isEmpty) {
+                            return 'Enter your number';
+                          }
+
+                          return null;
                         },
-                        onCountryChanged: (country) {
-                          maData.setCountryCode(country.code);
-                          print('Country changed to: ' + country.code);
+                        onChanged: (value) {
+                          maData.setPhoneNumber(value);
                         },
+                        // imagePath: 'assets/images/icons/mail.png',
                       ),
+                      // IntlPhoneField(
+                      //   style: TextStyle(color: cc.greyHint, fontSize: 13),
+                      //   keyboardType: TextInputType.number,
+                      //   initialValue: maData.phoneNumber,
+                      //   initialCountryCode: "+880",
+                      //   decoration: InputDecoration(
+                      //     hintText: 'Enter your number',
+                      //     hintStyle: TextStyle(
+                      //         color: cc.greyTextFieldLebel, fontSize: 13),
+                      //     contentPadding: const EdgeInsets.symmetric(
+                      //         horizontal: 8, vertical: 17),
+                      //     border: OutlineInputBorder(
+                      //         borderRadius: BorderRadius.circular(10),
+                      //         borderSide:
+                      //             BorderSide(color: cc.greyHint, width: 2)),
+                      //     focusedBorder: OutlineInputBorder(
+                      //       borderRadius: BorderRadius.circular(10),
+                      //       borderSide:
+                      //           BorderSide(color: cc.primaryColor, width: 2),
+                      //     ),
+                      //     enabledBorder: OutlineInputBorder(
+                      //       borderRadius: BorderRadius.circular(10),
+                      //       borderSide:
+                      //           BorderSide(color: cc.greyBorder, width: 1),
+                      //     ),
+                      //     errorBorder: OutlineInputBorder(
+                      //       borderRadius: BorderRadius.circular(10),
+                      //       borderSide: BorderSide(color: cc.orange, width: 1),
+                      //     ),
+                      //   ),
+                      //   onChanged: (phone) {
+                      //     maData.setPhoneNumber(phone.number);
+                      //     print(phone.completeNumber);
+                      //   },
+                      //   onCountryChanged: (country) {
+                      //     maData.setCountryCode(country.code);
+                      //     print('Country changed to: ' + country.code);
+                      //   },
+                      // ),
 
                       textFieldTitle('Country'),
                       // const SizedBox(height: 8),
@@ -283,13 +301,19 @@ class ManageAccount extends StatelessWidget {
                             ? CustomDropdown(
                                 'Country',
                                 cProvider.countryDropdownList,
-                                (newValue) {
+                                (newValue) async {
                                   cProvider.setCountryIdAndValue(newValue);
                                   maData.setCountryID(
-                                      cProvider.selectedCountry.toString());
-                                  Provider.of<StateDropdownService>(context,
+                                      cProvider.selectedCountryId.toString());
+                                  await Provider.of<StateDropdownService>(
+                                          context,
                                           listen: false)
                                       .getStates(cProvider.selectedCountryId);
+                                  maData.setStateId(
+                                      Provider.of<StateDropdownService>(context,
+                                              listen: false)
+                                          .selectedStateId
+                                          .toString());
                                 },
                                 value: cProvider.selectedCountry,
                               )

@@ -36,7 +36,7 @@ class Users {
   });
 
   int id;
-  String username;
+  String? username;
 
   factory Users.fromJson(Map<String, dynamic> json) => Users(
         id: json["id"],

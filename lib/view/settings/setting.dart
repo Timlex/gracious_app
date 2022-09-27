@@ -98,7 +98,9 @@ class SettingView extends StatelessWidget {
                 }
                 if (userData.userProfileData.state != null) {
                   Provider.of<StateDropdownService>(context, listen: false)
-                      .setStateIdAndValue(userData.userProfileData.state!.name);
+                      .setStateIdAndValue(userData.userProfileData.state!.name,
+                          valueID:
+                              userData.userProfileData.state!.id.toString());
                 }
               });
               Navigator.of(context).pushNamed(ManageAccount.routeName);

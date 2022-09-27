@@ -75,7 +75,8 @@ class SettingScreenAppBar extends StatelessWidget {
                                   .userProfileData
                                   .name
                                   .substring(0, 2)
-                                  .toUpperCase(),
+                                  .toUpperCase()
+                                  .trim(),
                               style: TextStyle(
                                   color: cc.pureWhite,
                                   fontWeight: FontWeight.bold,
@@ -90,7 +91,8 @@ class SettingScreenAppBar extends StatelessWidget {
                                   .userProfileData
                                   .name
                                   .substring(0, 2)
-                                  .toUpperCase(),
+                                  .toUpperCase()
+                                  .trim(),
                               style: TextStyle(
                                   color: cc.pureWhite,
                                   fontWeight: FontWeight.bold,

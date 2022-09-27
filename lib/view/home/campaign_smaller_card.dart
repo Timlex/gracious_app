@@ -11,8 +11,9 @@ class CampaignSmallerCard extends StatelessWidget {
   final String title;
   final String subTitle;
   final String imgUrl;
+  final Duration duration;
   bool margin;
-  CampaignSmallerCard(this.title, this.subTitle, this.imgUrl,
+  CampaignSmallerCard(this.title, this.subTitle, this.imgUrl, this.duration,
       {this.margin = true, Key? key})
       : super(key: key);
   final cc = ConstantColors();
@@ -31,7 +32,7 @@ class CampaignSmallerCard extends StatelessWidget {
                   ? 20
                   : 0,
               top: 10)
-          : EdgeInsets.symmetric(horizontal: 20),
+          : const EdgeInsets.symmetric(horizontal: 20),
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10), color: cc.lightPrimery3),
       child: ClipRRect(
@@ -44,6 +45,27 @@ class CampaignSmallerCard extends StatelessWidget {
               child: Image.network(
                 imgUrl,
                 fit: BoxFit.fill,
+                loadingBuilder: (context, child, loadingProgress) {
+                  if (loadingProgress == null) {
+                    return child;
+                  }
+                  return Container(
+                    margin: const EdgeInsets.symmetric(vertical: 15),
+                    decoration: const BoxDecoration(
+                        image: DecorationImage(
+                            image: AssetImage(
+                                'assets/images/product_skelleton.png'),
+                            opacity: .4)),
+                  );
+                },
+                errorBuilder: (context, error, stackTrace) => Container(
+                  margin: const EdgeInsets.symmetric(vertical: 60),
+                  decoration: const BoxDecoration(
+                      image: DecorationImage(
+                          image:
+                              AssetImage('assets/images/product_skelleton.png'),
+                          opacity: .4)),
+                ),
                 // color: cc.pureWhite.withOpacity(.5),
                 // colorBlendMode: BlendMode.luminosity,
               ),
@@ -77,7 +99,7 @@ class CampaignSmallerCard extends StatelessWidget {
                       color: cc.primaryColor,
                       borderRadius: BorderRadius.circular(5),
                     ),
-                    duration: Duration(days: 150),
+                    duration: duration,
                   )),
                   SizedBox(height: 5),
                   FittedBox(

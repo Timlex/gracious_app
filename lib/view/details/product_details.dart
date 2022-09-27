@@ -278,10 +278,8 @@ class ProductDetails extends StatelessWidget {
                                               product.title,
                                               pService.productSalePrice,
                                               product.image,
-                                              pService
-                                                  .productDetails!
-                                                  .productInventorySet
-                                                  .isNotEmpty);
+                                              pService.productDetails!
+                                                  .productInventorySet.isEmpty);
                                         }
                                             // => favoriteData.toggleFavorite(
                                             //     product.id,

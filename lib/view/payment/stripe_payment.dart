@@ -85,25 +85,29 @@ class StripePayment {
         paymentIntent = null;
       }).onError((error, stackTrace) async {
         print('Error is:--->$error $stackTrace');
-        await showDialog(
-            context: context,
-            builder: (ctx) {
-              return AlertDialog(
-                title: Text('Payment failed'),
-                actions: [
-                  TextButton(
-                    onPressed: () => Navigator.of(context).pushAndRemoveUntil(
-                        MaterialPageRoute(
-                            builder: (context) => PaymentStatusView(true)),
-                        (Route<dynamic> route) => false),
-                    child: Text(
-                      'Ubderstood',
-                      style: TextStyle(color: cc.primaryColor),
-                    ),
-                  )
-                ],
-              );
-            });
+        // await showDialog(
+        //     barrierDismissible: false,
+        //     context: context,
+        //     builder: (ctx) {
+        //       return AlertDialog(
+        //         title: Text('Payment failed'),
+        //         actions: [
+        //           TextButton(
+        //             onPressed: () => Navigator.of(context).pushAndRemoveUntil(
+        //                 MaterialPageRoute(
+        //                     builder: (context) => PaymentStatusView(true)),
+        //                 (Route<dynamic> route) => false),
+        //             child: Text(
+        //               'Ubderstood',
+        //               style: TextStyle(color: cc.primaryColor),
+        //             ),
+        //           )
+        //         ],
+        //       );
+        //     });
+        Navigator.of(context).pushAndRemoveUntil(
+            MaterialPageRoute(builder: (context) => PaymentStatusView(true)),
+            (Route<dynamic> route) => false);
       });
     } on StripeException catch (e) {
       print('Error is:---> $e');
@@ -119,7 +123,7 @@ class StripePayment {
                           builder: (context) => PaymentStatusView(true)),
                       (Route<dynamic> route) => false),
                   child: Text(
-                    'Ubderstood',
+                    'Ok',
                     style: TextStyle(color: cc.primaryColor),
                   ),
                 )

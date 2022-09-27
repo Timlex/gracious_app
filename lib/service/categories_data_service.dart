@@ -41,6 +41,7 @@ class CategoriesDataService with ChangeNotifier {
     if (categorydataList.isNotEmpty) {
       return;
     }
+    print('fetching categories');
     fetchPriceRange();
     final url = Uri.parse('$baseApiUrl/category');
 

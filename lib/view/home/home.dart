@@ -33,10 +33,10 @@ class Home extends StatelessWidget {
   Widget build(BuildContext context) {
     initiateDeviceSize(context);
     print(screenWidth);
-    Provider.of<PosterCampaignSliderService>(context, listen: false)
-        .fetchPosters();
-    Provider.of<PosterCampaignSliderService>(context, listen: false)
-        .fetchCampaigns();
+    // Provider.of<PosterCampaignSliderService>(context, listen: false)
+    //     .fetchPosters();
+    // Provider.of<PosterCampaignSliderService>(context, listen: false)
+    //     .fetchCampaigns();
     // final productData = Provider.of<Products>(context, listen: false).products;
     return WillPopScope(
       onWillPop: () async {
@@ -244,111 +244,110 @@ class Home extends StatelessWidget {
                   : SizedBox();
             }),
             SizedBox(height: 10),
-            FutureBuilder(
-                future:
-                    Provider.of<CategoriesDataService>(context, listen: false)
-                        .fetchCategories(),
+            Consumer<CategoriesDataService>(
+                builder: (context, catService, child) {
+              return FutureBuilder(
+                future: catService.categorydataList.isNotEmpty
+                    ? null
+                    : catService.fetchCategories(),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return SizedBox();
                   }
-                  return Consumer<CategoriesDataService>(
-                    builder: (context, catService, child) {
-                      return SizedBox(
-                        height: 60,
-                        child: ListView.builder(
-                            padding: EdgeInsets.only(
-                              left: Provider.of<LanguageService>(context,
-                                          listen: false)
-                                      .rtl
-                                  ? 0
-                                  : 20.0,
-                              right: Provider.of<LanguageService>(context,
-                                          listen: false)
-                                      .rtl
-                                  ? 20
-                                  : 0,
-                            ),
-                            scrollDirection: Axis.horizontal,
-                            itemCount: catService.categorydataList.length,
-                            itemBuilder: (context, index) {
-                              final element =
-                                  catService.categorydataList[index];
-                              return GestureDetector(
-                                onTap: () {
-                                  Provider.of<SearchResultDataService>(context,
-                                          listen: false)
-                                      .setCategoryId(element.id.toString(),
-                                          notListen: true);
-                                  Navigator.of(context).pushNamed(
-                                      CategoryProductPage.routeName,
-                                      arguments: [
-                                        element.id.toString(),
-                                        element.title
-                                      ]);
-                                },
-                                child: Container(
-                                  margin: EdgeInsets.only(
-                                    left: Provider.of<LanguageService>(context,
-                                                listen: false)
-                                            .rtl
-                                        ? 10
-                                        : 0,
-                                    right: Provider.of<LanguageService>(context,
-                                                listen: false)
-                                            .rtl
-                                        ? 0
-                                        : 10,
+                  return SizedBox(
+                    height: 60,
+                    child: ListView.builder(
+                        padding: EdgeInsets.only(
+                          left: Provider.of<LanguageService>(context,
+                                      listen: false)
+                                  .rtl
+                              ? 0
+                              : 20.0,
+                          right: Provider.of<LanguageService>(context,
+                                      listen: false)
+                                  .rtl
+                              ? 20
+                              : 0,
+                        ),
+                        scrollDirection: Axis.horizontal,
+                        itemCount: catService.categorydataList.length,
+                        itemBuilder: (context, index) {
+                          final element = catService.categorydataList[index];
+                          return GestureDetector(
+                            onTap: () {
+                              Provider.of<SearchResultDataService>(context,
+                                      listen: false)
+                                  .setCategoryId(element.id.toString(),
+                                      notListen: true);
+                              Navigator.of(context).pushNamed(
+                                  CategoryProductPage.routeName,
+                                  arguments: [
+                                    element.id.toString(),
+                                    element.title
+                                  ]);
+                            },
+                            child: Container(
+                              margin: EdgeInsets.only(
+                                left: Provider.of<LanguageService>(context,
+                                            listen: false)
+                                        .rtl
+                                    ? 10
+                                    : 0,
+                                right: Provider.of<LanguageService>(context,
+                                            listen: false)
+                                        .rtl
+                                    ? 0
+                                    : 10,
+                              ),
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 10, vertical: 5),
+                              constraints: BoxConstraints(maxWidth: 150),
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(10),
+                                  border: Border.all(
+                                    color: cc.greyBorder,
+                                    width: 1,
+                                  )),
+                              child: Row(
+                                children: [
+                                  ClipRRect(
+                                    borderRadius: BorderRadius.circular(50),
+                                    child: CachedNetworkImage(
+                                      height: 42,
+                                      width: 42,
+                                      placeholder: (context, url) =>
+                                          const Icon(Icons.category),
+                                      imageUrl: element.imageUrl ?? '',
+                                      errorWidget: (context, url, error) =>
+                                          const Icon(Icons.category),
+                                      fit: BoxFit.cover,
+                                    ),
                                   ),
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 10, vertical: 5),
-                                  constraints: BoxConstraints(maxWidth: 150),
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(10),
-                                      border: Border.all(
-                                        color: cc.greyBorder,
-                                        width: 1,
-                                      )),
-                                  child: Row(
-                                    children: [
-                                      ClipRRect(
-                                        borderRadius: BorderRadius.circular(50),
-                                        child: CachedNetworkImage(
-                                          height: 42,
-                                          width: 42,
-                                          placeholder: (context, url) =>
-                                              const Icon(Icons.category),
-                                          imageUrl: element.imageUrl ?? '',
-                                          errorWidget: (context, url, error) =>
-                                              const Icon(Icons.category),
-                                          fit: BoxFit.cover,
-                                        ),
-                                      ),
 
-                                      const SizedBox(
-                                        width: 10,
-                                      ),
-                                      //Title
-                                      Flexible(
-                                        child: Text(
-                                          element.title,
-                                          maxLines: 1,
-                                          overflow: TextOverflow.ellipsis,
-                                          style: TextStyle(
-                                            color: cc.greyParagraph,
-                                            fontSize: 14,
-                                          ),
-                                        ),
-                                      ),
-                                    ],
+                                  const SizedBox(
+                                    width: 10,
                                   ),
-                                ),
-                              );
-                            }),
-                      );
-                    },
+                                  //Title
+                                  Flexible(
+                                    child: Text(
+                                      element.title,
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: TextStyle(
+                                        color: cc.greyParagraph,
+                                        fontSize: 14,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          );
+                        }),
                   );
-                }),
+                },
+              );
+            }),
             const SizedBox(height: 25),
             Consumer<ProductCardDataService>(
                 builder: (context, pcService, child) {
@@ -375,7 +374,6 @@ class Home extends StatelessWidget {
                             ? const SizedBox()
                             : Row(
                                 children: pcData.campaignDataList.map((e) {
-                                  print(e.title);
                                   return CampaignCard(
                                     e.title,
                                     e.buttonText,
@@ -423,8 +421,9 @@ class Home extends StatelessWidget {
                                         )),
                                     duration: campInfo.campaignInfo!.endDate!
                                             .isAfter(DateTime.now())
-                                        ? DateTime.now().difference(campInfo
-                                            .campaignInfo!.endDate as DateTime)
+                                        ? (campInfo.campaignInfo!.endDate
+                                                as DateTime)
+                                            .difference(DateTime.now())
                                         : Duration(seconds: 1),
                                     textStyle: TextStyle(
                                         color: cc.blackColor.withOpacity(.8),
@@ -492,63 +491,96 @@ class Home extends StatelessWidget {
                         : loadingProgressBar());
               }),
             ),
-            Consumer<CampaignCardListService>(
-                builder: (context, cclService, child) {
-              return cclService.list.isEmpty
-                  ? SizedBox()
-                  : Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
-                      child:
-                          seeAllTitle(context, 'Top campaigns', onPressed: (() {
-                        Navigator.of(context).pushNamed(Campaigns.routeName,
-                            arguments: [cclService.list, 'Top campaigns']);
-                      })),
-                    );
+            Consumer<ProductCardDataService>(
+                builder: (context, pcService, child) {
+              return pcService.featuredCardProductsList.isNotEmpty ||
+                      pcService.featureNoData
+                  ? Consumer<CampaignCardListService>(
+                      builder: (context, cclService, child) {
+                      return cclService.campList.isEmpty
+                          ? const SizedBox()
+                          : Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 20),
+                              child: seeAllTitle(context, 'Campaigns',
+                                  onPressed: (() {
+                                Navigator.of(context)
+                                    .pushNamed(Campaigns.routeName, arguments: [
+                                  cclService.campList,
+                                  'Campaigns'
+                                ]);
+                              })),
+                            );
+                    })
+                  : const SizedBox();
             }),
             // const SizedBox(height: 20),
-            Consumer<CampaignCardListService>(
-              builder: (context, cclService, child) {
-                return FutureBuilder(builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return SizedBox();
-                  }
-                  return cclService.list.isEmpty
-                      ? SizedBox()
-                      : SizedBox(
-                          height:
-                              screenHight / 3.4 < 221 ? 221 : screenHight / 3.4,
-                          child: ListView.builder(
-                            physics: const BouncingScrollPhysics(
-                                parent: AlwaysScrollableScrollPhysics()),
-                            padding: EdgeInsets.only(
-                                left: Provider.of<LanguageService>(context,
-                                            listen: false)
-                                        .rtl
-                                    ? 0
-                                    : 20,
-                                right: Provider.of<LanguageService>(context,
-                                            listen: false)
-                                        .rtl
-                                    ? 20
-                                    : 0),
-                            shrinkWrap: true,
-                            scrollDirection: Axis.horizontal,
-                            itemCount: cclService.list.length,
-                            itemBuilder: (context, index) => GestureDetector(
-                              onTap: () {
-                                Navigator.of(context).pushNamed(
-                                    ALLCampProductFromLink.routeName,
-                                    arguments: ['29', 'New year sale']);
-                              },
-                              child: CampaignSmallerCard(
-                                  'New year sale',
-                                  'Big new year eve sale.',
-                                  'https://zahid.xgenious.com/grenmart-api/assets/uploads/media-uploader/011642229673.png'),
-                            ),
-                          ));
-                });
-              },
-            ),
+            Consumer<ProductCardDataService>(
+                builder: (context, pcService, child) {
+              return pcService.featuredCardProductsList.isNotEmpty ||
+                      pcService.featureNoData
+                  ? Consumer<CampaignCardListService>(
+                      builder: (context, cclService, child) {
+                        return FutureBuilder(builder: (context, snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return SizedBox();
+                          }
+                          return cclService.campList.isEmpty
+                              ? SizedBox()
+                              : SizedBox(
+                                  height: screenHight / 3.4 < 221
+                                      ? 221
+                                      : screenHight / 3.4,
+                                  child: ListView.builder(
+                                    physics: const BouncingScrollPhysics(
+                                        parent:
+                                            AlwaysScrollableScrollPhysics()),
+                                    padding: EdgeInsets.only(
+                                        left: Provider.of<LanguageService>(
+                                                    context,
+                                                    listen: false)
+                                                .rtl
+                                            ? 0
+                                            : 20,
+                                        right: Provider.of<LanguageService>(
+                                                    context,
+                                                    listen: false)
+                                                .rtl
+                                            ? 20
+                                            : 0),
+                                    shrinkWrap: true,
+                                    scrollDirection: Axis.horizontal,
+                                    itemCount: cclService.campList.length,
+                                    itemBuilder: (context, index) {
+                                      final element =
+                                          cclService.campList[index];
+                                      return GestureDetector(
+                                          onTap: () {
+                                            Navigator.of(context).pushNamed(
+                                                ALLCampProductFromLink
+                                                    .routeName,
+                                                arguments: [
+                                                  element.id.toString(),
+                                                  element.title
+                                                ]);
+                                          },
+                                          child: CampaignSmallerCard(
+                                              element.title,
+                                              element.subtitle,
+                                              element.image,
+                                              element.endDate
+                                                      .isAfter(DateTime.now())
+                                                  ? element.endDate.difference(
+                                                      DateTime.now())
+                                                  : Duration(seconds: 1)));
+                                    },
+                                  ));
+                        });
+                      },
+                    )
+                  : SizedBox();
+            }),
 
             const SizedBox(height: 40),
           ],

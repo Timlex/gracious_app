@@ -30,9 +30,6 @@ class Login extends StatelessWidget {
             if (emailText!.isEmpty) {
               return 'Enter your email/username';
             }
-            if (emailText.length <= 5) {
-              return 'Enter a valid email/username';
-            }
             return null;
           },
           onFieldSubmitted: (emailText) {

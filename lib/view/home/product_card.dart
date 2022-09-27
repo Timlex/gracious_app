@@ -91,16 +91,16 @@ class ProductCard extends StatelessWidget {
                       fit: BoxFit.cover,
                       imageUrl: imgUrl,
                       placeholder: (context, url) => Container(
-                        margin: EdgeInsets.symmetric(vertical: 15),
-                        decoration: BoxDecoration(
+                        margin: const EdgeInsets.symmetric(vertical: 15),
+                        decoration: const BoxDecoration(
                             image: DecorationImage(
                                 image: AssetImage(
                                     'assets/images/product_skelleton.png'),
                                 opacity: .4)),
                       ),
                       errorWidget: (context, url, error) => Container(
-                        margin: EdgeInsets.symmetric(vertical: 15),
-                        decoration: BoxDecoration(
+                        margin: const EdgeInsets.symmetric(vertical: 15),
+                        decoration: const BoxDecoration(
                             image: DecorationImage(
                                 image: AssetImage(
                                     'assets/images/product_skelleton.png'),

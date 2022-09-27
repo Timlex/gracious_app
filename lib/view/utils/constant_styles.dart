@@ -425,7 +425,8 @@ void showTopSlider(BuildContext context, UserProfileService uService) {
                                   child: Text(
                                       uService.userProfileData.name
                                           .substring(0, 2)
-                                          .toUpperCase(),
+                                          .toUpperCase()
+                                          .trim(),
                                       style: TextStyle(
                                           fontSize: 15,
                                           color: cc.pureWhite,
@@ -438,7 +439,8 @@ void showTopSlider(BuildContext context, UserProfileService uService) {
                                   child: Text(
                                       uService.userProfileData.name
                                           .substring(0, 2)
-                                          .toUpperCase(),
+                                          .toUpperCase()
+                                          .trim(),
                                       style: TextStyle(
                                           fontSize: 15,
                                           color: cc.pureWhite,

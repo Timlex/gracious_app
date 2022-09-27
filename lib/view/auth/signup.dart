@@ -55,12 +55,12 @@ class SignUp extends StatelessWidget {
             'Enter user name',
             validator: (ussernameText) {
               if (ussernameText!.isEmpty) {
-                return 'Enter your userName';
+                return 'Enter your username';
               }
-              if (ussernameText.contains(' ')) {
+              if (ussernameText.trim().contains(' ')) {
                 return 'Enter username without space.';
               }
-              if (ussernameText.length <= 5) {
+              if (ussernameText.length <= 4) {
                 return 'Enter at least 5 charecters';
               }
               return null;
@@ -90,40 +90,54 @@ class SignUp extends StatelessWidget {
             },
           ),
           textFieldTitle('Phone Number'),
-          IntlPhoneField(
-            style: TextStyle(color: cc.blackColor, fontSize: 15),
-            initialCountryCode: 'BD',
-            decoration: InputDecoration(
-              hintText: 'Enter your number',
-              hintStyle: TextStyle(color: cc.greyTextFieldLebel, fontSize: 13),
-              contentPadding:
-                  const EdgeInsets.symmetric(horizontal: 8, vertical: 17),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10),
-                borderSide: BorderSide(color: cc.greyHint, width: 2),
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10),
-                borderSide: BorderSide(color: cc.primaryColor, width: 2),
-              ),
-              enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10),
-                borderSide: BorderSide(color: cc.greyBorder, width: 1),
-              ),
-              errorBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10),
-                borderSide: BorderSide(color: cc.orange, width: 1),
-              ),
-            ),
-            onChanged: (phone) {
-              authController.setPhoneNumber(phone.completeNumber);
-              print(authController.phoneNumber);
+          CustomTextField(
+            'Enter Phone number with country code',
+            keyboardType: TextInputType.number,
+            validator: (emailText) {
+              if (emailText!.isEmpty) {
+                return 'Enter your number';
+              }
+
+              return null;
             },
-            onCountryChanged: (country) {
-              authController.setCountryCode(country.code);
-              print('Country changed to: ' + country.code);
+            onChanged: (value) {
+              authController.setPhoneNumber(value);
             },
           ),
+          // IntlPhoneField(
+          //   style: TextStyle(color: cc.blackColor, fontSize: 15),
+          //   initialCountryCode: 'BD',
+          //   decoration: InputDecoration(
+          //     hintText: 'Enter your number',
+          //     hintStyle: TextStyle(color: cc.greyTextFieldLebel, fontSize: 13),
+          //     contentPadding:
+          //         const EdgeInsets.symmetric(horizontal: 8, vertical: 17),
+          //     border: OutlineInputBorder(
+          //       borderRadius: BorderRadius.circular(10),
+          //       borderSide: BorderSide(color: cc.greyHint, width: 2),
+          //     ),
+          //     focusedBorder: OutlineInputBorder(
+          //       borderRadius: BorderRadius.circular(10),
+          //       borderSide: BorderSide(color: cc.primaryColor, width: 2),
+          //     ),
+          //     enabledBorder: OutlineInputBorder(
+          //       borderRadius: BorderRadius.circular(10),
+          //       borderSide: BorderSide(color: cc.greyBorder, width: 1),
+          //     ),
+          //     errorBorder: OutlineInputBorder(
+          //       borderRadius: BorderRadius.circular(10),
+          //       borderSide: BorderSide(color: cc.orange, width: 1),
+          //     ),
+          //   ),
+          //   onChanged: (phone) {
+          //     authController.setPhoneNumber(phone.completeNumber);
+          //     print(authController.phoneNumber);
+          //   },
+          //   onCountryChanged: (country) {
+          //     authController.setCountryCode(country.code);
+          //     print('Country changed to: ' + country.code);
+          //   },
+          // ),
           textFieldTitle('Country'),
           // const SizedBox(height: 8),
           Consumer<CountryDropdownService>(
@@ -185,10 +199,10 @@ class SignUp extends StatelessWidget {
             'City',
             validator: (cityText) {
               if (cityText!.isEmpty) {
-                return 'Enter at least 6 charechters';
+                return 'Enter a valid city name';
               }
               if (cityText.length <= 2) {
-                return 'Enter at least 6 charechters';
+                return 'Enter a valid city name';
               }
               return null;
             },
@@ -209,6 +223,9 @@ class SignUp extends StatelessWidget {
               }
               if (password.length <= 5) {
                 return 'Enter at least 6 charechters';
+              }
+              if (password.trim().contains(' ')) {
+                return 'Enter passeord without any space';
               }
               return null;
             },

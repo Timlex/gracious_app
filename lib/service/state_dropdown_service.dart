@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:gren_mart/service/manage_account_service.dart';
 import 'package:gren_mart/service/shipping_addresses_service.dart';
 import 'package:gren_mart/view/utils/constant_styles.dart';
 import 'package:provider/provider.dart';
@@ -13,7 +14,7 @@ class StateDropdownService with ChangeNotifier {
   List stateDropdownIdList = [];
   late List<States> allState;
   var selectedState;
-  var selectedStateId;
+  String? selectedStateId;
 
   bool isLoading = false;
 
@@ -22,10 +23,10 @@ class StateDropdownService with ChangeNotifier {
     // notifyListeners();
   }
 
-  setStateIdAndValue(value) {
+  setStateIdAndValue(value, {valueID}) {
     selectedState = value;
     final valueIndex = stateDropdownList.indexOf(value);
-    selectedStateId = stateDropdownIdList[valueIndex];
+    selectedStateId = valueID ?? stateDropdownIdList[valueIndex].toString();
     print(selectedState + selectedStateId.toString() + '---------------');
     notifyListeners();
   }
@@ -34,7 +35,7 @@ class StateDropdownService with ChangeNotifier {
     // print(allState.length);
     final valueState = allState[0];
     selectedState = valueState.name;
-    selectedStateId = valueState.id;
+    selectedStateId = valueState.id.toString();
     print(selectedState + selectedStateId.toString() + '---------------');
     notifyListeners();
   }
@@ -52,13 +53,16 @@ class StateDropdownService with ChangeNotifier {
       if (response.statusCode == 200) {
         final data = StateDropdownModel.fromJson(jsonDecode(response.body));
         var stateData = [];
+        var stateIdData = [];
+
         allState = data.state;
         for (int i = 0; i < data.state.length; i++) {
           var element = data.state[i];
           stateData.add(element.name);
-          stateDropdownIdList.add(element.id);
+          stateIdData.add(element.id);
         }
         stateDropdownList = stateData;
+        stateDropdownIdList = stateIdData;
         setStateIdAndValueDefault();
 
         // setStateIdAndValue(selectedCountryId);
@@ -68,6 +72,10 @@ class StateDropdownService with ChangeNotifier {
         if (context != null) {
           Provider.of<ShippingAddressesService>(context, listen: false)
               .setDefaultCountryState(context);
+          Provider.of<ManageAccountService>(context, listen: false)
+              .setCountryID(selectedCountryId.toString());
+          Provider.of<ManageAccountService>(context, listen: false)
+              .setStateId(selectedStateId);
         }
         return selectedCountryId;
       } else {
@@ -75,7 +83,7 @@ class StateDropdownService with ChangeNotifier {
       }
     } catch (error) {
       print(error);
-      snackBar(context!, 'Connection failed!', backgroundColor: cc.orange);
+      // snackBar(context!, 'Connection failed!', backgroundColor: cc.orange);
 
       return;
     }

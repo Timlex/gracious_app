@@ -174,7 +174,7 @@ class CheckoutService with ChangeNotifier {
     var request = http.MultipartRequest('POST', url);
 
     fieldss.forEach((key, value) {
-      request.fields[key] = value;
+      request.fields[key] = value is String ? value : value.toString();
     });
     request.headers.addAll(
       {
@@ -290,7 +290,7 @@ class CheckoutService with ChangeNotifier {
     var request = http.MultipartRequest('POST', url);
 
     fieldss.forEach((key, value) {
-      request.fields[key] = value;
+      request.fields[key] = value is String ? value : value.toString();
     });
     request.headers.addAll(
       {

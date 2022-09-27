@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:gren_mart/service/campaign_card_list_service.dart';
 import 'package:gren_mart/view/home/bottom_navigation_bar.dart';
 import 'package:gren_mart/view/home/campaign_smaller_card.dart';
 import '../../service/language_service.dart';
@@ -80,12 +81,15 @@ class Campaigns extends StatelessWidget {
               onTap: () {
                 Navigator.of(context).pushNamed(
                     ALLCampProductFromLink.routeName,
-                    arguments: ['29', 'New year sale']);
+                    arguments: [element.id.toString(), 'New year sale']);
               },
               child: CampaignSmallerCard(
-                'New year sale',
-                'Big new year eve sale.',
-                'https://zahid.xgenious.com/grenmart-api/assets/uploads/media-uploader/011642229673.png',
+                element.title,
+                element.subtitle,
+                element.image,
+                element.endDate.isAfter(DateTime.now())
+                    ? element.endDate.difference(DateTime.now())
+                    : Duration(seconds: 1),
                 margin: false,
               ),
             ),

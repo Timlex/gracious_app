@@ -99,7 +99,9 @@ class Checkout extends StatelessWidget {
                       }
                       return Consumer<ShippingAddressesService>(
                           builder: (context, saService, child) {
-                        return Column(children: shippingAddress(context)
+                        return Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: shippingAddress(context)
                             //     saService.shippingAddresseList.map(((e) {
                             //   final shippingAddress = saService.shippingAddresseList
                             //       .firstWhere((element) => element.id == e.id);
@@ -669,7 +671,7 @@ class Checkout extends StatelessWidget {
                     color: Colors.white60,
                     child: loadingProgressBar(),
                   )
-                : SizedBox();
+                : const SizedBox();
           })
         ],
       ),
@@ -696,7 +698,9 @@ class Checkout extends StatelessWidget {
                       style: TextThemeConstrants.greyHint13Eclipse,
                       children: [
                         if (e['attributes'] != null)
-                          TextSpan(text: ' (' + attributes3.toString() + ') '),
+                          TextSpan(
+                              text: (' (' + attributes3.toString() + ') ')
+                                  .replaceAll('()', '')),
                         const TextSpan(text: 'X'),
                         TextSpan(
                             text: '${e['quantity']}',
@@ -966,7 +970,7 @@ class Checkout extends StatelessWidget {
         Provider.of<ShippingAddressesService>(context, listen: false);
     final userData =
         Provider.of<UserProfileService>(context, listen: false).userProfileData;
-    if (userData.country != null) {
+    if (userData.country != null && userData.address != null) {
       list.add(shippingBar(
           saService.currentAddress,
           saService,
@@ -987,7 +991,10 @@ class Checkout extends StatelessWidget {
     if (list.isEmpty) {
       list.add(Container(
           margin: const EdgeInsets.symmetric(vertical: 20),
-          child: Text('Add shipping address or all the account informations')));
+          child: Text(
+            'Add shipping address or all the account informations',
+            textAlign: TextAlign.center,
+          )));
       // Provider.of<ShippingZoneService>(context, listen: false).setNoData(true);
       // Provider.of<ShippingAddressesService>(context, listen: false)
       //     .setNoData(true);
@@ -1000,16 +1007,19 @@ class Checkout extends StatelessWidget {
       BuildContext context, Datum? e, String addressName, String address) {
     return GestureDetector(
         onTap: () {
-          print(e);
-          if (e == null) {
+          print('outSide');
+          if (e == null && !saService.currentAddress) {
+            print('selecting current ');
             saService.setSelectedAddress(null, context);
             return;
           }
           if (saService.selectedAddress != null &&
               saService.selectedAddress == e) {
             print(saService.selectedAddress!.name);
+            print('nothing selecting ');
             return;
           }
+          print('selecting this ');
           saService.setSelectedAddress(e, context);
         },
         child: Container(

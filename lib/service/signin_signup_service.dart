@@ -136,8 +136,8 @@ class SignInSignUpService with ChangeNotifier {
     try {
       final response = await http.post(url, body: {
         'username': username.toLowerCase().trim(),
-        'password': password,
-        'full_name': name,
+        'password': password.trim(),
+        'full_name': name.trim(),
         'email': email.toLowerCase().trim(),
         'phone': phoneNumber,
         'country_id': countryId,

@@ -72,16 +72,16 @@ class PaystackPayment extends StatelessWidget {
                 return loadingProgressBar();
               }
               if (snapshot.hasData) {
-                return const Center(
-                  child: Text('Loadingfailed.'),
+                return Center(
+                  child: Text(snapshot.data.toString()),
                 );
               }
-              // if (snapshot.hasError) {
-              //   print(snapshot.error);
-              //   return const Center(
-              //     child: Text('Loadingfailed.'),
-              //   );
-              // }
+              if (snapshot.hasError) {
+                print(snapshot.error);
+                return const Center(
+                  child: Text('Loading failed.'),
+                );
+              }
               return WebView(
                 // onWebViewCreated: ((controller) {
                 //   _controller = controller;
@@ -186,7 +186,7 @@ class PaystackPayment extends StatelessWidget {
     );
   }
 
-  Future<void> waitForIt(BuildContext context) async {
+  Future waitForIt(BuildContext context) async {
     final uri = Uri.parse('https://api.paystack.co/transaction/initialize');
     final selectedGateway =
         Provider.of<PaymentGateawayService>(context, listen: false)
@@ -217,7 +217,8 @@ class PaystackPayment extends StatelessWidget {
       print(url);
       return;
     }
-    snackBar(context, 'Connection failed', backgroundColor: cc.orange);
+    snackBar(context, 'Loading failed', backgroundColor: cc.orange);
+    return jsonDecode(response.body)['message'];
     // print(response.statusCode);
     // if (response.statusCode == 201) {
     // this.url =
