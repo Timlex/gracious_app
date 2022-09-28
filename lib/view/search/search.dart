@@ -152,7 +152,7 @@ class SearchView extends StatelessWidget {
         controller: controller,
         physics: const BouncingScrollPhysics(
             parent: AlwaysScrollableScrollPhysics()),
-        padding: const EdgeInsets.only(left: 20),
+        padding: const EdgeInsets.only(left: 20, bottom: 30),
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 2,
           childAspectRatio: cardWidth / cardHeight,

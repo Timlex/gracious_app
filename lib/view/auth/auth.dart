@@ -319,7 +319,7 @@ class _AuthState extends State<Auth> {
                                 softWrap: true,
                                 maxLines: 1,
                                 text: TextSpan(
-                                  text: ssData.login ? 'Register' : 'Log In',
+                                  text: ssData.login ? 'Register' : 'Log in',
                                   style: TextStyle(
                                     color: cc.primaryColor,
                                     fontWeight: FontWeight.w700,
@@ -383,7 +383,7 @@ class _AuthState extends State<Auth> {
                         child: containerBorder(
                             'assets/images/icons/google.png',
                             ssData.login
-                                ? 'login with Google'
+                                ? 'Login with Google'
                                 : 'Register with Google'),
                       ),
                     ),
