@@ -49,12 +49,11 @@ class ProductCard extends StatelessWidget {
         if (popFirst) {
           Navigator.of(context).pop();
         }
+        if (popProductList) {
+          Navigator.of(context).pop();
+        }
         Navigator.of(context).pushNamed(ProductDetails.routeName,
-            arguments: [_id]).then((value) {
-          if (popProductList) {
-            Navigator.of(context).pop();
-          }
-        });
+            arguments: [_id]).then((value) {});
       },
       child: Container(
         width: screenWidth / 2.57,

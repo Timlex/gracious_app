@@ -28,7 +28,7 @@ class ManageAccountService with ChangeNotifier {
     phoneNumber = phoneValue;
     countryId = countryIdValue;
     stateId = stateIdValue;
-    cityValue = cityValue;
+    city = cityValue;
     zipCode = zipCodeValue;
     address = addressValue;
     imgUrl = imageUrl;

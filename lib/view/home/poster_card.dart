@@ -92,10 +92,10 @@ class PosterCard extends StatelessWidget {
                     left:
                         Provider.of<LanguageService>(context, listen: false).rtl
                             ? 0
-                            : 10,
+                            : 0,
                     right:
                         Provider.of<LanguageService>(context, listen: false).rtl
-                            ? 10
+                            ? 0
                             : 0,
                   ),
                   child: Text(

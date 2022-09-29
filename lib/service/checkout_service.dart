@@ -35,6 +35,11 @@ class CheckoutService with ChangeNotifier {
     notifyListeners();
   }
 
+  setIsLoading(value) {
+    isLoading = false;
+    termsAcondi = false;
+  }
+
   Future<void> imageSelector(
     BuildContext context,
   ) async {

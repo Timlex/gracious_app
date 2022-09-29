@@ -108,6 +108,7 @@ class CampaignCard extends StatelessWidget {
                             width: screenWidth / 5,
                             child: Text(
                               btText,
+                              textAlign: TextAlign.center,
                               style: TextStyle(overflow: TextOverflow.ellipsis),
                             )),
                       ),

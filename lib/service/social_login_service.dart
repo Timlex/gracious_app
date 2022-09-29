@@ -4,6 +4,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:gren_mart/service/common_service.dart';
 import 'package:gren_mart/service/signin_signup_service.dart';
 import 'package:gren_mart/view/utils/constant_name.dart';
+import 'package:gren_mart/view/utils/constant_styles.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
@@ -21,16 +22,16 @@ class SocialLoginService with ChangeNotifier {
     try {
       final AccessToken? accessToken = await FacebookAuth.instance.accessToken;
 // or FacebookAuth.i.accessToken
-      if (accessToken != null) {
-        final userData = await FacebookAuth.i.getUserData(
-          fields: "name,email,id",
-        );
-        print(userData['email']);
-        print(userData['id']);
-        print(userData['name']);
-        return socialLogin(
-            context, '0', userData['email'], userData['name'], userData['id']);
-      }
+      // if (accessToken != null) {
+      //   final userData = await FacebookAuth.i.getUserData(
+      //     fields: "name,email,id",
+      //   );
+      //   print(userData['email']);
+      //   print(userData['id']);
+      //   print(userData['name']);
+      //   return socialLogin(
+      //       context, '0', userData['email'], userData['name'], userData['id']);
+      // }
 
       final response = await FacebookAuth.i.login(
         permissions: [
@@ -68,7 +69,9 @@ class SocialLoginService with ChangeNotifier {
       }
       throw '';
     } catch (e) {
-      print(e);
+      snackBar(context, 'Loading failed', backgroundColor: cc.orange);
+      isLoading = false;
+      notifyListeners();
     }
   }
 

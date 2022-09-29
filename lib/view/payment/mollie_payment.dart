@@ -89,7 +89,7 @@ class MolliePayment extends StatelessWidget {
                   print('nav req to .......................${navRequest.url}');
                   if (navRequest.url.contains('xgenious')) {
                     print('preventing navigation');
-                    String status = await verifyPayment();
+                    String status = await verifyPayment(context);
                     if (status == 'paid') {
                       await Provider.of<ConfirmPaymentService>(context,
                               listen: false)
@@ -229,16 +229,19 @@ class MolliePayment extends StatelessWidget {
     return true;
   }
 
-  verifyPayment() async {
+  verifyPayment(BuildContext context) async {
     final url = Uri.parse(statusURl as String);
+    final selectedGateaway =
+        Provider.of<PaymentGateawayService>(context, listen: false)
+            .selectedGateaway!;
     final header = {
       "Content-Type": "application/json",
       "Accept": "application/json",
-      "Authorization": "Bearer test_fVk76gNbAp6ryrtRjfAVvzjxSHxC2v",
+      "Authorization": "Bearer ${selectedGateaway.publicKey}",
       // Above is API server key for the Midtrans account, encoded to base64
     };
     final response = await http.get(url, headers: header);
-    print(jsonDecode(response.body)['status']);
-    return jsonDecode(response.body)['status'];
+    print(jsonDecode(response.body));
+    return jsonDecode(response.body)['status'].toString();
   }
 }

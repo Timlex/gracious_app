@@ -88,6 +88,8 @@ class CartView extends StatelessWidget {
                         .clearSelectedAddress();
                     Provider.of<CuponDiscountService>(context, listen: false)
                         .setCarData(cuponData.toString().replaceAll(' ', ''));
+                    Provider.of<CheckoutService>(context, listen: false)
+                        .setIsLoading(false);
                     Navigator.of(context)
                         .pushNamed(Checkout.routeName)
                         .then((value) {

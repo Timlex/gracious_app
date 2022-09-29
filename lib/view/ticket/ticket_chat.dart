@@ -340,8 +340,13 @@ class TicketChat extends StatelessWidget {
                   if (tcService.messagesList[index].attachment != null)
                     const SizedBox(height: 5),
                   if (tcService.messagesList[index].attachment != null)
-                    showFile(context, tcService.messagesList[index].attachment,
-                        tcService.messagesList[index].id)
+                    showFile(
+                        context,
+                        tcService.messagesList[index].attachment,
+                        tcService.messagesList[index].id,
+                        usersMessage
+                            ? Alignment.centerRight
+                            : Alignment.centerLeft)
                 ],
               ),
             );
@@ -349,7 +354,9 @@ class TicketChat extends StatelessWidget {
     }
   }
 
-  Widget showFile(BuildContext context, String url, int id) {
+  Widget showFile(
+      BuildContext context, String url, int id, AlignmentGeometry alignment) {
+    initiateDeviceSize(context);
     if (url.contains('.zip')) {
       return Container(
         margin: const EdgeInsets.symmetric(horizontal: 10),
@@ -370,16 +377,19 @@ class TicketChat extends StatelessWidget {
         tag: id,
         child: Container(
           height: 200,
-          // width: 200,
+          width: screenWidth / 1.5,
+          alignment: alignment,
           margin: const EdgeInsets.symmetric(horizontal: 10),
           child: CachedNetworkImage(
             placeholder: (context, url) {
               return Container(
                 margin: const EdgeInsets.symmetric(vertical: 15),
-                decoration: const BoxDecoration(
+                decoration: BoxDecoration(
                     image: DecorationImage(
-                        image:
-                            AssetImage('assets/images/product_skelleton.png'),
+                        alignment: alignment,
+                        image: AssetImage(
+                          'assets/images/product_skelleton.png',
+                        ),
                         opacity: .4)),
               );
             },
@@ -387,8 +397,9 @@ class TicketChat extends StatelessWidget {
             errorWidget: (context, str, some) {
               return Container(
                 margin: const EdgeInsets.symmetric(vertical: 15),
-                decoration: const BoxDecoration(
+                decoration: BoxDecoration(
                     image: DecorationImage(
+                        alignment: alignment,
                         image:
                             AssetImage('assets/images/product_skelleton.png'),
                         opacity: .4)),

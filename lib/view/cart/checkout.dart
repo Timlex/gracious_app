@@ -2,7 +2,6 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:gren_mart/model/shipping_addresses_model.dart';
 import 'package:gren_mart/service/user_profile_service.dart';
-import 'package:gren_mart/view/cart/cart_tile.dart';
 import 'package:provider/provider.dart';
 
 import '../../service/common_service.dart';

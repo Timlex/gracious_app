@@ -29,11 +29,14 @@ class OrderListService with ChangeNotifier {
     if (response.statusCode == 200) {
       final data = OrderListModel.fromJson(jsonDecode(response.body));
       if (data.data.isEmpty) {
+        print(data.data.isEmpty);
         noOrder = true;
         return;
       }
-      print(orderListModel);
+      noOrder = data.data.isEmpty;
+      print(data.data.first.orderId);
       orderListModel = data;
+      print(orderListModel!.data.first.orderId);
       return 'fetching success.';
     }
     print(jsonDecode(response.body));
@@ -44,9 +47,9 @@ class OrderListService with ChangeNotifier {
     final url = Uri.parse(orderListModel!.nextPageUrl.toString());
     final header = {'Authorization': 'Bearer $globalUserToken'};
     final response = await http.get(url, headers: header);
-    print(response.body);
     if (response.statusCode == 200) {
       final data = OrderListModel.fromJson(jsonDecode(response.body));
+      print(data.data.first.orderId);
       print(orderListModel);
       data.data.forEach((element) {
         orderListModel!.data.add(element);
