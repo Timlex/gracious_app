@@ -1,16 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 import 'package:gren_mart/service/social_login_service.dart';
-import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:gren_mart/view/utils/text_themes.dart';
 import 'package:provider/provider.dart';
 
-import '../../db/database_helper.dart';
 import '../../service/auth_text_controller_service.dart';
 import '../../service/campaign_card_list_service.dart';
-import '../../service/cart_data_service.dart';
-import '../../service/favorite_data_service.dart';
 import '../../service/navigation_bar_helper_service.dart';
 import '../../service/poster_campaign_slider_service.dart';
 import '../../service/signin_signup_service.dart';
@@ -23,7 +17,6 @@ import '../../view/auth/signup.dart';
 import '../../view/home/home_front.dart';
 import '../../view/utils/constant_colors.dart';
 import '../../service/country_dropdown_service.dart';
-import '../utils/constant_name.dart';
 import '../utils/constant_styles.dart';
 
 class Auth extends StatefulWidget {

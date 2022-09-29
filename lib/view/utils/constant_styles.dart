@@ -15,7 +15,6 @@ import '../../view/utils/constant_colors.dart';
 import '../../view/utils/constant_name.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:provider/provider.dart';
-import 'package:backdrop/backdrop.dart';
 
 import '../../service/search_result_data_service.dart';
 import '../order/orders.dart';
