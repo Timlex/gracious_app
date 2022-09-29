@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-// import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:gren_mart/service/common_service.dart';
 import 'package:gren_mart/service/signin_signup_service.dart';
@@ -18,40 +18,40 @@ class SocialLoginService with ChangeNotifier {
   }
 
   Future facebookLogin(BuildContext context) async {
-//     try {
-//       final AccessToken? accessToken = await FacebookAuth.instance.accessToken;
-// // or FacebookAuth.i.accessToken
-//       if (accessToken != null) {
-//         final userData = await FacebookAuth.i.getUserData(
-//           fields: "name,email,id",
-//         );
-//         print(userData['email']);
-//         print(userData['id']);
-//         print(userData['name']);
-//         return socialLogin(
-//             context, '0', userData['email'], userData['name'], userData['id']);
-//       }
+    try {
+      final AccessToken? accessToken = await FacebookAuth.instance.accessToken;
+// or FacebookAuth.i.accessToken
+      if (accessToken != null) {
+        final userData = await FacebookAuth.i.getUserData(
+          fields: "name,email,id",
+        );
+        print(userData['email']);
+        print(userData['id']);
+        print(userData['name']);
+        return socialLogin(
+            context, '0', userData['email'], userData['name'], userData['id']);
+      }
 
-//       final response = await FacebookAuth.i.login(
-//         permissions: [
-//           'email',
-//           'public_profile',
-//         ],
-//       );
-//       if (response.status == LoginStatus.success) {
-//         final userData = await FacebookAuth.i.getUserData(
-//           fields: "name,email,id",
-//         );
-//         print(userData['email']);
-//         print(userData['id']);
-//         print(userData['name']);
-//         return socialLogin(
-//             context, '0', userData['email'], userData['name'], userData['id']);
-//       }
-//       throw '';
-//     } catch (e) {
-//       throw '';
-//     }
+      final response = await FacebookAuth.i.login(
+        permissions: [
+          'email',
+          'public_profile',
+        ],
+      );
+      if (response.status == LoginStatus.success) {
+        final userData = await FacebookAuth.i.getUserData(
+          fields: "name,email,id",
+        );
+        print(userData['email']);
+        print(userData['id']);
+        print(userData['name']);
+        return socialLogin(
+            context, '0', userData['email'], userData['name'], userData['id']);
+      }
+      throw '';
+    } catch (e) {
+      throw '';
+    }
   }
 
   Future googleLogin(BuildContext context) async {

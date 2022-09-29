@@ -54,7 +54,6 @@ dependencies:
   # focused_menu:
   # lottie:
   file_picker: ^5.2.0+1
-  flutter_facebook_auth: ^4.1.1
   google_sign_in: ^5.4.2
   timeago: ^3.3.0
   photo_view: ^0.14.0
@@ -70,6 +69,7 @@ dependencies:
   shared_preferences: ^2.0.15
   cashfree_pg: ^2.0.12+32
   url_launcher: ^6.1.5
+  flutter_facebook_auth: ^4.4.1+1
   # backdrop: ^0.7.2
   # flutter_lints: ^2.0.1
 
