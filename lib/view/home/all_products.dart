@@ -1,6 +1,7 @@
 import 'package:badges/badges.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:gren_mart/model/product_details_model.dart';
 import 'package:gren_mart/service/navigation_bar_helper_service.dart';
 import '../../service/cart_data_service.dart';
 import '../../service/favorite_data_service.dart';
@@ -102,6 +103,7 @@ class AllProducts extends StatelessWidget {
             e.campaignPercentage.toDouble(),
             e.imgUrl,
             e.isCartAble,
+            e.badge,
             popProductList: doPop,
           );
           // }

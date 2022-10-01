@@ -29,6 +29,7 @@ class Auth extends StatefulWidget {
 }
 
 class _AuthState extends State<Auth> {
+  DateTime? currentBackPressTime;
   ConstantColors cc = ConstantColors();
   ScrollController scrollController = ScrollController();
 
@@ -146,315 +147,332 @@ class _AuthState extends State<Auth> {
   @override
   Widget build(BuildContext context) {
     countryStateInitiate(context);
-    return Stack(
-      children: [
-        Scaffold(
-          body:
-              Consumer<SignInSignUpService>(builder: (context, ssData, child) {
-            return SingleChildScrollView(
-              controller: scrollController,
-              child: ListView(
-                  padding: const EdgeInsets.all(0),
-                  physics: const NeverScrollableScrollPhysics(),
-                  shrinkWrap: true,
-                  children: [
-                    Container(
-                      height: 230,
-                      // padding:
-                      //     EdgeInsets.only(top: MediaQuery.of(context).padding.top - 20),
-                      decoration: const BoxDecoration(
-                          borderRadius: BorderRadius.only(
-                            bottomLeft: Radius.circular(30),
-                            bottomRight: Radius.circular(30),
-                          ),
-                          color: Color(0xffE3FFE5),
-                          boxShadow: [
-                            BoxShadow(
-                                color: Colors.grey,
-                                blurRadius: 4,
-                                spreadRadius: 2,
-                                blurStyle: BlurStyle.normal)
-                          ]),
-                      child: Center(
-                        child: Padding(
-                          padding: EdgeInsets.only(
-                              top: MediaQuery.of(context).padding.top),
-                          child: SizedBox(
-                            height: 230,
-                            child: Image.asset('assets/images/auth_image.png'),
+    return WillPopScope(
+      onWillPop: () async {
+        DateTime now = DateTime.now();
+        if (currentBackPressTime == null ||
+            now.difference(currentBackPressTime!) > Duration(seconds: 2)) {
+          currentBackPressTime = now;
+          snackBar(context, 'Press again to exit', backgroundColor: cc.orange);
+          return false;
+        }
+        return true;
+      },
+      child: Stack(
+        children: [
+          Scaffold(
+            body: Consumer<SignInSignUpService>(
+                builder: (context, ssData, child) {
+              return SingleChildScrollView(
+                controller: scrollController,
+                child: ListView(
+                    padding: const EdgeInsets.all(0),
+                    physics: const NeverScrollableScrollPhysics(),
+                    shrinkWrap: true,
+                    children: [
+                      Container(
+                        height: 230,
+                        // padding:
+                        //     EdgeInsets.only(top: MediaQuery.of(context).padding.top - 20),
+                        decoration: const BoxDecoration(
+                            borderRadius: BorderRadius.only(
+                              bottomLeft: Radius.circular(30),
+                              bottomRight: Radius.circular(30),
+                            ),
+                            color: Color(0xffE3FFE5),
+                            boxShadow: [
+                              BoxShadow(
+                                  color: Colors.grey,
+                                  blurRadius: 4,
+                                  spreadRadius: 2,
+                                  blurStyle: BlurStyle.normal)
+                            ]),
+                        child: Center(
+                          child: Padding(
+                            padding: EdgeInsets.only(
+                                top: MediaQuery.of(context).padding.top),
+                            child: SizedBox(
+                              height: 230,
+                              child:
+                                  Image.asset('assets/images/auth_image.png'),
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                    const SizedBox(height: 35),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                      child: Text(
-                        ssData.login ? 'Welcome back' : 'Register to join us',
-                        style: TextThemeConstrants.titleText,
-                      ),
-                    ),
-                    const SizedBox(height: 15),
-                    Padding(
+                      const SizedBox(height: 35),
+                      Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                        child: ssData.login
-                            ? Login(
-                                _formKeySignin,
-                                () {
-                                  FocusScope.of(context).unfocus();
-                                  _onSubmit(
-                                      context, ssData.login, _formKeySignin);
-                                },
-                                initialPass: ssData.password,
-                                initialemail: ssData.email,
-                              )
-                            : SignUp(_formKeySignup)),
-                    const SizedBox(height: 10),
-                    Consumer<SignInSignUpService>(
-                        builder: (context, ssData, child) {
-                      return ssData.login
-                          ? Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 20.0),
-                              child: Container(
-                                  margin: const EdgeInsets.only(top: 5),
-                                  height: 30,
-                                  child: Row(
-                                    children: [
-                                      Expanded(
-                                        child: RememberBox(ssData.rememberPass,
-                                            (value) {
-                                          ssData.toggleRememberPass(value);
-                                        }),
-                                      ),
-                                      GestureDetector(
-                                        onTap: () {
-                                          Navigator.of(context).pushNamed(
-                                              ResetPassEmail.routeName);
-                                        },
-                                        child: RichText(
-                                          overflow: TextOverflow.clip,
-                                          textAlign: TextAlign.end,
-                                          softWrap: true,
-                                          maxLines: 1,
-                                          text: TextSpan(
-                                            text: 'Forgot password?',
-                                            style: TextStyle(
-                                              color: cc.titleTexts,
-                                              fontWeight: FontWeight.w600,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  )),
-                            )
-                          : const SizedBox();
-                    }),
-                    const SizedBox(height: 10),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                      child: Stack(
-                        children: [
-                          customContainerButton(
-                            ssData.isLoading
-                                ? ''
-                                : (ssData.login ? 'Log in' : 'Register'),
-                            double.infinity,
-                            ssData.login
-                                ? () {
+                        child: Text(
+                          ssData.login ? 'Welcome back' : 'Register to join us',
+                          style: TextThemeConstrants.titleText,
+                        ),
+                      ),
+                      const SizedBox(height: 15),
+                      Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                          child: ssData.login
+                              ? Login(
+                                  _formKeySignin,
+                                  () {
                                     FocusScope.of(context).unfocus();
                                     _onSubmit(
                                         context, ssData.login, _formKeySignin);
-                                  }
-                                : () {
-                                    FocusScope.of(context).unfocus();
-                                    _onSubmit(
-                                        context, ssData.login, _formKeySignup);
-
-                                    // Navigator.of(context)
-                                    //     .pushReplacementNamed(HomeFront.routeName);
                                   },
-                          ),
-                          if (ssData.isLoading)
-                            SizedBox(
-                                height: 50,
-                                width: double.infinity,
-                                child: Center(
-                                    child: loadingProgressBar(
-                                        size: 30, color: cc.pureWhite)))
-                        ],
+                                  initialPass: ssData.password,
+                                  initialemail: ssData.email,
+                                )
+                              : SignUp(_formKeySignup)),
+                      const SizedBox(height: 10),
+                      Consumer<SignInSignUpService>(
+                          builder: (context, ssData, child) {
+                        return ssData.login
+                            ? Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 20.0),
+                                child: Container(
+                                    margin: const EdgeInsets.only(top: 5),
+                                    height: 30,
+                                    child: Row(
+                                      children: [
+                                        Expanded(
+                                          child: RememberBox(
+                                              ssData.rememberPass, (value) {
+                                            ssData.toggleRememberPass(value);
+                                          }),
+                                        ),
+                                        GestureDetector(
+                                          onTap: () {
+                                            Navigator.of(context).pushNamed(
+                                                ResetPassEmail.routeName);
+                                          },
+                                          child: RichText(
+                                            overflow: TextOverflow.clip,
+                                            textAlign: TextAlign.end,
+                                            softWrap: true,
+                                            maxLines: 1,
+                                            text: TextSpan(
+                                              text: 'Forgot password?',
+                                              style: TextStyle(
+                                                color: cc.titleTexts,
+                                                fontWeight: FontWeight.w600,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    )),
+                              )
+                            : const SizedBox();
+                      }),
+                      const SizedBox(height: 10),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                        child: Stack(
+                          children: [
+                            customContainerButton(
+                              ssData.isLoading
+                                  ? ''
+                                  : (ssData.login ? 'Log in' : 'Register'),
+                              double.infinity,
+                              ssData.login
+                                  ? () {
+                                      FocusScope.of(context).unfocus();
+                                      _onSubmit(context, ssData.login,
+                                          _formKeySignin);
+                                    }
+                                  : () {
+                                      FocusScope.of(context).unfocus();
+                                      _onSubmit(context, ssData.login,
+                                          _formKeySignup);
+
+                                      // Navigator.of(context)
+                                      //     .pushReplacementNamed(HomeFront.routeName);
+                                    },
+                            ),
+                            if (ssData.isLoading)
+                              SizedBox(
+                                  height: 50,
+                                  width: double.infinity,
+                                  child: Center(
+                                      child: loadingProgressBar(
+                                          size: 30, color: cc.pureWhite)))
+                          ],
+                        ),
                       ),
-                    ),
-                    const SizedBox(height: 20),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            ssData.login
-                                ? 'Don\'t have an account?'
-                                : 'Already have an account?',
-                            style: TextThemeConstrants.paragraphText,
-                          ),
-                          const SizedBox(width: 5),
-                          Padding(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 0.0),
-                            child: GestureDetector(
-                              onTap: () {
-                                ssData.toggleSigninSignup();
-                              },
-                              child: RichText(
-                                overflow: TextOverflow.clip,
-                                textAlign: TextAlign.end,
-                                softWrap: true,
-                                maxLines: 1,
-                                text: TextSpan(
-                                  text: ssData.login ? 'Register' : 'Log in',
-                                  style: TextStyle(
-                                    color: cc.primaryColor,
-                                    fontWeight: FontWeight.w700,
+                      const SizedBox(height: 20),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              ssData.login
+                                  ? 'Don\'t have an account?'
+                                  : 'Already have an account?',
+                              style: TextThemeConstrants.paragraphText,
+                            ),
+                            const SizedBox(width: 5),
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 0.0),
+                              child: GestureDetector(
+                                onTap: () {
+                                  ssData.toggleSigninSignup();
+                                },
+                                child: RichText(
+                                  overflow: TextOverflow.clip,
+                                  textAlign: TextAlign.end,
+                                  softWrap: true,
+                                  maxLines: 1,
+                                  text: TextSpan(
+                                    text: ssData.login ? 'Register' : 'Log in',
+                                    style: TextStyle(
+                                      color: cc.primaryColor,
+                                      fontWeight: FontWeight.w700,
+                                    ),
                                   ),
                                 ),
                               ),
-                            ),
-                          )
-                        ],
+                            )
+                          ],
+                        ),
                       ),
-                    ),
-                    const Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 20.0),
-                      child: HorizontalDivider(),
-                    ),
-                    const SizedBox(height: 25),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                      child: GestureDetector(
-                        onTap: (() async {
-                          Provider.of<SocialLoginService>(context,
-                                  listen: false)
-                              .setIsLoading(true);
-                          Provider.of<SocialLoginService>(context,
-                                  listen: false)
-                              .googleLogin(context)
-                              .then((value) async {
-                            await Provider.of<UserProfileService>(context,
-                                    listen: false)
-                                .fetchProfileService()
-                                .then((value) async {
-                              if (value == null) {
-                                snackBar(context, 'Failed to load!',
-                                    backgroundColor: cc.orange);
-                                Provider.of<SocialLoginService>(context,
-                                        listen: false)
-                                    .setIsLoading(false);
-                                return;
-                              }
-                              Provider.of<PosterCampaignSliderService>(context,
-                                      listen: false)
-                                  .fetchPosters();
-                              Provider.of<PosterCampaignSliderService>(context,
-                                      listen: false)
-                                  .fetchCampaigns();
-                              Provider.of<CampaignCardListService>(context,
-                                      listen: false)
-                                  .fetchCampaignCardList();
-                              Provider.of<NavigationBarHelperService>(context,
-                                      listen: false)
-                                  .setNavigationIndex(0);
-                              Provider.of<SocialLoginService>(context,
-                                      listen: false)
-                                  .setIsLoading(false);
-
-                              Navigator.of(context)
-                                  .pushReplacementNamed(HomeFront.routeName);
-                            });
-                          });
-                        }),
-                        child: containerBorder(
-                            'assets/images/icons/google.png',
-                            ssData.login
-                                ? 'Login with Google'
-                                : 'Register with Google'),
+                      const Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 20.0),
+                        child: HorizontalDivider(),
                       ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                      child: GestureDetector(
-                        onTap: () async {
-                          Provider.of<SocialLoginService>(context,
-                                  listen: false)
-                              .setIsLoading(true);
-                          Provider.of<SocialLoginService>(context,
-                                  listen: false)
-                              .facebookLogin(context)
-                              .then((value) async {
-                            await Provider.of<UserProfileService>(context,
-                                    listen: false)
-                                .fetchProfileService()
-                                .then((value) async {
-                              if (value == null) {
-                                snackBar(context, 'Loaidng failed!',
-                                    backgroundColor: cc.orange);
-                                Provider.of<SocialLoginService>(context,
-                                        listen: false)
-                                    .setIsLoading(false);
-                                return;
-                              }
-                              Provider.of<PosterCampaignSliderService>(context,
-                                      listen: false)
-                                  .fetchPosters();
-                              Provider.of<PosterCampaignSliderService>(context,
-                                      listen: false)
-                                  .fetchCampaigns();
-                              Provider.of<CampaignCardListService>(context,
-                                      listen: false)
-                                  .fetchCampaignCardList();
-                              Provider.of<NavigationBarHelperService>(context,
-                                      listen: false)
-                                  .setNavigationIndex(0);
-
-                              Provider.of<SocialLoginService>(context,
-                                      listen: false)
-                                  .setIsLoading(false);
-                              Navigator.of(context)
-                                  .pushReplacementNamed(HomeFront.routeName);
-                            });
-                          }).onError((error, stackTrace) {
+                      const SizedBox(height: 25),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                        child: GestureDetector(
+                          onTap: (() async {
                             Provider.of<SocialLoginService>(context,
                                     listen: false)
-                                .setIsLoading(false);
-                            snackBar(context, 'Failed to load!',
-                                backgroundColor: cc.orange);
-                          });
-                        },
-                        child: containerBorder(
-                            'assets/images/icons/facebook.png',
-                            ssData.login
-                                ? 'Login with Facebook'
-                                : 'Register with Facebook'),
+                                .setIsLoading(true);
+                            Provider.of<SocialLoginService>(context,
+                                    listen: false)
+                                .googleLogin(context)
+                                .then((value) async {
+                              await Provider.of<UserProfileService>(context,
+                                      listen: false)
+                                  .fetchProfileService()
+                                  .then((value) async {
+                                if (value == null) {
+                                  snackBar(context, 'Failed to load!',
+                                      backgroundColor: cc.orange);
+                                  Provider.of<SocialLoginService>(context,
+                                          listen: false)
+                                      .setIsLoading(false);
+                                  return;
+                                }
+                                Provider.of<PosterCampaignSliderService>(
+                                        context,
+                                        listen: false)
+                                    .fetchPosters();
+                                Provider.of<PosterCampaignSliderService>(
+                                        context,
+                                        listen: false)
+                                    .fetchCampaigns();
+                                Provider.of<CampaignCardListService>(context,
+                                        listen: false)
+                                    .fetchCampaignCardList();
+                                Provider.of<NavigationBarHelperService>(context,
+                                        listen: false)
+                                    .setNavigationIndex(0);
+                                Provider.of<SocialLoginService>(context,
+                                        listen: false)
+                                    .setIsLoading(false);
+
+                                Navigator.of(context)
+                                    .pushReplacementNamed(HomeFront.routeName);
+                              });
+                            });
+                          }),
+                          child: containerBorder(
+                              'assets/images/icons/google.png',
+                              ssData.login
+                                  ? 'Login with Google'
+                                  : 'Register with Google'),
+                        ),
                       ),
-                    ),
-                    const SizedBox(
-                      height: 25,
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                        child: GestureDetector(
+                          onTap: () async {
+                            Provider.of<SocialLoginService>(context,
+                                    listen: false)
+                                .setIsLoading(true);
+                            Provider.of<SocialLoginService>(context,
+                                    listen: false)
+                                .facebookLogin(context)
+                                .then((value) async {
+                              await Provider.of<UserProfileService>(context,
+                                      listen: false)
+                                  .fetchProfileService()
+                                  .then((value) async {
+                                if (value == null) {
+                                  snackBar(context, 'Loaidng failed!',
+                                      backgroundColor: cc.orange);
+                                  Provider.of<SocialLoginService>(context,
+                                          listen: false)
+                                      .setIsLoading(false);
+                                  return;
+                                }
+                                Provider.of<PosterCampaignSliderService>(
+                                        context,
+                                        listen: false)
+                                    .fetchPosters();
+                                Provider.of<PosterCampaignSliderService>(
+                                        context,
+                                        listen: false)
+                                    .fetchCampaigns();
+                                Provider.of<CampaignCardListService>(context,
+                                        listen: false)
+                                    .fetchCampaignCardList();
+                                Provider.of<NavigationBarHelperService>(context,
+                                        listen: false)
+                                    .setNavigationIndex(0);
+
+                                Provider.of<SocialLoginService>(context,
+                                        listen: false)
+                                    .setIsLoading(false);
+                                Navigator.of(context)
+                                    .pushReplacementNamed(HomeFront.routeName);
+                              });
+                            }).onError((error, stackTrace) {
+                              Provider.of<SocialLoginService>(context,
+                                      listen: false)
+                                  .setIsLoading(false);
+                              snackBar(context, 'Failed to load!',
+                                  backgroundColor: cc.orange);
+                            });
+                          },
+                          child: containerBorder(
+                              'assets/images/icons/facebook.png',
+                              ssData.login
+                                  ? 'Login with Facebook'
+                                  : 'Register with Facebook'),
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 25,
+                      )
+                    ]),
+              );
+            }),
+          ),
+          Consumer<SocialLoginService>(
+            builder: (context, socialService, child) {
+              return socialService.isLoading
+                  ? Container(
+                      color: Colors.white54,
+                      child: loadingProgressBar(),
                     )
-                  ]),
-            );
-          }),
-        ),
-        Consumer<SocialLoginService>(
-          builder: (context, socialService, child) {
-            return socialService.isLoading
-                ? Container(
-                    color: Colors.white54,
-                    child: loadingProgressBar(),
-                  )
-                : const SizedBox();
-          },
-        )
-      ],
+                  : const SizedBox();
+            },
+          )
+        ],
+      ),
     );
   }
 

@@ -58,7 +58,7 @@ class Datum {
   int price;
   int discountPrice;
   // List<dynamic> attributes;
-  String badge;
+  String? badge;
   bool campaignProduct;
   int stockCount;
   dynamic avgRatting;

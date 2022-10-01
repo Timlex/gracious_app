@@ -22,6 +22,7 @@ class ProductCard extends StatelessWidget {
   final bool isCartable;
   bool popFirst;
   bool popProductList;
+  String? badge;
 
   EdgeInsetsGeometry? margin;
 
@@ -32,7 +33,8 @@ class ProductCard extends StatelessWidget {
     this.discountPrice,
     this.campaignPercentage,
     this.imgUrl,
-    this.isCartable, {
+    this.isCartable,
+    this.badge, {
     Key? key,
     this.margin = const EdgeInsets.only(right: 18),
     this.popFirst = false,
@@ -109,47 +111,54 @@ class ProductCard extends StatelessWidget {
                   ),
                   // ),
                 ),
-                Container(
-                  margin: const EdgeInsets.symmetric(vertical: 13),
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 3, horizontal: 6),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.only(
-                      topRight:
-                          Provider.of<LanguageService>(context, listen: false)
-                                  .rtl
-                              ? Radius.zero
-                              : Radius.circular(5),
-                      bottomRight:
-                          Provider.of<LanguageService>(context, listen: false)
-                                  .rtl
-                              ? Radius.zero
-                              : Radius.circular(5),
-                      topLeft:
-                          Provider.of<LanguageService>(context, listen: false)
-                                  .rtl
-                              ? Radius.circular(5)
-                              : Radius.zero,
-                      bottomLeft:
-                          Provider.of<LanguageService>(context, listen: false)
-                                  .rtl
-                              ? Radius.circular(5)
-                              : Radius.zero,
-                    ),
-                    color: cc.pureWhite,
-                  ),
-                  child: Text(
-                    'New',
-                    style: TextStyle(
-                      color: cc.blackColor,
-                      fontSize: 11,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ),
+                badge == null || badge == ''
+                    ? SizedBox()
+                    : Container(
+                        margin: const EdgeInsets.symmetric(vertical: 13),
+                        constraints: const BoxConstraints(maxWidth: 50),
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 3, horizontal: 6),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.only(
+                            topRight: Provider.of<LanguageService>(context,
+                                        listen: false)
+                                    .rtl
+                                ? Radius.zero
+                                : Radius.circular(5),
+                            bottomRight: Provider.of<LanguageService>(context,
+                                        listen: false)
+                                    .rtl
+                                ? Radius.zero
+                                : Radius.circular(5),
+                            topLeft: Provider.of<LanguageService>(context,
+                                        listen: false)
+                                    .rtl
+                                ? Radius.circular(5)
+                                : Radius.zero,
+                            bottomLeft: Provider.of<LanguageService>(context,
+                                        listen: false)
+                                    .rtl
+                                ? Radius.circular(5)
+                                : Radius.zero,
+                          ),
+                          color: cc.pureWhite,
+                        ),
+                        child: Text(
+                          '$badge',
+                          maxLines: 1,
+                          style: TextStyle(
+                            color: cc.blackColor,
+                            fontSize: 11,
+                            fontWeight: FontWeight.w600,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      ),
                 if (campaignPercentage > 0)
                   Container(
-                    margin: const EdgeInsets.only(top: 35),
+                    margin: badge == null || badge == ''
+                        ? const EdgeInsets.symmetric(vertical: 13)
+                        : const EdgeInsets.only(top: 35),
                     padding:
                         const EdgeInsets.symmetric(vertical: 3, horizontal: 6),
                     decoration: BoxDecoration(

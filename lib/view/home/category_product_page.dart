@@ -99,7 +99,7 @@ class CategoryProductPage extends StatelessWidget {
           final e = data[index];
           // if (srData.resultMeta!.lastPage >= pageNo) {
           return ProductCard(e.prdId, e.title, e.price, e.discountPrice,
-              e.campaignPercentage.toDouble(), e.imgUrl, e.isCartAble);
+              e.campaignPercentage.toDouble(), e.imgUrl, e.isCartAble, e.badge);
           // }
           // else {
           //   return const Center(

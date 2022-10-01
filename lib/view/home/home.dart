@@ -215,6 +215,7 @@ class Home extends StatelessWidget {
                               .toDouble(),
                           products.featuredCardProductsList[index].imgUrl,
                           products.featuredCardProductsList[index].isCartAble,
+                          products.featuredCardProductsList[index].badge,
                         ),
                       ))
                   : const SizedBox();
@@ -484,6 +485,7 @@ class Home extends StatelessWidget {
                               .campaignPercentage,
                           products.campaignCardProductList[index].imgUrl,
                           products.campaignCardProductList[index].isCartAble,
+                          products.campaignCardProductList[index].badge,
                         ),
                       )
                     : (products.campaignNoData

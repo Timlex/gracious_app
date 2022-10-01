@@ -164,7 +164,7 @@ class SearchView extends StatelessWidget {
           final e = srData.searchResult[index];
           // if (srData.resultMeta!.lastPage >= pageNo) {
           return ProductCard(e.prdId, e.title, e.price, e.discountPrice,
-              e.campaignPercentage, e.imgUrl, e.isCartAble);
+              e.campaignPercentage, e.imgUrl, e.isCartAble, e.badge);
         },
       );
     }
@@ -187,6 +187,10 @@ class SearchView extends StatelessWidget {
           snackBar(context, value, backgroundColor: cc.orange);
         }
       });
+      if (Provider.of<SearchResultDataService>(context, listen: false)
+          .isLoading) {
+        return;
+      }
       Provider.of<SearchResultDataService>(context, listen: false).nextPage();
     }
   }

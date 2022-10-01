@@ -707,16 +707,17 @@ class RelatedProduct {
   int? discountPrice;
   dynamic campaignPercentage;
   bool? isCartAble;
+  String? badge;
 
-  RelatedProduct({
-    required this.prdId,
-    required this.title,
-    required this.price,
-    this.discountPrice,
-    this.campaignPercentage,
-    required this.imgUrl,
-    this.isCartAble,
-  });
+  RelatedProduct(
+      {required this.prdId,
+      required this.title,
+      required this.price,
+      this.discountPrice,
+      this.campaignPercentage,
+      required this.imgUrl,
+      this.isCartAble,
+      this.badge});
 }
 
 class Rating {

@@ -513,6 +513,7 @@ class ProductDetails extends StatelessWidget {
                                                     .toDouble(),
                                                 products.imgUrl,
                                                 false,
+                                                null,
                                                 popFirst: true,
                                               );
                                             },
