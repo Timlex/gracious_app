@@ -7,7 +7,7 @@ import '../../service/common_service.dart';
 import 'package:http/http.dart' as http;
 
 class UserProfileService with ChangeNotifier {
-  late UserDetails userProfileData;
+  UserDetails? userProfileData;
 
   Future<UserDetails?> fetchProfileService() async {
     print('fetching profile data');
@@ -30,8 +30,8 @@ class UserProfileService with ChangeNotifier {
       print(data.userDetails.name);
 
       // posterDataList = data.data;
-      print(userProfileData.name +
-          userProfileData.email.toString() +
+      print(userProfileData!.name +
+          userProfileData!.email.toString() +
           '---------------');
       // print('-------------------------------------');
       notifyListeners();

@@ -44,17 +44,17 @@ class SettingScreenAppBar extends StatelessWidget {
                       .then((value) {
                     final userData =
                         Provider.of<UserProfileService>(context, listen: false);
-                    print(userData.userProfileData.country!.id);
-                    if (userData.userProfileData.country != null) {
+                    print(userData.userProfileData!.country!.id);
+                    if (userData.userProfileData!.country != null) {
                       Provider.of<CountryDropdownService>(context,
                               listen: false)
                           .setCountryIdAndValue(
-                              userData.userProfileData.country!.name);
+                              userData.userProfileData!.country!.name);
                     }
-                    if (userData.userProfileData.state != null) {
+                    if (userData.userProfileData!.state != null) {
                       Provider.of<StateDropdownService>(context, listen: false)
                           .setStateIdAndValue(
-                              userData.userProfileData.state!.name);
+                              userData.userProfileData!.state!.name);
                     }
                   });
                   Navigator.of(context).pushNamed(ManageAccount.routeName);
@@ -72,7 +72,7 @@ class SettingScreenAppBar extends StatelessWidget {
                             alignment: Alignment.center,
                             child: Text(
                               Provider.of<UserProfileService>(context)
-                                  .userProfileData
+                                  .userProfileData!
                                   .name
                                   .substring(0, 2)
                                   .toUpperCase()
@@ -88,7 +88,7 @@ class SettingScreenAppBar extends StatelessWidget {
                             alignment: Alignment.center,
                             child: Text(
                               Provider.of<UserProfileService>(context)
-                                  .userProfileData
+                                  .userProfileData!
                                   .name
                                   .substring(0, 2)
                                   .toUpperCase()

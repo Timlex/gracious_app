@@ -123,10 +123,9 @@ class _MyAppState extends State<MyApp> {
         title: 'GrenMart',
         builder: (context, rtlchild) {
           return Directionality(
-            textDirection:
-                Provider.of<LanguageService>(context, listen: false).rtl
-                    ? TextDirection.rtl
-                    : TextDirection.ltr,
+            textDirection: Provider.of<LanguageService>(context).rtl
+                ? TextDirection.rtl
+                : TextDirection.ltr,
             child: rtlchild!,
           );
         },

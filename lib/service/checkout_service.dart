@@ -57,8 +57,8 @@ class CheckoutService with ChangeNotifier {
   Future proccessCheckout(BuildContext context) async {
     print('Edit in proccess');
 
-    final userData =
-        Provider.of<UserProfileService>(context, listen: false).userProfileData;
+    final userData = Provider.of<UserProfileService>(context, listen: false)
+        .userProfileData!;
     final cartData = Provider.of<CartDataService>(context, listen: false);
     final shippingAddress =
         Provider.of<ShippingAddressesService>(context, listen: false);
@@ -110,17 +110,17 @@ class CheckoutService with ChangeNotifier {
                           final userData = Provider.of<UserProfileService>(
                               context,
                               listen: false);
-                          if (userData.userProfileData.country != null) {
+                          if (userData.userProfileData!.country != null) {
                             Provider.of<CountryDropdownService>(context,
                                     listen: false)
                                 .setCountryIdAndValue(
-                                    userData.userProfileData.country!.name);
+                                    userData.userProfileData!.country!.name);
                           }
-                          if (userData.userProfileData.state != null) {
+                          if (userData.userProfileData!.state != null) {
                             Provider.of<StateDropdownService>(context,
                                     listen: false)
                                 .setStateIdAndValue(
-                                    userData.userProfileData.state!.name);
+                                    userData.userProfileData!.state!.name);
                           }
                         });
                         Provider.of<ShippingAddressesService>(context,
@@ -241,8 +241,8 @@ class CheckoutService with ChangeNotifier {
   }
 
   Future paytmChekout(BuildContext context) async {
-    final userData =
-        Provider.of<UserProfileService>(context, listen: false).userProfileData;
+    final userData = Provider.of<UserProfileService>(context, listen: false)
+        .userProfileData!;
     final cartData = Provider.of<CartDataService>(context, listen: false);
     final shippingAddress =
         Provider.of<ShippingAddressesService>(context, listen: false);

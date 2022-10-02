@@ -10,7 +10,6 @@ class CampaignCardListService with ChangeNotifier {
   Future fetchCampaignCardList() async {
     final url = Uri.parse('$baseApiUrl/campaign');
     final response = await http.get(url);
-    print(response.body);
     if (response.statusCode == 200) {
       final data = CampaignCardListModel.fromJson(jsonDecode(response.body));
       model = data;

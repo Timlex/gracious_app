@@ -70,7 +70,7 @@ class ManageAccount extends StatelessWidget {
     final userData =
         Provider.of<UserProfileService>(context, listen: false).userProfileData;
     Provider.of<ManageAccountService>(context, listen: false).setInitialValue(
-      userData.name,
+      userData!.name,
       userData.email,
       userData.phone ?? '',
       userData.country == null ? '1' : userData.country!.id.toString(),
@@ -126,7 +126,7 @@ class ManageAccount extends StatelessWidget {
                                 alignment: Alignment.center,
                                 child: Text(
                                   Provider.of<UserProfileService>(context)
-                                      .userProfileData
+                                      .userProfileData!
                                       .name
                                       .substring(0, 2)
                                       .toUpperCase()
@@ -142,7 +142,7 @@ class ManageAccount extends StatelessWidget {
                                 alignment: Alignment.center,
                                 child: Text(
                                   Provider.of<UserProfileService>(context)
-                                      .userProfileData
+                                      .userProfileData!
                                       .name
                                       .substring(0, 2)
                                       .toUpperCase()

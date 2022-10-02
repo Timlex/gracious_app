@@ -345,8 +345,16 @@ class TicketChat extends StatelessWidget {
                         tcService.messagesList[index].attachment,
                         tcService.messagesList[index].id,
                         usersMessage
-                            ? Alignment.centerRight
-                            : Alignment.centerLeft)
+                            ? (Provider.of<LanguageService>(context,
+                                        listen: false)
+                                    .rtl
+                                ? Alignment.centerLeft
+                                : Alignment.centerRight)
+                            : (Provider.of<LanguageService>(context,
+                                        listen: false)
+                                    .rtl
+                                ? Alignment.centerRight
+                                : Alignment.centerLeft))
                 ],
               ),
             );
@@ -377,11 +385,19 @@ class TicketChat extends StatelessWidget {
         tag: id,
         child: Container(
           height: 200,
-          width: screenWidth / 1.5,
+          // width: screenWidth / 1.5,
           alignment: alignment,
+          constraints: BoxConstraints(
+            maxWidth: screenWidth / 1.5,
+          ),
           margin: const EdgeInsets.symmetric(horizontal: 10),
-          child: CachedNetworkImage(
-            placeholder: (context, url) {
+          child: Image.network(
+            url,
+            alignment: alignment,
+            loadingBuilder: (context, child, loding) {
+              if (loding == null) {
+                return child;
+              }
               return Container(
                 margin: const EdgeInsets.symmetric(vertical: 15),
                 decoration: BoxDecoration(
@@ -393,8 +409,8 @@ class TicketChat extends StatelessWidget {
                         opacity: .4)),
               );
             },
-            imageUrl: url,
-            errorWidget: (context, str, some) {
+            // imageUrl: url,
+            errorBuilder: (context, str, some) {
               return Container(
                 margin: const EdgeInsets.symmetric(vertical: 15),
                 decoration: BoxDecoration(

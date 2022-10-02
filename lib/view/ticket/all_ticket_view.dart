@@ -146,7 +146,7 @@ class AllTicketsView extends StatelessWidget {
     final tService = Provider.of<TicketService>(context, listen: false);
     if (controller.offset >= controller.position.maxScrollExtent &&
         !controller.position.outOfRange) {
-      if (tService.ticketsModel!.nextPageUrl != null) {
+      if (tService.ticketsModel!.nextPageUrl != null && !tService.nextPage) {
         tService.setNextPage(true);
         await tService
             .fetchNextPage(noForceFetch: false)

@@ -148,7 +148,7 @@ class SquareUpPayment extends StatelessWidget {
           "pre_populated_data": {
             "buyer_email":
                 Provider.of<UserProfileService>(context, listen: false)
-                    .userProfileData
+                    .userProfileData!
                     .email,
           }
         }));

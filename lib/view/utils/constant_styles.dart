@@ -160,15 +160,17 @@ PreferredSizeWidget helloAppBar(BuildContext context) {
               style: TextStyle(color: ConstantColors().greyHint, fontSize: 12),
             ),
             Consumer<UserProfileService>(builder: (context, uService, child) {
-              return Text(
-                uService.userProfileData.name == null
-                    ? ''
-                    : uService.userProfileData.name,
-                style: TextStyle(
-                    color: ConstantColors().titleTexts,
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold),
-              );
+              return uService.userProfileData == null
+                  ? SizedBox()
+                  : Text(
+                      uService.userProfileData!.name == null
+                          ? ''
+                          : uService.userProfileData!.name,
+                      style: TextStyle(
+                          color: ConstantColors().titleTexts,
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold),
+                    );
             }),
           ],
         ),
@@ -183,26 +185,29 @@ PreferredSizeWidget helloAppBar(BuildContext context) {
             //     .setNavigationIndex(4)),
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: CircleAvatar(
-                backgroundColor:
-                    uService.userProfileData.profileImageUrl == null
-                        ? cc.primaryColor
-                        : cc.pureWhite,
-                child: uService.userProfileData.profileImageUrl == null
-                    ? Text(
-                        uService.userProfileData.name
-                            .substring(0, 2)
-                            .toUpperCase(),
-                        style: TextStyle(
-                            color: cc.pureWhite, fontWeight: FontWeight.bold),
-                      )
-                    : null,
-                backgroundImage:
-                    uService.userProfileData.profileImageUrl != null
-                        ? NetworkImage(
-                            uService.userProfileData.profileImageUrl as String)
-                        : null,
-              ),
+              child: uService.userProfileData == null
+                  ? SizedBox()
+                  : CircleAvatar(
+                      backgroundColor:
+                          uService.userProfileData!.profileImageUrl == null
+                              ? cc.primaryColor
+                              : cc.pureWhite,
+                      child: uService.userProfileData!.profileImageUrl == null
+                          ? Text(
+                              uService.userProfileData!.name
+                                  .substring(0, 2)
+                                  .toUpperCase(),
+                              style: TextStyle(
+                                  color: cc.pureWhite,
+                                  fontWeight: FontWeight.bold),
+                            )
+                          : null,
+                      backgroundImage:
+                          uService.userProfileData!.profileImageUrl != null
+                              ? NetworkImage(uService
+                                  .userProfileData!.profileImageUrl as String)
+                              : null,
+                    ),
             ),
           );
         },
@@ -395,18 +400,18 @@ void showTopSlider(BuildContext context, UserProfileService uService) {
                               final userData = Provider.of<UserProfileService>(
                                   context,
                                   listen: false);
-                              print(userData.userProfileData.country!.id);
-                              if (userData.userProfileData.country != null) {
+                              print(userData.userProfileData!.country!.id);
+                              if (userData.userProfileData!.country != null) {
                                 Provider.of<CountryDropdownService>(context,
                                         listen: false)
-                                    .setCountryIdAndValue(
-                                        userData.userProfileData.country!.name);
+                                    .setCountryIdAndValue(userData
+                                        .userProfileData!.country!.name);
                               }
-                              if (userData.userProfileData.state != null) {
+                              if (userData.userProfileData!.state != null) {
                                 Provider.of<StateDropdownService>(context,
                                         listen: false)
                                     .setStateIdAndValue(
-                                        userData.userProfileData.state!.name);
+                                        userData.userProfileData!.state!.name);
                               }
                             });
                             Navigator.of(context)
@@ -422,7 +427,7 @@ void showTopSlider(BuildContext context, UserProfileService uService) {
                                 fit: BoxFit.cover,
                                 placeholder: (context, url) => Center(
                                   child: Text(
-                                      uService.userProfileData.name
+                                      uService.userProfileData!.name
                                           .substring(0, 2)
                                           .toUpperCase()
                                           .trim(),
@@ -432,11 +437,11 @@ void showTopSlider(BuildContext context, UserProfileService uService) {
                                           fontWeight: FontWeight.bold)),
                                 ),
                                 imageUrl:
-                                    uService.userProfileData.profileImageUrl ??
+                                    uService.userProfileData!.profileImageUrl ??
                                         '',
                                 errorWidget: (context, str, dyn) => Center(
                                   child: Text(
-                                      uService.userProfileData.name
+                                      uService.userProfileData!.name
                                           .substring(0, 2)
                                           .toUpperCase()
                                           .trim(),
@@ -453,11 +458,11 @@ void showTopSlider(BuildContext context, UserProfileService uService) {
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(uService.userProfileData.name,
+                            Text(uService.userProfileData!.name,
                                 style: TextStyle(
                                     fontSize: 15, fontWeight: FontWeight.bold)),
                             SizedBox(height: 3),
-                            Text(uService.userProfileData.email,
+                            Text(uService.userProfileData!.email,
                                 style: TextStyle(
                                     color: cc.greyHint, fontSize: 11)),
                           ],
@@ -498,17 +503,17 @@ void showTopSlider(BuildContext context, UserProfileService uService) {
                         final userData = Provider.of<UserProfileService>(
                             context,
                             listen: false);
-                        if (userData.userProfileData.country != null) {
+                        if (userData.userProfileData!.country != null) {
                           Provider.of<CountryDropdownService>(context,
                                   listen: false)
                               .setCountryIdAndValue(
-                                  userData.userProfileData.country!.name);
+                                  userData.userProfileData!.country!.name);
                         }
-                        if (userData.userProfileData.state != null) {
+                        if (userData.userProfileData!.state != null) {
                           Provider.of<StateDropdownService>(context,
                                   listen: false)
                               .setStateIdAndValue(
-                                  userData.userProfileData.state!.name);
+                                  userData.userProfileData!.state!.name);
                         }
                       });
                       Navigator.of(context).pushNamed(ManageAccount.routeName);

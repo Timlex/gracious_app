@@ -262,13 +262,13 @@ class Home extends StatelessWidget {
                           left: Provider.of<LanguageService>(context,
                                       listen: false)
                                   .rtl
-                              ? 0
+                              ? 10
                               : 20.0,
                           right: Provider.of<LanguageService>(context,
                                       listen: false)
                                   .rtl
                               ? 20
-                              : 0,
+                              : 10,
                         ),
                         scrollDirection: Axis.horizontal,
                         itemCount: catService.categorydataList.length,

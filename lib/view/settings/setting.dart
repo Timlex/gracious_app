@@ -43,11 +43,11 @@ class SettingView extends StatelessWidget {
         return ListView(
           padding: const EdgeInsets.all(0),
           children: [
-            SettingScreenAppBar(uData.userProfileData.profileImageUrl),
+            SettingScreenAppBar(uData.userProfileData!.profileImageUrl),
             const SizedBox(height: 20),
             Center(
               child: Text(
-                uData.userProfileData.name,
+                uData.userProfileData!.name,
                 style: TextThemeConstrants.titleText,
               ),
             ),
@@ -56,10 +56,10 @@ class SettingView extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 25.0),
               child: Center(
                 child: Text(
-                  (uData.userProfileData.phone == null
+                  (uData.userProfileData!.phone == null
                           ? ''
-                          : uData.userProfileData.phone.toString() + '.') +
-                      uData.userProfileData.email.toString(),
+                          : uData.userProfileData!.phone.toString() + '.') +
+                      uData.userProfileData!.email.toString(),
                   style: TextStyle(
                     fontSize: 14,
                     color: cc.greyHint,
@@ -91,16 +91,16 @@ class SettingView extends StatelessWidget {
                   .then((value) {
                 final userData =
                     Provider.of<UserProfileService>(context, listen: false);
-                if (userData.userProfileData.country != null) {
+                if (userData.userProfileData!.country != null) {
                   Provider.of<CountryDropdownService>(context, listen: false)
                       .setCountryIdAndValue(
-                          userData.userProfileData.country!.name);
+                          userData.userProfileData!.country!.name);
                 }
-                if (userData.userProfileData.state != null) {
+                if (userData.userProfileData!.state != null) {
                   Provider.of<StateDropdownService>(context, listen: false)
-                      .setStateIdAndValue(userData.userProfileData.state!.name,
+                      .setStateIdAndValue(userData.userProfileData!.state!.name,
                           valueID:
-                              userData.userProfileData.state!.id.toString());
+                              userData.userProfileData!.state!.id.toString());
                 }
               });
               Navigator.of(context).pushNamed(ManageAccount.routeName);

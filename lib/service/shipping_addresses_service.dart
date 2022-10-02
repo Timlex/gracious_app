@@ -98,8 +98,8 @@ class ShippingAddressesService with ChangeNotifier {
 
   setSelectedAddress(value, BuildContext context) async {
     print(value);
-    final userProfile =
-        Provider.of<UserProfileService>(context, listen: false).userProfileData;
+    final userProfile = Provider.of<UserProfileService>(context, listen: false)
+        .userProfileData!;
     // if (userProfile.city == null) {
     //   Provider.of<ShippingZoneService>(context, listen: false).setNoData(true);
     //   return;

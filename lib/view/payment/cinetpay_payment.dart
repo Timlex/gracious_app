@@ -200,7 +200,7 @@ class CinetPayPayment extends StatelessWidget {
     //   snackBar(context, 'Invalid developer keys');
     // }
     print('here');
-    final username = Namefully(userData.name);
+    final username = Namefully(userData!.name);
     final url = Uri.parse('https://api-checkout.cinetpay.com/v2/payment');
     final header = {
       "Content-Type": "application/json",

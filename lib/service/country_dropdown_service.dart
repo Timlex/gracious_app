@@ -49,9 +49,9 @@ class CountryDropdownService with ChangeNotifier {
         final countryData =
             Provider.of<UserProfileService>(context, listen: false);
         if (notFromAuth == null &&
-            countryData.userProfileData.country != null) {
-          selectedCountry = countryData.userProfileData.country!.name;
-          selectedCountryId = countryData.userProfileData.country!.id;
+            countryData.userProfileData!.country != null) {
+          selectedCountry = countryData.userProfileData!.country!.name;
+          selectedCountryId = countryData.userProfileData!.country!.id;
         } else {
           selectedCountry = countryDropdownList[0];
           selectedCountryId = countryDropdownIdList[0];

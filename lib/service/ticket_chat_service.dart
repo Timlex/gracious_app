@@ -59,9 +59,9 @@ class TicketChatService with ChangeNotifier {
       'Content-Type': 'application/json',
       "Authorization": "Bearer $globalUserToken",
     };
-    print('searching in progress');
+    // print('searching in progress');
     final url = Uri.parse('$baseApiUrl/user/ticket/$id');
-    print(url);
+    // print(url);
     try {
       final response = await http.get(url, headers: header);
 
@@ -71,8 +71,8 @@ class TicketChatService with ChangeNotifier {
         ticketDetails = data.ticketDetails;
         noMessage = data.allMessages.isEmpty;
 
-        print(isLoading);
-        print(messagesList.toString() + '-------------------');
+        // print(isLoading);
+        // print(messagesList.toString() + '-------------------');
         setIsLoading(false);
         // setNoProduct(resultMeta!.total == 0);
 
@@ -81,14 +81,14 @@ class TicketChatService with ChangeNotifier {
         return jsonDecode(response.body)['message'];
       }
     } catch (error) {
-      print(error);
+      // print(error);
 
       rethrow;
     }
   }
 
   Future sendMessage(id) async {
-    print('sending------------------');
+    // print('sending------------------');
     final url = Uri.parse('$baseApiUrl/user/ticket/chat/send/$id');
 
     Map<String, String> fieldss = {
@@ -110,10 +110,10 @@ class TicketChatService with ChangeNotifier {
       },
     );
 
-    print(url);
+    // print(url);
     try {
       if (pickedImage != null) {
-        print(pickedImage!.path);
+        // print(pickedImage!.path);
         var multiport = await http.MultipartFile.fromPath(
           'file',
           pickedImage!.path,
@@ -124,7 +124,7 @@ class TicketChatService with ChangeNotifier {
       var streamedResponse = await request.send();
 
       var response = await http.Response.fromStream(streamedResponse);
-      print(response.statusCode);
+      // print(response.statusCode);
       if (response.statusCode == 200) {
         await fetchOnlyMessages(id);
         // var data = TicketChatModel.fromJson(jsonDecode(response.body));
@@ -138,7 +138,7 @@ class TicketChatService with ChangeNotifier {
         return jsonDecode(response.body);
       }
     } catch (error) {
-      print(error);
+      // print(error);
 
       rethrow;
     }
@@ -150,9 +150,9 @@ class TicketChatService with ChangeNotifier {
       "Accept": "application/json",
       "Authorization": "Bearer $globalUserToken",
     };
-    print('searching in progress');
+    // print('searching in progress');
     final url = Uri.parse('$baseApiUrl/user/ticket/chat/$id');
-    print(url);
+    // print(url);
     try {
       final response = await http.get(url, headers: header);
 
@@ -168,7 +168,7 @@ class TicketChatService with ChangeNotifier {
         notifyListeners();
       } else {}
     } catch (error) {
-      print(error);
+      // print(error);
 
       rethrow;
     }

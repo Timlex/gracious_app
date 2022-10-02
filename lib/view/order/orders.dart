@@ -75,7 +75,7 @@ class MyOrders extends StatelessWidget {
 
     if (controller.offset >= controller.position.maxScrollExtent &&
         !controller.position.outOfRange) {
-      if (orderListData!.nextPageUrl != null) {
+      if (orderListData!.nextPageUrl != null && !oService.loadingNextPage) {
         oService.setLodingNextPage(true);
         oService
             .fetchNextPage()

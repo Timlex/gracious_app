@@ -969,7 +969,7 @@ class Checkout extends StatelessWidget {
         Provider.of<ShippingAddressesService>(context, listen: false);
     final userData =
         Provider.of<UserProfileService>(context, listen: false).userProfileData;
-    if (userData.country != null && userData.address != null) {
+    if (userData!.country != null && userData.address != null) {
       list.add(shippingBar(
           saService.currentAddress,
           saService,
@@ -977,7 +977,7 @@ class Checkout extends StatelessWidget {
           null,
           'Current address',
           Provider.of<UserProfileService>(context, listen: false)
-              .userProfileData
+              .userProfileData!
               .address));
       // saService.setSelectedAddress(null, context);
     } else {

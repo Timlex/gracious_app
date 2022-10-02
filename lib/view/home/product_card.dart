@@ -36,7 +36,7 @@ class ProductCard extends StatelessWidget {
     this.isCartable,
     this.badge, {
     Key? key,
-    this.margin = const EdgeInsets.only(right: 18),
+    this.margin,
     this.popFirst = false,
     this.popProductList = false,
   }) : super(key: key);
@@ -45,6 +45,7 @@ class ProductCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final rtl = Provider.of<LanguageService>(context, listen: false).rtl;
     initiateDeviceSize(context);
     return GestureDetector(
       onTap: () {
@@ -60,7 +61,8 @@ class ProductCard extends StatelessWidget {
       child: Container(
         width: screenWidth / 2.57,
         height: screenHight / 3.6,
-        margin: margin,
+        margin:
+            margin ?? EdgeInsets.only(right: rtl ? 0 : 18, left: rtl ? 18 : 0),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
           color: cc.pureWhite,
