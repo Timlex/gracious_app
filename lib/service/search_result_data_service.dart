@@ -23,6 +23,7 @@ class SearchResultDataService with ChangeNotifier {
   int pageNumber = 2;
   bool noProduct = false;
   bool finterOn = false;
+  bool error = false;
   List<String> sortOption = [
     'popularity',
     'latest',
@@ -96,6 +97,7 @@ class SearchResultDataService with ChangeNotifier {
     resultMeta = null;
     pageNumber = 2;
     finterOn = false;
+    error = false;
     notifyListeners();
   }
 
@@ -110,6 +112,7 @@ class SearchResultDataService with ChangeNotifier {
     ratingPoint = '0';
     sortBy = '';
     finterOn = false;
+    error = false;
 
     rangevalue = const RangeValues(0, 3500);
 
@@ -118,7 +121,6 @@ class SearchResultDataService with ChangeNotifier {
 
   Future fetchProductsBy({String count = '', String pageNo = ''}) async {
     print(lastPage);
-
     if (lastPage!) {
       setIsLoading(false);
       notifyListeners();
@@ -129,31 +131,36 @@ class SearchResultDataService with ChangeNotifier {
     final url = Uri.parse(
         '$baseApiUrl/product?count=&q=$searchText&cat=$categoryId&subcat=$subCategoryId&pr_min=$minPrice&pr_max=$maxPrice&rt=${ratingPoint == '0' ? '' : ratingPoint}&sort=$sortBy&page=$pageNo');
     print(url);
-    // try {
-    final response = await http.get(url);
+    try {
+      final response = await http.get(url);
 
-    if (response.statusCode == 201) {
-      var data = SearchResultDataModel.fromJson(jsonDecode(response.body));
+      if (response.statusCode == 201) {
+        var data = SearchResultDataModel.fromJson(jsonDecode(response.body));
 
-      for (var element in data.data) {
-        searchResult.add(element);
+        for (var element in data.data) {
+          searchResult.add(element);
+        }
+        resultMeta = data.meta;
+
+        setLastPage(resultMeta!.lastPage.toString() == pageNo);
+        print(resultMeta!.lastPage);
+        print(pageNo);
+        print(resultMeta!.lastPage.toString() + '-------------------');
+        setIsLoading(false);
+        setNoProduct(resultMeta!.total == 0);
+
+        notifyListeners();
+        return;
       }
-      resultMeta = data.meta;
-      setLastPage(resultMeta!.lastPage.toString() == pageNo);
-      print(isLoading);
-      print(searchResult.length);
-      print(resultMeta!.lastPage.toString() + '-------------------');
-      setIsLoading(false);
-      setNoProduct(resultMeta!.total == 0);
+      if (response.body.contains('message')) {
+        throw 'error';
+      }
+      setNoProduct(true);
+    } catch (error) {
+      print(error);
 
+      this.error = true;
       notifyListeners();
-      return;
     }
-    setNoProduct(true);
-    // } catch (error) {
-    //   print(error);
-
-    //   rethrow;
-    // }
   }
 }

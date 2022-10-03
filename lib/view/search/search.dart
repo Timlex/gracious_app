@@ -109,26 +109,27 @@ class SearchView extends StatelessWidget {
                 })),
             const SizedBox(height: 15),
             Expanded(
-              child: srData.resultMeta != null
-                  ? newMethod(cardWidth, cardHeight, srData)
-                  : FutureBuilder(
-                      future: showTimout(),
-                      builder: ((context, snapshot) {
-                        if (snapshot.connectionState ==
-                            ConnectionState.waiting) {
-                          return loadingProgressBar();
-                        }
-                        snackBar(context, 'Timeout!',
-                            backgroundColor: cc.orange);
-                        return Center(
-                          child: Text(
-                            'Loading failed!',
-                            style: TextStyle(color: cc.greyHint),
-                          ),
-                        );
-                      }),
-                    ),
-            ),
+                child: (srData.resultMeta != null || srData.error)
+                    ? newMethod(cardWidth, cardHeight, srData)
+                    : loadingProgressBar()
+                //  FutureBuilder(
+                //     future: showTimout(),
+                //     builder: ((context, snapshot) {
+                //       if (snapshot.connectionState ==
+                //           ConnectionState.waiting) {
+                //         return loadingProgressBar();
+                //       }
+                //       snackBar(context, 'Timeout!',
+                //           backgroundColor: cc.orange);
+                //       return Center(
+                //         child: Text(
+                //           'Loading failed!',
+                //           style: TextStyle(color: cc.greyHint),
+                //         ),
+                //       );
+                //     }),
+                //   ),
+                ),
             if (srData.isLoading) loadingProgressBar(),
             // if (srData.resultMeta!.lastPage < pageNo)
           ],
@@ -144,6 +145,13 @@ class SearchView extends StatelessWidget {
       return Center(
         child: Text(
           'No data has been found!',
+          style: TextStyle(color: cc.greyHint),
+        ),
+      );
+    } else if (srData.error) {
+      return Center(
+        child: Text(
+          'Loading failed!',
           style: TextStyle(color: cc.greyHint),
         ),
       );
@@ -173,6 +181,10 @@ class SearchView extends StatelessWidget {
   scrollListener(BuildContext context) {
     if (controller.offset >= controller.position.maxScrollExtent &&
         !controller.position.outOfRange) {
+      if (Provider.of<SearchResultDataService>(context, listen: false)
+          .isLoading) {
+        return;
+      }
       Provider.of<SearchResultDataService>(context, listen: false)
           .setIsLoading(true);
 
@@ -187,10 +199,6 @@ class SearchView extends StatelessWidget {
           snackBar(context, value, backgroundColor: cc.orange);
         }
       });
-      if (Provider.of<SearchResultDataService>(context, listen: false)
-          .isLoading) {
-        return;
-      }
       Provider.of<SearchResultDataService>(context, listen: false).nextPage();
     }
   }

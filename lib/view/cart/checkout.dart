@@ -400,8 +400,19 @@ class Checkout extends StatelessWidget {
                                     alignment: Alignment.center,
                                     children: [
                                       Padding(
-                                        padding:
-                                            const EdgeInsets.only(left: 10),
+                                        padding: EdgeInsets.only(
+                                            left: Provider.of<LanguageService>(
+                                                        context,
+                                                        listen: false)
+                                                    .rtl
+                                                ? 0
+                                                : 10,
+                                            right: Provider.of<LanguageService>(
+                                                        context,
+                                                        listen: false)
+                                                    .rtl
+                                                ? 10
+                                                : 0),
                                         child: SizedBox(
                                           width: screenWidth / 4,
                                           child: FittedBox(
