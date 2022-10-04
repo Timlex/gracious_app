@@ -278,6 +278,15 @@ class Home extends StatelessWidget {
                             onTap: () {
                               Provider.of<SearchResultDataService>(context,
                                       listen: false)
+                                  .resetSerch();
+                              Provider.of<SearchResultDataService>(context,
+                                      listen: false)
+                                  .resetSerchFilters();
+                              Provider.of<SearchResultDataService>(context,
+                                      listen: false)
+                                  .setSearchText('');
+                              Provider.of<SearchResultDataService>(context,
+                                      listen: false)
                                   .setCategoryId(element.id.toString(),
                                       notListen: true);
                               Navigator.of(context).pushNamed(

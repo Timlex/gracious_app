@@ -16,7 +16,7 @@ class SearchResultDataService with ChangeNotifier {
   String minPrice = '';
   String ratingPoint = '0';
   bool isLoading = false;
-  bool? lastPage = false;
+  bool lastPage = false;
   String categoryId = '';
   String subCategoryId = '';
   String sortBy = '';
@@ -44,6 +44,9 @@ class SearchResultDataService with ChangeNotifier {
   }
 
   nextPage() {
+    if (lastPage) {
+      return;
+    }
     pageNumber++;
     notifyListeners();
   }
@@ -121,7 +124,7 @@ class SearchResultDataService with ChangeNotifier {
 
   Future fetchProductsBy({String count = '', String pageNo = ''}) async {
     print(lastPage);
-    if (lastPage!) {
+    if (lastPage) {
       setIsLoading(false);
       notifyListeners();
       print('Leaving fetching___________');
@@ -142,8 +145,9 @@ class SearchResultDataService with ChangeNotifier {
         }
         resultMeta = data.meta;
 
-        setLastPage(resultMeta!.lastPage.toString() == pageNo);
-        print(resultMeta!.lastPage);
+        setLastPage(resultMeta!.lastPage.toString() == pageNo ||
+            resultMeta!.lastPage == 1);
+        print(lastPage);
         print(pageNo);
         print(resultMeta!.lastPage.toString() + '-------------------');
         setIsLoading(false);
@@ -158,7 +162,9 @@ class SearchResultDataService with ChangeNotifier {
       setNoProduct(true);
     } catch (error) {
       print(error);
-
+      if (pageNo != '1') {
+        return 'Loading failed!';
+      }
       this.error = true;
       notifyListeners();
     }

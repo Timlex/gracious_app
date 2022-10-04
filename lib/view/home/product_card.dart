@@ -36,7 +36,7 @@ class ProductCard extends StatelessWidget {
     this.isCartable,
     this.badge, {
     Key? key,
-    this.margin,
+    this.margin = const EdgeInsets.all(1),
     this.popFirst = false,
     this.popProductList = false,
   }) : super(key: key);
@@ -61,8 +61,9 @@ class ProductCard extends StatelessWidget {
       child: Container(
         width: screenWidth / 2.57,
         height: screenHight / 3.6,
-        margin:
-            margin ?? EdgeInsets.only(right: rtl ? 0 : 18, left: rtl ? 18 : 0),
+        margin: margin != null
+            ? EdgeInsets.only(right: rtl ? 0 : 18, left: rtl ? 18 : 0)
+            : null,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
           color: cc.pureWhite,

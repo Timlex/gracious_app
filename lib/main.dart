@@ -163,8 +163,7 @@ class _MyAppState extends State<MyApp> {
           AddNewTicket.routeName: (context) => AddNewTicket(),
           AllProducts.routeName: (context) => AllProducts(),
           WebViewScreen.routeName: (context) => WebViewScreen(),
-          CategoryProductPage.routeName: (context) =>
-              const CategoryProductPage(),
+          CategoryProductPage.routeName: (context) => CategoryProductPage(),
           CategoryPage.routeName: (context) => CategoryPage(),
           Campaigns.routeName: (context) => Campaigns(),
           ALLCampProductFromLink.routeName: (context) =>
