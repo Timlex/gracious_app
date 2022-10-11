@@ -112,7 +112,7 @@ class _AuthState extends State<Auth> {
             authTextControllers.countryCode,
             (authTextControllers.country ?? 1).toString(),
             (authTextControllers.state ?? 1).toString(),
-            authTextControllers.cityAddress,
+            // authTextControllers.cityAddress,
             'true')
         .then((value) async {
       if (value) {
@@ -180,13 +180,18 @@ class _AuthState extends State<Auth> {
                               bottomRight: Radius.circular(30),
                             ),
                             color: Color(0xffE3FFE5),
-                            boxShadow: [
-                              BoxShadow(
-                                  color: Colors.grey,
-                                  blurRadius: 4,
-                                  spreadRadius: 2,
-                                  blurStyle: BlurStyle.normal)
-                            ]),
+                            image: DecorationImage(
+                                image: AssetImage('assets/images/elements.png'),
+                                repeat: ImageRepeat.repeat,
+                                opacity: .7)
+                            // boxShadow: [
+                            //   BoxShadow(
+                            //       color: Colors.grey,
+                            //       blurRadius: 4,
+                            //       spreadRadius: 2,
+                            //       blurStyle: BlurStyle.normal)
+                            // ]
+                            ),
                         child: Center(
                           child: Padding(
                             padding: EdgeInsets.only(

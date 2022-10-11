@@ -63,16 +63,20 @@ class FavoriteDataService with ChangeNotifier {
   }
 
   refreshFavList() {
-    favoriteItems.forEach((key, value) async {
-      final url = Uri.parse('$baseApiUrl/product/$key');
+    try {
+      favoriteItems.forEach((key, value) async {
+        final url = Uri.parse('$baseApiUrl/product/$key');
 
-      // try {
-      final response = await http.get(url);
-      if (response.statusCode != 200) {
-        await DbHelper.deleteDbSI('favorite', value.id);
-        _favoriteItems.removeWhere((key, value) => value.id == value.id);
-        notifyListeners();
-      }
-    });
+        // try {
+        final response = await http.get(url);
+        if (response.statusCode != 200) {
+          await DbHelper.deleteDbSI('favorite', value.id);
+          _favoriteItems.removeWhere((key, value) => value.id == value.id);
+          notifyListeners();
+        }
+      });
+    } catch (e) {
+      print(e);
+    }
   }
 }

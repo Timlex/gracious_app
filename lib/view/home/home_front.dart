@@ -40,6 +40,7 @@ class HomeFront extends StatelessWidget {
             builder: (context, srService, child) {
           return IconButton(
               onPressed: () {
+                FocusScope.of(context).unfocus();
                 showMaterialModalBottomSheet(
                   context: context,
                   builder: (context) => SingleChildScrollView(
@@ -60,6 +61,7 @@ class HomeFront extends StatelessWidget {
                 color: cc.blackColor,
               ),
               onSelected: (value) {
+                FocusScope.of(context).unfocus();
                 print(value);
                 Provider.of<SearchResultDataService>(context, listen: false)
                   ..setSortBy(value)
@@ -196,12 +198,14 @@ class HomeFront extends StatelessWidget {
   ) {
     nData.setNavigationIndex(v);
     if (nData.navigationIndex == 0) {
+      FocusScope.of(context).unfocus();
       nData.setSearchText('');
       navigationWidget = Home();
 
       return;
     }
     if (nData.navigationIndex == 1) {
+      FocusScope.of(context).unfocus();
       Provider.of<SearchResultDataService>(context, listen: false).resetSerch();
       Provider.of<SearchResultDataService>(context, listen: false)
           .resetSerchFilters();

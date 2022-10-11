@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:gren_mart/view/utils/constant_styles.dart';
@@ -265,16 +266,20 @@ class CartDataService with ChangeNotifier {
     return total;
   }
 
-  refreshCartList() {
-    cartList!.forEach((key, value) async {
-      final url = Uri.parse('$baseApiUrl/product/$key');
+  refreshCartList() async {
+    try {
+      cartList!.forEach((key, value) async {
+        final url = Uri.parse('$baseApiUrl/product/$key');
 
-      // try {
-      final response = await http.get(url);
-      if (response.statusCode != 200) {
-        deleteCartItem(int.parse(key));
-      }
-    });
+        // try {
+        final response = await http.get(url);
+        if (response.statusCode != 200) {
+          deleteCartItem(int.parse(key));
+        }
+      });
+    } catch (e) {
+      print(e);
+    }
   }
 
   emptyCart() async {

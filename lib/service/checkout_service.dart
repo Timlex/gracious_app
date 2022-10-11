@@ -68,10 +68,13 @@ class CheckoutService with ChangeNotifier {
     final selectedGateaway =
         Provider.of<PaymentGateawayService>(context, listen: false)
             .selectedGateaway!;
-    final taxAmount = shippingZone.taxMoney(context);
+
     final clist = Provider.of<CartDataService>(context, listen: false).cartList;
     Map<String, List<Map<String, Object?>>>? formatedCartItem = clist;
-    final subTotal = cartData.calculateSubtotal().toString();
+    final taxAmount = shippingZone.taxMoney(context);
+    final subTotal = ((cartData.calculateSubtotal())).toString();
+    print(cuponData.cuponDiscount);
+    print(subTotal);
     if (shippingAddress.selectedAddress == null &&
         (userData.city == null ||
             userData.city!.isEmpty ||
@@ -139,6 +142,11 @@ class CheckoutService with ChangeNotifier {
           });
       throw '';
     }
+    if (selectedGateaway.name == 'paytm') {
+      await paytmChekout(context);
+      return;
+    }
+    print(userData.state!.id);
     bool notCurrent = shippingAddress.selectedAddress != null;
     Map<String, dynamic> fieldss = {
       'name':
@@ -146,7 +154,7 @@ class CheckoutService with ChangeNotifier {
       'email':
           notCurrent ? shippingAddress.selectedAddress!.email : userData.email,
       'country': notCurrent
-          ? shippingAddress.selectedAddress!.countryId
+          ? shippingAddress.selectedAddress!.countryId.toString()
           : (userData.country == null ? '' : userData.country!.id.toString()),
       'address': notCurrent
           ? shippingAddress.selectedAddress!.address
@@ -155,7 +163,7 @@ class CheckoutService with ChangeNotifier {
           ? shippingAddress.selectedAddress!.city
           : userData.city ?? '',
       'state': notCurrent
-          ? shippingAddress.selectedAddress!.stateId
+          ? shippingAddress.selectedAddress!.stateId.toString()
           : (userData.state == null ? '' : userData.state!.id.toString()),
       'zipcode': notCurrent
           ? shippingAddress.selectedAddress!.zipCode
@@ -172,6 +180,7 @@ class CheckoutService with ChangeNotifier {
       'sub_total': subTotal,
       'products_ids': jsonEncode(cartData.cartList!.keys.toList()),
       'all_cart_items': jsonEncode(cartData.formatItems()),
+      'coupon_amount': cuponData.cuponDiscount.toString()
     };
     print(fieldss);
 
@@ -289,6 +298,7 @@ class CheckoutService with ChangeNotifier {
       'sub_total': subTotal,
       'products_ids': jsonEncode(cartData.cartList!.keys.toList()),
       'all_cart_items': jsonEncode(cartData.formatItems()),
+      'coupon_amount': cuponData.cuponDiscount.toString()
     };
 
     final url = Uri.parse('$baseApiUrl/user/checkout-paytm');

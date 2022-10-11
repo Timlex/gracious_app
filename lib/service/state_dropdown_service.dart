@@ -76,6 +76,8 @@ class StateDropdownService with ChangeNotifier {
               .setCountryID(selectedCountryId.toString());
           Provider.of<ManageAccountService>(context, listen: false)
               .setStateId(selectedStateId);
+          print(selectedCountryId);
+          print(selectedStateId);
         }
         return selectedCountryId;
       } else {

@@ -597,9 +597,15 @@ class Checkout extends StatelessWidget {
                                               context,
                                               listen: false);
                                       print(shippingService.currentAddress);
-                                      if (shippingService.selectedAddress ==
-                                              null &&
-                                          !shippingService.currentAddress) {
+                                      if ((shippingService.selectedAddress ==
+                                                  null &&
+                                              !shippingService
+                                                  .currentAddress) ||
+                                          Provider.of<ShippingZoneService>(
+                                                      context,
+                                                      listen: false)
+                                                  .selectedOption ==
+                                              null) {
                                         showDialog(
                                             context: context,
                                             builder: (context) => AlertDialog(
@@ -1001,9 +1007,11 @@ class Checkout extends StatelessWidget {
     if (list.isEmpty) {
       list.add(Container(
           margin: const EdgeInsets.symmetric(vertical: 20),
-          child: Text(
-            'Add shipping address or all the account informations',
-            textAlign: TextAlign.center,
+          child: FittedBox(
+            child: Text(
+              'Add shipping address or all the account informations',
+              textAlign: TextAlign.center,
+            ),
           )));
       // Provider.of<ShippingZoneService>(context, listen: false).setNoData(true);
       // Provider.of<ShippingAddressesService>(context, listen: false)

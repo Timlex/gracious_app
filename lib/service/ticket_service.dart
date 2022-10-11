@@ -108,7 +108,6 @@ class TicketService with ChangeNotifier {
       final url = Uri.parse('$baseApiUrl/user/ticket');
       try {
         final response = await http.get(url, headers: header);
-        print(response.body);
         if (response.statusCode == 200) {
           var data = TicketsModel.fromJson(jsonDecode(response.body));
           ticketsModel = data;

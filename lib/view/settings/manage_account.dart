@@ -394,7 +394,15 @@ class ManageAccount extends StatelessWidget {
                       CustomTextField(
                         'Enter your address',
                         initialValue: maData.address,
-
+                        validator: (adressText) {
+                          if (adressText!.isEmpty) {
+                            return 'Enter your address';
+                          }
+                          if (adressText.length <= 2) {
+                            return 'Enter a valid address';
+                          }
+                          return null;
+                        },
                         onChanged: (value) {
                           maData.setAddress(value);
                         },

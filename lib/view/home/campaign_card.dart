@@ -143,6 +143,8 @@ class CampaignCard extends StatelessWidget {
                   child: Image.network(
                     image,
                     // fit: BoxFit.fill,
+                    errorBuilder: (context, error, stackTrace) =>
+                        const SizedBox(),
                   )),
             ]),
         // Positioned(

@@ -203,7 +203,7 @@ class ProductDetailsService with ChangeNotifier {
     for (var element in productDetails!.product.additionalInfo) {
       data.putIfAbsent(element.title, () => element.text);
     }
-    return data.isEmpty ? {'1': 'No additional information available.'} : data;
+    return data.isEmpty ? {'0': 'No additional information available.'} : data;
   }
 
   clearProdcutDetails({pop = false}) {

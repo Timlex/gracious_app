@@ -22,6 +22,7 @@ class ReviewBox extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         ListTile(
           onTap: onPressed,
@@ -119,12 +120,15 @@ class ReviewBox extends StatelessWidget {
     // }
     return reviewList.isEmpty
         ? [
-            Text(
-              'No Review submitted yet',
-              style: TextStyle(
-                  color: cc.greyHint,
-                  fontWeight: FontWeight.w600,
-                  fontSize: 14),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 36),
+              child: Text(
+                'No Review submitted yet',
+                style: TextStyle(
+                    color: cc.greyHint,
+                    fontSize: 14,
+                    overflow: TextOverflow.ellipsis),
+              ),
             ),
           ]
         : reviewList;

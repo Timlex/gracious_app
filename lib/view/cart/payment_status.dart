@@ -21,7 +21,9 @@ class PaymentStatusView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (isError) {
+    if (isError &&
+        Provider.of<CheckoutService>(context, listen: false).checkoutModel !=
+            null) {
       Provider.of<ConfirmPaymentService>(context, listen: false)
           .reportPaymentFailed(
               Provider.of<CheckoutService>(context, listen: false)

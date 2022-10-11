@@ -49,7 +49,7 @@ class PosterCard extends StatelessWidget {
         //       ),
         Container(
       // margin: const EdgeInsets.only(right: 10),
-      padding: const EdgeInsets.only(left: 20, top: 25, right: 20),
+      padding: const EdgeInsets.only(left: 20, right: 20),
       // height: 15,
       width: screenWidth / 5,
 
@@ -64,6 +64,12 @@ class PosterCard extends StatelessWidget {
             Color(0xffDCFFDE),
             Color.fromARGB(107, 220, 255, 222),
           ],
+        ),
+        image: DecorationImage(
+          image: AssetImage('assets/images/elements.png'),
+          alignment: Provider.of<LanguageService>(context, listen: false).rtl
+              ? Alignment.bottomLeft
+              : Alignment.bottomRight,
         ),
       ),
       child: Row(crossAxisAlignment: CrossAxisAlignment.end, children: [
@@ -148,6 +154,24 @@ class PosterCard extends StatelessWidget {
           ],
         ),
         const Spacer(),
+        // Stack(
+        //   children: [
+        // Container(
+        //   margin: EdgeInsets.only(
+        //       right:
+        //           Provider.of<LanguageService>(context, listen: false).rtl
+        //               ? 0
+        //               : 3,
+        //       left: Provider.of<LanguageService>(context, listen: false).rtl
+        //           ? 3
+        //           : 0,
+        //       bottom: 2),
+        //   child: SizedBox(
+        //     // height: screenHight / 7,
+        //     width: screenWidth / 3,
+        //     child: Image.asset('assets/images/elements.png'),
+        //   ),
+        // ),
         Container(
           margin: EdgeInsets.only(
               right: Provider.of<LanguageService>(context, listen: false).rtl
@@ -157,83 +181,19 @@ class PosterCard extends StatelessWidget {
                   ? 3
                   : 0,
               bottom: 2),
-          child: SizedBox(
-              // height: screenHight / 7,
-              width: screenWidth / 3.7,
-              child: Image.network(
-                image,
-                fit: BoxFit.cover,
-              )),
+          width: screenWidth / 3.5,
+          child: Image.network(
+            image,
+            fit: BoxFit.cover,
+            errorBuilder: (context, error, stackTrace) => const SizedBox(),
+          ),
         ),
+        //   ],
+        // ),
       ]),
       //     ),
       //   ],
       // ),
-    );
-  }
-}
-
-class PosterCartSkelleton extends StatelessWidget {
-  PosterCartSkelleton({Key? key}) : super(key: key);
-  ConstantColors cc = ConstantColors();
-
-  @override
-  Widget build(BuildContext context) {
-    initiateDeviceSize(context);
-    return SizedBox(
-      width: screenWidth / 5,
-      child: Row(
-        children: [
-          Column(
-            children: [
-              Container(
-                height: 45,
-                width: screenWidth / 2.9,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  color: cc.greyDots,
-                ),
-              ),
-              const SizedBox(height: 15),
-              Container(
-                height: 35,
-                width: screenWidth / 3,
-                margin: const EdgeInsets.only(bottom: 5),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  color: cc.greyDots,
-                ),
-              ),
-              Container(
-                height: 35,
-                width: screenWidth / 3,
-                margin: const EdgeInsets.only(bottom: 5),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  color: cc.greyDots,
-                ),
-              ),
-              Container(
-                height: 35,
-                width: screenWidth / 3,
-                margin: const EdgeInsets.only(bottom: 5),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  color: cc.greyDots,
-                ),
-              ),
-            ],
-          ),
-          Container(
-            height: screenHight / 7,
-            width: screenWidth / 3.7,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10),
-              color: cc.greyDots,
-            ),
-          )
-        ],
-      ),
     );
   }
 }

@@ -97,6 +97,7 @@ class Home extends StatelessWidget {
                     ),
                     suffixIcon: GestureDetector(
                       onTap: (() {
+                        FocusScope.of(context).unfocus();
                         Provider.of<SearchResultDataService>(context,
                                 listen: false)
                             .resetSerch();
@@ -175,7 +176,10 @@ class Home extends StatelessWidget {
                                 listen: false)
                             .fetchProductsBy(pageNo: '1');
                         Navigator.of(context).pushNamed(AllProducts.routeName,
-                            arguments: [pcService.featuredCardProductsList]);
+                            arguments: [
+                              pcService.featuredCardProductsList,
+                              'Fetured products'
+                            ]);
                       }),
                     )
                   : SizedBox();

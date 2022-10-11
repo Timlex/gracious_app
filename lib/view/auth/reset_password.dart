@@ -41,9 +41,9 @@ class _ResetPasswordState extends State<ResetPassword> {
       await Provider.of<ResetPassOTPService>(context, listen: false)
           .resetPassword(
               Provider.of<AuthTextControllerService>(context, listen: false)
-                  .email,
+                  .newEmai,
               Provider.of<AuthTextControllerService>(context, listen: false)
-                  .password)
+                  .newPassword)
           .then((value) {
         if (value == null) {
           Navigator.of(context).pushAndRemoveUntil(
@@ -51,10 +51,10 @@ class _ResetPasswordState extends State<ResetPassword> {
               (Route<dynamic> route) => false);
           return;
         }
-        snackBar(context, value);
+        snackBar(context, value, backgroundColor: cc.orange);
         return;
       }).onError((error, stackTrace) {
-        snackBar(context, error.toString());
+        snackBar(context, error.toString(), backgroundColor: cc.orange);
         return;
       });
     }
@@ -95,7 +95,7 @@ class _ResetPasswordState extends State<ResetPassword> {
                         onChanged: (value) {
                           Provider.of<AuthTextControllerService>(context,
                                   listen: false)
-                              .setPass(value);
+                              .setNewPassword(value);
                         },
                         onFieldSubmitted: (_) {
                           FocusScope.of(context).requestFocus(_reFN);

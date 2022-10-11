@@ -63,14 +63,15 @@ class AnimatedBox extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             SizedBox(
-              width: key == '1' ? 0 : screenWidth / 4,
+              width: key == '0' ? 0 : screenWidth / 4,
               child: Text(
-                key == '1' ? '' : '$key :',
+                key == '0' ? '' : '$key :',
                 style: TextStyle(
                     color: cc.greyHint,
                     fontWeight: FontWeight.w600,
+                    overflow: TextOverflow.ellipsis,
                     fontSize: 14),
-                maxLines: 1,
+                maxLines: 2,
               ),
             ),
             const SizedBox(width: 5),
@@ -92,68 +93,3 @@ class AnimatedBox extends StatelessWidget {
     return descriptionList;
   }
 }
-
-
-
-
-
-
-
-
-
-
-// import 'dart:math';
-// import 'package:flutter/material.dart';
-
-// class AnimatedBox extends StatefulWidget {
-//   final String title;
-//   final String content;
-//   const AnimatedBox(this.title, this.content, {Key? key}) : super(key: key);
-
-//   @override
-//   State<AnimatedBox> createState() => _AnimatedBoxState();
-// }
-
-// class _AnimatedBoxState extends State<AnimatedBox> {
-//   bool expanded = false;
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return AnimatedContainer(
-//       duration: const Duration(milliseconds: 310),
-//       height: expanded ? min(widget.content.length.toDouble() / 1.2, 400) : 50,
-//       child: Container(
-//         padding: const EdgeInsets.symmetric(horizontal: 5),
-//         // margin: EdgeInsets.symmetric(horizontal: 15, vertical: 6),
-//         child: Column(
-//           children: [
-//             ListTile(
-//                 title: Text(
-//                   widget.title,
-//                   style: const TextStyle(
-//                       fontSize: 19, fontWeight: FontWeight.w600),
-//                 ),
-//                 trailing: IconButton(
-//                     icon: Icon(
-//                       expanded ? Icons.expand_less : Icons.expand_more,
-//                     ),
-//                     onPressed: () {
-//                       setState(() {
-//                         expanded = !expanded;
-//                       });
-//                     })),
-//             AnimatedContainer(
-//               duration: const Duration(milliseconds: 300),
-//               margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 6),
-//               height:
-//                   expanded ? min(widget.content.length.toDouble() / 3, 100) : 0,
-//               constraints:
-//                   expanded ? const BoxConstraints(minHeight: 70) : null,
-//               child: Text(widget.content),
-//             ),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-// }

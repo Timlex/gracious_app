@@ -54,38 +54,39 @@ class FavoriteToCart extends StatelessWidget {
                           children: [
                             SizedBox(
                               height: 300,
+                              width: double.infinity,
                               child: ClipRRect(
-                                child: Center(
-                                  child: Image.network(
-                                    pdService.additionalInfoImage ??
-                                        pdService.productDetails!.product.image,
-                                    loadingBuilder:
-                                        (context, child, loadingProgress) {
-                                      if (loadingProgress == null) {
-                                        return child;
-                                      }
-                                      return Container(
-                                        margin:
-                                            EdgeInsets.symmetric(vertical: 15),
-                                        decoration: BoxDecoration(
-                                            image: DecorationImage(
-                                                image: AssetImage(
-                                                    'assets/images/product_skelleton.png'),
-                                                opacity: .4)),
-                                      );
-                                    },
-                                    errorBuilder: (context, o, st) {
-                                      return Container(
-                                        margin:
-                                            EdgeInsets.symmetric(vertical: 15),
-                                        decoration: BoxDecoration(
-                                            image: DecorationImage(
-                                                image: AssetImage(
-                                                    'assets/images/product_skelleton.png'),
-                                                opacity: .4)),
-                                      );
-                                    },
-                                  ),
+                                borderRadius: BorderRadius.circular(15),
+                                child: Image.network(
+                                  pdService.additionalInfoImage ??
+                                      pdService.productDetails!.product.image,
+                                  fit: BoxFit.cover,
+                                  loadingBuilder:
+                                      (context, child, loadingProgress) {
+                                    if (loadingProgress == null) {
+                                      return child;
+                                    }
+                                    return Container(
+                                      margin:
+                                          EdgeInsets.symmetric(vertical: 15),
+                                      decoration: BoxDecoration(
+                                          image: DecorationImage(
+                                              image: AssetImage(
+                                                  'assets/images/product_skelleton.png'),
+                                              opacity: .4)),
+                                    );
+                                  },
+                                  errorBuilder: (context, o, st) {
+                                    return Container(
+                                      margin:
+                                          EdgeInsets.symmetric(vertical: 15),
+                                      decoration: BoxDecoration(
+                                          image: DecorationImage(
+                                              image: AssetImage(
+                                                  'assets/images/product_skelleton.png'),
+                                              opacity: .4)),
+                                    );
+                                  },
                                 ),
                               ),
                             ),
@@ -122,6 +123,7 @@ class FavoriteToCart extends StatelessWidget {
                                                   child: Row(
                                                       children:
                                                           generateDynamicAttrribute(
+                                                              context,
                                                               pdService,
                                                               pdService
                                                                       .allAtrributes[
@@ -177,7 +179,7 @@ class FavoriteToCart extends StatelessWidget {
   }
 
   List<Widget> generateDynamicAttrribute(
-      ProductDetailsService pdService, mapdata) {
+      BuildContext context, ProductDetailsService pdService, mapdata) {
     RegExp hex = RegExp(
         r'^#([\da-f]{3}){1,2}$|^#([\da-f]{4}){1,2}$|(rgb|hsl)a?\((\s*-?\d+%?\s*,){2}(\s*-?\d+%?\s*,?\s*\)?)(,\s*(0?\.\d+)?|1)?\)');
 
@@ -201,11 +203,22 @@ class FavoriteToCart extends StatelessWidget {
             pdService.addAdditionalPrice();
           },
           child: hex.hasMatch(elemnt)
-              ? colorBox(pdService, elemnt, mapdata)
+              ? colorBox(context, pdService, elemnt, mapdata)
               : Stack(
                   children: [
                     Container(
-                      margin: const EdgeInsets.only(right: 15),
+                      margin: EdgeInsets.only(
+                          top: 3,
+                          right: Provider.of<LanguageService>(context,
+                                      listen: false)
+                                  .rtl
+                              ? 0
+                              : 15,
+                          left: Provider.of<LanguageService>(context,
+                                      listen: false)
+                                  .rtl
+                              ? 15
+                              : 0),
                       padding: const EdgeInsets.all(12),
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(10),
@@ -219,9 +232,34 @@ class FavoriteToCart extends StatelessWidget {
                               width: .5)),
                       child: Text(elemnt),
                     ),
+                    if (pdService.isASelected(elemnt))
+                      Positioned(
+                        right: 9,
+                        top: 0,
+                        child: Container(
+                          decoration: BoxDecoration(
+                              shape: BoxShape.circle, color: cc.pureWhite),
+                          child: Icon(
+                            Icons.check_circle,
+                            color: cc.primaryColor,
+                            size: 15,
+                          ),
+                        ),
+                      ),
                     if (!pdService.isInSet(mapdata[elemnt]))
                       Container(
-                        margin: const EdgeInsets.only(right: 15),
+                        margin: EdgeInsets.only(
+                            top: 3,
+                            right: Provider.of<LanguageService>(context,
+                                        listen: false)
+                                    .rtl
+                                ? 0
+                                : 15,
+                            left: Provider.of<LanguageService>(context,
+                                        listen: false)
+                                    .rtl
+                                ? 15
+                                : 0),
                         padding: const EdgeInsets.all(12),
                         color: Colors.white60,
                         child: Text(
@@ -274,29 +312,55 @@ class FavoriteToCart extends StatelessWidget {
     }
   }
 
-  Widget colorBox(ProductDetailsService pdService, value, mapdata) {
+  Widget colorBox(
+      BuildContext context, ProductDetailsService pdService, value, mapdata) {
     final color = value.replaceAll('#', '0xff');
     return Stack(
       children: [
         Container(
           height: 40,
           width: 40,
-          margin: const EdgeInsets.only(right: 15),
+          margin: EdgeInsets.only(
+              top: 3,
+              right: Provider.of<LanguageService>(context, listen: false).rtl
+                  ? 0
+                  : 15,
+              left: Provider.of<LanguageService>(context, listen: false).rtl
+                  ? 15
+                  : 0),
           padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10),
             color: Color(int.parse(color)),
-            border: pdService.isASelected(value)
-                ? Border.all(color: cc.primaryColor, width: 2.5)
-                : null,
           ),
           // child: const Text('element.color!.capitalize()'),
         ),
+        if (pdService.isASelected(value))
+          Positioned(
+            right: 9,
+            top: 0,
+            child: Container(
+              decoration:
+                  BoxDecoration(shape: BoxShape.circle, color: cc.pureWhite),
+              child: Icon(
+                Icons.check_circle,
+                color: cc.primaryColor,
+                size: 15,
+              ),
+            ),
+          ),
         if (!pdService.isInSet(mapdata[value]))
           Container(
             height: 40,
             width: 40,
-            margin: const EdgeInsets.only(right: 15),
+            margin: EdgeInsets.only(
+                top: 3,
+                right: Provider.of<LanguageService>(context, listen: false).rtl
+                    ? 0
+                    : 15,
+                left: Provider.of<LanguageService>(context, listen: false).rtl
+                    ? 15
+                    : 0),
             padding: const EdgeInsets.all(12),
             color: Colors.white60,
             child: Text(

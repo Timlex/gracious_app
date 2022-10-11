@@ -1,1 +1,1 @@
-var baseApiUrl = "https://zahid.xgenious.com/grenmart-api/api/v1";
+var baseApiUrl = "https://xgenious.com/laravel/grenmart/api/v1";

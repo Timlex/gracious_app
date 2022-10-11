@@ -123,13 +123,13 @@ class SignInSignUpService with ChangeNotifier {
       String countryCode,
       String countryId,
       String stateId,
-      String cityAdress,
+      // String cityAdress,
       String termsAndCondition) async {
     toggleLaodingSpinner(value: true);
     toggleRememberPass(true);
     if (0 != 1) {
       print(
-          '$email + $password $name + $username + $phoneNumber + $countryCode + $countryId, $stateId + $cityAdress + $termsAndCondition');
+          '$email + $password $name + $username + $phoneNumber + $countryCode + $countryId, $stateId + $termsAndCondition');
     }
     final url = Uri.parse('$baseApiUrl/register');
 
@@ -141,7 +141,7 @@ class SignInSignUpService with ChangeNotifier {
         'email': email.toLowerCase().trim(),
         'phone': phoneNumber,
         'country_id': countryId,
-        'country_code': countryCode,
+        'country_code': '00000000',
         'state_id': stateId,
         'terms_conditions': termsAndCondition,
       });

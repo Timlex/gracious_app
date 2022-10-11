@@ -77,6 +77,7 @@ class SearchView extends StatelessWidget {
                       ),
                       suffixIcon: GestureDetector(
                         onTap: (() {
+                          FocusScope.of(context).unfocus();
                           Provider.of<SearchResultDataService>(context,
                                   listen: false)
                               .resetSerch();
@@ -107,7 +108,7 @@ class SearchView extends StatelessWidget {
                     },
                   );
                 })),
-            const SizedBox(height: 15),
+            const SizedBox(height: 20),
             Expanded(
                 child: (srData.resultMeta != null || srData.error)
                     ? newMethod(cardWidth, cardHeight, srData)

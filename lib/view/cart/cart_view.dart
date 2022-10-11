@@ -87,6 +87,8 @@ class CartView extends StatelessWidget {
                             listen: false)
                         .clearSelectedAddress();
                     Provider.of<CuponDiscountService>(context, listen: false)
+                        .clearCoupon();
+                    Provider.of<CuponDiscountService>(context, listen: false)
                         .setCarData(cuponData.toString().replaceAll(' ', ''));
                     Provider.of<CheckoutService>(context, listen: false)
                         .setIsLoading(false);
@@ -98,6 +100,8 @@ class CartView extends StatelessWidget {
                       Provider.of<ShippingAddressesService>(context,
                               listen: false)
                           .clearSelectedAddress();
+                      Provider.of<CuponDiscountService>(context, listen: false)
+                          .clearCoupon();
                     });
                   },
                 ),

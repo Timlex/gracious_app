@@ -5,10 +5,13 @@ import 'package:gren_mart/service/navigation_bar_helper_service.dart';
 import 'package:gren_mart/service/user_profile_service.dart';
 import 'package:gren_mart/view/settings/setting.dart';
 import 'package:gren_mart/view/utils/text_themes.dart';
+import '../../service/auth_text_controller_service.dart';
+import '../../service/cart_data_service.dart';
 import '../../service/common_service.dart';
 import '../../service/country_dropdown_service.dart';
 import '../../service/language_service.dart';
 import '../../service/shipping_addresses_service.dart';
+import '../../service/signin_signup_service.dart';
 import '../../service/state_dropdown_service.dart';
 import '../../view/home/all_products.dart';
 import '../../view/utils/constant_colors.dart';
@@ -17,6 +20,7 @@ import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:provider/provider.dart';
 
 import '../../service/search_result_data_service.dart';
+import '../auth/auth.dart';
 import '../order/orders.dart';
 import '../settings/change_password.dart';
 import '../settings/manage_account.dart';
@@ -67,14 +71,14 @@ Widget customContainerButton(
 }
 
 Widget customBorderButton(String buttonText, Function ontap,
-    {double width = 180}) {
+    {double width = 180, double? height}) {
   return GestureDetector(
     onTap: () {
       ontap();
     },
     child: Container(
         // margin: const EdgeInsets.all(8),
-        height: 50,
+        height: height ?? 50,
         width: width,
         alignment: Alignment.center,
         decoration: BoxDecoration(
@@ -530,6 +534,47 @@ void showTopSlider(BuildContext context, UserProfileService uService) {
                         onTap: () {
                       Navigator.of(context).pushNamed(ChangePassword.routeName);
                     }),
+                    const SizedBox(height: 15),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 0),
+                      child: customBorderButton(
+                        'Log Out',
+                        () {
+                          Provider.of<NavigationBarHelperService>(context,
+                                  listen: false)
+                              .setNavigationIndex(0);
+                          Provider.of<SignInSignUpService>(context,
+                                  listen: false)
+                              .signOut();
+                          Provider.of<AuthTextControllerService>(context,
+                                      listen: false)
+                                  .setEmail(Provider.of<SignInSignUpService>(
+                                          context,
+                                          listen: false)
+                                      .email) ??
+                              '';
+                          Provider.of<AuthTextControllerService>(context,
+                                  listen: false)
+                              .setPass(Provider.of<SignInSignUpService>(context,
+                                          listen: false)
+                                      .password ??
+                                  '');
+                          Provider.of<SignInSignUpService>(context,
+                                  listen: false)
+                              .toggleLaodingSpinner(value: false);
+                          Provider.of<SignInSignUpService>(context,
+                                  listen: false)
+                              .getUserData();
+                          Provider.of<CartDataService>(context, listen: false)
+                              .emptyCart();
+                          globalUserToken = null;
+                          Navigator.of(context).pushAndRemoveUntil(
+                              MaterialPageRoute(builder: (context) => Auth()),
+                              (Route<dynamic> route) => false);
+                        },
+                        width: double.infinity,
+                      ),
+                    ),
                   ],
                 )
                 //             ],

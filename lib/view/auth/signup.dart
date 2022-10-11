@@ -150,7 +150,7 @@ class SignUp extends StatelessWidget {
                       cProvider.setCountryIdAndValue(newValue);
                       Provider.of<StateDropdownService>(context, listen: false)
                           .getStates(cProvider.selectedCountryId);
-                      authController.setCountry(newValue);
+                      authController.setCountry(cProvider.selectedCountryId);
                     },
                     value: cProvider.selectedCountry,
                   )
@@ -189,34 +189,33 @@ class SignUp extends StatelessWidget {
                           sModel.stateDropdownList,
                           (newValue) {
                             sModel.setStateIdAndValue(newValue);
-                            authController.setState(newValue);
+                            authController.setState(sModel.selectedStateId);
                           },
                           value: sModel.selectedState,
                         )))),
-          textFieldTitle('City'),
-          // const SizedBox(height: 8),
-          CustomTextField(
-            'City',
-            validator: (cityText) {
-              if (cityText!.isEmpty) {
-                return 'Enter a valid city name';
-              }
-              if (cityText.length <= 2) {
-                return 'Enter a valid city name';
-              }
-              return null;
-            },
-            onFieldSubmitted: (_) {
-              FocusScope.of(context).unfocus();
-            },
-            onChanged: (city) {
-              authController.setCityAddress(city);
-            },
-          ),
+          // textFieldTitle('City'),
+          // // const SizedBox(height: 8),
+          // CustomTextField(
+          //   'City',
+          //   validator: (cityText) {
+          //     if (cityText!.isEmpty) {
+          //       return 'Enter a valid city name';
+          //     }
+          //     if (cityText.length <= 2) {
+          //       return 'Enter a valid city name';
+          //     }
+          //     return null;
+          //   },
+          //   onFieldSubmitted: (_) {
+          //     FocusScope.of(context).unfocus();
+          //   },
+          //   onChanged: (city) {
+          //     authController.setCityAddress(city);
+          //   },
+          // ),
           textFieldTitle('Password'),
           CustomTextField(
             'Enter password',
-            keyboardType: TextInputType.number,
             validator: (password) {
               if (password!.isEmpty) {
                 return 'Enter at least 6 charechters';
@@ -240,7 +239,6 @@ class SignUp extends StatelessWidget {
           // const SizedBox(height: 8),
           CustomTextField(
             'Re enter password',
-            keyboardType: TextInputType.number,
             validator: (password) {
               if (password != authController.newPassword) {
                 return 'Enter the same password';

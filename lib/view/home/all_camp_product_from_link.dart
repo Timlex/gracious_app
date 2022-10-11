@@ -15,11 +15,13 @@ import 'product_card.dart';
 
 class ALLCampProductFromLink extends StatelessWidget {
   static const routeName = 'all product from link';
-  const ALLCampProductFromLink({Key? key}) : super(key: key);
+  ALLCampProductFromLink({Key? key}) : super(key: key);
+  ScrollController controller = ScrollController();
 
   @override
   Widget build(BuildContext context) {
     initiateDeviceSize(context);
+    controller.addListener((() => scrollListener(context)));
     final routeData =
         ModalRoute.of(context)!.settings.arguments as List<String>;
     final id = routeData[0];
@@ -75,7 +77,7 @@ class ALLCampProductFromLink extends StatelessWidget {
       );
     } else {
       return GridView.builder(
-        // controller: controller,
+        controller: controller,
         physics: const BouncingScrollPhysics(
             parent: AlwaysScrollableScrollPhysics()),
         padding: const EdgeInsets.only(left: 20, top: 15),
@@ -103,6 +105,31 @@ class ALLCampProductFromLink extends StatelessWidget {
           // }
         },
       );
+    }
+  }
+
+  scrollListener(BuildContext context) {
+    if (controller.offset >= controller.position.maxScrollExtent &&
+        !controller.position.outOfRange) {
+      snackBar(context, 'No more product found!', backgroundColor: cc.orange);
+      // print(Provider.of<SearchResultDataService>(context, listen: false)
+      //     .pageNumber
+      //     .toString);
+      // Provider.of<SearchResultDataService>(context, listen: false)
+      //     .setIsLoading(true);
+
+      // Provider.of<SearchResultDataService>(context, listen: false)
+      //     .fetchProductsBy(
+      //         pageNo:
+      //             Provider.of<SearchResultDataService>(context, listen: false)
+      //                 .pageNumber
+      //                 .toString())
+      //     .then((value) {
+      //   if (value != null) {
+      //     snackBar(context, value);
+      //   }
+      // });
+      // Provider.of<SearchResultDataService>(context, listen: false).nextPage();
     }
   }
 }

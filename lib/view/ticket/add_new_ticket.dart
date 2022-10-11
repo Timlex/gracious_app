@@ -26,10 +26,11 @@ class AddNewTicket extends StatelessWidget {
     await ntService.addNewToken().then((value) {
       if (value != null) {
         ntService.setIsLoading(false);
-        snackBar(context, value);
+        snackBar(context, value, backgroundColor: cc.orange);
         return;
       }
       ntService.setIsLoading(false);
+      Provider.of<TicketService>(context, listen: false).clearTickets();
       Provider.of<TicketService>(context, listen: false)
           .fetchTickets(noForceFetch: false);
       Navigator.of(context).pop();

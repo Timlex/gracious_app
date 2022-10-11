@@ -167,7 +167,7 @@ class _MyAppState extends State<MyApp> {
           CategoryPage.routeName: (context) => CategoryPage(),
           Campaigns.routeName: (context) => Campaigns(),
           ALLCampProductFromLink.routeName: (context) =>
-              const ALLCampProductFromLink(),
+              ALLCampProductFromLink(),
         },
       ),
     );

@@ -33,6 +33,14 @@ class CuponDiscountService with ChangeNotifier {
     notifyListeners();
   }
 
+  clearCoupon() {
+    cuponText = null;
+    totalAmount = null;
+    cartData = null;
+    cuponDiscount = 0;
+    isLoading = false;
+  }
+
   Future<dynamic> getCuponDiscontAmount(BuildContext context) async {
     if (cuponText == null || cuponText == '') {
       return 'Enter a valid cupon';

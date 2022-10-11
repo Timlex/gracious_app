@@ -48,10 +48,12 @@ class ShippingZoneService with ChangeNotifier {
 
   setTaxPercentage() {
     if (stateShippingZoneData!.taxPercentage == null) {
+      print(countryShippingZoneData!.taxPercentage);
       taxParcentage = (countryShippingZoneData!.taxPercentage ?? 0) / 100;
       return;
     }
-    taxParcentage = (stateShippingZoneData!.taxPercentage as int) / 100;
+    print(stateShippingZoneData!.taxPercentage);
+    taxParcentage = (stateShippingZoneData!.taxPercentage as double) / 100;
   }
 
   setShippingOptionList() {
@@ -80,21 +82,22 @@ class ShippingZoneService with ChangeNotifier {
     final subTotal = Provider.of<CartDataService>(context, listen: false)
         .calculateSubtotal();
     final discount = Provider.of<CuponDiscountService>(context).cuponDiscount;
-    final taxMoney = taxParcentage * subTotal;
-    return (subTotal + taxMoney + shippingCost - discount);
+    final taxMoney = taxParcentage * (subTotal + shippingCost);
+    return (subTotal - discount) + taxMoney + shippingCost;
   }
 
   cuponTotal(BuildContext context) {
     final subTotal = Provider.of<CartDataService>(context, listen: false)
         .calculateSubtotal();
-    final taxMoney = taxParcentage * subTotal;
+    final discount = Provider.of<CuponDiscountService>(context).cuponDiscount;
+    final taxMoney = taxParcentage * (subTotal + shippingCost);
     return subTotal + taxMoney + shippingCost;
   }
 
   double taxMoney(BuildContext context) {
     final subTotal = Provider.of<CartDataService>(context, listen: false)
         .calculateSubtotal();
-    return taxParcentage * subTotal;
+    return taxParcentage * (subTotal + shippingCost);
   }
 
   Future fetchContriesZone(id, stateId) async {
