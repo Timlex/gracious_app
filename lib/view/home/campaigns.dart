@@ -1,19 +1,13 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:gren_mart/service/campaign_card_list_service.dart';
 import 'package:gren_mart/view/home/bottom_navigation_bar.dart';
 import 'package:gren_mart/view/home/campaign_smaller_card.dart';
-import '../../service/language_service.dart';
 import '../../service/product_card_data_service.dart';
-import '../../service/search_result_data_service.dart';
 import '../../view/utils/app_bars.dart';
 import 'package:provider/provider.dart';
 
 import '../utils/constant_colors.dart';
 import '../utils/constant_name.dart';
-import '../utils/constant_styles.dart';
 import 'all_camp_product_from_link.dart';
-import 'category_product_page.dart';
 
 class Campaigns extends StatelessWidget {
   static const routeName = 'campaigns page';
@@ -43,7 +37,7 @@ class Campaigns extends StatelessWidget {
             Expanded(
               child: newMethod(cardWidth, cardHeight, data),
             ),
-            if (srData.featuredCardProductsList.isEmpty) loadingProgressBar()
+            // if (srData.featuredCardProductsList.isEmpty) loadingProgressBar()
           ],
         );
       }),

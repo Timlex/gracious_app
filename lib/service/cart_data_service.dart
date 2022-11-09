@@ -99,6 +99,8 @@ class CartDataService with ChangeNotifier {
           int sum = value as int;
           if (value != 1) {
             sum -= 1;
+            snackBar(context, 'Item subtracted from cart',
+                backgroundColor: cc.orange);
           }
           print(sum);
 
@@ -118,7 +120,6 @@ class CartDataService with ChangeNotifier {
         })
       },
     );
-    snackBar(context, 'Item minused from cart', backgroundColor: cc.orange);
 
     notifyListeners();
   }
@@ -206,7 +207,7 @@ class CartDataService with ChangeNotifier {
   void fetchCarts() async {
     final dbData = await DbHelper.fetchDb('cart');
     Map<String, List<Map<String, Object?>>> dataList = {};
-    if (dbData == null || dbData.isEmpty) {
+    if (dbData.isEmpty) {
       print('cart db is empty');
       return;
     }

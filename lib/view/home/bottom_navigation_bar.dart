@@ -1,6 +1,5 @@
 import 'package:badges/badges.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:gren_mart/view/utils/constant_colors.dart';
 import 'package:provider/provider.dart';
@@ -8,6 +7,7 @@ import 'package:provider/provider.dart';
 import '../../service/cart_data_service.dart';
 import '../../service/favorite_data_service.dart';
 import '../../service/navigation_bar_helper_service.dart';
+import '../../service/search_result_data_service.dart';
 import 'home_front.dart';
 
 class CustomNavigationBar extends StatelessWidget {
@@ -19,6 +19,8 @@ class CustomNavigationBar extends StatelessWidget {
         builder: (context, nData, child) {
       return BottomNavigationBar(
           onTap: (v) {
+            Provider.of<SearchResultDataService>(context, listen: false)
+                .resetSerchFilters();
             nData.setNavigationIndex(v);
             Navigator.of(context).pushAndRemoveUntil(
                 MaterialPageRoute(builder: (context) => HomeFront()),

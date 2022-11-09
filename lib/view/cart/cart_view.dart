@@ -1,7 +1,6 @@
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:gren_mart/service/payment_gateaway_service.dart';
 import 'package:gren_mart/service/shipping_addresses_service.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:provider/provider.dart';
 
 import '../../service/checkout_service.dart';
@@ -9,13 +8,14 @@ import '../../service/cupon_discount_service.dart';
 import '../../service/navigation_bar_helper_service.dart';
 import '../../service/shipping_zone_service.dart';
 import '../../service/cart_data_service.dart';
+import '../../service/signin_signup_service.dart';
+import '../../service/user_profile_service.dart';
 import '../../view/cart/cart_tile.dart';
 import '../../view/cart/checkout.dart';
 import '../../view/utils/constant_colors.dart';
 import '../../view/utils/constant_styles.dart';
-import '../order/order_details.dart';
+import '../auth/auth.dart';
 import '../utils/constant_name.dart';
-import '../utils/text_themes.dart';
 
 class CartView extends StatelessWidget {
   static const routeName = 'cart';
@@ -79,7 +79,18 @@ class CartView extends StatelessWidget {
                 child: customContainerButton(
                   'Checkout',
                   double.infinity,
-                  () {
+                  () async {
+                    bool continueCheckout = true;
+                    if (Provider.of<UserProfileService>(context, listen: false)
+                            .userProfileData ==
+                        null) {
+                      continueCheckout = false;
+                      continueCheckout = await loginPopup(context);
+                    }
+                    if (!continueCheckout) {
+                      return;
+                    }
+
                     print(cuponData.toString());
                     Provider.of<ShippingZoneService>(context, listen: false)
                         .resetChecout(backingout: true);
@@ -127,5 +138,95 @@ class CartView extends StatelessWidget {
       });
     });
     return list;
+  }
+
+  loginPopup(BuildContext context, {title, description}) async {
+    bool logedIn = false;
+    await Alert(
+        context: context,
+        style: AlertStyle(
+            alertElevation: 0,
+            overlayColor: Colors.black.withOpacity(.6),
+            alertPadding: const EdgeInsets.all(25),
+            isButtonVisible: false,
+            alertBorder: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8),
+              side: const BorderSide(
+                color: Colors.transparent,
+              ),
+            ),
+            titleStyle: const TextStyle(),
+            animationType: AnimationType.grow,
+            animationDuration: const Duration(milliseconds: 500)),
+        content: Container(
+          margin: const EdgeInsets.only(top: 22),
+          padding: const EdgeInsets.fromLTRB(14, 10, 14, 0),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(7),
+            boxShadow: [
+              BoxShadow(
+                  color: Colors.black.withOpacity(0.01),
+                  spreadRadius: -2,
+                  blurRadius: 13,
+                  offset: const Offset(0, 13)),
+            ],
+          ),
+          child: Column(
+            children: [
+              Text(
+                title ?? 'Login to checkout?',
+                style: TextStyle(color: cc.greytitle, fontSize: 17),
+              ),
+              const SizedBox(
+                height: 25,
+              ),
+              Text(
+                description ?? 'You have to  login to proceed the checkout.',
+                style: TextStyle(color: cc.greyParagraph, fontSize: 13),
+              ),
+              const SizedBox(
+                height: 25,
+              ),
+              Row(
+                children: [
+                  customBorderButton('Cancel', () {
+                    Navigator.pop(context);
+                  }, width: screenWidth / 3.3),
+                  const SizedBox(
+                    width: 16,
+                  ),
+                  customContainerButton(
+                    'Login',
+                    screenWidth / 3.3,
+                    () {
+                      Provider.of<SignInSignUpService>(context, listen: false)
+                          .getUserData();
+                      Provider.of<SignInSignUpService>(context, listen: false)
+                          .toggleSigninSignup(value: true);
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (BuildContext context) => Auth(),
+                        ),
+                      ).then((value) {
+                        if (value == true) {
+                          logedIn = value;
+                        }
+                        Navigator.pop(context);
+                      });
+                      // provider.logout(context);
+                      //if logged in by google then logout from it
+                      // GoogleSignInService().logOutFromGoogleLogin();
+
+                      //if logged in by facebook then logout from it
+                      // FacebookLoginService().logoutFromFacebook();
+                    },
+                  ),
+                ],
+              )
+            ],
+          ),
+        )).show();
+    return logedIn;
   }
 }

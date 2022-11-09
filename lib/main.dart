@@ -20,7 +20,6 @@ import '../../service/payment_gateaway_service.dart';
 import '../../service/shipping_zone_service.dart';
 import '../../view/home/all_products.dart';
 import '../../service/order_list_service.dart';
-import '../../model/other_data.dart';
 import '../../service/add_new_ticket_service.dart';
 import '../../service/cupon_discount_service.dart';
 import '../../service/auth_text_controller_service.dart';
@@ -84,7 +83,6 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => OtherData()),
         ChangeNotifierProvider(create: (_) => CartDataService()),
         ChangeNotifierProvider(create: (_) => FavoriteDataService()),
         ChangeNotifierProvider(create: (_) => CountryDropdownService()),

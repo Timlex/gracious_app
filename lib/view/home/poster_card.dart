@@ -124,10 +124,15 @@ class PosterCard extends StatelessWidget {
                   }
                   if (cat != null) {
                     Provider.of<SearchResultDataService>(context, listen: false)
-                        .setCategoryId(capm.toString(), notListen: true);
-                    Navigator.of(context).pushNamed(
-                        CategoryProductPage.routeName,
-                        arguments: [capm.toString(), title]);
+                        .setCategoryId(cat.toString(), notListen: true);
+                    Navigator.of(context)
+                        .pushNamed(CategoryProductPage.routeName, arguments: [
+                      cat.toString(),
+                      title
+                    ]).then((value) => Provider.of<SearchResultDataService>(
+                                context,
+                                listen: false)
+                            .resetSerchFilters());
                   }
                 },
                 child: FittedBox(
@@ -145,8 +150,8 @@ class PosterCard extends StatelessWidget {
                       horizontal: 22,
                       vertical: 12,
                     ),
+                    backgroundColor: cc.primaryColor,
                     elevation: 0,
-                    primary: cc.primaryColor,
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12))),
               ),

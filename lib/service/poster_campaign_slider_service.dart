@@ -26,7 +26,10 @@ class PosterCampaignSliderService with ChangeNotifier {
       var stateData = [];
 
       posterDataList = data.data;
-      print(posterDataList[0].title);
+      posterDataList.forEach((element) {
+        print(element.campaign);
+        print(element.category);
+      });
       print('-------------------------------------');
       notifyListeners();
     } else {

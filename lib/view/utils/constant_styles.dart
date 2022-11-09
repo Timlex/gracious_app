@@ -3,23 +3,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:gren_mart/service/navigation_bar_helper_service.dart';
 import 'package:gren_mart/service/user_profile_service.dart';
-import 'package:gren_mart/view/settings/setting.dart';
-import 'package:gren_mart/view/utils/text_themes.dart';
 import '../../service/auth_text_controller_service.dart';
 import '../../service/cart_data_service.dart';
-import '../../service/common_service.dart';
 import '../../service/country_dropdown_service.dart';
-import '../../service/language_service.dart';
 import '../../service/shipping_addresses_service.dart';
 import '../../service/signin_signup_service.dart';
 import '../../service/state_dropdown_service.dart';
-import '../../view/home/all_products.dart';
 import '../../view/utils/constant_colors.dart';
 import '../../view/utils/constant_name.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:provider/provider.dart';
 
-import '../../service/search_result_data_service.dart';
 import '../auth/auth.dart';
 import '../order/orders.dart';
 import '../settings/change_password.dart';
@@ -164,17 +158,15 @@ PreferredSizeWidget helloAppBar(BuildContext context) {
               style: TextStyle(color: ConstantColors().greyHint, fontSize: 12),
             ),
             Consumer<UserProfileService>(builder: (context, uService, child) {
-              return uService.userProfileData == null
-                  ? SizedBox()
-                  : Text(
-                      uService.userProfileData!.name == null
-                          ? ''
-                          : uService.userProfileData!.name,
-                      style: TextStyle(
-                          color: ConstantColors().titleTexts,
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold),
-                    );
+              return Text(
+                uService.userProfileData == null
+                    ? 'Welcome to shopmart!'
+                    : uService.userProfileData!.name,
+                style: TextStyle(
+                    color: ConstantColors().titleTexts,
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold),
+              );
             }),
           ],
         ),
@@ -184,35 +176,52 @@ PreferredSizeWidget helloAppBar(BuildContext context) {
       Consumer<UserProfileService>(
         builder: (context, uService, child) {
           return GestureDetector(
-            onTap: (() => showTopSlider(context, uService)),
+            onTap: (() {
+              if (uService.userProfileData == null) {
+                Provider.of<NavigationBarHelperService>(context, listen: false)
+                    .setNavigationIndex(4);
+                return;
+              }
+              showTopSlider(context, uService);
+            }),
             // Provider.of<NavigationBarHelperService>(context, listen: false)
             //     .setNavigationIndex(4)),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: uService.userProfileData == null
-                  ? SizedBox()
-                  : CircleAvatar(
-                      backgroundColor:
-                          uService.userProfileData!.profileImageUrl == null
-                              ? cc.primaryColor
-                              : cc.pureWhite,
-                      child: uService.userProfileData!.profileImageUrl == null
-                          ? Text(
-                              uService.userProfileData!.name
-                                  .substring(0, 2)
-                                  .toUpperCase(),
-                              style: TextStyle(
-                                  color: cc.pureWhite,
-                                  fontWeight: FontWeight.bold),
-                            )
-                          : null,
-                      backgroundImage:
-                          uService.userProfileData!.profileImageUrl != null
-                              ? NetworkImage(uService
-                                  .userProfileData!.profileImageUrl as String)
-                              : null,
-                    ),
-            ),
+            child: uService.userProfileData == null
+                ? Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 20),
+                    child: CircleAvatar(
+                      backgroundImage: AssetImage('assets/images/avatar.png'),
+                      radius: 23,
+                    ))
+                : Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: uService.userProfileData == null
+                        ? SizedBox()
+                        : CircleAvatar(
+                            backgroundColor:
+                                uService.userProfileData!.profileImageUrl ==
+                                        null
+                                    ? cc.primaryColor
+                                    : cc.pureWhite,
+                            child: uService.userProfileData!.profileImageUrl ==
+                                    null
+                                ? Text(
+                                    uService.userProfileData!.name
+                                        .substring(0, 2)
+                                        .toUpperCase(),
+                                    style: TextStyle(
+                                        color: cc.pureWhite,
+                                        fontWeight: FontWeight.bold),
+                                  )
+                                : null,
+                            backgroundImage:
+                                uService.userProfileData!.profileImageUrl !=
+                                        null
+                                    ? NetworkImage(uService.userProfileData!
+                                        .profileImageUrl as String)
+                                    : null,
+                          ),
+                  ),
           );
         },
       )
@@ -311,7 +320,11 @@ Widget customRowButton(
 }
 
 snackBar(BuildContext context, String content,
-    {String? buttonText, void Function()? onTap, Color? backgroundColor}) {
+    {String? buttonText,
+    void Function()? onTap,
+    Color? backgroundColor,
+    Duration? duration,
+    SnackBarAction? action}) {
   ScaffoldMessenger.of(context).removeCurrentSnackBar();
   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
 
@@ -320,7 +333,8 @@ snackBar(BuildContext context, String content,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
       margin: const EdgeInsets.all(5),
       backgroundColor: backgroundColor ?? cc.primaryColor,
-      duration: const Duration(seconds: 2),
+      duration: duration ?? const Duration(seconds: 2),
+      action: action,
       content: Row(
         children: [
           Text(

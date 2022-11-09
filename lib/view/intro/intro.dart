@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:gren_mart/view/home/home_front.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../service/state_dropdown_service.dart';
-import '../../view/auth/auth.dart';
 import '../../view/intro/dot_indicator.dart';
 import '../../view/utils/constant_colors.dart';
 import '../../view/utils/constant_name.dart';
@@ -95,7 +95,7 @@ class _IntroState extends State<Intro> {
                   .getStates(1);
               final ref = await SharedPreferences.getInstance();
               ref.setBool('intro', true);
-              Navigator.of(context).pushReplacementNamed(Auth.routeName);
+              Navigator.of(context).pushReplacementNamed(HomeFront.routeName);
             }, () async {
               if (selectedindex < 2) {
                 setState(() {
@@ -109,7 +109,7 @@ class _IntroState extends State<Intro> {
               if (selectedindex == 2) {
                 final ref = await SharedPreferences.getInstance();
                 ref.setBool('intro', true);
-                Navigator.of(context).pushReplacementNamed(Auth.routeName);
+                Navigator.of(context).pushReplacementNamed(HomeFront.routeName);
               }
             }),
             const SizedBox(height: 10),

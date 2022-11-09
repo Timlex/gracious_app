@@ -9,6 +9,11 @@ import 'package:http/http.dart' as http;
 class UserProfileService with ChangeNotifier {
   UserDetails? userProfileData;
 
+  userLogout() {
+    userProfileData = null;
+    notifyListeners();
+  }
+
   Future<UserDetails?> fetchProfileService() async {
     print('fetching profile data');
 

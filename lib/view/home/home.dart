@@ -5,10 +5,8 @@ import 'package:gren_mart/service/campaign_card_list_service.dart';
 import 'package:gren_mart/service/categories_data_service.dart';
 import 'package:gren_mart/view/home/campaign_smaller_card.dart';
 import 'package:gren_mart/view/home/campaigns.dart';
-import 'package:gren_mart/view/home/categories.dart';
 import 'package:gren_mart/view/home/category_page.dart';
 import 'package:gren_mart/view/home/category_product_page.dart';
-import 'package:gren_mart/view/home/section_title.dart';
 
 import '../../service/language_service.dart';
 import '../../service/navigation_bar_helper_service.dart';
@@ -298,7 +296,10 @@ class Home extends StatelessWidget {
                                   arguments: [
                                     element.id.toString(),
                                     element.title
-                                  ]);
+                                  ]).then((value) =>
+                                  Provider.of<SearchResultDataService>(context,
+                                          listen: false)
+                                      .resetSerchFilters());
                             },
                             child: Container(
                               margin: EdgeInsets.only(

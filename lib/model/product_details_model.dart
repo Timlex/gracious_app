@@ -28,7 +28,7 @@ class ProductDetailsModel {
 
   Product product;
   List<RelatedProduct> relatedProducts;
-  bool userHasItem;
+  bool? userHasItem;
   List<Rating> ratings;
   dynamic avgRating;
   AvailableAttributes? availableAttributes;

@@ -166,7 +166,7 @@ class ReviewBox extends StatelessWidget {
             onRatingUpdate: (rating) {
               print(rating);
               Provider.of<ReviewService>(context, listen: false)
-                  .setRating(rating.toString());
+                  .setRating(rating.toStringAsFixed(0));
             },
           ),
           const SizedBox(height: 10),

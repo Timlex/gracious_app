@@ -6,6 +6,7 @@ import 'package:gren_mart/view/utils/constant_styles.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 
 import '../../db/database_helper.dart';
 import '../../service/cart_data_service.dart';
@@ -13,7 +14,6 @@ import '../../service/favorite_data_service.dart';
 import '../../service/poster_campaign_slider_service.dart';
 import '../../service/signin_signup_service.dart';
 import '../../service/user_profile_service.dart';
-import '../../view/auth/auth.dart';
 import '../../view/home/home_front.dart';
 import '../../service/auth_text_controller_service.dart';
 import '../utils/constant_name.dart';
@@ -27,12 +27,15 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
+  bool retry = false;
+  bool goforward = false;
+
   Future<void> initialize() async {
     await getDatabegeData(context);
 
     // await Provider.of<LanguageService>(context, listen: false).setLanguage();
     // await Provider.of<LanguageService>(context, listen: false).setCurrency();
-    await initiateAutoSignIn(context);
+    initiateAutoSignIn(context);
   }
 
   @override
@@ -45,18 +48,32 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     // getDatabegeData(context);
-    // initiateDeviceSize(context);
+    initiateDeviceSize(context);
 
     // initiateAutoSignIn(context);
 
-    return Container(
-      height: double.infinity,
-      width: double.infinity,
-      color: cc.pureWhite,
-      padding: const EdgeInsets.all(8.0),
-      child: Image.asset(
-        'assets/images/splash.png',
-        fit: BoxFit.fill,
+    return Scaffold(
+      body: Container(
+        height: double.infinity,
+        width: double.infinity,
+        color: cc.pureWhite,
+        padding: const EdgeInsets.all(8.0),
+        child: Stack(
+          alignment: Alignment.center,
+          children: [
+            Image.asset(
+              'assets/images/splash.png',
+              fit: BoxFit.fill,
+            ),
+            Positioned(
+                bottom: 0,
+                child: Container(
+                  width: retry ? null : screenWidth - 5,
+                  margin: EdgeInsets.only(bottom: screenHight / 3.5),
+                  child: retry ? SizedBox() : loadingProgressBar(),
+                ))
+          ],
+        ),
       ),
     );
   }
@@ -66,13 +83,40 @@ class _SplashScreenState extends State<SplashScreen> {
     databases.map((e) => DbHelper.database(e));
     Provider.of<CartDataService>(context, listen: false).fetchCarts();
     Provider.of<FavoriteDataService>(context, listen: false).fetchFavorites();
+    FlutterNativeSplash.remove();
   }
 
   initiateAutoSignIn(BuildContext context) async {
+    await Future.delayed(Duration(milliseconds: 900));
+
+    var connection = await Connectivity().checkConnectivity();
+    if (connection == ConnectivityResult.none) {
+      snackBar(
+        context,
+        'Please turn on your internet connection',
+        backgroundColor: cc.orange,
+        duration: Duration(minutes: 10),
+        action: SnackBarAction(
+          label: 'Retry',
+          onPressed: () {
+            initiateAutoSignIn(context);
+            ScaffoldMessenger.of(context).removeCurrentSnackBar();
+            setState(() {
+              retry = false;
+            });
+          },
+          textColor: cc.pureWhite,
+        ),
+      );
+      setState(() {
+        retry = true;
+      });
+      return;
+    }
+
     await Provider.of<LanguageService>(context, listen: false)
         .setLanguage()
         .onError((error, stackTrace) {
-      FlutterNativeSplash.remove();
       return;
       snackBar(context, 'Connection error', backgroundColor: cc.orange);
     });
@@ -80,7 +124,7 @@ class _SplashScreenState extends State<SplashScreen> {
         .setCurrency()
         .onError((error, stackTrace) {
       print(error);
-      FlutterNativeSplash.remove();
+
       return;
       snackBar(context, 'Connection error', backgroundColor: cc.orange);
     });
@@ -106,7 +150,6 @@ class _SplashScreenState extends State<SplashScreen> {
             Provider.of<CampaignCardListService>(context, listen: false)
                 .fetchCampaignCardList();
 
-            FlutterNativeSplash.remove();
             Provider.of<NavigationBarHelperService>(context, listen: false)
                 .setNavigationIndex(0);
             Navigator.of(context).pushReplacementNamed(HomeFront.routeName);
@@ -131,11 +174,19 @@ class _SplashScreenState extends State<SplashScreen> {
       final ref = await SharedPreferences.getInstance();
 
       if (ref.containsKey('intro')) {
-        FlutterNativeSplash.remove();
         await Provider.of<SignInSignUpService>(context, listen: false)
             .getUserData();
         print('inside error, going to auth');
-        Navigator.of(context).pushReplacementNamed(Auth.routeName);
+        Provider.of<PosterCampaignSliderService>(context, listen: false)
+            .fetchPosters();
+        Provider.of<PosterCampaignSliderService>(context, listen: false)
+            .fetchCampaigns();
+        Provider.of<CampaignCardListService>(context, listen: false)
+            .fetchCampaignCardList();
+
+        Provider.of<NavigationBarHelperService>(context, listen: false)
+            .setNavigationIndex(0);
+        Navigator.of(context).pushReplacementNamed(HomeFront.routeName);
         Provider.of<AuthTextControllerService>(context, listen: false).setEmail(
             Provider.of<SignInSignUpService>(context, listen: false).email);
         Provider.of<AuthTextControllerService>(context, listen: false).setPass(
@@ -148,12 +199,21 @@ class _SplashScreenState extends State<SplashScreen> {
 
     if (globalUserToken == null) {
       final ref = await SharedPreferences.getInstance();
-      FlutterNativeSplash.remove();
+
       print('outside error, going to auth');
       if (ref.containsKey('intro')) {
         await Provider.of<SignInSignUpService>(context, listen: false)
             .getUserData();
-        Navigator.of(context).pushReplacementNamed(Auth.routeName);
+        Provider.of<PosterCampaignSliderService>(context, listen: false)
+            .fetchPosters();
+        Provider.of<PosterCampaignSliderService>(context, listen: false)
+            .fetchCampaigns();
+        Provider.of<CampaignCardListService>(context, listen: false)
+            .fetchCampaignCardList();
+
+        Provider.of<NavigationBarHelperService>(context, listen: false)
+            .setNavigationIndex(0);
+        Navigator.of(context).pushReplacementNamed(HomeFront.routeName);
         Provider.of<AuthTextControllerService>(context, listen: false).setEmail(
             Provider.of<SignInSignUpService>(context, listen: false).email);
         Provider.of<AuthTextControllerService>(context, listen: false).setPass(

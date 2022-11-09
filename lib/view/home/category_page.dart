@@ -1,7 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:gren_mart/view/home/bottom_navigation_bar.dart';
-import '../../service/language_service.dart';
 import '../../service/product_card_data_service.dart';
 import '../../service/search_result_data_service.dart';
 import '../../view/utils/app_bars.dart';
@@ -11,7 +10,6 @@ import '../utils/constant_colors.dart';
 import '../utils/constant_name.dart';
 import '../utils/constant_styles.dart';
 import 'category_product_page.dart';
-import 'product_card.dart';
 
 class CategoryPage extends StatelessWidget {
   static const routeName = 'category page';
@@ -58,7 +56,7 @@ class CategoryPage extends StatelessWidget {
                       }),
                     ),
             ),
-            if (srData.featuredCardProductsList.isEmpty) loadingProgressBar()
+            // if (srData.featuredCardProductsList.isEmpty) loadingProgressBar()
           ],
         );
       }),
@@ -101,7 +99,12 @@ class CategoryPage extends StatelessWidget {
               Provider.of<SearchResultDataService>(context, listen: false)
                   .setCategoryId(element.id.toString(), notListen: true);
               Navigator.of(context).pushNamed(CategoryProductPage.routeName,
-                  arguments: [element.id.toString(), element.title]);
+                  arguments: [
+                    element.id.toString(),
+                    element.title
+                  ]).then((value) =>
+                  Provider.of<SearchResultDataService>(context, listen: false)
+                      .resetSerchFilters());
             },
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),

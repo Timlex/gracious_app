@@ -97,10 +97,16 @@ class CampaignCard extends StatelessWidget {
                         if (cat != null) {
                           Provider.of<SearchResultDataService>(context,
                                   listen: false)
-                              .setCategoryId(camp.toString(), notListen: true);
+                              .setCategoryId(cat.toString(), notListen: true);
                           Navigator.of(context).pushNamed(
                               CategoryProductPage.routeName,
-                              arguments: [camp.toString(), title]);
+                              arguments: [
+                                cat.toString(),
+                                title
+                              ]).then((value) =>
+                              Provider.of<SearchResultDataService>(context,
+                                      listen: false)
+                                  .resetSerchFilters());
                         }
                       },
                       child: FittedBox(
@@ -117,8 +123,8 @@ class CampaignCard extends StatelessWidget {
                             horizontal: 21,
                             vertical: 11,
                           ),
+                          backgroundColor: cc.orange,
                           elevation: 0,
-                          primary: cc.orange,
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(12))),
                     ),

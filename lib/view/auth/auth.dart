@@ -4,9 +4,6 @@ import 'package:gren_mart/view/utils/text_themes.dart';
 import 'package:provider/provider.dart';
 
 import '../../service/auth_text_controller_service.dart';
-import '../../service/campaign_card_list_service.dart';
-import '../../service/navigation_bar_helper_service.dart';
-import '../../service/poster_campaign_slider_service.dart';
 import '../../service/signin_signup_service.dart';
 import '../../service/user_profile_service.dart';
 import '../../view/auth/horizontal_devider.dart';
@@ -14,7 +11,6 @@ import '../../view/auth/login.dart';
 import '../../view/auth/remember.dart';
 import '../../view/auth/enter_email_reset_pass.dart';
 import '../../view/auth/signup.dart';
-import '../../view/home/home_front.dart';
 import '../../view/utils/constant_colors.dart';
 import '../../service/country_dropdown_service.dart';
 import '../utils/constant_styles.dart';
@@ -63,25 +59,26 @@ class _AuthState extends State<Auth> {
         email = ssService.email;
         pass = ssService.password;
       }
-      Provider.of<NavigationBarHelperService>(context, listen: false)
-          .setNavigationIndex(0);
+      // Provider.of<NavigationBarHelperService>(context, listen: false)
+      //     .setNavigationIndex(0);
       await ssService
           .signInOption(context, email.trim(), pass)
           .then((value) async {
         if (value) {
           await Provider.of<UserProfileService>(context, listen: false)
               .fetchProfileService();
-          Provider.of<PosterCampaignSliderService>(context, listen: false)
-              .fetchPosters();
-          Provider.of<PosterCampaignSliderService>(context, listen: false)
-              .fetchCampaigns();
-          Provider.of<CampaignCardListService>(context, listen: false)
-              .fetchCampaignCardList();
-          Provider.of<NavigationBarHelperService>(context, listen: false)
-              .setNavigationIndex(0);
+          // Provider.of<PosterCampaignSliderService>(context, listen: false)
+          //     .fetchPosters();
+          // Provider.of<PosterCampaignSliderService>(context, listen: false)
+          //     .fetchCampaigns();
+          // Provider.of<CampaignCardListService>(context, listen: false)
+          //     .fetchCampaignCardList();
+          // Provider.of<NavigationBarHelperService>(context, listen: false)
+          //     .setNavigationIndex(0);
 
           ssService.toggleLaodingSpinner(value: false);
-          Navigator.of(context).pushReplacementNamed(HomeFront.routeName);
+          Navigator.pop(context, true);
+          // Navigator.of(context).pushReplacementNamed(HomeFront.routeName);
           return;
         }
         ssService.toggleLaodingSpinner(value: false);
@@ -118,18 +115,19 @@ class _AuthState extends State<Auth> {
       if (value) {
         await Provider.of<UserProfileService>(context, listen: false)
             .fetchProfileService();
-        Provider.of<PosterCampaignSliderService>(context, listen: false)
-            .fetchPosters();
-        Provider.of<PosterCampaignSliderService>(context, listen: false)
-            .fetchCampaigns();
-        Provider.of<CampaignCardListService>(context, listen: false)
-            .fetchCampaignCardList();
-        Provider.of<NavigationBarHelperService>(context, listen: false)
-            .setNavigationIndex(0);
+        // Provider.of<PosterCampaignSliderService>(context, listen: false)
+        //     .fetchPosters();
+        // Provider.of<PosterCampaignSliderService>(context, listen: false)
+        //     .fetchCampaigns();
+        // Provider.of<CampaignCardListService>(context, listen: false)
+        //     .fetchCampaignCardList();
+        // Provider.of<NavigationBarHelperService>(context, listen: false)
+        //     .setNavigationIndex(0);
         ssService.toggleLaodingSpinner(value: false);
-        Provider.of<NavigationBarHelperService>(context, listen: false)
-            .setNavigationIndex(0);
-        Navigator.of(context).pushReplacementNamed(HomeFront.routeName);
+        // Provider.of<NavigationBarHelperService>(context, listen: false)
+        //     .setNavigationIndex(0);
+        // Navigator.of(context).pushReplacementNamed(HomeFront.routeName);
+        Navigator.pop(context, true);
 
         return;
       }
@@ -149,13 +147,13 @@ class _AuthState extends State<Auth> {
     countryStateInitiate(context);
     return WillPopScope(
       onWillPop: () async {
-        DateTime now = DateTime.now();
-        if (currentBackPressTime == null ||
-            now.difference(currentBackPressTime!) > Duration(seconds: 2)) {
-          currentBackPressTime = now;
-          snackBar(context, 'Press again to exit', backgroundColor: cc.orange);
-          return false;
-        }
+        // DateTime now = DateTime.now();
+        // if (currentBackPressTime == null ||
+        //     now.difference(currentBackPressTime!) > Duration(seconds: 2)) {
+        //   currentBackPressTime = now;
+        //   snackBar(context, 'Press again to exit', backgroundColor: cc.orange);
+        //   return false;
+        // }
         return true;
       },
       child: Stack(
@@ -370,26 +368,27 @@ class _AuthState extends State<Auth> {
                                       .setIsLoading(false);
                                   return;
                                 }
-                                Provider.of<PosterCampaignSliderService>(
-                                        context,
-                                        listen: false)
-                                    .fetchPosters();
-                                Provider.of<PosterCampaignSliderService>(
-                                        context,
-                                        listen: false)
-                                    .fetchCampaigns();
-                                Provider.of<CampaignCardListService>(context,
-                                        listen: false)
-                                    .fetchCampaignCardList();
-                                Provider.of<NavigationBarHelperService>(context,
-                                        listen: false)
-                                    .setNavigationIndex(0);
+                                // Provider.of<PosterCampaignSliderService>(
+                                //         context,
+                                //         listen: false)
+                                //     .fetchPosters();
+                                // Provider.of<PosterCampaignSliderService>(
+                                //         context,
+                                //         listen: false)
+                                //     .fetchCampaigns();
+                                // Provider.of<CampaignCardListService>(context,
+                                //         listen: false)
+                                //     .fetchCampaignCardList();
+                                // // Provider.of<NavigationBarHelperService>(context,
+                                // //         listen: false)
+                                // //     .setNavigationIndex(0);
+                                Navigator.pop(context, true);
                                 Provider.of<SocialLoginService>(context,
                                         listen: false)
                                     .setIsLoading(false);
 
-                                Navigator.of(context)
-                                    .pushReplacementNamed(HomeFront.routeName);
+                                // Navigator.of(context)
+                                //     .pushReplacementNamed(HomeFront.routeName);
                               });
                             });
                           }),
@@ -423,26 +422,26 @@ class _AuthState extends State<Auth> {
                                       .setIsLoading(false);
                                   return;
                                 }
-                                Provider.of<PosterCampaignSliderService>(
-                                        context,
-                                        listen: false)
-                                    .fetchPosters();
-                                Provider.of<PosterCampaignSliderService>(
-                                        context,
-                                        listen: false)
-                                    .fetchCampaigns();
-                                Provider.of<CampaignCardListService>(context,
-                                        listen: false)
-                                    .fetchCampaignCardList();
-                                Provider.of<NavigationBarHelperService>(context,
-                                        listen: false)
-                                    .setNavigationIndex(0);
-
+                                // Provider.of<PosterCampaignSliderService>(
+                                //         context,
+                                //         listen: false)
+                                //     .fetchPosters();
+                                // Provider.of<PosterCampaignSliderService>(
+                                //         context,
+                                //         listen: false)
+                                //     .fetchCampaigns();
+                                // Provider.of<CampaignCardListService>(context,
+                                //         listen: false)
+                                //     .fetchCampaignCardList();
+                                // Provider.of<NavigationBarHelperService>(context,
+                                //         listen: false)
+                                //     .setNavigationIndex(0);
+                                Navigator.pop(context, true);
                                 Provider.of<SocialLoginService>(context,
                                         listen: false)
                                     .setIsLoading(false);
-                                Navigator.of(context)
-                                    .pushReplacementNamed(HomeFront.routeName);
+                                // Navigator.of(context)
+                                //     .pushReplacementNamed(HomeFront.routeName);
                               });
                             }).onError((error, stackTrace) {
                               Provider.of<SocialLoginService>(context,

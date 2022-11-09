@@ -25,8 +25,8 @@ class SignInSignUpService with ChangeNotifier {
     notifyListeners();
   }
 
-  toggleSigninSignup() {
-    login = !login;
+  toggleSigninSignup({value}) {
+    login = value ?? !login;
     notifyListeners();
   }
 
