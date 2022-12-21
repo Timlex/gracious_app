@@ -28,8 +28,8 @@ class ReviewBox extends StatelessWidget {
           onTap: onPressed,
           dense: false,
           contentPadding: const EdgeInsets.symmetric(horizontal: 18),
-          title: const Text(
-            'Review',
+          title: Text(
+            asProvider.getString('Review'),
             style: TextStyle(fontSize: 19, fontWeight: FontWeight.w600),
           ),
           trailing: IconButton(
@@ -123,7 +123,7 @@ class ReviewBox extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 36),
               child: Text(
-                'No Review submitted yet',
+                asProvider.getString('No Review submitted yet'),
                 style: TextStyle(
                     color: cc.greyHint,
                     fontSize: 14,
@@ -148,7 +148,7 @@ class ReviewBox extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const SizedBox(height: 20),
-          Text('Your rating', style: textTheme),
+          Text(asProvider.getString('Your rating'), style: textTheme),
           const SizedBox(height: 10),
           RatingBar.builder(
             // ignoreGestures: true,
@@ -170,7 +170,7 @@ class ReviewBox extends StatelessWidget {
             },
           ),
           const SizedBox(height: 10),
-          Text('Your review', style: textTheme),
+          Text(asProvider.getString('Your review'), style: textTheme),
           const SizedBox(height: 10),
           SizedBox(
             height: screenHight / 7,
@@ -181,7 +181,7 @@ class ReviewBox extends StatelessWidget {
                 controller: _controller,
                 decoration: InputDecoration(
                   isDense: true,
-                  hintText: 'Write yor feedback.',
+                  hintText: asProvider.getString('Write yor feedback.'),
                   hintStyle: TextStyle(color: cc.greyHint, fontSize: 14),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(15),
@@ -209,7 +209,7 @@ class ReviewBox extends StatelessWidget {
                   FocusScope.of(context).unfocus();
                   rService.submitReview(id.toString(), context).onError(
                       (error, stackTrace) => snackBar(
-                          context, 'Connection failed',
+                          context, asProvider.getString('Connection failed'),
                           backgroundColor: cc.orange));
                   rService.toggleLaodingSpinner(false);
                 },
@@ -221,21 +221,26 @@ class ReviewBox extends StatelessWidget {
             return Stack(
               children: [
                 customContainerButton(
-                  Provider.of<ReviewService>(context).isLoading ? '' : 'Submit',
+                  Provider.of<ReviewService>(context).isLoading
+                      ? ''
+                      : asProvider.getString('Submit'),
                   double.infinity,
                   Provider.of<ReviewService>(context).isLoading
                       ? () {}
                       : () async {
                           if (rService.comment.isEmpty) {
-                            snackBar(context, 'Please write a feedback');
+                            snackBar(
+                                context,
+                                asProvider
+                                    .getString('Please write a feedback'));
                             return;
                           }
                           rService.toggleLaodingSpinner(true);
                           FocusScope.of(context).unfocus();
                           await rService
                               .submitReview(id.toString(), context)
-                              .onError((error, stackTrace) => snackBar(
-                                  context, 'Connection failed',
+                              .onError((error, stackTrace) => snackBar(context,
+                                  asProvider.getString('Connection failed'),
                                   backgroundColor: cc.orange));
                           rService.toggleLaodingSpinner(false);
                         },

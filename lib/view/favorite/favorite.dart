@@ -33,7 +33,7 @@ class FavoriteView extends StatelessWidget {
                     ),
                     Center(
                       child: Text(
-                        'Add items to favorite',
+                        asProvider.getString('Add items to favorite'),
                         style: TextStyle(color: cc.greyHint),
                       ),
                     ),

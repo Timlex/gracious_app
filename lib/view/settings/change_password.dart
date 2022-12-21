@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gren_mart/view/utils/constant_name.dart';
 import '../../service/change_password_service.dart';
 import '../../service/signin_signup_service.dart';
 import '../../view/utils/app_bars.dart';
@@ -51,7 +52,8 @@ class _ChangePasswordState extends State<ChangePassword> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBars().appBarTitled(context, 'Change Password', () {
+      appBar: AppBars()
+          .appBarTitled(context, asProvider.getString('Change Password'), () {
         Navigator.of(context).pop();
       }, hasButton: true),
       body: LayoutBuilder(builder: (context, constraints) {
@@ -75,16 +77,20 @@ class _ChangePasswordState extends State<ChangePassword> {
                           child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                textFieldTitle('Current password'),
+                                textFieldTitle(
+                                    asProvider.getString('Current password')),
                                 // const SizedBox(height: 8),
                                 CustomTextField(
-                                  'Enter current password',
+                                  asProvider
+                                      .getString('Enter current password'),
                                   validator: (cPass) {
                                     if (cPass!.isEmpty) {
-                                      return 'Enter at least 6 charechters';
+                                      return asProvider.getString(
+                                          'Enter at least 6 characters');
                                     }
                                     if (cPass.length <= 5) {
-                                      return 'Enter at least 6 charechters';
+                                      return asProvider.getString(
+                                          'Enter at least 6 characters');
                                     }
                                     return null;
                                   },
@@ -95,17 +101,20 @@ class _ChangePasswordState extends State<ChangePassword> {
                                     FocusScope.of(context).requestFocus(_nPFN);
                                   },
                                 ),
-                                textFieldTitle('New password'),
+                                textFieldTitle(
+                                    asProvider.getString('New password')),
                                 // const SizedBox(height: 8),
                                 CustomTextField(
-                                  'Enter new password',
+                                  asProvider.getString('Enter new password'),
                                   focusNode: _nPFN,
                                   validator: (nPass) {
                                     if (nPass!.isEmpty) {
-                                      return 'Enter at least 6 charechters';
+                                      return asProvider.getString(
+                                          'Enter at least 6 characters');
                                     }
                                     if (nPass.length <= 5) {
-                                      return 'Enter at least 6 charechters';
+                                      return asProvider.getString(
+                                          'Enter at least 6 characters');
                                     }
                                     return null;
                                   },
@@ -116,14 +125,16 @@ class _ChangePasswordState extends State<ChangePassword> {
                                     FocusScope.of(context).requestFocus(_reFN);
                                   },
                                 ),
-                                textFieldTitle('Re enter new password'),
+                                textFieldTitle(asProvider
+                                    .getString('Re enter new password')),
                                 // const SizedBox(height: 8),
                                 CustomTextField(
-                                  'Re enter new password',
+                                  asProvider.getString('Re enter new password'),
                                   focusNode: _reFN,
                                   validator: (nPass) {
                                     if (nPass != cpData.newPass) {
-                                      return 'Enter the same password';
+                                      return asProvider
+                                          .getString('Enter the same password');
                                     }
                                     return null;
                                   },
@@ -139,7 +150,9 @@ class _ChangePasswordState extends State<ChangePassword> {
                       child: Stack(
                         children: [
                           customContainerButton(
-                              cpData.changePassLoading ? '' : 'Save Changes',
+                              cpData.changePassLoading
+                                  ? ''
+                                  : asProvider.getString('Save Changes'),
                               double.infinity,
                               cpData.changePassLoading
                                   ? () {}

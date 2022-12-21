@@ -95,7 +95,7 @@ class AddNewTicketService with ChangeNotifier {
         return data['message'];
       }
 
-      return 'Someting went wrong';
+      return asProvider.getString('Something went wrong');
     } catch (error) {
       print(error);
 

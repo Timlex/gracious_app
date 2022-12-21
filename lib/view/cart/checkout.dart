@@ -57,7 +57,8 @@ class Checkout extends StatelessWidget {
       child: Stack(
         children: [
           Scaffold(
-            appBar: AppBars().appBarTitled(context, 'Checkout', () {
+            appBar: AppBars()
+                .appBarTitled(context, asProvider.getString('Checkout'), () {
               Provider.of<ShippingAddressesService>(context, listen: false)
                   .clearSelectedAddress();
               Provider.of<ShippingZoneService>(context, listen: false)
@@ -194,7 +195,7 @@ class Checkout extends StatelessWidget {
                           ),
                           const SizedBox(width: 10),
                           Text(
-                            'Add new address',
+                            asProvider.getString('Add new address'),
                             textAlign: TextAlign.center,
                             style: TextStyle(
                                 color: ConstantColors().primaryColor,
@@ -219,7 +220,8 @@ class Checkout extends StatelessWidget {
                   child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        rows('Product', trailing: 'Subtotal'),
+                        rows(asProvider.getString('Product'),
+                            trailing: asProvider.getString('Subtotal')),
                         const SizedBox(height: 15),
                         SizedBox(
                           child: Consumer<CartDataService>(
@@ -230,16 +232,22 @@ class Checkout extends StatelessWidget {
                           }),
                         ),
                         const SizedBox(height: 15),
-                        rows('Subtotal',
-                            trailing:
-                                '${Provider.of<LanguageService>(context, listen: false).currencySymbol}${Provider.of<CartDataService>(context, listen: false).calculateSubtotal()}'),
+                        Consumer<LanguageService>(
+                            builder: (context, lService, child) {
+                          return rows(asProvider.getString('Subtotal'),
+                              trailing: lService.currencyRTL
+                                  ? '${Provider.of<CartDataService>(context, listen: false).calculateSubtotal()}${lService.currency}'
+                                  : '${lService.currency}${Provider.of<CartDataService>(context, listen: false).calculateSubtotal()}');
+                        }),
                         const SizedBox(height: 15),
-                        rows('Shipping cost', trailing: ''),
+                        rows(asProvider.getString('Shipping cost'),
+                            trailing: ''),
                         const SizedBox(height: 15),
                         Consumer<ShippingZoneService>(
                           builder: (context, sService, child) {
                             return sService.noData
-                                ? const Text('Select a shipping address.')
+                                ? Text(asProvider
+                                    .getString('Select a shipping address.'))
                                 : (sService.isLoading
                                     ? loadingProgressBar()
                                     : Column(
@@ -277,8 +285,14 @@ class Checkout extends StatelessWidget {
                                                   ),
                                                   Text(element.name),
                                                   const Spacer(),
-                                                  Text(
-                                                      '${Provider.of<LanguageService>(context, listen: false).currencySymbol}${element.availableOptions.cost}')
+                                                  Consumer<LanguageService>(
+                                                      builder: (context,
+                                                          lService, child) {
+                                                    return Text(lService
+                                                            .currencyRTL
+                                                        ? '${element.availableOptions.cost}${lService.currency}'
+                                                        : '${lService.currency}${element.availableOptions.cost}');
+                                                  })
                                                 ],
                                               );
                                             })
@@ -291,28 +305,40 @@ class Checkout extends StatelessWidget {
                         const SizedBox(height: 15),
                         Consumer<ShippingZoneService>(
                             builder: (context, szService, child) {
-                          return rows('Tax',
-                              trailing:
-                                  '${Provider.of<LanguageService>(context, listen: false).currencySymbol}${szService.taxMoney(context).toStringAsFixed(2)}');
+                          return Consumer<LanguageService>(
+                              builder: (context, lService, child) {
+                            return rows('Tax',
+                                trailing: lService.currencyRTL
+                                    ? '${szService.taxMoney(context).toStringAsFixed(2)}${lService.currency}'
+                                    : '${lService.currency}${szService.taxMoney(context).toStringAsFixed(2)}');
+                          });
                         }),
                         const SizedBox(height: 15),
                         Consumer<CuponDiscountService>(
                             builder: (context, cupService, child) {
-                          return rows('Coupon discount',
-                              trailing:
-                                  '${Provider.of<LanguageService>(context, listen: false).currencySymbol}${cupService.cuponDiscount.toStringAsFixed(2)}');
+                          return Consumer<LanguageService>(
+                              builder: (context, lService, child) {
+                            return rows(asProvider.getString('Coupon discount'),
+                                trailing: lService.currencyRTL
+                                    ? '${cupService.couponDiscount.toStringAsFixed(2)}${lService.currency}'
+                                    : '${lService.currency}${cupService.couponDiscount.toStringAsFixed(2)}');
+                          });
                         }),
                         const SizedBox(height: 15),
                         const Divider(),
                         const SizedBox(height: 25),
                         Consumer<ShippingZoneService>(
                             builder: (context, szService, child) {
-                          return rows('Total',
-                              trailing:
-                                  '${Provider.of<LanguageService>(context, listen: false).currencySymbol}${szService.totalCounter(context).toStringAsFixed(2)}');
+                          return Consumer<LanguageService>(
+                              builder: (context, lService, child) {
+                            return rows(asProvider.getString('Total'),
+                                trailing: lService.currencyRTL
+                                    ? '${szService.totalCounter(context).toStringAsFixed(2)}${lService.currency}'
+                                    : '${lService.currency}${szService.totalCounter(context).toStringAsFixed(2)}');
+                          });
                         }),
                         const SizedBox(height: 25),
-                        rows('Cupon code'),
+                        rows(asProvider.getString('Coupon code')),
                         const SizedBox(height: 15),
                         Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -327,7 +353,8 @@ class Checkout extends StatelessWidget {
                                     child: TextField(
                                       style: TextThemeConstrants.greyHint13,
                                       decoration: InputDecoration(
-                                          hintText: 'Enter Coupon code',
+                                          hintText: asProvider
+                                              .getString('Enter Coupon code'),
                                           hintStyle:
                                               TextThemeConstrants.greyHint13,
                                           enabledBorder: OutlineInputBorder(
@@ -367,7 +394,7 @@ class Checkout extends StatelessWidget {
                                         Provider.of<CuponDiscountService>(
                                                 context,
                                                 listen: false)
-                                            .setCuponText(value.trim());
+                                            .setCouponText(value.trim());
                                       },
                                     ),
                                   )
@@ -391,7 +418,9 @@ class Checkout extends StatelessWidget {
                                           }).onError((error, stackTrace) {
                                             cService.setIsLoading(false);
                                             snackBar(
-                                                context, 'Connection failed.',
+                                                context,
+                                                asProvider.getString(
+                                                    'Connection failed.'),
                                                 backgroundColor: cc.orange);
                                           });
                                           FocusScope.of(context).unfocus();
@@ -417,7 +446,8 @@ class Checkout extends StatelessWidget {
                                           width: screenWidth / 4,
                                           child: FittedBox(
                                             child: Text(
-                                              'Apply Cupon code',
+                                              asProvider.getString(
+                                                  'Apply Coupon code'),
                                               style: TextStyle(
                                                 color: Colors.transparent,
                                                 shadows: [
@@ -452,7 +482,7 @@ class Checkout extends StatelessWidget {
                             ]),
                         const SizedBox(height: 15),
                         Text(
-                          'Chose a payment method',
+                          asProvider.getString('Chose a payment method'),
                           style: TextThemeConstrants.titleText,
                         ),
                         const SizedBox(height: 20),
@@ -466,7 +496,8 @@ class Checkout extends StatelessWidget {
                                 return const SizedBox();
                               }
                               if (snapshot.hasError) {
-                                snackBar(context, 'An error occured');
+                                snackBar(context,
+                                    asProvider.getString('An error occurred'));
                                 return Text(snapshot.error.toString());
                               }
                               return Consumer<PaymentGateawayService>(
@@ -536,7 +567,7 @@ class Checkout extends StatelessWidget {
                                 child: RichText(
                                   softWrap: true,
                                   text: TextSpan(
-                                      text: 'Accept all',
+                                      text: asProvider.getString('Accept all'),
                                       style: TextStyle(
                                         color: cc.greyHint,
                                         fontWeight: FontWeight.w600,
@@ -550,10 +581,13 @@ class Checkout extends StatelessWidget {
                                                           WebViewScreen
                                                               .routeName,
                                                           arguments: [
-                                                        'Terms and Conditions',
+                                                        asProvider.getString(
+                                                            'Terms and Conditions'),
                                                         '$baseApiUrl/terms-and-condition-page'
                                                       ]),
-                                            text: ' Terms and Conditions',
+                                            text: '' +
+                                                asProvider.getString(
+                                                    'Terms and Conditions'),
                                             style: TextStyle(
                                                 color: cc.primaryColor)),
                                         TextSpan(
@@ -562,16 +596,19 @@ class Checkout extends StatelessWidget {
                                                 TextStyle(color: cc.greyHint)),
                                         TextSpan(
                                             recognizer: TapGestureRecognizer()
-                                              ..onTap = () =>
-                                                  Navigator.of(context)
-                                                      .pushNamed(
-                                                          WebViewScreen
-                                                              .routeName,
-                                                          arguments: [
-                                                        'Privacy Policy',
-                                                        '$baseApiUrl/privacy-policy-page'
-                                                      ]),
-                                            text: ' Privacy Policy',
+                                              ..onTap =
+                                                  () =>
+                                                      Navigator.of(context)
+                                                          .pushNamed(
+                                                              WebViewScreen
+                                                                  .routeName,
+                                                              arguments: [
+                                                            asProvider.getString(
+                                                                'Privacy Policy'),
+                                                            '$baseApiUrl/privacy-policy-page'
+                                                          ]),
+                                            text: asProvider
+                                                .getString('Privacy Policy'),
                                             style: TextStyle(
                                                 color: cc.primaryColor)),
                                       ]),
@@ -584,7 +621,7 @@ class Checkout extends StatelessWidget {
                         Consumer<CheckoutService>(
                             builder: (context, cService, child) {
                           return customContainerButton(
-                              'Pay & Confirm',
+                              asProvider.getString('Pay & Confirm'),
                               double.maxFinite,
                               cService.termsAcondi
                                   ? () async {
@@ -609,10 +646,11 @@ class Checkout extends StatelessWidget {
                                         showDialog(
                                             context: context,
                                             builder: (context) => AlertDialog(
-                                                  title: const Text(
-                                                      'No shipping address selected?'),
-                                                  content: const Text(
-                                                      'Please add or select Shipping address to proceed your payment.'),
+                                                  title: Text(asProvider.getString(
+                                                      'No shipping address selected?')),
+                                                  content: Text(
+                                                      asProvider.getString(
+                                                          'Please add or select Shipping address to proceed your payment.')),
                                                   actions: [
                                                     TextButton(
                                                         onPressed: () {
@@ -628,7 +666,8 @@ class Checkout extends StatelessWidget {
                                                                           300));
                                                         },
                                                         child: Text(
-                                                          'Ok',
+                                                          asProvider
+                                                              .getString('Ok'),
                                                           style: TextStyle(
                                                               color: cc
                                                                   .primaryColor),
@@ -652,7 +691,10 @@ class Checkout extends StatelessWidget {
                                         if (error == '') {
                                           return;
                                         }
-                                        snackBar(context, 'Payment failed!',
+                                        snackBar(
+                                            context,
+                                            asProvider
+                                                .getString('Payment failed!'),
                                             backgroundColor: cc.orange);
                                       });
 
@@ -669,8 +711,10 @@ class Checkout extends StatelessWidget {
                                       // error = true;
                                     }
                                   : () {
-                                      snackBar(context,
-                                          'You have agree to our Terms & Conditions.',
+                                      snackBar(
+                                          context,
+                                          asProvider.getString(
+                                              'You have agree to our Terms & Conditions.'),
                                           backgroundColor: cc.orange);
                                     });
                         }),
@@ -724,10 +768,14 @@ class Checkout extends StatelessWidget {
                       ]),
                 ),
               ),
-              Text(
-                '${Provider.of<LanguageService>(context, listen: false).currencySymbol}${(e['price'] as int) * (e['quantity'] as int)}',
-                style: TextThemeConstrants.greyHint13Eclipse,
-              )
+              Consumer<LanguageService>(builder: (context, lService, child) {
+                return Text(
+                  lService.currencyRTL
+                      ? '${(e['price'] as int) * (e['quantity'] as int)}${lService.currency}'
+                      : '${lService.currency}${(e['price'] as int) * (e['quantity'] as int)}',
+                  style: TextThemeConstrants.greyHint13Eclipse,
+                );
+              })
             ],
           ),
         ));
@@ -760,7 +808,7 @@ class Checkout extends StatelessWidget {
         Provider.of<PaymentGateawayService>(context, listen: false)
             .selectedGateaway;
     if (selectedGateaway == null) {
-      snackBar(context, 'Select a payment Gateaway');
+      snackBar(context, asProvider.getString('Select a payment Gateway'));
       return;
     }
 
@@ -785,26 +833,30 @@ class Checkout extends StatelessWidget {
                           border: Border.all(
                             color: cc.primaryColor,
                           )),
-                      child:
-                          Provider.of<CheckoutService>(context).pickedImage ==
-                                  null
-                              ? Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Icon(Icons.image_outlined),
-                                    Text('Select an image from gallary'),
-                                  ],
-                                )
-                              : Image.file(cService.pickedImage!),
+                      child: Provider.of<CheckoutService>(context)
+                                  .pickedImage ==
+                              null
+                          ? Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(Icons.image_outlined),
+                                Text(asProvider
+                                    .getString('Select an image from gallery')),
+                              ],
+                            )
+                          : Image.file(cService.pickedImage!),
                     )),
               ),
               actions: [
                 customContainerButton(
-                    'Continue',
+                    asProvider.getString('Continue'),
                     double.infinity,
                     Provider.of<CheckoutService>(context).pickedImage == null
                         ? () {
-                            snackBar(context, 'Take an image to proceed');
+                            snackBar(
+                                context,
+                                asProvider
+                                    .getString('Take an image to proceed'));
                           }
                         : () {
                             continued = true;
@@ -938,14 +990,17 @@ class Checkout extends StatelessWidget {
           return SizedBox(
             height: 300,
             child: AlertDialog(
-              title: Text('Order submitted!'),
+              title: Text(asProvider.getString('Order submitted!')),
               content: SizedBox(
                 width: 200,
                 child: RichText(
                   textAlign: TextAlign.center,
                   text: TextSpan(
-                    text:
-                        'Your order has been successful! You\'ll receive ordered items in 3-5 days. \nYour order ID  is ',
+                    text: asProvider.getString(
+                            "Your order has been successful! You'll receive ordered items in 3-5 days.") +
+                        "\n" +
+                        asProvider.getString("Your order ID  is") +
+                        ' ',
                     style: TextThemeConstrants.paragraphText,
                     children: <TextSpan>[
                       TextSpan(
@@ -970,7 +1025,7 @@ class Checkout extends StatelessWidget {
                 TextButton(
                   onPressed: () => Navigator.of(context).pop(),
                   child: Text(
-                    'Ok',
+                    asProvider.getString('Ok'),
                     style: TextStyle(color: cc.primaryColor),
                   ),
                 )
@@ -992,7 +1047,7 @@ class Checkout extends StatelessWidget {
           saService,
           context,
           null,
-          'Current address',
+          asProvider.getString('Current address'),
           Provider.of<UserProfileService>(context, listen: false)
               .userProfileData!
               .address));
@@ -1009,7 +1064,8 @@ class Checkout extends StatelessWidget {
           margin: const EdgeInsets.symmetric(vertical: 20),
           child: FittedBox(
             child: Text(
-              'Add shipping address or all the account informations',
+              asProvider.getString(
+                  "Add shipping address or all the account information's"),
               textAlign: TextAlign.center,
             ),
           )));
@@ -1025,19 +1081,15 @@ class Checkout extends StatelessWidget {
       BuildContext context, Datum? e, String addressName, String address) {
     return GestureDetector(
         onTap: () {
-          print('outSide');
           if (e == null && !saService.currentAddress) {
-            print('selecting current ');
             saService.setSelectedAddress(null, context);
             return;
           }
           if (saService.selectedAddress != null &&
               saService.selectedAddress == e) {
             print(saService.selectedAddress!.name);
-            print('nothing selecting ');
             return;
           }
-          print('selecting this ');
           saService.setSelectedAddress(e, context);
         },
         child: Container(
@@ -1045,17 +1097,28 @@ class Checkout extends StatelessWidget {
           padding: const EdgeInsets.symmetric(vertical: 12),
           decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(10),
-              color: (addressName == 'Current address'
+              color: (addressName == asProvider.getString('Current address') &&
+                          address ==
+                              Provider.of<UserProfileService>(context,
+                                      listen: false)
+                                  .userProfileData!
+                                  .address
                       ? saService.currentAddress
                       : saService.selectedAddress == e)
                   ? cc.lightPrimery3
                   : cc.whiteGrey,
               border: Border.all(
-                  color: (addressName == 'Current address'
-                          ? saService.currentAddress
-                          : saService.selectedAddress == e)
-                      ? cc.primaryColor
-                      : cc.greyHint,
+                  color:
+                      (addressName == asProvider.getString('Current address') &&
+                                  address ==
+                                      Provider.of<UserProfileService>(context,
+                                              listen: false)
+                                          .userProfileData!
+                                          .address
+                              ? saService.currentAddress
+                              : saService.selectedAddress == e)
+                          ? cc.primaryColor
+                          : cc.greyHint,
                   width: .5)),
           child: Stack(children: [
             ListTile(
@@ -1068,7 +1131,11 @@ class Checkout extends StatelessWidget {
                 child: Text(address),
               ),
             ),
-            if ((addressName == 'Current address'
+            if ((addressName == asProvider.getString('Current address') &&
+                    address ==
+                        Provider.of<UserProfileService>(context, listen: false)
+                            .userProfileData!
+                            .address
                 ? saService.currentAddress
                 : saService.selectedAddress == e))
               Positioned(

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:gren_mart/view/utils/constant_name.dart';
 import 'package:money_formatter/money_formatter.dart';
 import 'package:provider/provider.dart';
 
@@ -53,7 +54,8 @@ class FilterBottomSheet extends StatelessWidget {
                           ? 25
                           : 0,
                 ),
-                child: textFieldTitle('All categories', fontSize: 13),
+                child: textFieldTitle(asProvider.getString('All categories'),
+                    fontSize: 13),
               ),
               Container(
                 height: 44,
@@ -100,7 +102,8 @@ class FilterBottomSheet extends StatelessWidget {
                             ? 25
                             : 0,
                   ),
-                  child: textFieldTitle('Sub-category', fontSize: 13),
+                  child: textFieldTitle(asProvider.getString('Sub-category'),
+                      fontSize: 13),
                 ),
               if (catData.selectedCategorieId.isNotEmpty &&
                   (catData.loading || catData.noSubcategory))
@@ -119,7 +122,7 @@ class FilterBottomSheet extends StatelessWidget {
                       ? Container(
                           margin: EdgeInsets.symmetric(vertical: 10),
                           child: Text(
-                            'No sub-category available',
+                            asProvider.getString('No sub-category available'),
                             style: TextStyle(color: cc.greyHint, fontSize: 14),
                           ))
                       : loadingProgressBar(),
@@ -156,7 +159,8 @@ class FilterBottomSheet extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    textFieldTitle('Filter Price', fontSize: 13),
+                    textFieldTitle(asProvider.getString('Filter Price'),
+                        fontSize: 13),
                     Consumer<SearchResultDataService>(
                         builder: (context, srService, child) {
                       return Container(
@@ -172,26 +176,30 @@ class FilterBottomSheet extends StatelessWidget {
                               ? 25
                               : 0,
                         ),
-                        child: Text(
-                            '${Provider.of<LanguageService>(context, listen: false).currencySymbol}' +
-                                (srService
-                                        .minPrice.isNotEmpty
-                                    ? MoneyFormatter(
-                                            amount: double.parse(srService
-                                                .minPrice))
-                                        .output
-                                        .withoutFractionDigits
-                                    : startRange.output.withoutFractionDigits) +
-                                '-' +
-                                '${Provider.of<LanguageService>(context, listen: false).currencySymbol}' +
-                                (srService
-                                        .maxPrice.isNotEmpty
-                                    ? MoneyFormatter(
-                                            amount: double.parse(
-                                                srService.maxPrice))
-                                        .output
-                                        .withoutFractionDigits
-                                    : endRange.output.withoutFractionDigits)),
+                        child: Consumer<LanguageService>(
+                            builder: (context, lService, child) {
+                          return Text((lService.currencyRTL
+                                  ? lService.currency
+                                  : '') +
+                              (srService.minPrice.isNotEmpty
+                                  ? MoneyFormatter(
+                                          amount:
+                                              double.parse(srService.minPrice))
+                                      .output
+                                      .withoutFractionDigits
+                                  : startRange.output.withoutFractionDigits) +
+                              (lService.currencyRTL ? '' : lService.currency) +
+                              '-' +
+                              (lService.currencyRTL ? lService.currency : '') +
+                              (srService.maxPrice.isNotEmpty
+                                  ? MoneyFormatter(
+                                          amount:
+                                              double.parse(srService.maxPrice))
+                                      .output
+                                      .withoutFractionDigits
+                                  : endRange.output.withoutFractionDigits) +
+                              (lService.currencyRTL ? '' : lService.currency));
+                        }),
                       );
                     })
                   ],
@@ -241,7 +249,8 @@ class FilterBottomSheet extends StatelessWidget {
                           ? 25
                           : 0,
                 ),
-                child: textFieldTitle('Average Rating', fontSize: 13),
+                child: textFieldTitle(asProvider.getString('Average Rating'),
+                    fontSize: 13),
               ),
               const SizedBox(height: 10),
               Padding(
@@ -291,7 +300,9 @@ class FilterBottomSheet extends StatelessWidget {
                 return Padding(
                   padding: const EdgeInsets.all(10),
                   child: customRowButton(
-                      context, 'Reset Filter', 'Apply Filter', () {
+                      context,
+                      asProvider.getString('Reset Filter'),
+                      asProvider.getString('Apply Filter'), () {
                     filterReset(context, srData);
                   }, () {
                     filterApply(context, srData);
@@ -306,8 +317,9 @@ class FilterBottomSheet extends StatelessWidget {
   initCategories(BuildContext context) {
     Provider.of<CategoriesDataService>(context, listen: false)
         .fetchCategories()
-        .onError((error, stackTrace) =>
-            snackBar(context, 'Connection failed', backgroundColor: cc.orange));
+        .onError((error, stackTrace) => snackBar(
+            context, asProvider.getString('Connection failed'),
+            backgroundColor: cc.orange));
   }
 
   Widget filterOption(String text, bool isSelected) {

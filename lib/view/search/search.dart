@@ -4,7 +4,6 @@ import 'package:provider/provider.dart';
 
 import '../utils/constant_colors.dart';
 import '../../service/search_result_data_service.dart';
-import '../../view/auth/custom_text_field.dart';
 import '../../view/home/product_card.dart';
 import '../../view/utils/constant_name.dart';
 import '../../view/utils/constant_styles.dart';
@@ -60,7 +59,7 @@ class SearchView extends StatelessWidget {
                         borderRadius: BorderRadius.circular(10),
                         borderSide: BorderSide(color: cc.orange, width: 1),
                       ),
-                      hintText: 'Search your need here',
+                      hintText: asProvider.getString('Search your need here'),
 
                       hintStyle:
                           TextStyle(color: cc.greyTextFieldLebel, fontSize: 13),
@@ -145,14 +144,14 @@ class SearchView extends StatelessWidget {
     if (srData.noProduct) {
       return Center(
         child: Text(
-          'No data has been found!',
+          asProvider.getString('No data has been found!'),
           style: TextStyle(color: cc.greyHint),
         ),
       );
     } else if (srData.error) {
       return Center(
         child: Text(
-          'Loading failed!',
+          asProvider.getString('Loading failed!'),
           style: TextStyle(color: cc.greyHint),
         ),
       );

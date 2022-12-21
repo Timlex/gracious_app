@@ -1,7 +1,7 @@
 import 'dart:convert';
-import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:gren_mart/view/utils/constant_name.dart';
 import 'package:gren_mart/view/utils/constant_styles.dart';
 import 'package:http/http.dart' as http;
 
@@ -70,7 +70,7 @@ class CartDataService with ChangeNotifier {
         element.update('quantity', (value) {
           int sum = (value as int) + (extraQuantity ?? 1);
           print(sum);
-          snackBar(context, 'Item added to cart');
+          snackBar(context, asProvider.getString('Item added to cart'));
           return sum;
         });
       }
@@ -99,7 +99,7 @@ class CartDataService with ChangeNotifier {
           int sum = value as int;
           if (value != 1) {
             sum -= 1;
-            snackBar(context, 'Item subtracted from cart',
+            snackBar(context, asProvider.getString('Item subtracted from cart'),
                 backgroundColor: cc.orange);
           }
           print(sum);
@@ -157,7 +157,7 @@ class CartDataService with ChangeNotifier {
           'attributes': inventorySet ?? {}
         }
       ];
-      snackBar(context, 'Item added to cart.');
+      snackBar(context, asProvider.getString('Item added to cart'));
       notifyListeners();
       return;
     }
@@ -198,7 +198,7 @@ class CartDataService with ChangeNotifier {
           })
         },
       );
-      snackBar(context, 'Item added to cart');
+      snackBar(context, asProvider.getString('Item added to cart'));
 
       notifyListeners();
     }

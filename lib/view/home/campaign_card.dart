@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../service/language_service.dart';
-import '../../service/navigation_bar_helper_service.dart';
 import '../../service/search_result_data_service.dart';
 import '../../view/utils/constant_colors.dart';
 import '../../view/utils/constant_name.dart';
@@ -58,7 +57,7 @@ class CampaignCard extends StatelessWidget {
                     width: screenWidth / 4.5,
                     child: FittedBox(
                       child: Text(
-                        'Deal of the Day',
+                        asProvider.getString('Deal of the Day'),
                         style: TextStyle(
                           color: cc.orange,
                           fontSize: screenWidth / 27,

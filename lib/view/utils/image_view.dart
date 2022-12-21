@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:gren_mart/view/utils/app_bars.dart';
+import 'package:gren_mart/view/utils/constant_name.dart';
 import 'package:photo_view/photo_view.dart';
 
 import 'constant_styles.dart';
@@ -30,7 +31,7 @@ class ImageView extends StatelessWidget {
                   return loadingProgressBar();
                 },
                 errorBuilder: (context, exception, stackTrace) {
-                  return const Text('Connection failed!');
+                  return Text(asProvider.getString('Connection failed!'));
                 },
                 imageProvider: imageUrl.contains('http')
                     ? NetworkImage(imageUrl) as ImageProvider<Object>?

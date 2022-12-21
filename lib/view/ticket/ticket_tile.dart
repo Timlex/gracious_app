@@ -97,7 +97,7 @@ class TicketTile extends StatelessWidget {
                       child: FittedBox(
                         child: Row(
                           children: [
-                            const Text('Priority:'),
+                            Text(asProvider.getString('Priority') + ':'),
                             const SizedBox(width: 5),
                             Consumer<TicketService>(
                                 builder: (context, tServicem, child) {
@@ -125,7 +125,10 @@ class TicketTile extends StatelessWidget {
                                     child: Row(
                                       children: [
                                         Text(
-                                          priority.capitalize(),
+                                          asProvider
+                                              .getString(priority)
+                                              .toString()
+                                              .capitalize(),
                                           style: TextStyle(
                                               color: cc.pureWhite,
                                               fontSize: 13,
@@ -147,7 +150,10 @@ class TicketTile extends StatelessWidget {
                                   itemBuilder: (context) =>
                                       tService.priorityList
                                           .map((e) => PopupMenuItem(
-                                                child: Text(e.capitalize()),
+                                                child: Text(asProvider
+                                                    .getString(e)
+                                                    .toString()
+                                                    .capitalize()),
                                                 value: e,
                                               ))
                                           .toList());
@@ -166,7 +172,7 @@ class TicketTile extends StatelessWidget {
                     return FittedBox(
                       child: Row(
                         children: [
-                          const Text('Status:'),
+                          Text(asProvider.getString('Status') + ':'),
                           const SizedBox(width: 5),
                           PopupMenuButton(
                             child: Container(
@@ -192,7 +198,10 @@ class TicketTile extends StatelessWidget {
                               child: Row(
                                 children: [
                                   Text(
-                                    ticketItem.status.capitalize(),
+                                    asProvider
+                                        .getString(ticketItem.status)
+                                        .toString()
+                                        .capitalize(),
                                     style: TextStyle(
                                         color: cc.pureWhite,
                                         fontSize: 13,
@@ -215,7 +224,10 @@ class TicketTile extends StatelessWidget {
                             itemBuilder: (context) => ['open', 'close']
                                 .map(
                                   (e) => PopupMenuItem(
-                                    child: Text(e.capitalize()),
+                                    child: Text(asProvider
+                                        .getString(e)
+                                        .toString()
+                                        .capitalize()),
                                     value: e,
                                   ),
                                 )
@@ -238,7 +250,10 @@ class TicketTile extends StatelessWidget {
                           snackBar(context, value);
                         }
                       }).onError((error, stackTrace) {
-                        snackBar(context, 'Could not load any messages');
+                        snackBar(
+                            context,
+                            asProvider
+                                .getString('Could not load any messages'));
                       });
                       Navigator.of(context).push(MaterialPageRoute<void>(
                         builder: (BuildContext context) =>

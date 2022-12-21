@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gren_mart/view/utils/constant_name.dart';
 import '../../service/auth_text_controller_service.dart';
 import '../../service/reset_pass_otp_service.dart';
 import '../../view/auth/auth.dart';
@@ -35,13 +36,13 @@ class _ResetPasswordState extends State<ResetPassword> {
       final valid = _formKey.currentState!.validate();
       if (!valid) {
         Provider.of<ResetPassOTPService>(context, listen: false)
-            .toggPassleLaodingSpinner(value: false);
+            .togglePassLoadingSpinner(value: false);
         return;
       }
       await Provider.of<ResetPassOTPService>(context, listen: false)
           .resetPassword(
               Provider.of<AuthTextControllerService>(context, listen: false)
-                  .newEmai,
+                  .newEmail,
               Provider.of<AuthTextControllerService>(context, listen: false)
                   .newPassword)
           .then((value) {
@@ -60,7 +61,8 @@ class _ResetPasswordState extends State<ResetPassword> {
     }
 
     return Scaffold(
-      appBar: AppBars().appBarTitled(context, 'Reset Password', () {
+      appBar: AppBars()
+          .appBarTitled(context, asProvider.getString('Reset Password'), () {
         Navigator.of(context).pushAndRemoveUntil(
             MaterialPageRoute(builder: (context) => Auth()),
             (Route<dynamic> route) => false);
@@ -78,17 +80,19 @@ class _ResetPasswordState extends State<ResetPassword> {
                 child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      textFieldTitle('New password'),
+                      textFieldTitle(asProvider.getString('New password')),
                       // const SizedBox(height: 8),
                       CustomTextField(
-                        'Enter new password',
+                        asProvider.getString('Enter new password'),
                         focusNode: _nPFN,
                         validator: (password) {
                           if (password!.isEmpty) {
-                            return 'Enter at least 6 charechters';
+                            return asProvider
+                                .getString('Enter at least 6 characters');
                           }
                           if (password.length <= 5) {
-                            return 'Enter at least 6 charechters';
+                            return asProvider
+                                .getString('Enter at least 6 characters');
                           }
                           return null;
                         },
@@ -101,25 +105,27 @@ class _ResetPasswordState extends State<ResetPassword> {
                           FocusScope.of(context).requestFocus(_reFN);
                         },
                       ),
-                      textFieldTitle('Re enter new password'),
+                      textFieldTitle(
+                          asProvider.getString('Re enter new password')),
                       // const SizedBox(height: 8),
                       CustomTextField(
-                        'Re enter new password',
+                        asProvider.getString('Re enter new password'),
                         focusNode: _reFN,
                         validator: (password) {
                           if (password == _passwordController.text) {
-                            return 'Enter the same password';
+                            return asProvider
+                                .getString('Enter the same password');
                           }
                           return null;
                         },
                         onFieldSubmitted: (_) async {
                           Provider.of<ResetPassOTPService>(context,
                                   listen: false)
-                              .toggPassleLaodingSpinner(value: true);
+                              .togglePassLoadingSpinner(value: true);
                           await _onSubmit(context);
                           Provider.of<ResetPassOTPService>(context,
                                   listen: false)
-                              .toggPassleLaodingSpinner(value: false);
+                              .togglePassLoadingSpinner(value: false);
                         },
                       ),
                     ]),
@@ -131,18 +137,20 @@ class _ResetPasswordState extends State<ResetPassword> {
               child: Stack(
                 children: [
                   customContainerButton(
-                      resetData.changePassLoading ? '' : 'Save Changes',
+                      resetData.changePassLoading
+                          ? ''
+                          : asProvider.getString('Save Changes'),
                       double.infinity,
                       resetData.changePassLoading
                           ? () {}
                           : () async {
                               Provider.of<ResetPassOTPService>(context,
                                       listen: false)
-                                  .toggPassleLaodingSpinner(value: true);
+                                  .togglePassLoadingSpinner(value: true);
                               await _onSubmit(context);
                               Provider.of<ResetPassOTPService>(context,
                                       listen: false)
-                                  .toggPassleLaodingSpinner(value: false);
+                                  .togglePassLoadingSpinner(value: false);
                             }),
                   if (resetData.changePassLoading)
                     SizedBox(

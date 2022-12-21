@@ -1,12 +1,10 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 
 import '../../service/cart_data_service.dart';
 import '../../service/favorite_data_service.dart';
 import '../../service/language_service.dart';
-import '../../service/product_details_service.dart';
 import '../../view/details/product_details.dart';
 import '../../view/utils/constant_colors.dart';
 import '../../view/utils/constant_name.dart';
@@ -239,10 +237,11 @@ class ProductCard extends StatelessWidget {
                   ),
                   const SizedBox(height: 10),
                   discAmountRow(
+                      context,
                       discountPrice,
                       price,
                       Provider.of<LanguageService>(context, listen: false)
-                          .currencySymbol),
+                          .currency),
                   const SizedBox(height: 10),
                   GestureDetector(
                     onTap: () {
@@ -262,7 +261,10 @@ class ProductCard extends StatelessWidget {
                                       campaignPercentage,
                                       1,
                                       imgUrl);
-                                  snackBar(context, 'Product added to cart.');
+                                  snackBar(
+                                      context,
+                                      asProvider
+                                          .getString('Product added to cart.'));
                                 }
                               : (() {
                                   if (popFirst) {
@@ -287,7 +289,9 @@ class ProductCard extends StatelessWidget {
                             ),
                           ),
                           child: Text(
-                            isCartable ? 'Add to cart' : 'View details',
+                            isCartable
+                                ? asProvider.getString('Add to cart')
+                                : asProvider.getString('View details'),
                             textAlign: TextAlign.center,
                             style: TextStyle(
                                 color: cc.primaryColor,

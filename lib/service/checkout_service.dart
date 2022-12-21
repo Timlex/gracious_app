@@ -55,7 +55,7 @@ class CheckoutService with ChangeNotifier {
   }
 
   Future proccessCheckout(BuildContext context) async {
-    print('Edit in proccess');
+    print('checkout in process');
 
     final userData = Provider.of<UserProfileService>(context, listen: false)
         .userProfileData!;
@@ -64,8 +64,9 @@ class CheckoutService with ChangeNotifier {
         Provider.of<ShippingAddressesService>(context, listen: false);
     final shippingZone =
         Provider.of<ShippingZoneService>(context, listen: false);
-    final cuponData = Provider.of<CuponDiscountService>(context, listen: false);
-    final selectedGateaway =
+    final couponData =
+        Provider.of<CuponDiscountService>(context, listen: false);
+    final selectedGateway =
         Provider.of<PaymentGateawayService>(context, listen: false)
             .selectedGateaway!;
 
@@ -73,7 +74,7 @@ class CheckoutService with ChangeNotifier {
     Map<String, List<Map<String, Object?>>>? formatedCartItem = clist;
     final taxAmount = shippingZone.taxMoney(context);
     final subTotal = ((cartData.calculateSubtotal())).toString();
-    print(cuponData.cuponDiscount);
+    print(couponData.couponDiscount);
     print(subTotal);
     if (shippingAddress.selectedAddress == null &&
         (userData.city == null ||
@@ -90,15 +91,16 @@ class CheckoutService with ChangeNotifier {
           context: context,
           builder: (ctx) {
             return AlertDialog(
-              title: Text('Insufficient data?'),
-              content: Text('Pleae provide all the profile Information.'),
+              title: Text(asProvider.getString('Insufficient data?')),
+              content: Text(asProvider
+                  .getString('Please provide all the profile Information.')),
               actions: [
                 TextButton(
                     onPressed: (() {
                       Navigator.pop(context);
                     }),
                     child: Text(
-                      'Not now',
+                      asProvider.getString('Not now'),
                       style: TextStyle(color: cc.pink),
                     )),
                 TextButton(
@@ -134,7 +136,7 @@ class CheckoutService with ChangeNotifier {
                       });
                     },
                     child: Text(
-                      'Add now',
+                      asProvider.getString('Add now'),
                       style: TextStyle(color: cc.primaryColor),
                     ))
               ],
@@ -142,11 +144,10 @@ class CheckoutService with ChangeNotifier {
           });
       throw '';
     }
-    if (selectedGateaway.name == 'paytm') {
-      await paytmChekout(context);
+    if (selectedGateway.name == 'paytm') {
+      await paytmCheckout(context);
       return;
     }
-    print(userData.state!.id);
     bool notCurrent = shippingAddress.selectedAddress != null;
     Map<String, dynamic> fieldss = {
       'name':
@@ -175,12 +176,12 @@ class CheckoutService with ChangeNotifier {
           notCurrent ? shippingAddress.selectedAddress!.id.toString() : '',
       'selected_shipping_option': shippingZone.selectedOption!.id.toString(),
       'tax_amount': taxAmount.toString(),
-      'coupon': cuponData.cuponText ?? '',
+      'coupon': couponData.couponText ?? '',
       'agree': 'on',
       'sub_total': subTotal,
       'products_ids': jsonEncode(cartData.cartList!.keys.toList()),
       'all_cart_items': jsonEncode(cartData.formatItems()),
-      'coupon_amount': cuponData.cuponDiscount.toString()
+      'coupon_amount': couponData.couponDiscount.toString()
     };
     print(fieldss);
 
@@ -198,11 +199,11 @@ class CheckoutService with ChangeNotifier {
     );
     print(pickedImage);
     if (pickedImage != null &&
-        (selectedGateaway.name.contains('bank_transfer') ||
-            selectedGateaway.name.contains('cheque_payment'))) {
+        (selectedGateway.name.contains('bank_transfer') ||
+            selectedGateway.name.contains('cheque_payment'))) {
       print('pickedImage!.path');
       var multiport = await http.MultipartFile.fromPath(
-        selectedGateaway.name.contains('bank_transfer')
+        selectedGateway.name.contains('bank_transfer')
             ? 'bank_payment_input'
             : 'check_payment_input',
         pickedImage!.path,
@@ -222,12 +223,12 @@ class CheckoutService with ChangeNotifier {
       //     selectedGateaway.name.contains('cheque_payment')) {
       //   await showDialogue(context);
       // }
-      if (selectedGateaway.name == 'paytm') {
-        await paytmChekout(context);
+      if (selectedGateway.name == 'paytm') {
+        await paytmCheckout(context);
       }
-      if (selectedGateaway.name == 'bank_transfer' ||
-          selectedGateaway.name == 'cheque_payment' ||
-          selectedGateaway.name == 'cash_on_delivery') {
+      if (selectedGateway.name == 'bank_transfer' ||
+          selectedGateway.name == 'cheque_payment' ||
+          selectedGateway.name == 'cash_on_delivery') {
         cartData.emptyCart();
       }
       print(jsonDecode(response.body));
@@ -237,7 +238,7 @@ class CheckoutService with ChangeNotifier {
     }
     if (response.statusCode == 500) {
       print(jsonDecode(response.body));
-      throw 'Connection failed';
+      throw asProvider.getString('Connection failed');
     }
 
     return;
@@ -249,7 +250,7 @@ class CheckoutService with ChangeNotifier {
     // }
   }
 
-  Future paytmChekout(BuildContext context) async {
+  Future paytmCheckout(BuildContext context) async {
     final userData = Provider.of<UserProfileService>(context, listen: false)
         .userProfileData!;
     final cartData = Provider.of<CartDataService>(context, listen: false);
@@ -293,12 +294,12 @@ class CheckoutService with ChangeNotifier {
           notCurrent ? shippingAddress.selectedAddress!.id.toString() : '',
       'selected_shipping_option': shippingZone.selectedOption!.id.toString(),
       'tax_amount': taxAmount.toString(),
-      'coupon': cuponData.cuponText ?? '',
+      'coupon': cuponData.couponText ?? '',
       'agree': 'on',
       'sub_total': subTotal,
       'products_ids': jsonEncode(cartData.cartList!.keys.toList()),
       'all_cart_items': jsonEncode(cartData.formatItems()),
-      'coupon_amount': cuponData.cuponDiscount.toString()
+      'coupon_amount': cuponData.couponDiscount.toString()
     };
 
     final url = Uri.parse('$baseApiUrl/user/checkout-paytm');
@@ -338,7 +339,7 @@ class CheckoutService with ChangeNotifier {
     }
     if (response.statusCode == 500) {
       print(jsonDecode(response.body));
-      throw 'Connection failed';
+      throw asProvider.getString('Connection failed');
     }
 
     return;
@@ -358,14 +359,14 @@ class CheckoutService with ChangeNotifier {
           return SizedBox(
             height: 300,
             child: AlertDialog(
-              title: Text('Order submitted!'),
+              title: Text(asProvider.getString('Order submitted!')),
               content: SizedBox(
                 width: 200,
                 child: RichText(
                   textAlign: TextAlign.center,
                   text: TextSpan(
-                    text:
-                        'Your order has been successful! You\'ll receive ordered items in 3-5 days. Your order ID  is ',
+                    text: asProvider.getString(
+                        "Your order has been successful! You'll receive ordered items in 3-5 days. Your order ID  is"),
                     style: TextThemeConstrants.paragraphText,
                     children: <TextSpan>[
                       TextSpan(
@@ -392,7 +393,7 @@ class CheckoutService with ChangeNotifier {
                 TextButton(
                   onPressed: () => Navigator.of(context).pop(),
                   child: Text(
-                    'Ok',
+                    asProvider.getString('Ok'),
                     style: TextStyle(color: cc.primaryColor),
                   ),
                 )

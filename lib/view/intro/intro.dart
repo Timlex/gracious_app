@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:gren_mart/view/home/home_front.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../../service/campaign_card_list_service.dart';
+import '../../service/poster_campaign_slider_service.dart';
 import '../../service/state_dropdown_service.dart';
 import '../../view/intro/dot_indicator.dart';
 import '../../view/utils/constant_colors.dart';
@@ -90,9 +92,16 @@ class _IntroState extends State<Intro> {
               children: _dotIdicators(),
             ),
             Expanded(child: Container()),
-            customRowButton(context, 'Skip', 'Continue', () async {
+            customRowButton(context, asProvider.getString('Skip'),
+                asProvider.getString('Continue'), () async {
               Provider.of<StateDropdownService>(context, listen: false)
                   .getStates(1);
+              Provider.of<PosterCampaignSliderService>(context, listen: false)
+                  .fetchPosters();
+              Provider.of<PosterCampaignSliderService>(context, listen: false)
+                  .fetchCampaigns();
+              Provider.of<CampaignCardListService>(context, listen: false)
+                  .fetchCampaignCardList();
               final ref = await SharedPreferences.getInstance();
               ref.setBool('intro', true);
               Navigator.of(context).pushReplacementNamed(HomeFront.routeName);
@@ -107,6 +116,12 @@ class _IntroState extends State<Intro> {
                 return;
               }
               if (selectedindex == 2) {
+                Provider.of<PosterCampaignSliderService>(context, listen: false)
+                    .fetchPosters();
+                Provider.of<PosterCampaignSliderService>(context, listen: false)
+                    .fetchCampaigns();
+                Provider.of<CampaignCardListService>(context, listen: false)
+                    .fetchCampaignCardList();
                 final ref = await SharedPreferences.getInstance();
                 ref.setBool('intro', true);
                 Navigator.of(context).pushReplacementNamed(HomeFront.routeName);

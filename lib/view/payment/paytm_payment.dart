@@ -17,49 +17,11 @@ class PaytmPayment extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBars().appBarTitled(context, '', () async {
-        await showDialog(
-            context: context,
-            builder: (ctx) {
-              return AlertDialog(
-                title: Text('Are you sure?'),
-                content: Text('Your payment proccess will get terminated.'),
-                actions: [
-                  TextButton(
-                    onPressed: () => Navigator.of(context).pushAndRemoveUntil(
-                        MaterialPageRoute(
-                            builder: (context) => PaymentStatusView(true)),
-                        (Route<dynamic> route) => false),
-                    child: Text(
-                      'Yes',
-                      style: TextStyle(color: cc.primaryColor),
-                    ),
-                  )
-                ],
-              );
-            });
+        paymentFailedDialogue(context);
       }),
       body: WillPopScope(
         onWillPop: () async {
-          await showDialog(
-              context: context,
-              builder: (ctx) {
-                return AlertDialog(
-                  title: Text('Are you sure?'),
-                  content: Text('Your payment proccess will get terminated.'),
-                  actions: [
-                    TextButton(
-                      onPressed: () => Navigator.of(context).pushAndRemoveUntil(
-                          MaterialPageRoute(
-                              builder: (context) => PaymentStatusView(true)),
-                          (Route<dynamic> route) => false),
-                      child: Text(
-                        'Yes',
-                        style: TextStyle(color: cc.primaryColor),
-                      ),
-                    )
-                  ],
-                );
-              });
+          paymentFailedDialogue(context);
           return false;
         },
         child: WebView(
@@ -72,13 +34,7 @@ class PaytmPayment extends StatelessWidget {
           initialUrl: "url",
           javascriptMode: JavascriptMode.unrestricted,
           onPageFinished: (value) {
-            print('on progress.........................$value');
             if (value.contains('success')) {
-              print('closing payment......');
-              print('closing payment.............');
-              print('closing payment...................');
-              print('closing payment..........................');
-
               Provider.of<ConfirmPaymentService>(context, listen: false)
                   .confirmPayment(context);
             }

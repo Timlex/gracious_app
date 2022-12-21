@@ -65,7 +65,7 @@ class CartView extends StatelessWidget {
                     child: Image.asset('assets/images/empty_cart.png'),
                   ),
                   Center(
-                      child: Text('Add item to cart!',
+                      child: Text(asProvider.getString('Add item to cart!'),
                           style: TextStyle(
                             color: cc.greyHint,
                           ))),
@@ -77,7 +77,7 @@ class CartView extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.all(20),
                 child: customContainerButton(
-                  'Checkout',
+                  asProvider.getString('Checkout'),
                   double.infinity,
                   () async {
                     bool continueCheckout = true;
@@ -174,14 +174,16 @@ class CartView extends StatelessWidget {
           child: Column(
             children: [
               Text(
-                title ?? 'Login to checkout?',
+                title ?? asProvider.getString('Login to checkout?'),
                 style: TextStyle(color: cc.greytitle, fontSize: 17),
               ),
               const SizedBox(
                 height: 25,
               ),
               Text(
-                description ?? 'You have to  login to proceed the checkout.',
+                description ??
+                    asProvider.getString(
+                        'You have to  login to proceed the checkout.'),
                 style: TextStyle(color: cc.greyParagraph, fontSize: 13),
               ),
               const SizedBox(
@@ -189,14 +191,14 @@ class CartView extends StatelessWidget {
               ),
               Row(
                 children: [
-                  customBorderButton('Cancel', () {
+                  customBorderButton(asProvider.getString('Cancel'), () {
                     Navigator.pop(context);
                   }, width: screenWidth / 3.3),
                   const SizedBox(
                     width: 16,
                   ),
                   customContainerButton(
-                    'Login',
+                    asProvider.getString('Login'),
                     screenWidth / 3.3,
                     () {
                       Provider.of<SignInSignUpService>(context, listen: false)
@@ -214,12 +216,6 @@ class CartView extends StatelessWidget {
                         }
                         Navigator.pop(context);
                       });
-                      // provider.logout(context);
-                      //if logged in by google then logout from it
-                      // GoogleSignInService().logOutFromGoogleLogin();
-
-                      //if logged in by facebook then logout from it
-                      // FacebookLoginService().logoutFromFacebook();
                     },
                   ),
                 ],

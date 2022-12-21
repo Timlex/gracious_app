@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:gren_mart/view/utils/constant_name.dart';
 import '../../view/settings/new_address.dart';
 import '../../view/utils/app_bars.dart';
 import '../../view/utils/constant_colors.dart';
@@ -22,7 +23,8 @@ class _ShippingAdressesState extends State<ShippingAdresses> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBars().appBarTitled(context, 'Shipping addresses', () {
+      appBar: AppBars().appBarTitled(
+          context, asProvider.getString('Shipping addresses'), () {
         Navigator.of(context).pop();
       }),
       body: Column(
@@ -34,7 +36,7 @@ class _ShippingAdressesState extends State<ShippingAdresses> {
                 ? (Provider.of<ShippingAddressesService>(context).noData
                     ? Center(
                         child: Text(
-                          'No address added yet!',
+                          asProvider.getString('No address added yet!'),
                           style: TextStyle(color: cc.greyHint),
                         ),
                       )
@@ -56,8 +58,8 @@ class _ShippingAdressesState extends State<ShippingAdresses> {
           ),
           Padding(
               padding: const EdgeInsets.symmetric(horizontal: 25),
-              child:
-                  customContainerButton('Add new address', double.infinity, () {
+              child: customContainerButton(
+                  asProvider.getString('Add new address'), double.infinity, () {
                 Navigator.of(context).pushNamed(AddNewAddress.routeName);
               })),
           const SizedBox(height: 30)
@@ -93,9 +95,9 @@ class _ShippingAdressesState extends State<ShippingAdresses> {
                 showDialog(
                     context: context,
                     builder: (context) => AlertDialog(
-                          title: const Text('Are you sure?'),
-                          content: const Text(
-                              'This address will be deleted permenently.'),
+                          title: Text(asProvider.getString('Are you sure?')),
+                          content: Text(asProvider.getString(
+                              'This address will be deleted permanently.')),
                           actions: [
                             TextButton(
                               style: ButtonStyle(
@@ -106,7 +108,7 @@ class _ShippingAdressesState extends State<ShippingAdresses> {
                               onPressed: () {
                                 Navigator.pop(context);
                               },
-                              child: Text('No'),
+                              child: Text(asProvider.getString('No')),
                             ),
                             TextButton(
                               style: ButtonStyle(
@@ -143,7 +145,7 @@ class _ShippingAdressesState extends State<ShippingAdresses> {
                                           width: 40,
                                           child: loadingProgressBar(size: 15))
                                       : Text(
-                                          'Yes',
+                                          asProvider.getString('Yes'),
                                           style: TextStyle(color: cc.pink),
                                         ),
                             ),

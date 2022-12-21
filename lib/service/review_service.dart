@@ -63,7 +63,7 @@ class ReviewService with ChangeNotifier {
       return data['message'];
     }
     snackBar(context, 'Connection failed', backgroundColor: cc.orange);
-    return 'Someting went wrong';
+    return asProvider.getString('Something went wrong');
     // } catch (error) {
     //   print(error);
 

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gren_mart/view/utils/constant_name.dart';
 import 'dart:convert';
 
 import '../../service/common_service.dart';
@@ -63,7 +64,7 @@ class ChangePasswordService with ChangeNotifier {
         return data['message'];
       }
 
-      return 'Someting went wrong';
+      return asProvider.getString('Something went wrong');
     } catch (error) {
       print(error);
 

@@ -48,14 +48,14 @@ class OrderDetails extends StatelessWidget {
                 return loadingProgressBar();
               }
               if (!snapShot.hasData) {
-                return const Center(
-                  child: Text('Failed to load data.'),
+                return Center(
+                  child: Text(asProvider.getString('Failed to load data.')),
                 );
               }
               return Consumer<OrderDetailsService>(
                   builder: (context, odService, child) {
-                final titleTextTheme =
-                    const TextStyle(fontSize: 12, fontWeight: FontWeight.bold);
+                const titleTextTheme =
+                    TextStyle(fontSize: 12, fontWeight: FontWeight.bold);
                 return Column(
                   children: [
                     Padding(
@@ -76,7 +76,7 @@ class OrderDetails extends StatelessWidget {
                             width: 60,
                             // padding: const EdgeInsets.all(10),
                             child: Text(
-                              'Image',
+                              asProvider.getString('Image'),
                               style: titleTextTheme,
                             ),
                           ),
@@ -94,7 +94,7 @@ class OrderDetails extends StatelessWidget {
                                     ? 15
                                     : 0),
                             child: Text(
-                              'Name',
+                              asProvider.getString('Name'),
                               style: titleTextTheme,
                             ),
                           ),
@@ -103,7 +103,7 @@ class OrderDetails extends StatelessWidget {
                             width: 70,
                             padding: const EdgeInsets.all(10),
                             child: Text(
-                              'Quantity',
+                              asProvider.getString('Quantity'),
                               style: titleTextTheme,
                             ),
                           ),
@@ -112,7 +112,7 @@ class OrderDetails extends StatelessWidget {
                             padding: const EdgeInsets.all(10),
                             // alignment: Alignment.center,
                             child: Text(
-                              'Price',
+                              asProvider.getString('Price'),
                               style: titleTextTheme,
                             ),
                           ),
@@ -125,7 +125,9 @@ class OrderDetails extends StatelessWidget {
                             child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [Text('Loading failed')],
+                            children: [
+                              Text(asProvider.getString('Loading failed'))
+                            ],
                           ))
                         : Expanded(
                             child: ListView(
@@ -146,29 +148,49 @@ class OrderDetails extends StatelessWidget {
                         color: cc.whiteGrey,
                       ),
                       child: Column(children: [
-                        rows('Subtotal',
-                            trailing:
-                                '${Provider.of<LanguageService>(context, listen: false).currencySymbol}${odService.orderDetailsModel.orderInfo.paymentMeta!.subtotal}'),
+                        Consumer<LanguageService>(
+                            builder: (context, lService, child) {
+                          return rows(asProvider.getString('Subtotal'),
+                              trailing: lService.currencyRTL
+                                  ? '${odService.orderDetailsModel.orderInfo.paymentMeta!.subtotal}${lService.currency}'
+                                  : '${lService.currency}${odService.orderDetailsModel.orderInfo.paymentMeta!.subtotal}');
+                        }),
                         const SizedBox(height: 15),
-                        rows('Shipping',
-                            trailing:
-                                '${Provider.of<LanguageService>(context, listen: false).currencySymbol}${odService.orderDetailsModel.orderInfo.paymentMeta!.shippingCost}'),
+                        Consumer<LanguageService>(
+                            builder: (context, lService, child) {
+                          return rows(asProvider.getString('Shipping'),
+                              trailing: lService.currencyRTL
+                                  ? '${odService.orderDetailsModel.orderInfo.paymentMeta!.shippingCost}${lService.currency}'
+                                  : '${lService.currency}${odService.orderDetailsModel.orderInfo.paymentMeta!.shippingCost}');
+                        }),
                         const SizedBox(height: 15),
-                        rows('Tax',
-                            trailing:
-                                '${Provider.of<LanguageService>(context, listen: false).currencySymbol}${odService.orderDetailsModel.orderInfo.paymentMeta!.taxAmount}'),
+                        Consumer<LanguageService>(
+                            builder: (context, lService, child) {
+                          return rows(asProvider.getString('Tax'),
+                              trailing: lService.currencyRTL
+                                  ? '${odService.orderDetailsModel.orderInfo.paymentMeta!.taxAmount}${lService.currency}'
+                                  : '${lService.currency}${odService.orderDetailsModel.orderInfo.paymentMeta!.taxAmount}');
+                        }),
                         const SizedBox(height: 15),
-                        rows('Discount',
-                            trailing:
-                                '${Provider.of<LanguageService>(context, listen: false).currencySymbol}${odService.orderDetailsModel.orderInfo.paymentMeta!.couponAmount}'),
+                        Consumer<LanguageService>(
+                            builder: (context, lService, child) {
+                          return rows(asProvider.getString('Discount'),
+                              trailing: lService.currencyRTL
+                                  ? '${odService.orderDetailsModel.orderInfo.paymentMeta!.couponAmount}${lService.currency}'
+                                  : '${lService.currency}${odService.orderDetailsModel.orderInfo.paymentMeta!.couponAmount}');
+                        }),
                         const SizedBox(height: 15),
                         const Divider(),
                         const SizedBox(height: 25),
-                        rows('Total',
-                            trailing:
-                                '${Provider.of<LanguageService>(context, listen: false).currencySymbol}${odService.orderDetailsModel.orderInfo.paymentMeta!.total}'),
+                        Consumer<LanguageService>(
+                            builder: (context, lService, child) {
+                          return rows(asProvider.getString('Total'),
+                              trailing: lService.currencyRTL
+                                  ? '${odService.orderDetailsModel.orderInfo.paymentMeta!.total}${lService.currency}'
+                                  : '${lService.currency}${odService.orderDetailsModel.orderInfo.paymentMeta!.total}');
+                        }),
                         const SizedBox(height: 15),
-                        rows('Payment status',
+                        rows(asProvider.getString('Payment status'),
                             trailing: (odService.orderDetailsModel.orderInfo
                                     .paymentStatus as String)
                                 .capitalize()),

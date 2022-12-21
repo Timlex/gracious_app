@@ -81,7 +81,7 @@ class ShippingZoneService with ChangeNotifier {
   double totalCounter(BuildContext context) {
     final subTotal = Provider.of<CartDataService>(context, listen: false)
         .calculateSubtotal();
-    final discount = Provider.of<CuponDiscountService>(context).cuponDiscount;
+    final discount = Provider.of<CuponDiscountService>(context).couponDiscount;
     final taxMoney = taxParcentage * (subTotal + shippingCost);
     return (subTotal - discount) + taxMoney + shippingCost;
   }
@@ -89,7 +89,7 @@ class ShippingZoneService with ChangeNotifier {
   cuponTotal(BuildContext context) {
     final subTotal = Provider.of<CartDataService>(context, listen: false)
         .calculateSubtotal();
-    final discount = Provider.of<CuponDiscountService>(context).cuponDiscount;
+    final discount = Provider.of<CuponDiscountService>(context).couponDiscount;
     final taxMoney = taxParcentage * (subTotal + shippingCost);
     return subTotal + taxMoney + shippingCost;
   }
@@ -108,7 +108,6 @@ class ShippingZoneService with ChangeNotifier {
       if (response.statusCode == 201) {
         var data = CountryShippingZoneModel.fromJson(jsonDecode(response.body));
         countryShippingZoneData = data;
-        print('jsfasehfoiihewreljshdfhawf');
         print(fetchStates);
         if (fetchStates) {
           fetchStates = false;
@@ -139,8 +138,6 @@ class ShippingZoneService with ChangeNotifier {
         setTaxPercentage();
         isLoading = false;
         notifyListeners();
-        print('jsfasehfoiihewreljshdfhawf');
-        return;
         return;
       }
       shippingCost = countryShippingZoneData!.defaultShippingCost;

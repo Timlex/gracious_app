@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gren_mart/view/utils/constant_name.dart';
 import 'package:http/http.dart' as http;
 
 import '../db/database_helper.dart';
@@ -35,7 +36,7 @@ class FavoriteDataService with ChangeNotifier {
     });
     _favoriteItems.putIfAbsent(
         id.toString(), () => Favorites(id, title, price, imgUrl, isCartable));
-    snackBar(context, 'Item added to favorite.');
+    snackBar(context, asProvider.getString('Item added to favorite.'));
     notifyListeners();
   }
 
@@ -57,7 +58,7 @@ class FavoriteDataService with ChangeNotifier {
   void deleteFavoriteItem(int id, BuildContext context) async {
     await DbHelper.deleteDbSI('favorite', id);
     _favoriteItems.removeWhere((key, value) => value.id == id);
-    snackBar(context, 'Item removed from favorite.',
+    snackBar(context, asProvider.getString('Item removed from favorite.'),
         backgroundColor: cc.orange);
     notifyListeners();
   }

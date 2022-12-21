@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutterwave_standard/flutterwave.dart';
 import 'package:flutterwave_standard/models/subaccount.dart';
+import 'package:gren_mart/view/utils/constant_name.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 
@@ -27,12 +28,12 @@ class FlutterWavePayment {
             .selectedGateaway!;
     if (selectrdGateaway.publicKey == null ||
         selectrdGateaway.secretKey == null) {
-      snackBar(context, 'Invalid developer keys');
+      snackBar(context, asProvider.getString('Invalid developer keys'));
     }
     String publicKey = selectrdGateaway.publicKey ?? '';
 
     final style = FlutterwaveStyle(
-      appBarText: "Flutterwave payment",
+      appBarText: asProvider.getString("Flutterwave payment"),
       buttonColor: cc.primaryColor,
       buttonTextStyle: const TextStyle(
         color: Colors.white,
@@ -52,7 +53,8 @@ class FlutterWavePayment {
           const TextStyle(color: Colors.black, fontSize: 17, letterSpacing: 2),
       dialogBackgroundColor: Colors.white,
       appBarIcon: Icon(Icons.arrow_back, color: cc.blackColor),
-      buttonText: "Pay \$ ${checkoutData!.totalAmount}",
+      buttonText:
+          asProvider.getString("Pay") + " \$ ${checkoutData!.totalAmount}",
       appBarTitleTextStyle: const TextStyle(
         color: Colors.white,
         fontSize: 18,

@@ -17,6 +17,7 @@ class EnterOTP extends StatelessWidget {
   EnterOTP({Key? key}) : super(key: key);
 
   ConstantColors cc = ConstantColors();
+  TextEditingController controller = TextEditingController();
 
   final _scaffoldKey = GlobalKey<ScaffoldState>();
 
@@ -44,60 +45,82 @@ class EnterOTP extends StatelessWidget {
       appBar: AppBars().appBarTitled(context, '', () {
         Navigator.of(context).pop();
       }, hasElevation: false),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 25),
-        child: SingleChildScrollView(
-          child: Column(children: [
-            SizedBox(height: screenHight / 20),
-            Center(
-              child: SizedBox(
-                height: 90,
-                child: Image.asset('assets/images/email.png'),
-              ),
-            ),
-            const SizedBox(height: 40),
-            Text(
-              'Reset Password',
-              style: TextThemeConstrants.titleText,
-            ),
-            const SizedBox(height: 10),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 40.0),
-              child: Text(
-                'Enter the 4 digit code we sent to to your email in order to reset password',
-                textAlign: TextAlign.center,
-                style: TextThemeConstrants.paragraphText,
-              ),
-            ),
-            const SizedBox(height: 20),
-            otpPinput(defaultPinTheme, focusedPinTheme, context),
-            const SizedBox(height: 35),
-            Center(
-              child: RichText(
-                text: TextSpan(
-                  text: 'Didn\'t received?',
-                  style: TextThemeConstrants.paragraphText,
-                  children: <TextSpan>[
-                    TextSpan(
-                        recognizer: TapGestureRecognizer()
-                          ..onTap = () {
-                            Provider.of<ResetPassOTPService>(context,
-                                    listen: false)
-                                .getOtp(Provider.of<AuthTextControllerService>(
-                                        context,
-                                        listen: false)
-                                    .email);
-                          },
-                        text: 'Send again',
-                        style: TextStyle(
-                            color: cc.primaryColor,
-                            fontWeight: FontWeight.bold)),
-                  ],
+      body: Stack(
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 25),
+            child: SingleChildScrollView(
+              child: Column(children: [
+                SizedBox(height: screenHight / 20),
+                Center(
+                  child: SizedBox(
+                    height: 90,
+                    child: Image.asset('assets/images/email.png'),
+                  ),
                 ),
-              ),
-            )
-          ]),
-        ),
+                const SizedBox(height: 40),
+                Text(
+                  asProvider.getString('Reset Password'),
+                  style: TextThemeConstrants.titleText,
+                ),
+                const SizedBox(height: 10),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 40.0),
+                  child: Text(
+                    asProvider.getString(
+                        'Enter the 4 digit code we sent to to your email in order to reset password'),
+                    textAlign: TextAlign.center,
+                    style: TextThemeConstrants.paragraphText,
+                  ),
+                ),
+                const SizedBox(height: 20),
+                otpPinput(defaultPinTheme, focusedPinTheme, context),
+                const SizedBox(height: 35),
+                Consumer<ResetPassOTPService>(
+                    builder: (context, rpoService, child) {
+                  return Center(
+                    child: RichText(
+                      text: TextSpan(
+                        text: asProvider.getString("Didn't received?"),
+                        style: TextThemeConstrants.paragraphText,
+                        children: <TextSpan>[
+                          TextSpan(
+                              recognizer: TapGestureRecognizer()
+                                ..onTap = () async {
+                                  rpoService.toggleLoadingSpinner(value: true);
+                                  await rpoService
+                                      .getOtp(Provider.of<
+                                                  AuthTextControllerService>(
+                                              context,
+                                              listen: false)
+                                          .newEmail)
+                                      .onError((error, stackTrace) => rpoService
+                                          .toggleLoadingSpinner(value: false));
+                                  rpoService.toggleLoadingSpinner(value: false);
+                                },
+                              text: asProvider.getString('Send again'),
+                              style: TextStyle(
+                                  color: cc.primaryColor,
+                                  fontWeight: FontWeight.bold)),
+                        ],
+                      ),
+                    ),
+                  );
+                })
+              ]),
+            ),
+          ),
+          Consumer<ResetPassOTPService>(
+            builder: (context, rpoService, child) {
+              return rpoService.isLoading
+                  ? Container(
+                      color: Colors.white60,
+                      child: loadingProgressBar(),
+                    )
+                  : SizedBox();
+            },
+          )
+        ],
       ),
     );
   }
@@ -105,6 +128,7 @@ class EnterOTP extends StatelessWidget {
   Pinput otpPinput(PinTheme defaultPinTheme, PinTheme focusedPinTheme,
       BuildContext context) {
     return Pinput(
+      controller: controller,
       defaultPinTheme: defaultPinTheme,
       focusedPinTheme: focusedPinTheme,
       validator: (s) {
@@ -115,16 +139,26 @@ class EnterOTP extends StatelessWidget {
           Navigator.of(context).pushReplacementNamed(ResetPassword.routeName);
           return;
         }
+        controller.clear();
 
         // _scaffoldKey.currentState!.showSnackBar(snackBar);
 
-        snackBar(context, 'Wrong OTP Code', buttonText: 'Resend code',
-            onTap: () {
-          Provider.of<ResetPassOTPService>(context, listen: false).getOtp(
-              Provider.of<AuthTextControllerService>(context, listen: false)
-                  .email);
+        snackBar(context, asProvider.getString('Wrong OTP Code'),
+            buttonText: asProvider.getString('Resend code'), onTap: () {
+          Provider.of<ResetPassOTPService>(context, listen: false)
+              .toggleLoadingSpinner(value: true);
+          Provider.of<ResetPassOTPService>(context, listen: false)
+              .getOtp(
+                  Provider.of<AuthTextControllerService>(context, listen: false)
+                      .newEmail)
+              .then((value) =>
+                  Provider.of<ResetPassOTPService>(context, listen: false)
+                      .toggleLoadingSpinner(value: false))
+              .onError((error, stackTrace) =>
+                  Provider.of<ResetPassOTPService>(context, listen: false)
+                      .toggleLoadingSpinner(value: false));
           ScaffoldMessenger.of(context).removeCurrentSnackBar();
-        });
+        }, backgroundColor: cc.orange);
 
         return;
       },

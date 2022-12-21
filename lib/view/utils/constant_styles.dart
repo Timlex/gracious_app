@@ -6,6 +6,7 @@ import 'package:gren_mart/service/user_profile_service.dart';
 import '../../service/auth_text_controller_service.dart';
 import '../../service/cart_data_service.dart';
 import '../../service/country_dropdown_service.dart';
+import '../../service/language_service.dart';
 import '../../service/shipping_addresses_service.dart';
 import '../../service/signin_signup_service.dart';
 import '../../service/state_dropdown_service.dart';
@@ -15,6 +16,7 @@ import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:provider/provider.dart';
 
 import '../auth/auth.dart';
+import '../cart/payment_status.dart';
 import '../order/orders.dart';
 import '../settings/change_password.dart';
 import '../settings/manage_account.dart';
@@ -36,6 +38,30 @@ Widget textFieldTitle(String title, {double fontSize = 15}) {
       ),
     ),
   );
+}
+
+paymentFailedDialogue(BuildContext context) {
+  showDialog(
+      context: context,
+      builder: (ctx) {
+        return AlertDialog(
+          title: Text(asProvider.getString('Are you sure?')),
+          content: Text(asProvider
+              .getString('Your payment process will get terminated.')),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pushAndRemoveUntil(
+                  MaterialPageRoute(
+                      builder: (context) => PaymentStatusView(true)),
+                  (Route<dynamic> route) => false),
+              child: Text(
+                asProvider.getString('Yes'),
+                style: TextStyle(color: cc.primaryColor),
+              ),
+            )
+          ],
+        );
+      });
 }
 
 Widget customContainerButton(
@@ -154,13 +180,13 @@ PreferredSizeWidget helloAppBar(BuildContext context) {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Hello,',
+              asProvider.getString('Hello') + ',',
               style: TextStyle(color: ConstantColors().greyHint, fontSize: 12),
             ),
             Consumer<UserProfileService>(builder: (context, uService, child) {
               return Text(
                 uService.userProfileData == null
-                    ? 'Welcome to shopmart!'
+                    ? asProvider.getString('Welcome to Grenmart!')
                     : uService.userProfileData!.name,
                 style: TextStyle(
                     color: ConstantColors().titleTexts,
@@ -190,6 +216,7 @@ PreferredSizeWidget helloAppBar(BuildContext context) {
                 ? Padding(
                     padding: EdgeInsets.symmetric(horizontal: 20),
                     child: CircleAvatar(
+                      backgroundColor: Colors.transparent,
                       backgroundImage: AssetImage('assets/images/avatar.png'),
                       radius: 23,
                     ))
@@ -262,7 +289,7 @@ Widget seeAllTitle(BuildContext context, String title,
             child: Row(children: [
           TextButton(
             onPressed: onPressed,
-            child: Text('See All',
+            child: Text(asProvider.getString('See All'),
                 textAlign: TextAlign.end,
                 style: TextStyle(color: cc.primaryColor, fontSize: 14)),
           ),
@@ -276,23 +303,34 @@ Widget seeAllTitle(BuildContext context, String title,
   );
 }
 
-Widget discAmountRow(int discountAmount, int amount, String curency) {
+Widget discAmountRow(
+    BuildContext context, int discountAmount, int amount, String currency) {
   return Row(
     children: [
-      Text(
-        '${curency}${discountAmount <= 0 ? amount.toString() : discountAmount.toStringAsFixed(2)}',
-        style: TextStyle(
-            color: cc.primaryColor, fontWeight: FontWeight.w600, fontSize: 13),
-      ),
+      Consumer<LanguageService>(builder: (context, lService, child) {
+        return Text(
+          lService.currencyRTL
+              ? '${discountAmount <= 0 ? amount.toString() : discountAmount.toStringAsFixed(2)}${currency}'
+              : '${currency}${discountAmount <= 0 ? amount.toString() : discountAmount.toStringAsFixed(2)}',
+          style: TextStyle(
+              color: cc.primaryColor,
+              fontWeight: FontWeight.w600,
+              fontSize: 13),
+        );
+      }),
       const SizedBox(width: 4),
-      Text(
-        '${curency}${amount.toStringAsFixed(2)}',
-        style: TextStyle(
-            color: cc.cardGreyHint,
-            decoration: TextDecoration.lineThrough,
-            decorationColor: cc.cardGreyHint,
-            fontSize: 11),
-      ),
+      Consumer<LanguageService>(builder: (context, lService, child) {
+        return Text(
+          lService.currencyRTL
+              ? '${amount.toStringAsFixed(2)}${currency}'
+              : '${currency}${amount.toStringAsFixed(2)}',
+          style: TextStyle(
+              color: cc.cardGreyHint,
+              decoration: TextDecoration.lineThrough,
+              decorationColor: cc.cardGreyHint,
+              fontSize: 11),
+        );
+      }),
     ],
   );
 }
@@ -489,14 +527,14 @@ void showTopSlider(BuildContext context, UserProfileService uService) {
                     ),
                     SizedBox(height: 10),
                     topSlidrOption(context,
-                        optionText: 'My Orders',
+                        optionText: asProvider.getString('My Orders'),
                         svgpath: 'assets/images/icons/orders.svg', onTap: () {
                       Navigator.of(context).push(MaterialPageRoute<void>(
                         builder: (BuildContext context) => MyOrders(),
                       ));
                     }),
                     topSlidrOption(context,
-                        optionText: 'Shipping Address',
+                        optionText: asProvider.getString('Shipping Address'),
                         svgpath: 'assets/images/icons/shipping_address.svg',
                         onTap: () {
                       Provider.of<ShippingAddressesService>(context,
@@ -510,7 +548,7 @@ void showTopSlider(BuildContext context, UserProfileService uService) {
                                   .setNoData(false));
                     }),
                     topSlidrOption(context,
-                        optionText: 'Manage Account',
+                        optionText: asProvider.getString('Manage Account'),
                         svgpath: 'assets/images/icons/manage_profile.svg',
                         onTap: () {
                       // setData(context);
@@ -537,13 +575,13 @@ void showTopSlider(BuildContext context, UserProfileService uService) {
                       Navigator.of(context).pushNamed(ManageAccount.routeName);
                     }),
                     topSlidrOption(context,
-                        optionText: 'Support Ticket',
+                        optionText: asProvider.getString('Support Ticket'),
                         svgpath: 'assets/images/icons/support_ticket.svg',
                         onTap: () {
                       Navigator.of(context).pushNamed(AllTicketsView.routeName);
                     }),
                     topSlidrOption(context,
-                        optionText: 'Change Password',
+                        optionText: asProvider.getString('Change Password'),
                         svgpath: 'assets/images/icons/change_pass.svg',
                         onTap: () {
                       Navigator.of(context).pushNamed(ChangePassword.routeName);
@@ -552,7 +590,7 @@ void showTopSlider(BuildContext context, UserProfileService uService) {
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 0),
                       child: customBorderButton(
-                        'Log Out',
+                        asProvider.getString('Log Out'),
                         () {
                           Provider.of<NavigationBarHelperService>(context,
                                   listen: false)

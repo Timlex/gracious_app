@@ -94,7 +94,7 @@ class PlusMinusCart extends StatelessWidget {
                   SizedBox(
                     width: screenWidth / 5.2,
                     child: Text(
-                      'Add to cart',
+                      asProvider.getString('Add to cart'),
                       textAlign: TextAlign.center,
                       style: TextStyle(
                           fontSize: 13,
@@ -119,14 +119,19 @@ class PlusMinusCart extends StatelessWidget {
                 width: screenWidth / 5.3,
                 color: cc.blackColor.withOpacity(.10),
                 child: Center(
-                  child: Text(
-                    '${Provider.of<LanguageService>(context, listen: false).currencySymbol}${Provider.of<ProductDetailsService>(context).productSalePrice * Provider.of<ProductDetailsService>(context).quantity}',
-                    style: TextStyle(
-                      fontSize: 13,
-                      color: cc.pureWhite,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
+                  child: Consumer<LanguageService>(
+                      builder: (context, lService, child) {
+                    return Text(
+                      lService.currencyRTL
+                          ? '${Provider.of<ProductDetailsService>(context).productSalePrice * Provider.of<ProductDetailsService>(context).quantity}${lService.currency}'
+                          : '${lService.currency}${Provider.of<ProductDetailsService>(context).productSalePrice * Provider.of<ProductDetailsService>(context).quantity}',
+                      style: TextStyle(
+                        fontSize: 13,
+                        color: cc.pureWhite,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    );
+                  }),
                 ),
               ),
             )

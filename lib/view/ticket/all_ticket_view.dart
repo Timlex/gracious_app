@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 import '../../service/add_new_ticket_service.dart';
-import '../../service/search_result_data_service.dart';
 import '../../view/ticket/add_new_ticket.dart';
 import '../../view/ticket/ticket_tile.dart';
 import '../../view/utils/app_bars.dart';
@@ -28,7 +26,8 @@ class AllTicketsView extends StatelessWidget {
     double cardHeight = screenHight / 4.9;
 
     return Scaffold(
-        appBar: AppBars().appBarTitled(context, 'All tickets', () {
+        appBar: AppBars()
+            .appBarTitled(context, asProvider.getString('All tickets'), () {
           Provider.of<TicketService>(context, listen: false).clearTickets();
           Navigator.of(context).pop();
         }),
@@ -53,22 +52,24 @@ class AllTicketsView extends StatelessWidget {
                         if (snapshot.hasError) {
                           return Center(
                             child: Text(
-                              'Something went wrong!',
+                              asProvider.getString('Something went wrong!'),
                               style: TextStyle(color: cc.greyHint),
                             ),
                           );
                           ;
                         }
                         if (snapshot.hasData) {
-                          return const Center(
-                            child: Text('No ticket found.'),
+                          return Center(
+                            child:
+                                Text(asProvider.getString('No ticket found.')),
                           );
                         }
                         return Consumer<TicketService>(
                             builder: (context, ticketsService, child) {
                           return ticketsService.noProduct
-                              ? const Center(
-                                  child: Text('No ticket found.'),
+                              ? Center(
+                                  child: Text(
+                                      asProvider.getString('No ticket found.')),
                                 )
                               : ticketsListView(
                                   cardWidth, cardHeight, ticketsService);
@@ -78,11 +79,12 @@ class AllTicketsView extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: customContainerButton(
-                      'Add new ticket', double.infinity, () {
+                      asProvider.getString('Add new ticket'), double.infinity,
+                      () {
                     Provider.of<AddNewTicketService>(context, listen: false)
                         .fetchDepartments()
                         .onError((error, stackTrace) => snackBar(
-                            context, 'Connection failed!',
+                            context, asProvider.getString('Connection failed!'),
                             backgroundColor: cc.orange));
                     Navigator.of(context)
                         .pushNamed(AddNewTicket.routeName)
@@ -105,7 +107,7 @@ class AllTicketsView extends StatelessWidget {
     if (ticketsService.noProduct) {
       return Center(
         child: Text(
-          'No data has been found!',
+          asProvider.getString('No data has been found!'),
           style: TextStyle(color: cc.greyHint),
         ),
       );
@@ -154,7 +156,8 @@ class AllTicketsView extends StatelessWidget {
             .onError((error, stackTrace) => tService.setNextPage(false));
         return;
       }
-      snackBar(context, 'No more ticket found', backgroundColor: cc.orange);
+      snackBar(context, asProvider.getString('No more ticket found'),
+          backgroundColor: cc.orange);
     }
   }
 }

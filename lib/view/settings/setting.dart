@@ -60,14 +60,15 @@ class SettingView extends StatelessWidget {
                         Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 30),
                             child: Text(
-                                'You\'ll have to login/register to edit or see your profile info.',
+                                asProvider.getString(
+                                    "You 'll have to login/register to edit or see your profile info."),
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
                                   fontSize: 16,
                                 ))),
                         const SizedBox(height: 20),
                         customContainerButton(
-                          'Login/Register',
+                          asProvider.getString('Login/Register'),
                           screenWidth / 2,
                           () {
                             Provider.of<SignInSignUpService>(context,
@@ -111,9 +112,8 @@ class SettingView extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 40),
-                  settingItem(
-                      context, 'assets/images/icons/orders.svg', 'My Orders',
-                      onTap: () {
+                  settingItem(context, 'assets/images/icons/orders.svg',
+                      asProvider.getString('My Orders'), onTap: () {
                     Navigator.of(context).push(MaterialPageRoute<void>(
                       builder: (BuildContext context) => MyOrders(),
                     ));
@@ -121,7 +121,7 @@ class SettingView extends StatelessWidget {
                   settingItem(
                       context,
                       'assets/images/icons/shipping_address.svg',
-                      'Shipping Address', onTap: () {
+                      asProvider.getString('Shipping Address'), onTap: () {
                     Provider.of<ShippingAddressesService>(context,
                             listen: false)
                         .fetchUsersShippingAddress(context);
@@ -133,7 +133,7 @@ class SettingView extends StatelessWidget {
                             .setNoData(false));
                   }),
                   settingItem(context, 'assets/images/icons/manage_profile.svg',
-                      'Manage Account', onTap: () async {
+                      asProvider.getString('Manage Account'), onTap: () async {
                     // setData(context);
                     Provider.of<CountryDropdownService>(context, listen: false)
                         .getContries(context)
@@ -158,13 +158,13 @@ class SettingView extends StatelessWidget {
                     Navigator.of(context).pushNamed(ManageAccount.routeName);
                   }),
                   settingItem(context, 'assets/images/icons/support_ticket.svg',
-                      'Support Ticket',
+                      asProvider.getString('Support Ticket'),
                       icon: true,
                       imagePath2: 'assets/images/change_pass.png', onTap: () {
                     Navigator.of(context).pushNamed(AllTicketsView.routeName);
                   }),
                   settingItem(context, 'assets/images/icons/change_pass.svg',
-                      'Change Password',
+                      asProvider.getString('Change Password'),
                       icon: false,
                       imagePath2: 'assets/images/change_pass.png', onTap: () {
                     Navigator.of(context).pushNamed(ChangePassword.routeName);
@@ -172,8 +172,8 @@ class SettingView extends StatelessWidget {
                   const SizedBox(height: 70),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 25),
-                    child:
-                        customContainerButton('Log Out', double.infinity, () {
+                    child: customContainerButton(
+                        asProvider.getString('Log Out'), double.infinity, () {
                       // Provider.of<NavigationBarHelperService>(context,
                       //         listen: false)
                       //     .setNavigationIndex(0);

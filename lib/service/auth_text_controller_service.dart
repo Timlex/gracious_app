@@ -97,7 +97,7 @@ class AuthTextControllerService with ChangeNotifier {
     return _email;
   }
 
-  String get newEmai {
+  String get newEmail {
     return _newEmail;
   }
 

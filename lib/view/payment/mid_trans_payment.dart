@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:gren_mart/view/utils/constant_name.dart';
 import 'package:provider/provider.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:http/http.dart' as http;
@@ -10,7 +11,6 @@ import '../../view/utils/app_bars.dart';
 import '../../view/utils/constant_styles.dart';
 import '../../service/checkout_service.dart';
 import '../../service/confirm_payment_service.dart';
-import '../cart/payment_status.dart';
 
 class MidtransPayment extends StatelessWidget {
   MidtransPayment({Key? key}) : super(key: key);
@@ -19,49 +19,11 @@ class MidtransPayment extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBars().appBarTitled(context, '', () async {
-        await showDialog(
-            context: context,
-            builder: (ctx) {
-              return AlertDialog(
-                title: Text('Are you sure?'),
-                content: Text('Your payment proccess will get terminated.'),
-                actions: [
-                  TextButton(
-                    onPressed: () => Navigator.of(context).pushAndRemoveUntil(
-                        MaterialPageRoute(
-                            builder: (context) => PaymentStatusView(true)),
-                        (Route<dynamic> route) => false),
-                    child: Text(
-                      'Yes',
-                      style: TextStyle(color: cc.primaryColor),
-                    ),
-                  )
-                ],
-              );
-            });
+        paymentFailedDialogue(context);
       }),
       body: WillPopScope(
         onWillPop: () async {
-          await showDialog(
-              context: context,
-              builder: (ctx) {
-                return AlertDialog(
-                  title: Text('Are you sure?'),
-                  content: Text('Your payment proccess will get terminated.'),
-                  actions: [
-                    TextButton(
-                      onPressed: () => Navigator.of(context).pushAndRemoveUntil(
-                          MaterialPageRoute(
-                              builder: (context) => PaymentStatusView(true)),
-                          (Route<dynamic> route) => false),
-                      child: Text(
-                        'Yes',
-                        style: TextStyle(color: cc.primaryColor),
-                      ),
-                    )
-                  ],
-                );
-              });
+          paymentFailedDialogue(context);
           return false;
         },
         child: FutureBuilder(
@@ -71,14 +33,14 @@ class MidtransPayment extends StatelessWidget {
                 return loadingProgressBar();
               }
               if (snapshot.hasData) {
-                return const Center(
-                  child: Text('Loadingfailed.'),
+                return Center(
+                  child: Text(asProvider.getString('Loading failed.')),
                 );
               }
               if (snapshot.hasError) {
                 print(snapshot.error);
-                return const Center(
-                  child: Text('Loadingfailed.'),
+                return Center(
+                  child: Text(asProvider.getString('Loading failed.')),
                 );
               }
               return WebView(

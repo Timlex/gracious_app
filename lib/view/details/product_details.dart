@@ -6,12 +6,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_html/flutter_html.dart';
 
 import '../../service/language_service.dart';
-import '../../service/search_result_data_service.dart';
 import '../home/all_products.dart';
-import '../home/home_front.dart';
 import '../home/product_card.dart';
 import '../utils/constant_name.dart';
 import '../utils/image_view.dart';
@@ -58,7 +55,8 @@ class ProductDetails extends StatelessWidget {
             if (Provider.of<ProductDetailsService>(context, listen: false)
                     .productDetails ==
                 null) {
-              return const Center(child: Text('Loading failed!'));
+              return Center(
+                  child: Text(asProvider.getString('Loading failed!')));
             }
 
             return Provider.of<ProductDetailsService>(context).refreshpage
@@ -380,7 +378,9 @@ class ProductDetails extends StatelessWidget {
                                                   ),
                                                 const SizedBox(height: 17),
                                                 Text(
-                                                  'In Stock (${product.inventory.stockCount.toString()})',
+                                                  asProvider.getString(
+                                                          'In Stock') +
+                                                      ' (${product.inventory.stockCount.toString()})',
                                                   style: TextThemeConstrants
                                                       .primary13,
                                                 ),
@@ -438,10 +438,11 @@ class ProductDetails extends StatelessWidget {
                                               );
                                       }),
                                     AnimatedBox(
-                                      'Description',
+                                      asProvider.getString('Description'),
                                       {
                                         '1': product.description.isEmpty
-                                            ? 'No discription available.'
+                                            ? asProvider.getString(
+                                                'No description available.')
                                             : product.description
                                       },
                                       pService.descriptionExpand,
@@ -450,7 +451,9 @@ class ProductDetails extends StatelessWidget {
                                     ),
 
                                     AnimatedBox(
-                                      'Additional Informationn',
+                                      asProvider.getString(
+                                        'Additional Information',
+                                      ),
                                       pService.setAditionalInfo(),
                                       pService.aDescriptionExpand,
                                       onPressed:
@@ -469,7 +472,9 @@ class ProductDetails extends StatelessWidget {
                                         padding: const EdgeInsets.symmetric(
                                             horizontal: 20),
                                         child: seeAllTitle(
-                                            context, 'Related products',
+                                            context,
+                                            asProvider
+                                                .getString('Related products'),
                                             onPressed: () {
                                           // Provider.of<SearchResultDataService>(
                                           //         context,
@@ -485,7 +490,8 @@ class ProductDetails extends StatelessWidget {
                                               arguments: [
                                                 pService.productDetails!
                                                     .relatedProducts,
-                                                'Related products',
+                                                asProvider.getString(
+                                                    'Related products'),
                                                 true
                                               ]);
                                         }),
@@ -573,8 +579,10 @@ class ProductDetails extends StatelessWidget {
                                       );
                                     }
                                   : () {
-                                      snackBar(context,
-                                          'Select all attribute to proceed.',
+                                      snackBar(
+                                          context,
+                                          asProvider.getString(
+                                              'Select all attribute to proceed.'),
                                           backgroundColor: cc.orange);
                                     },
                             ));
@@ -785,22 +793,30 @@ class ProductDetails extends StatelessWidget {
       {campDisc}) {
     return Row(
       children: [
-        Text(
-          '${Provider.of<LanguageService>(context, listen: false).currencySymbol}${discountAmount <= 0 ? amount.toString() : discountAmount.toStringAsFixed(2)}',
-          style: TextStyle(
-              color: cc.primaryColor,
-              fontWeight: FontWeight.w600,
-              fontSize: 15),
-        ),
+        Consumer<LanguageService>(builder: (context, lService, child) {
+          return Text(
+            lService.currencyRTL
+                ? '${discountAmount <= 0 ? amount.toString() : discountAmount.toStringAsFixed(2)}${lService.currency}'
+                : '${lService.currency}${discountAmount <= 0 ? amount.toString() : discountAmount.toStringAsFixed(2)}',
+            style: TextStyle(
+                color: cc.primaryColor,
+                fontWeight: FontWeight.w600,
+                fontSize: 15),
+          );
+        }),
         const SizedBox(width: 4),
-        Text(
-          '${Provider.of<LanguageService>(context, listen: false).currencySymbol}${amount.toStringAsFixed(2)}',
-          style: TextStyle(
-              color: cc.cardGreyHint,
-              decoration: TextDecoration.lineThrough,
-              decorationColor: cc.cardGreyHint,
-              fontSize: 13),
-        ),
+        Consumer<LanguageService>(builder: (context, lService, child) {
+          return Text(
+            lService.currencyRTL
+                ? '${amount.toStringAsFixed(2)}${lService.currency}'
+                : '${lService.currency}${amount.toStringAsFixed(2)}',
+            style: TextStyle(
+                color: cc.cardGreyHint,
+                decoration: TextDecoration.lineThrough,
+                decorationColor: cc.cardGreyHint,
+                fontSize: 13),
+          );
+        }),
         if (campDisc != null && campDisc > 0) SizedBox(width: 15),
         if (campDisc != null && campDisc > 0)
           Container(

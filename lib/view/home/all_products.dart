@@ -29,7 +29,8 @@ class AllProducts extends StatelessWidget {
     double cardHeight = screenHight / 5.4 < 144 ? 130 : screenHight / 5.4;
     controller.addListener((() => scrollListener(context)));
     return Scaffold(
-      appBar: AppBars().appBarTitled(context, title ?? 'All Products', () {
+      appBar: AppBars().appBarTitled(
+          context, title ?? asProvider.getString('All Products'), () {
         controller.dispose();
         Navigator.of(context).pop();
       }),
@@ -37,23 +38,13 @@ class AllProducts extends StatelessWidget {
         return Column(
           children: [
             Expanded(
-              child: srData.featuredCardProductsList != null
+              child: data != null
                   ? newMethod(cardWidth, cardHeight, data)
-                  : FutureBuilder(
-                      future: showTimout(),
-                      builder: ((context, snapshot) {
-                        if (snapshot.connectionState ==
-                            ConnectionState.waiting) {
-                          return loadingProgressBar();
-                        }
-                        snackBar(context, 'Timeout!');
-                        return Center(
-                          child: Text(
-                            'Something went wrong!',
-                            style: TextStyle(color: cc.greyHint),
-                          ),
-                        );
-                      }),
+                  : Center(
+                      child: Text(
+                        asProvider.getString('Something went wrong!'),
+                        style: TextStyle(color: cc.greyHint),
+                      ),
                     ),
             ),
             // if (srData.featuredCardProductsList.isEmpty) loadingProgressBar()
@@ -118,7 +109,8 @@ class AllProducts extends StatelessWidget {
   scrollListener(BuildContext context) {
     if (controller.offset >= controller.position.maxScrollExtent &&
         !controller.position.outOfRange) {
-      snackBar(context, 'No more product found!', backgroundColor: cc.orange);
+      snackBar(context, asProvider.getString('No more product found!'),
+          backgroundColor: cc.orange);
       // print(Provider.of<SearchResultDataService>(context, listen: false)
       //     .pageNumber
       //     .toString);

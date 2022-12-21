@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gren_mart/view/utils/constant_name.dart';
 
 import '../utils/constant_colors.dart';
 
@@ -31,7 +32,7 @@ class RememberBox extends StatelessWidget {
               onChanged: onChanged),
         ),
         Text(
-          'Remeber me',
+          asProvider.getString('Remember me'),
           style: TextStyle(
             color: ConstantColors().greyHint,
           ),

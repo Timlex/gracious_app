@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:gren_mart/service/categories_data_service.dart';
 import 'package:gren_mart/service/language_service.dart';
+import 'package:gren_mart/view/utils/constant_name.dart';
 import 'package:provider/provider.dart';
 
 import '../utils/constant_colors.dart';
@@ -29,7 +30,7 @@ class Categories extends StatelessWidget {
               children: [
                 SectionTitle(
                   cc: cc,
-                  title: 'Categories',
+                  title: asProvider.getString('Categories'),
                   pressed: () {
                     // Navigator.push(
                     //   context,

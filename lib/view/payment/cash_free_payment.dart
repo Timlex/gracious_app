@@ -1,9 +1,8 @@
 import 'dart:convert';
-import 'dart:math';
 
 import 'package:cashfree_pg/cashfree_pg.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:gren_mart/view/utils/constant_name.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
 
@@ -24,7 +23,7 @@ class CashFreePayment {
         Provider.of<PaymentGateawayService>(context, listen: false)
             .selectedGateaway!;
     if (selectedGateaway.appId == null || selectedGateaway.secretKey == null) {
-      snackBar(context, 'Invalid developer keys');
+      snackBar(context, asProvider.getString('Invalid developer keys'));
       return;
     }
 

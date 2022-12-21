@@ -1,16 +1,17 @@
 import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
+import 'package:gren_mart/view/utils/constant_name.dart';
 import 'package:gren_mart/view/utils/constant_styles.dart';
 import 'package:http/http.dart' as http;
 
 import '../../service/common_service.dart';
 
 class CuponDiscountService with ChangeNotifier {
-  String? cuponText;
+  String? couponText;
   String? totalAmount;
   String? cartData;
-  double cuponDiscount = 0;
+  double couponDiscount = 0;
   bool isLoading = false;
 
   setIsLoading(value) {
@@ -18,8 +19,8 @@ class CuponDiscountService with ChangeNotifier {
     notifyListeners();
   }
 
-  setCuponText(value) {
-    cuponText = value;
+  setCouponText(value) {
+    couponText = value;
     notifyListeners();
   }
 
@@ -34,16 +35,16 @@ class CuponDiscountService with ChangeNotifier {
   }
 
   clearCoupon() {
-    cuponText = null;
+    couponText = null;
     totalAmount = null;
     cartData = null;
-    cuponDiscount = 0;
+    couponDiscount = 0;
     isLoading = false;
   }
 
   Future<dynamic> getCuponDiscontAmount(BuildContext context) async {
-    if (cuponText == null || cuponText == '') {
-      return 'Enter a valid cupon';
+    if (couponText == null || couponText == '') {
+      return asProvider.getString('Enter a valid coupon');
     }
     isLoading = true;
     notifyListeners();
@@ -51,18 +52,18 @@ class CuponDiscountService with ChangeNotifier {
 
     // try {
     final response = await http.post(url, body: {
-      'coupon': cuponText,
+      'coupon': couponText,
       'total_amount': totalAmount,
       'ids': cartData,
     });
     print(response.body);
     if (response.statusCode == 200) {
       print(response.body);
-      cuponDiscount = json.decode(response.body)['coupon_amount'].toDouble();
-      if (cuponDiscount <= 0) {
+      couponDiscount = json.decode(response.body)['coupon_amount'].toDouble();
+      if (couponDiscount <= 0) {
         snackBar(context, 'Invalid coupon!', backgroundColor: cc.orange);
       } else {
-        snackBar(context, 'Coupon applied!');
+        snackBar(context, asProvider.getString('Coupon applied!'));
       }
       isLoading = false;
       notifyListeners();

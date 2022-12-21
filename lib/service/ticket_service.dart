@@ -219,7 +219,7 @@ class TicketService with ChangeNotifier {
       notifyListeners();
       return;
     }
-    return 'Status change failed';
+    return asProvider.getString('Status change failed');
   }
 
   Future priorityChange(int id, String value) async {
@@ -242,7 +242,7 @@ class TicketService with ChangeNotifier {
       notifyListeners();
       return;
     }
-    return 'Status change failed';
+    return asProvider.getString('Status change failed');
   }
 }
 

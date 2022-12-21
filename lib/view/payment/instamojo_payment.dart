@@ -3,8 +3,8 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:gren_mart/service/payment_gateaway_service.dart';
+import 'package:gren_mart/view/utils/constant_name.dart';
 import 'package:http/http.dart' as http;
-import 'package:path/path.dart';
 import 'package:provider/provider.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
@@ -13,7 +13,6 @@ import '../../view/utils/constant_styles.dart';
 import '../../service/checkout_service.dart';
 import '../../service/confirm_payment_service.dart';
 import '../cart/payment_status.dart';
-import '../home/home_front.dart';
 
 class InstamojoPayment extends StatelessWidget {
   InstamojoPayment({
@@ -22,57 +21,18 @@ class InstamojoPayment extends StatelessWidget {
   String? selectedUrl;
   String? prevUrl;
   String? token;
+  WebViewController? _controller;
 
   @override
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBars().appBarTitled(context, '', () async {
-          await showDialog(
-              context: context,
-              builder: (ctx) {
-                return AlertDialog(
-                  title: Text('Are you sure?'),
-                  content: Text('Your payment proccess will get terminated.'),
-                  actions: [
-                    TextButton(
-                      onPressed: () => Navigator.of(context).pushAndRemoveUntil(
-                          MaterialPageRoute(
-                              builder: (context) => PaymentStatusView(true)),
-                          (Route<dynamic> route) => false),
-                      child: Text(
-                        'Yes',
-                        style: TextStyle(color: cc.primaryColor),
-                      ),
-                    )
-                  ],
-                );
-              });
+          paymentFailedDialogue(context);
         }),
         body: WillPopScope(
           onWillPop: () async {
-            await showDialog(
-                context: context,
-                builder: (ctx) {
-                  return AlertDialog(
-                    title: Text('Are you sure?'),
-                    content: Text('Your payment proccess will get terminated.'),
-                    actions: [
-                      TextButton(
-                        onPressed: () => Navigator.of(context)
-                            .pushAndRemoveUntil(
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        PaymentStatusView(true)),
-                                (Route<dynamic> route) => false),
-                        child: Text(
-                          'Yes',
-                          style: TextStyle(color: cc.primaryColor),
-                        ),
-                      )
-                    ],
-                  );
-                });
+            paymentFailedDialogue(context);
             return false;
           },
           child: FutureBuilder(
@@ -85,28 +45,18 @@ class InstamojoPayment extends StatelessWidget {
                   print(selectedUrl);
                   return selectedUrl == null || selectedUrl == ''
                       ? Center(
-                          child: Text('Connection failed'),
+                          child:
+                              Text(asProvider.getString('Connection failed')),
                         )
                       : WebView(
                           initialUrl: selectedUrl as String,
                           javascriptMode: JavascriptMode.unrestricted,
-                          onPageStarted: (url) async {
-                            print('proccessing...............................');
-                            print(url);
-                          },
+                          onPageStarted: (url) async {},
                           navigationDelegate: (navRequest) async {
-                            print(
-                                'nav req to .......................${navRequest.url}');
                             if (navRequest.url.contains('xgenious')) {
                               if (prevUrl!.contains('status')) {
                                 final response =
                                     await http.get(Uri.parse(prevUrl!));
-                                print(
-                                    '---------------------------------------------------');
-                                print(prevUrl);
-                                print(response.statusCode);
-                                print(response.body
-                                    .contains('Payment Successful'));
                                 if (response.body
                                     .contains('Payment Successful')) {
                                   await Provider.of<ConfirmPaymentService>(

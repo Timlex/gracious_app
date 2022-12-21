@@ -95,51 +95,11 @@ class PaypalPaymentState extends State<PaypalPayment> {
     if (checkoutUrl != null) {
       return Scaffold(
         appBar: AppBars().appBarTitled(context, '', () async {
-          await showDialog(
-              context: context,
-              builder: (ctx) {
-                return AlertDialog(
-                  title: Text('Are you sure?'),
-                  content: Text('Your payment proccess will get terminated.'),
-                  actions: [
-                    TextButton(
-                      onPressed: () => Navigator.of(context).pushAndRemoveUntil(
-                          MaterialPageRoute(
-                              builder: (context) => PaymentStatusView(true)),
-                          (Route<dynamic> route) => false),
-                      child: Text(
-                        'Yes',
-                        style: TextStyle(color: cc.primaryColor),
-                      ),
-                    )
-                  ],
-                );
-              });
+          paymentFailedDialogue(context);
         }),
         body: WillPopScope(
           onWillPop: () async {
-            await showDialog(
-                context: context,
-                builder: (ctx) {
-                  return AlertDialog(
-                    title: Text('Are you sure?'),
-                    content: Text('Your payment proccess will get terminated.'),
-                    actions: [
-                      TextButton(
-                        onPressed: () => Navigator.of(context)
-                            .pushAndRemoveUntil(
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        PaymentStatusView(true)),
-                                (Route<dynamic> route) => false),
-                        child: Text(
-                          'Yes',
-                          style: TextStyle(color: cc.primaryColor),
-                        ),
-                      )
-                    ],
-                  );
-                });
+            paymentFailedDialogue(context);
             return false;
           },
           child: WebView(
@@ -175,53 +135,11 @@ class PaypalPaymentState extends State<PaypalPayment> {
     } else {
       return Scaffold(
         appBar: AppBars().appBarTitled(context, '', () async {
-          await showDialog(
-              context: context,
-              builder: (ctx) {
-                return AlertDialog(
-                  title: Text('Are you sure?'),
-                  content: Text('Your payment proccess will get terminated.'),
-                  actions: [
-                    TextButton(
-                      onPressed: () => Navigator.of(context).pushAndRemoveUntil(
-                          MaterialPageRoute(
-                              builder: (context) => PaymentStatusView(true)),
-                          (Route<dynamic> route) => false),
-                      child: Text(
-                        'Yes',
-                        style: TextStyle(color: cc.primaryColor),
-                      ),
-                    )
-                  ],
-                );
-              });
+          paymentFailedDialogue(context);
         }),
         body: WillPopScope(
             onWillPop: () async {
-              await showDialog(
-                  context: context,
-                  builder: (ctx) {
-                    return AlertDialog(
-                      title: Text('Are you sure?'),
-                      content:
-                          Text('Your payment proccess will get terminated.'),
-                      actions: [
-                        Spacer(),
-                        TextButton(
-                          onPressed: () => Navigator.of(context)
-                              .pushAndRemoveUntil(
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          PaymentStatusView(true)),
-                                  (Route<dynamic> route) => false),
-                          child: Text(
-                            'Yes',
-                            style: TextStyle(color: cc.primaryColor),
-                          ),
-                        )
-                      ],
-                    );
-                  });
+              paymentFailedDialogue(context);
               return true;
             },
             child: Center(child: Container(child: loadingProgressBar()))),

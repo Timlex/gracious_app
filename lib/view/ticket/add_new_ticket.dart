@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gren_mart/service/ticket_service.dart';
+import 'package:gren_mart/view/utils/constant_name.dart';
 import '../../service/add_new_ticket_service.dart';
 import '../../view/auth/custom_text_field.dart';
 import '../../view/intro/custom_dropdown.dart';
@@ -18,7 +19,8 @@ class AddNewTicket extends StatelessWidget {
   Future _onSubmit(BuildContext context, AddNewTicketService ntService) async {
     final validated = _formKey.currentState!.validate();
     if (!validated) {
-      snackBar(context, "Please give all the information properly",
+      snackBar(context,
+          asProvider.getString("Please give all the information properly"),
           backgroundColor: cc.orange);
       return;
     }
@@ -35,8 +37,9 @@ class AddNewTicket extends StatelessWidget {
           .fetchTickets(noForceFetch: false);
       Navigator.of(context).pop();
       return;
-    }).onError((error, stackTrace) =>
-        snackBar(context, 'Couldn\'t add Ticket', backgroundColor: cc.orange));
+    }).onError((error, stackTrace) => snackBar(
+        context, asProvider.getString("Couldn't add Ticket"),
+        backgroundColor: cc.orange));
     ntService.setIsLoading(false);
     // ScaffoldMessenger.of(context)
     //     .showSnackBar(snackBar('Invalid email/password'));
@@ -45,7 +48,8 @@ class AddNewTicket extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBars().appBarTitled(context, 'Add new ticket', () {
+        appBar: AppBars()
+            .appBarTitled(context, asProvider.getString('Add new ticket'), () {
           Navigator.of(context).pop();
         }, hasButton: true),
         body:
@@ -62,19 +66,20 @@ class AddNewTicket extends StatelessWidget {
                   child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        textFieldTitle('Title'),
+                        textFieldTitle(asProvider.getString('Title')),
                         // const SizedBox(height: 8),
                         CustomTextField(
-                          'Enter a title',
+                          asProvider.getString('Enter a title'),
                           onChanged: (value) {
                             ntService.setTitle(value);
                           },
                           validator: (name) {
                             if (name!.isEmpty) {
-                              return 'Enter your name';
+                              return asProvider.getString('Enter a title');
                             }
                             if (name.length <= 2) {
-                              return 'Enter a valid name';
+                              return asProvider
+                                  .getString('Enter a valid title');
                             }
                             return null;
                           },
@@ -85,17 +90,19 @@ class AddNewTicket extends StatelessWidget {
                         textFieldTitle('Subjct'),
                         // const SizedBox(height: 8),
                         CustomTextField(
-                          'Enter a subject',
+                          asProvider.getString('Enter a subject'),
                           focusNode: _subjectFN,
                           onChanged: (value) {
                             ntService.setSubject(value);
                           },
                           validator: (name) {
                             if (name!.isEmpty) {
-                              return 'Enter a valid subject';
+                              return asProvider
+                                  .getString('Enter a valid subject');
                             }
                             if (name.length <= 5) {
-                              return 'Enter a subject with more then 5 charecter';
+                              return asProvider.getString(
+                                  'Enter a subject with more then 5 character');
                             }
                             return null;
                           },
@@ -103,7 +110,7 @@ class AddNewTicket extends StatelessWidget {
                             ntService.setIsLoading(false);
                           },
                         ),
-                        textFieldTitle('Priority'),
+                        textFieldTitle(asProvider.getString('Priority')),
                         // const SizedBox(height: 8),
                         CustomDropdown(
                           ntService.selectedPriority as String,
@@ -114,7 +121,7 @@ class AddNewTicket extends StatelessWidget {
                           value: ntService.selectedPriority,
                         ),
 
-                        textFieldTitle('Department'),
+                        textFieldTitle(asProvider.getString('Department')),
                         ntService.allDepartment.isEmpty
                             ? loadingProgressBar()
                             : CustomDropdown(
@@ -126,19 +133,21 @@ class AddNewTicket extends StatelessWidget {
                                 value: ntService.selectedDepartment.name,
                               ),
 
-                        textFieldTitle('Description'),
+                        textFieldTitle(asProvider.getString('Description')),
                         // const SizedBox(height: 8),
                         CustomTextField(
-                          'Describe your issue',
+                          asProvider.getString('Describe your issue'),
                           onChanged: (value) {
                             ntService.setDescription(value);
                           },
                           validator: (address) {
                             if (address == null) {
-                              return 'You have to give some description';
+                              return asProvider.getString(
+                                  'You have to give some description');
                             }
                             if (address.isEmpty) {
-                              return 'You have to give some description';
+                              return asProvider.getString(
+                                  'You have to give some description');
                             }
 
                             return null;
@@ -156,7 +165,9 @@ class AddNewTicket extends StatelessWidget {
                   child: Stack(
                     children: [
                       customContainerButton(
-                          ntService.isLoading ? '' : 'Add Ticket',
+                          ntService.isLoading
+                              ? ''
+                              : asProvider.getString('Add Ticket'),
                           double.infinity,
                           ntService.isLoading
                               ? () {}

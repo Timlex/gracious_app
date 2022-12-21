@@ -107,9 +107,9 @@ class ManageAccountService with ChangeNotifier {
         address == null ||
         zipCode!.isEmpty ||
         address!.isEmpty) {
-      return 'All Information must be provided';
+      return asProvider.getString('All Information must be provided');
     }
-    print('Edit in proccess');
+    print('Edit in process');
     Map<String, String> fieldss = {
       'name': name,
       'email': email,

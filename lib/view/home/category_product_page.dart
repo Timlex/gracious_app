@@ -4,7 +4,6 @@ import 'package:gren_mart/view/home/bottom_navigation_bar.dart';
 import 'package:gren_mart/view/utils/app_bars.dart';
 import 'package:provider/provider.dart';
 
-import '../../service/navigation_bar_helper_service.dart';
 import '../utils/constant_name.dart';
 import '../utils/constant_styles.dart';
 import 'product_card.dart';
@@ -46,7 +45,7 @@ class CategoryProductPage extends StatelessWidget {
             if (snapshot.hasError) {
               return Center(
                 child: Text(
-                  'Loading failed!',
+                  asProvider.getString('Loading failed!'),
                   style: TextStyle(color: cc.greyHint),
                 ),
               );
@@ -54,7 +53,7 @@ class CategoryProductPage extends StatelessWidget {
             if (snapshot.hasData) {
               return Center(
                 child: Text(
-                  'Loading failed!',
+                  asProvider.getString('Loading failed!'),
                   style: TextStyle(color: cc.greyHint),
                 ),
               );
@@ -75,7 +74,7 @@ class CategoryProductPage extends StatelessWidget {
       return Center(
         child: Text(
           // 'No data has been found!',
-          'No product found',
+          asProvider.getString('No product found'),
           style: TextStyle(color: cc.greyHint),
         ),
       );
@@ -130,7 +129,8 @@ class CategoryProductPage extends StatelessWidget {
       }
       if (Provider.of<SearchResultDataService>(context, listen: false)
           .lastPage) {
-        snackBar(context, 'No more product found!', backgroundColor: cc.orange);
+        snackBar(context, asProvider.getString('No more product found!'),
+            backgroundColor: cc.orange);
         return;
       }
       Provider.of<SearchResultDataService>(context, listen: false)

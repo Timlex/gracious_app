@@ -1,16 +1,14 @@
 import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import '../../service/manage_account_service.dart';
-import '../../service/signin_signup_service.dart';
 import '../../service/user_profile_service.dart';
 import '../../view/utils/app_bars.dart';
 import '../../view/utils/constant_colors.dart';
 import '../../view/utils/constant_name.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:provider/provider.dart';
 
 import '../../service/country_dropdown_service.dart';
@@ -46,7 +44,8 @@ class ManageAccount extends StatelessWidget {
   Future _onSubmit(BuildContext context, ManageAccountService maData) async {
     final validated = _formKey.currentState!.validate();
     if (!validated) {
-      snackBar(context, "Please give all the information properly",
+      snackBar(context,
+          asProvider.getString("Please give all the information properly"),
           backgroundColor: cc.orange);
       return;
     }
@@ -81,7 +80,8 @@ class ManageAccount extends StatelessWidget {
       userData.profileImageUrl,
     );
     return Scaffold(
-      appBar: AppBars().appBarTitled(context, 'Manage Account', () {
+      appBar: AppBars()
+          .appBarTitled(context, asProvider.getString('Manage Account'), () {
         initiateDeviceSize(context);
         Provider.of<ManageAccountService>(context, listen: false)
             .clearPickedImage();
@@ -195,16 +195,17 @@ class ManageAccount extends StatelessWidget {
                 child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      textFieldTitle('Name'),
+                      textFieldTitle(asProvider.getString('Name')),
                       // const SizedBox(height: 8),
                       CustomTextField(
-                        'Enter name', initialValue: maData.name,
+                        asProvider.getString('Enter name'),
+                        initialValue: maData.name,
                         validator: (nameText) {
                           if (nameText!.isEmpty) {
-                            return 'Enter your name';
+                            return asProvider.getString('Enter your name');
                           }
                           if (nameText.length <= 2) {
-                            return 'Enter a valid name';
+                            return asProvider.getString('Enter a valid name');
                           }
                           return null;
                         },
@@ -217,17 +218,17 @@ class ManageAccount extends StatelessWidget {
                         // imagePath: 'assets/images/icons/mail.png',
                       ),
 
-                      textFieldTitle('Email'),
+                      textFieldTitle(asProvider.getString('Email')),
                       // const SizedBox(height: 8),
                       CustomTextField(
-                        'Enter email address',
+                        asProvider.getString('Enter email address'),
                         initialValue: maData.email,
                         validator: (emailText) {
                           if (emailText!.isEmpty) {
-                            return 'Enter your email';
+                            return asProvider.getString('Enter your email');
                           }
-                          if (emailText.length <= 5) {
-                            return 'Enter a valid email';
+                          if (EmailValidator.validate(emailText)) {
+                            return asProvider.getString('Enter a valid email');
                           }
                           return null;
                         },
@@ -236,14 +237,14 @@ class ManageAccount extends StatelessWidget {
                         },
                         // imagePath: 'assets/images/icons/mail.png',
                       ),
-                      textFieldTitle('Phone Number'),
+                      textFieldTitle(asProvider.getString('Phone Number')),
                       CustomTextField(
-                        'Enter Phone number with country code',
+                        asProvider.getString('Enter Phone number'),
                         keyboardType: TextInputType.number,
                         initialValue: maData.phoneNumber,
                         validator: (emailText) {
                           if (emailText!.isEmpty) {
-                            return 'Enter your number';
+                            return asProvider.getString('Enter your number');
                           }
 
                           return null;
@@ -293,13 +294,13 @@ class ManageAccount extends StatelessWidget {
                       //   },
                       // ),
 
-                      textFieldTitle('Country'),
+                      textFieldTitle(asProvider.getString('Country')),
                       // const SizedBox(height: 8),
                       Consumer<CountryDropdownService>(
                         builder: (context, cProvider, child) => cProvider
                                 .countryDropdownList.isNotEmpty
                             ? CustomDropdown(
-                                'Country',
+                                asProvider.getString('Country'),
                                 cProvider.countryDropdownList,
                                 (newValue) async {
                                   cProvider.setCountryIdAndValue(newValue);
@@ -327,7 +328,7 @@ class ManageAccount extends StatelessWidget {
                                   ),
                                 )),
                       ),
-                      textFieldTitle('State'),
+                      textFieldTitle(asProvider.getString('State')),
                       Consumer<StateDropdownService>(
                           builder: ((context, sModel, child) =>
                               (sModel.isLoading
@@ -341,7 +342,7 @@ class ManageAccount extends StatelessWidget {
                                         ),
                                       ))
                                   : CustomDropdown(
-                                      'State',
+                                      asProvider.getString('State'),
                                       sModel.stateDropdownList,
                                       (newValue) {
                                         sModel.setStateIdAndValue(newValue);
@@ -350,17 +351,18 @@ class ManageAccount extends StatelessWidget {
                                       },
                                       value: sModel.selectedState,
                                     )))),
-                      textFieldTitle('City'),
+                      textFieldTitle(asProvider.getString('City')),
                       // const SizedBox(height: 8),
                       CustomTextField(
-                        'Enter your city',
+                        asProvider.getString('Enter your city'),
                         initialValue: maData.city,
                         validator: (cityText) {
                           if (cityText!.isEmpty) {
-                            return 'Enter your address';
+                            return asProvider.getString('Enter your city');
                           }
                           if (cityText.length <= 2) {
-                            return 'Enter a valid address';
+                            return asProvider
+                                .getString('Enter a valid city name');
                           }
                           return null;
                         },
@@ -369,18 +371,19 @@ class ManageAccount extends StatelessWidget {
                         },
                         // imagePath: 'assets/images/icons/mail.png',
                       ),
-                      textFieldTitle('Zip code'),
+                      textFieldTitle(asProvider.getString('Zip code')),
                       // const SizedBox(height: 8),
                       CustomTextField(
-                        'Enter zip code',
+                        asProvider.getString('Enter zip code'),
                         initialValue: maData.zipCode,
                         keyboardType: TextInputType.number,
                         validator: (zipCode) {
                           if (zipCode!.isEmpty) {
-                            return 'Enter your address';
+                            return asProvider.getString('Enter your zip code');
                           }
                           if (zipCode.length <= 3) {
-                            return 'Enter a valid address';
+                            return asProvider
+                                .getString('Enter a valid zip code');
                           }
                           return null;
                         },
@@ -389,17 +392,18 @@ class ManageAccount extends StatelessWidget {
                         },
                         // imagePath: 'assets/images/icons/mail.png',
                       ),
-                      textFieldTitle('Address'),
+                      textFieldTitle(asProvider.getString('Address')),
                       // const SizedBox(height: 8),
                       CustomTextField(
-                        'Enter your address',
+                        asProvider.getString('Enter your address'),
                         initialValue: maData.address,
                         validator: (adressText) {
                           if (adressText!.isEmpty) {
-                            return 'Enter your address';
+                            return asProvider.getString('Enter your address');
                           }
                           if (adressText.length <= 2) {
-                            return 'Enter a valid address';
+                            return asProvider
+                                .getString('Enter a valid address');
                           }
                           return null;
                         },
@@ -420,7 +424,9 @@ class ManageAccount extends StatelessWidget {
                 child: Stack(
                   children: [
                     customContainerButton(
-                        maData.isLoading ? '' : 'Save Changes',
+                        maData.isLoading
+                            ? ''
+                            : asProvider.getString('Save Changes'),
                         double.infinity,
                         maData.isLoading
                             ? () {}

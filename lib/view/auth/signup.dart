@@ -7,8 +7,8 @@ import '../../service/country_dropdown_service.dart';
 import '../../service/signin_signup_service.dart';
 import '../../view/intro/custom_dropdown.dart';
 import '../../view/utils/constant_name.dart';
-import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:provider/provider.dart';
+import 'package:email_validator/email_validator.dart';
 
 import '../../service/state_dropdown_service.dart';
 import '../utils/constant_styles.dart';
@@ -29,16 +29,16 @@ class SignUp extends StatelessWidget {
       return Form(
         key: _formkey,
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          textFieldTitle('Name'),
+          textFieldTitle(asProvider.getString('Name')),
           // const SizedBox(height: 8),
           CustomTextField(
-            'Enter name',
+            asProvider.getString('Enter name'),
             validator: (nameText) {
               if (nameText!.isEmpty) {
-                return 'Enter your name';
+                return asProvider.getString('Enter your name');
               }
               if (nameText.length <= 2) {
-                return 'Enter a valid name';
+                return asProvider.getString('Enter a valid name');
               }
               return null;
             },
@@ -49,19 +49,16 @@ class SignUp extends StatelessWidget {
               authController.setName(name);
             },
           ),
-          textFieldTitle('User name'),
+          textFieldTitle(asProvider.getString('User name')),
           // const SizedBox(height: 8),
           CustomTextField(
-            'Enter user name',
+            asProvider.getString('Enter user name'),
             validator: (ussernameText) {
               if (ussernameText!.isEmpty) {
-                return 'Enter your username';
+                return asProvider.getString('Enter your username');
               }
               if (ussernameText.trim().contains(' ')) {
-                return 'Enter username without space.';
-              }
-              if (ussernameText.length <= 4) {
-                return 'Enter at least 5 charecters';
+                return asProvider.getString('Enter username without space');
               }
               return null;
             },
@@ -72,16 +69,16 @@ class SignUp extends StatelessWidget {
               FocusScope.of(context).unfocus();
             },
           ),
-          textFieldTitle('Email'),
+          textFieldTitle(asProvider.getString('Email')),
           // const SizedBox(height: 8),
           CustomTextField(
-            'Enter email address',
+            asProvider.getString('Enter email address'),
             validator: (emaiText) {
               if (emaiText!.isEmpty) {
-                return 'Enter your email';
+                return asProvider.getString('Enter your email');
               }
-              if (emaiText.length <= 5) {
-                return 'Enter a valid email';
+              if (EmailValidator.validate(emaiText)) {
+                return asProvider.getString('Enter a valid email');
               }
               return null;
             },
@@ -89,13 +86,13 @@ class SignUp extends StatelessWidget {
               authController.setNewEmail(email);
             },
           ),
-          textFieldTitle('Phone Number'),
+          textFieldTitle(asProvider.getString('Phone Number')),
           CustomTextField(
-            'Enter Phone number with country code',
+            asProvider.getString('Enter Phone number'),
             keyboardType: TextInputType.number,
             validator: (emailText) {
               if (emailText!.isEmpty) {
-                return 'Enter your number';
+                return asProvider.getString('Enter your number');
               }
 
               return null;
@@ -138,13 +135,13 @@ class SignUp extends StatelessWidget {
           //     print('Country changed to: ' + country.code);
           //   },
           // ),
-          textFieldTitle('Country'),
+          textFieldTitle(asProvider.getString('Country')),
           // const SizedBox(height: 8),
           Consumer<CountryDropdownService>(
             builder: (context, cProvider, child) => cProvider
                     .countryDropdownList.isNotEmpty
                 ? CustomDropdown(
-                    'Country',
+                    asProvider.getString('Country'),
                     cProvider.countryDropdownList,
                     (newValue) {
                       cProvider.setCountryIdAndValue(newValue);
@@ -164,7 +161,7 @@ class SignUp extends StatelessWidget {
                       ),
                     )),
           ),
-          textFieldTitle('State'),
+          textFieldTitle(asProvider.getString('State')),
           Consumer<StateDropdownService>(
               builder: ((context, sModel, child) =>
                   // sModel.stateDropdownList.isEmpty
@@ -185,7 +182,7 @@ class SignUp extends StatelessWidget {
                             ),
                           ))
                       : CustomDropdown(
-                          'State',
+                          asProvider.getString('State'),
                           sModel.stateDropdownList,
                           (newValue) {
                             sModel.setStateIdAndValue(newValue);
@@ -213,18 +210,18 @@ class SignUp extends StatelessWidget {
           //     authController.setCityAddress(city);
           //   },
           // ),
-          textFieldTitle('Password'),
+          textFieldTitle(asProvider.getString('Password')),
           CustomTextField(
-            'Enter password',
+            asProvider.getString('Enter password'),
             validator: (password) {
               if (password!.isEmpty) {
-                return 'Enter at least 6 charechters';
+                return asProvider.getString('Enter at least 6 characters');
               }
               if (password.length <= 5) {
-                return 'Enter at least 6 charechters';
+                return asProvider.getString('Enter at least 6 characters');
               }
               if (password.trim().contains(' ')) {
-                return 'Enter passeord without any space';
+                return asProvider.getString('Enter password without any space');
               }
               return null;
             },
@@ -235,13 +232,13 @@ class SignUp extends StatelessWidget {
               authController.setNewPassword(pass);
             },
           ),
-          textFieldTitle('Confirm Password'),
+          textFieldTitle(asProvider.getString('Confirm Password')),
           // const SizedBox(height: 8),
           CustomTextField(
-            'Re enter password',
+            asProvider.getString('Re enter password'),
             validator: (password) {
               if (password != authController.newPassword) {
-                return 'Enter the same password';
+                return asProvider.getString('Enter the same password');
               }
               return null;
             },
@@ -282,7 +279,7 @@ class SignUp extends StatelessWidget {
                   child: RichText(
                     softWrap: true,
                     text: TextSpan(
-                        text: 'Accept all',
+                        text: asProvider.getString('Accept all'),
                         style: TextStyle(
                           color: cc.greyHint,
                           fontWeight: FontWeight.w600,
@@ -293,10 +290,12 @@ class SignUp extends StatelessWidget {
                                 ..onTap = () => Navigator.of(context).pushNamed(
                                         WebViewScreen.routeName,
                                         arguments: [
-                                          'Terms and Conditions',
+                                          asProvider.getString(
+                                              'Terms and Conditions'),
                                           '$baseApiUrl/terms-and-condition-page'
                                         ]),
-                              text: ' Terms and Conditions',
+                              text: '' +
+                                  asProvider.getString('Terms and Conditions'),
                               style: TextStyle(color: cc.primaryColor)),
                           TextSpan(
                               text: ' & ',
@@ -306,10 +305,11 @@ class SignUp extends StatelessWidget {
                                 ..onTap = () => Navigator.of(context).pushNamed(
                                         WebViewScreen.routeName,
                                         arguments: [
-                                          'Privacy Policy',
+                                          asProvider
+                                              .getString('Privacy Policy'),
                                           '$baseApiUrl/privacy-policy-page'
                                         ]),
-                              text: ' Privacy Policy',
+                              text: asProvider.getString('Privacy Policy'),
                               style: TextStyle(color: cc.primaryColor)),
                         ]),
                   ),

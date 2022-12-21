@@ -19,9 +19,9 @@ class ResetPassEmail extends StatelessWidget {
 
   Future _sendRequest(
       BuildContext context, ResetPassOTPService resetData, String value) async {
-    resetData.toggleLaodingSpinner(value: true);
+    resetData.toggleLoadingSpinner(value: true);
     await resetData.getOtp(value).then((value) {
-      resetData.toggleLaodingSpinner(value: true);
+      resetData.toggleLoadingSpinner(value: true);
       if (value) {
         Navigator.of(context).pushNamed(EnterOTP.routeName);
         return;
@@ -29,9 +29,9 @@ class ResetPassEmail extends StatelessWidget {
       snackBar(context, value.toString());
       return;
     }).onError((error, stackTrace) {
-      snackBar(context, 'Something Went Wrong');
+      snackBar(context, asProvider.getString('Something Went Wrong'));
     });
-    resetData.toggleLaodingSpinner(value: false);
+    resetData.toggleLoadingSpinner(value: false);
   }
 
   @override
@@ -54,21 +54,22 @@ class ResetPassEmail extends StatelessWidget {
                     height: screenHight / 4.7,
                   ),
                   Text(
-                    'Reset Password',
+                    asProvider.getString('Reset Password'),
                     style: TextThemeConstrants.titleText,
                   ),
                   const SizedBox(height: 17),
                   Text(
-                    'Enter the email you used to creat account and we\'ll send instruction for resetting password',
+                    asProvider.getString(
+                        "Enter the email you used to create account and we'll send instruction for resetting password"),
                     style: TextStyle(
                       fontSize: 14,
                       color: ConstantColors().greyParagraph,
                     ),
                   ),
                   const SizedBox(height: 10),
-                  textFieldTitle('Enter email'),
+                  textFieldTitle(asProvider.getString('Enter email')),
                   CustomTextField(
-                    'Email',
+                    asProvider.getString('Email'),
                     onChanged: (value) {
                       Provider.of<AuthTextControllerService>(context,
                               listen: false)
@@ -83,7 +84,9 @@ class ResetPassEmail extends StatelessWidget {
                   Stack(
                     children: [
                       customContainerButton(
-                          resetData.isLoading ? '' : 'Send OTP',
+                          resetData.isLoading
+                              ? ''
+                              : asProvider.getString('Send OTP'),
                           double.infinity,
                           resetData.isLoading
                               ? () {}
@@ -92,7 +95,7 @@ class ResetPassEmail extends StatelessWidget {
                                       Provider.of<AuthTextControllerService>(
                                               context,
                                               listen: false)
-                                          .newEmai;
+                                          .newEmail;
                                   _sendRequest(context, resetData, value);
                                 }),
                       if (resetData.isLoading)

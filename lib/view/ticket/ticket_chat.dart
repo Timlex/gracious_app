@@ -1,14 +1,12 @@
 import 'dart:io';
 import 'dart:math';
 
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import '../../service/language_service.dart';
 import '../../service/ticket_chat_service.dart';
 import '../../view/utils/image_view.dart';
-import '../../view/utils/app_bars.dart';
 import '../../view/utils/constant_name.dart';
 import 'package:provider/provider.dart';
 
@@ -107,7 +105,7 @@ class TicketChat extends StatelessWidget {
                             controller: _controller,
                             decoration: InputDecoration(
                               isDense: true,
-                              hintText: 'Write message',
+                              hintText: asProvider.getString('Write message'),
                               hintStyle:
                                   TextStyle(color: cc.greyHint, fontSize: 14),
                               enabledBorder: OutlineInputBorder(
@@ -132,7 +130,7 @@ class TicketChat extends StatelessWidget {
                         child: Row(
                           children: [
                             Text(
-                              'File',
+                              asProvider.getString('File'),
                               style: TextStyle(
                                   color: cc.greyHint,
                                   fontWeight: FontWeight.w600),
@@ -148,7 +146,7 @@ class TicketChat extends StatelessWidget {
                                     borderRadius: BorderRadius.circular(10),
                                     border: Border.all(color: cc.greyBorder2)),
                                 child: Text(
-                                  'Choose file',
+                                  asProvider.getString('Choose file'),
                                   style: TextStyle(color: cc.greyHint),
                                 ),
                               ),
@@ -158,7 +156,7 @@ class TicketChat extends StatelessWidget {
                               width: screenWidth / 3,
                               child: Text(
                                 tcService.pickedImage == null
-                                    ? 'No file choosen'
+                                    ? asProvider.getString('No file chosen')
                                     : tcService.pickedImage!.path
                                         .split('/')
                                         .last,
@@ -200,7 +198,7 @@ class TicketChat extends StatelessWidget {
                             RichText(
                               softWrap: true,
                               text: TextSpan(
-                                text: 'Notify via mail',
+                                text: asProvider.getString('Notify via mail'),
                                 style:
                                     TextStyle(color: cc.greyHint, fontSize: 13
                                         // fontWeight: FontWeight.w600,
@@ -216,7 +214,9 @@ class TicketChat extends StatelessWidget {
                         child: Stack(
                           children: [
                             customContainerButton(
-                              tcService.isLoading ? '' : 'Send',
+                              tcService.isLoading
+                                  ? ''
+                                  : asProvider.getString('Send'),
                               double.infinity,
                               tcService.message == '' &&
                                       tcService.pickedImage == null
@@ -236,7 +236,9 @@ class TicketChat extends StatelessWidget {
                                         _controller.clear();
                                       }).onError((error, stackTrace) =>
                                               snackBar(
-                                                  context, 'Connection failed',
+                                                  context,
+                                                  asProvider.getString(
+                                                      'Connection failed'),
                                                   backgroundColor: cc.orange));
                                       tcService.setIsLoading(false);
                                     },
@@ -268,7 +270,7 @@ class TicketChat extends StatelessWidget {
     if (tcService.noMessage) {
       return Center(
         child: Text(
-          'No Message has been found!',
+          asProvider.getString('No Message has been found!'),
           style: TextStyle(color: cc.greyHint),
         ),
       );

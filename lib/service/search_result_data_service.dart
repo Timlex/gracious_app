@@ -3,6 +3,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:gren_mart/view/utils/constant_name.dart';
 import '../../model/search_result_data_model.dart';
 import '../../service/common_service.dart';
 import 'package:http/http.dart' as http;
@@ -128,7 +129,7 @@ class SearchResultDataService with ChangeNotifier {
       setIsLoading(false);
       notifyListeners();
       print('Leaving fetching___________');
-      return 'No more product found!';
+      return asProvider.getString('No more product found!');
     }
     print('searching in progress');
     final url = Uri.parse(
@@ -163,7 +164,7 @@ class SearchResultDataService with ChangeNotifier {
     } catch (error) {
       print(error);
       if (pageNo != '1') {
-        return 'Loading failed!';
+        return asProvider.getString('Loading failed!');
       }
       this.error = true;
       notifyListeners();

@@ -7,12 +7,14 @@ import 'package:http/http.dart' as http;
 
 class LanguageService with ChangeNotifier {
   bool rtl = false;
-  String currencySymbol = '\$';
+  bool currencyRTL = false;
+  String currency = '\$';
 
   Future setLanguage() async {
     final url = Uri.parse('$baseApiUrl/default-lang');
     try {
       final response = await http.get(url);
+
       if (response.statusCode == 200) {
         rtl = jsonDecode(response.body)['lang_info']['direction'] == 'rtl';
         notifyListeners();
@@ -30,8 +32,10 @@ class LanguageService with ChangeNotifier {
     final url = Uri.parse('$baseApiUrl/site_currency_symbol');
     // try {
     final response = await http.get(url);
+    print(response.body);
     if (response.statusCode == 200) {
-      currencySymbol = jsonDecode(response.body)['symbol'];
+      currency = jsonDecode(response.body)['symbol'];
+      currencyRTL = jsonDecode(response.body)['direction'] == 'rtl';
       notifyListeners();
     } else {
       // print('something went wrong');

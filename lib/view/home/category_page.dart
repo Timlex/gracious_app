@@ -37,23 +37,13 @@ class CategoryPage extends StatelessWidget {
         return Column(
           children: [
             Expanded(
-              child: srData.featuredCardProductsList != null
+              child: data != null
                   ? newMethod(cardWidth, cardHeight, data)
-                  : FutureBuilder(
-                      future: showTimout(),
-                      builder: ((context, snapshot) {
-                        if (snapshot.connectionState ==
-                            ConnectionState.waiting) {
-                          return loadingProgressBar();
-                        }
-                        snackBar(context, 'Timeout!');
-                        return Center(
-                          child: Text(
-                            'Something went wrong!',
-                            style: TextStyle(color: cc.greyHint),
-                          ),
-                        );
-                      }),
+                  : Center(
+                      child: Text(
+                        asProvider.getString('Something went wrong!'),
+                        style: TextStyle(color: cc.greyHint),
+                      ),
                     ),
             ),
             // if (srData.featuredCardProductsList.isEmpty) loadingProgressBar()

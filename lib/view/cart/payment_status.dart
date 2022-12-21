@@ -63,7 +63,9 @@ class PaymentStatusView extends StatelessWidget {
                       ),
                       const SizedBox(height: 45),
                       Text(
-                        isError ? 'Opps!' : 'Payment successful!',
+                        isError
+                            ? asProvider.getString('Oops!')
+                            : asProvider.getString('Payment successful!'),
                         style: TextStyle(
                           fontSize: 23,
                           fontWeight: FontWeight.bold,
@@ -75,8 +77,10 @@ class PaymentStatusView extends StatelessWidget {
                         textAlign: TextAlign.center,
                         text: TextSpan(
                           text: isError
-                              ? 'We\'re getting problems with your payment methods and we couldn\'t proceed your order.'
-                              : 'Your order has been successful! You\'ll receive ordered items in 3-5 days. Your order ID is ',
+                              ? asProvider.getString(
+                                  "We're getting problems with your payment methods and we couldn't proceed your order.")
+                              : asProvider.getString(
+                                  "Your order has been successful! You'll receive ordered items in 3-5 days. Your order ID is"),
                           style: TextThemeConstrants.paragraphText,
                           children: <TextSpan>[
                             if (!isError)
@@ -109,8 +113,10 @@ class PaymentStatusView extends StatelessWidget {
                 ),
               )),
               !(isError)
-                  ? customRowButton(context, 'Back to home', 'Track your order',
-                      () {
+                  ? customRowButton(
+                      context,
+                      asProvider.getString('Back to home'),
+                      asProvider.getString('Track your order'), () {
                       Provider.of<CartDataService>(context, listen: false)
                           .emptyCart();
                       Navigator.of(context)
@@ -123,7 +129,9 @@ class PaymentStatusView extends StatelessWidget {
                             OrderDetails(trackId!.toString()),
                       ));
                     })
-                  : customContainerButton('Back to home', screenWidth - 50, () {
+                  : customContainerButton(
+                      asProvider.getString('Back to home'), screenWidth - 50,
+                      () {
                       Navigator.of(context)
                           .pushReplacementNamed(HomeFront.routeName);
                     }),

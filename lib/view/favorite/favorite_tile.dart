@@ -3,7 +3,6 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:gren_mart/service/cart_data_service.dart';
-import 'package:gren_mart/service/paypal_service.dart';
 import 'package:gren_mart/service/product_details_service.dart';
 import 'package:gren_mart/view/details/product_details.dart';
 import 'package:gren_mart/view/favorite/favorite_to_cart.dart';
@@ -14,7 +13,6 @@ import '../../service/language_service.dart';
 import '../../view/utils/constant_colors.dart';
 import 'package:provider/provider.dart';
 
-import '../utils/constant_styles.dart';
 import '../utils/text_themes.dart';
 
 class FavoriteTile extends StatelessWidget {
@@ -44,7 +42,7 @@ class FavoriteTile extends StatelessWidget {
             children: [
               const Spacer(),
               Text(
-                'Delete',
+                asProvider.getString('Delete'),
                 style: TextStyle(color: cc.pureWhite, fontSize: 17),
               ),
               const SizedBox(width: 15),
@@ -121,10 +119,15 @@ class FavoriteTile extends StatelessWidget {
                             ),
                           ),
                           const SizedBox(height: 13),
-                          Text(
-                            '${Provider.of<LanguageService>(context, listen: false).currencySymbol}${favoriteItem.price}',
-                            style: TextThemeConstrants.primary13,
-                          ),
+                          Consumer<LanguageService>(
+                              builder: (context, lService, child) {
+                            return Text(
+                              lService.currencyRTL
+                                  ? '${favoriteItem.price}${lService.currency}'
+                                  : '${lService.currency}${favoriteItem.price}',
+                              style: TextThemeConstrants.primary13,
+                            );
+                          }),
                         ],
                       ),
                     ),
@@ -205,15 +208,15 @@ class FavoriteTile extends StatelessWidget {
     await showDialog(
         context: context,
         builder: (context) => AlertDialog(
-              title: const Text('Are you sure?'),
-              content: const Text('This Item will be Deleted.'),
+              title: Text(asProvider.getString('Are you sure?')),
+              content: Text(asProvider.getString('This Item will be Deleted.')),
               actions: [
                 TextButton(
                     onPressed: (() {
                       Navigator.pop(context);
                     }),
                     child: Text(
-                      'No',
+                      asProvider.getString('No'),
                       style: TextStyle(color: cc.primaryColor),
                     )),
                 TextButton(
@@ -222,7 +225,7 @@ class FavoriteTile extends StatelessWidget {
                       Navigator.of(context).pop();
                     },
                     child: Text(
-                      'Yes',
+                      asProvider.getString('Yes'),
                       style: TextStyle(color: cc.pink),
                     ))
               ],

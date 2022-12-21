@@ -1,5 +1,4 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:gren_mart/service/language_service.dart';
@@ -42,7 +41,7 @@ class CartTile extends StatelessWidget {
           children: [
             const Spacer(),
             Text(
-              'Delete',
+              asProvider.getString('Delete'),
               style: TextStyle(color: cc.pureWhite, fontSize: 17),
             ),
             const SizedBox(width: 15),
@@ -56,7 +55,7 @@ class CartTile extends StatelessWidget {
         ),
       ),
       onDismissed: (direction) {
-        snackBar(context, 'Item removed from cart.',
+        snackBar(context, asProvider.getString('Item removed from cart.'),
             backgroundColor: cc.orange);
         carts.deleteCartItem(id, inventorySet: inventorySet ?? {});
       },
@@ -121,13 +120,18 @@ class CartTile extends StatelessWidget {
                           ),
                         ),
                         const SizedBox(height: 13),
-                        FittedBox(
-                          fit: BoxFit.cover,
-                          child: Text(
-                            '${Provider.of<LanguageService>(context, listen: false).currencySymbol}$price ',
-                            style: TextThemeConstrants.primary13,
-                          ),
-                        ),
+                        Consumer<LanguageService>(
+                            builder: (context, lService, child) {
+                          return FittedBox(
+                            fit: BoxFit.cover,
+                            child: Text(
+                              lService.currencyRTL
+                                  ? '$price${lService.currency} '
+                                  : '${lService.currency}$price ',
+                              style: TextThemeConstrants.primary13,
+                            ),
+                          );
+                        }),
                       ],
                     ),
                   ),
@@ -198,7 +202,8 @@ class CartTile extends StatelessWidget {
                       await confirmDialouge(context,
                           onPressed: () => deleteItem = true);
                       if (deleteItem) {
-                        snackBar(context, 'Item removed from cart.',
+                        snackBar(context,
+                            asProvider.getString('Item removed from cart.'),
                             backgroundColor: cc.orange);
                         carts.deleteCartItem(id,
                             inventorySet: inventorySet ?? {});
@@ -241,15 +246,15 @@ class CartTile extends StatelessWidget {
     await showDialog(
         context: context,
         builder: (context) => AlertDialog(
-              title: const Text('Are you sure?'),
-              content: const Text('This Item will be Deleted.'),
+              title: Text(asProvider.getString('Are you sure?')),
+              content: Text(asProvider.getString('This Item will be Deleted.')),
               actions: [
                 TextButton(
                     onPressed: (() {
                       Navigator.pop(context);
                     }),
                     child: Text(
-                      'No',
+                      asProvider.getString('No'),
                       style: TextStyle(color: cc.primaryColor),
                     )),
                 TextButton(
@@ -258,7 +263,7 @@ class CartTile extends StatelessWidget {
                       Navigator.of(context).pop();
                     },
                     child: Text(
-                      'Yes',
+                      asProvider.getString('Yes'),
                       style: TextStyle(color: cc.pink),
                     ))
               ],

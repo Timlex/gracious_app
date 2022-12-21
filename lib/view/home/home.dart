@@ -42,7 +42,8 @@ class Home extends StatelessWidget {
         if (currentBackPressTime == null ||
             now.difference(currentBackPressTime!) > Duration(seconds: 2)) {
           currentBackPressTime = now;
-          snackBar(context, 'Press again to exit', backgroundColor: cc.orange);
+          snackBar(context, asProvider.getString('Press again to exit'),
+              backgroundColor: cc.orange);
           return false;
         }
         return true;
@@ -80,7 +81,7 @@ class Home extends StatelessWidget {
                       borderRadius: BorderRadius.circular(10),
                       borderSide: BorderSide(color: cc.orange, width: 1),
                     ),
-                    hintText: 'Search your need here',
+                    hintText: asProvider.getString('Search your need here'),
                     hintStyle:
                         TextStyle(color: cc.greyTextFieldLebel, fontSize: 13),
                     prefixIcon: Column(
@@ -165,7 +166,8 @@ class Home extends StatelessWidget {
               return pcService.featuredCardProductsList.isNotEmpty
                   ? Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 20),
-                      child: seeAllTitle(context, 'Fetured products',
+                      child: seeAllTitle(
+                          context, asProvider.getString('Featured products'),
                           onPressed: () {
                         Provider.of<SearchResultDataService>(context,
                                 listen: false)
@@ -231,13 +233,14 @@ class Home extends StatelessWidget {
                             ? Padding(
                                 padding:
                                     const EdgeInsets.symmetric(horizontal: 15),
-                                child: seeAllTitle(context, 'Categories',
+                                child: seeAllTitle(
+                                    context, asProvider.getString('Categories'),
                                     onPressed: () {
                                   Navigator.of(context).pushNamed(
                                       CategoryPage.routeName,
                                       arguments: [
                                         catService.categorydataList,
-                                        'Categories'
+                                        asProvider.getString('Categories')
                                       ]);
                                 }),
                               )
@@ -518,12 +521,13 @@ class Home extends StatelessWidget {
                           : Padding(
                               padding:
                                   const EdgeInsets.symmetric(horizontal: 20),
-                              child: seeAllTitle(context, 'Campaigns',
+                              child: seeAllTitle(
+                                  context, asProvider.getString('Campaigns'),
                                   onPressed: (() {
                                 Navigator.of(context)
                                     .pushNamed(Campaigns.routeName, arguments: [
                                   cclService.campList,
-                                  'Campaigns'
+                                  asProvider.getString('Campaigns')
                                 ]);
                               })),
                             );

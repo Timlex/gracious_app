@@ -41,7 +41,6 @@ class CategoriesDataService with ChangeNotifier {
     if (categorydataList.isNotEmpty) {
       return;
     }
-    print('fetching categories');
     fetchPriceRange();
     final url = Uri.parse('$baseApiUrl/category');
 
@@ -60,11 +59,9 @@ class CategoriesDataService with ChangeNotifier {
   }
 
   Future fetchSubCategories() async {
-    print('here we are');
     if (subCategorydataList != null) {
       return;
     }
-    print('fetching sub category');
     final url = Uri.parse('$baseApiUrl/subcategory/$selectedCategorieId');
 
     final response = await http.get(

@@ -75,7 +75,7 @@ class Campaigns extends StatelessWidget {
               onTap: () {
                 Navigator.of(context).pushNamed(
                     ALLCampProductFromLink.routeName,
-                    arguments: [element.id.toString(), 'New year sale']);
+                    arguments: [element.id.toString(), element.title]);
               },
               child: CampaignSmallerCard(
                 element.title,

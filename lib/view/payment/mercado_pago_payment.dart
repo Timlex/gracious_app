@@ -2,16 +2,15 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:gren_mart/view/utils/constant_name.dart';
 
 import 'package:provider/provider.dart';
 import 'package:http/http.dart ' as http;
 import 'package:webview_flutter/webview_flutter.dart';
 
 import '../../service/checkout_service.dart';
-import '../../service/confirm_payment_service.dart';
 import '../../service/payment_gateaway_service.dart';
 import '../cart/payment_status.dart';
-import '../home/home_front.dart';
 import '../utils/app_bars.dart';
 import '../utils/constant_styles.dart';
 
@@ -22,49 +21,11 @@ class MercadopagoPayment extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBars().appBarTitled(context, '', () async {
-        await showDialog(
-            context: context,
-            builder: (ctx) {
-              return AlertDialog(
-                title: Text('Are you sure?'),
-                content: Text('Your payment proccess will get terminated.'),
-                actions: [
-                  TextButton(
-                    onPressed: () => Navigator.of(context).pushAndRemoveUntil(
-                        MaterialPageRoute(
-                            builder: (context) => PaymentStatusView(true)),
-                        (Route<dynamic> route) => false),
-                    child: Text(
-                      'Yes',
-                      style: TextStyle(color: cc.primaryColor),
-                    ),
-                  )
-                ],
-              );
-            });
+        paymentFailedDialogue(context);
       }),
       body: WillPopScope(
         onWillPop: () async {
-          await showDialog(
-              context: context,
-              builder: (ctx) {
-                return AlertDialog(
-                  title: Text('Are you sure?'),
-                  content: Text('Your payment proccess will get terminated.'),
-                  actions: [
-                    TextButton(
-                      onPressed: () => Navigator.of(context).pushAndRemoveUntil(
-                          MaterialPageRoute(
-                              builder: (context) => PaymentStatusView(true)),
-                          (Route<dynamic> route) => false),
-                      child: Text(
-                        'Yes',
-                        style: TextStyle(color: cc.primaryColor),
-                      ),
-                    )
-                  ],
-                );
-              });
+          paymentFailedDialogue(context);
           return false;
         },
         child: FutureBuilder(
@@ -74,14 +35,14 @@ class MercadopagoPayment extends StatelessWidget {
                 return loadingProgressBar();
               }
               if (snapshot.hasData) {
-                return const Center(
-                  child: Text('Loading failed.'),
+                return Center(
+                  child: Text(asProvider.getString('Loading failed.')),
                 );
               }
               if (snapshot.hasError) {
                 print(snapshot.error);
-                return const Center(
-                  child: Text('Loading failed.'),
+                return Center(
+                  child: Text(asProvider.getString('Loading failed.')),
                 );
               }
               return WebView(
@@ -89,8 +50,9 @@ class MercadopagoPayment extends StatelessWidget {
                     context: context,
                     builder: (ctx) {
                       return AlertDialog(
-                        title: Text('Loading failed!'),
-                        content: Text('Failed to load payment page.'),
+                        title: Text(asProvider.getString('Loading failed!')),
+                        content: Text(asProvider
+                            .getString('Failed to load payment page.')),
                         actions: [
                           Spacer(),
                           TextButton(
@@ -101,7 +63,7 @@ class MercadopagoPayment extends StatelessWidget {
                                             PaymentStatusView(true)),
                                     (Route<dynamic> route) => false),
                             child: Text(
-                              'Return',
+                              asProvider.getString('Return'),
                               style: TextStyle(color: cc.primaryColor),
                             ),
                           )
@@ -141,7 +103,8 @@ class MercadopagoPayment extends StatelessWidget {
     final checkoutInfo =
         Provider.of<CheckoutService>(context, listen: false).checkoutModel;
     if (selectrdGateaway.clientSecret == null) {
-      snackBar(context, 'Invalid developer keys', backgroundColor: cc.orange);
+      snackBar(context, asProvider.getString('Invalid developer keys'),
+          backgroundColor: cc.orange);
     }
     var header = {
       "Accept": "application/json",

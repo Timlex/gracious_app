@@ -42,13 +42,14 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
+
     initialize();
   }
 
   @override
   Widget build(BuildContext context) {
-    // getDatabegeData(context);
     initiateDeviceSize(context);
+    // getDatabegeData(context);
 
     // initiateAutoSignIn(context);
 
@@ -87,13 +88,13 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   initiateAutoSignIn(BuildContext context) async {
-    await Future.delayed(Duration(milliseconds: 900));
+    // await Future.delayed(Duration(milliseconds: 900));
 
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
       snackBar(
         context,
-        'Please turn on your internet connection',
+        asProvider.getString('Please turn on your internet connection'),
         backgroundColor: cc.orange,
         duration: Duration(minutes: 10),
         action: SnackBarAction(
@@ -118,7 +119,6 @@ class _SplashScreenState extends State<SplashScreen> {
         .setLanguage()
         .onError((error, stackTrace) {
       return;
-      snackBar(context, 'Connection error', backgroundColor: cc.orange);
     });
     await Provider.of<LanguageService>(context, listen: false)
         .setCurrency()
@@ -126,7 +126,6 @@ class _SplashScreenState extends State<SplashScreen> {
       print(error);
 
       return;
-      snackBar(context, 'Connection error', backgroundColor: cc.orange);
     });
     await Provider.of<SignInSignUpService>(context, listen: false)
         .getToken()
@@ -156,7 +155,8 @@ class _SplashScreenState extends State<SplashScreen> {
 
             return;
           }).onError((error, stackTrace) {
-            snackBar(context, "Connection failed!", backgroundColor: cc.orange);
+            snackBar(context, asProvider.getString("Connection failed!"),
+                backgroundColor: cc.orange);
             throw '';
           });
         } catch (error) {

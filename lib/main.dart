@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gren_mart/service/app_string_service.dart';
 import 'package:gren_mart/service/campaign_card_list_service.dart';
 import 'package:gren_mart/service/language_service.dart';
 import 'package:gren_mart/service/terms_and_condition_service.dart';
@@ -115,6 +116,7 @@ class _MyAppState extends State<MyApp> {
         ChangeNotifierProvider(create: (_) => TermsAndCondition()),
         ChangeNotifierProvider(create: (_) => CampaignCardListService()),
         ChangeNotifierProvider(create: (_) => LanguageService()),
+        ChangeNotifierProvider(create: (_) => AppStringService()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,

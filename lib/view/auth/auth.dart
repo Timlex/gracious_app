@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gren_mart/service/social_login_service.dart';
+import 'package:gren_mart/view/utils/constant_name.dart';
 import 'package:gren_mart/view/utils/text_themes.dart';
 import 'package:provider/provider.dart';
 
@@ -39,7 +40,8 @@ class _AuthState extends State<Auth> {
       BuildContext context, bool login, GlobalKey<FormState> formKey) async {
     final validated = formKey.currentState!.validate();
     if (!validated) {
-      snackBar(context, 'Please provide all the information',
+      snackBar(
+          context, asProvider.getString('Please provide all the information'),
           backgroundColor: cc.orange);
       scrollController.animateTo(0.0,
           curve: Curves.easeIn, duration: const Duration(milliseconds: 300));
@@ -85,14 +87,18 @@ class _AuthState extends State<Auth> {
 
         // snackBar(context, 'SomeThing went wrong');
       }).onError((error, stackTrace) {
-        snackBar(context, 'Login failed!', backgroundColor: cc.orange);
+        snackBar(context, asProvider.getString('Login failed!'),
+            backgroundColor: cc.orange);
         print(error.toString());
       });
       ssService.toggleLaodingSpinner(value: false);
       return;
     }
     if (!(ssService.termsAndCondi)) {
-      snackBar(context, 'Please read and accept the terms and condition',
+      snackBar(
+          context,
+          asProvider
+              .getString('Please read and accept the terms and condition'),
           backgroundColor: cc.orange);
       ssService.toggleLaodingSpinner(value: false);
 
@@ -101,7 +107,7 @@ class _AuthState extends State<Auth> {
     ssService.toggleLaodingSpinner(value: true);
     await ssService
         .signUpOption(
-            authTextControllers.newEmai,
+            authTextControllers.newEmail,
             authTextControllers.newPassword,
             authTextControllers.name,
             authTextControllers.newUsername,
@@ -133,7 +139,8 @@ class _AuthState extends State<Auth> {
       }
       ssService.toggleLaodingSpinner(value: false);
 
-      snackBar(context, 'Register failed.', backgroundColor: cc.orange);
+      snackBar(context, asProvider.getString('Register failed.'),
+          backgroundColor: cc.orange);
     }).onError((error, stackTrace) {
       ssService.toggleLaodingSpinner(value: false);
       snackBar(context, error.toString(), backgroundColor: cc.orange);
@@ -206,7 +213,9 @@ class _AuthState extends State<Auth> {
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 20.0),
                         child: Text(
-                          ssData.login ? 'Welcome back' : 'Register to join us',
+                          ssData.login
+                              ? asProvider.getString('Welcome back')
+                              : asProvider.getString('Register to join us'),
                           style: TextThemeConstrants.titleText,
                         ),
                       ),
@@ -254,7 +263,8 @@ class _AuthState extends State<Auth> {
                                             softWrap: true,
                                             maxLines: 1,
                                             text: TextSpan(
-                                              text: 'Forgot password?',
+                                              text: asProvider.getString(
+                                                  'Forgot password?'),
                                               style: TextStyle(
                                                 color: cc.titleTexts,
                                                 fontWeight: FontWeight.w600,
@@ -275,7 +285,9 @@ class _AuthState extends State<Auth> {
                             customContainerButton(
                               ssData.isLoading
                                   ? ''
-                                  : (ssData.login ? 'Log in' : 'Register'),
+                                  : (ssData.login
+                                      ? asProvider.getString('Log in')
+                                      : asProvider.getString('Register')),
                               double.infinity,
                               ssData.login
                                   ? () {
@@ -310,8 +322,10 @@ class _AuthState extends State<Auth> {
                           children: [
                             Text(
                               ssData.login
-                                  ? 'Don\'t have an account?'
-                                  : 'Already have an account?',
+                                  ? asProvider
+                                      .getString("Don't have an account?")
+                                  : asProvider
+                                      .getString('Already have an account?'),
                               style: TextThemeConstrants.paragraphText,
                             ),
                             const SizedBox(width: 5),
@@ -328,7 +342,9 @@ class _AuthState extends State<Auth> {
                                   softWrap: true,
                                   maxLines: 1,
                                   text: TextSpan(
-                                    text: ssData.login ? 'Register' : 'Log in',
+                                    text: ssData.login
+                                        ? asProvider.getString('Register')
+                                        : asProvider.getString('Log in'),
                                     style: TextStyle(
                                       color: cc.primaryColor,
                                       fontWeight: FontWeight.w700,
@@ -361,7 +377,8 @@ class _AuthState extends State<Auth> {
                                   .fetchProfileService()
                                   .then((value) async {
                                 if (value == null) {
-                                  snackBar(context, 'Failed to load!',
+                                  snackBar(context,
+                                      asProvider.getString('Failed to load!'),
                                       backgroundColor: cc.orange);
                                   Provider.of<SocialLoginService>(context,
                                           listen: false)
@@ -395,8 +412,9 @@ class _AuthState extends State<Auth> {
                           child: containerBorder(
                               'assets/images/icons/google.png',
                               ssData.login
-                                  ? 'Login with Google'
-                                  : 'Register with Google'),
+                                  ? asProvider.getString('Login with Google')
+                                  : asProvider
+                                      .getString('Register with Google')),
                         ),
                       ),
                       Padding(
@@ -415,7 +433,8 @@ class _AuthState extends State<Auth> {
                                   .fetchProfileService()
                                   .then((value) async {
                                 if (value == null) {
-                                  snackBar(context, 'Loaidng failed!',
+                                  snackBar(context,
+                                      asProvider.getString('Loading failed!'),
                                       backgroundColor: cc.orange);
                                   Provider.of<SocialLoginService>(context,
                                           listen: false)
@@ -447,15 +466,17 @@ class _AuthState extends State<Auth> {
                               Provider.of<SocialLoginService>(context,
                                       listen: false)
                                   .setIsLoading(false);
-                              snackBar(context, 'Failed to load!',
+                              snackBar(context,
+                                  asProvider.getString('Failed to load!'),
                                   backgroundColor: cc.orange);
                             });
                           },
                           child: containerBorder(
                               'assets/images/icons/facebook.png',
                               ssData.login
-                                  ? 'Login with Facebook'
-                                  : 'Register with Facebook'),
+                                  ? asProvider.getString('Login with Facebook')
+                                  : asProvider
+                                      .getString('Register with Facebook')),
                         ),
                       ),
                       const SizedBox(

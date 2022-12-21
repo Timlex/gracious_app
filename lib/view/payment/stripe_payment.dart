@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:gren_mart/view/utils/constant_name.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:provider/provider.dart';
@@ -23,7 +24,7 @@ class StripePayment {
                 .selectedGateaway!
                 .secretKey ==
             null) {
-      snackBar(context, 'Invalid developer keys');
+      snackBar(context, asProvider.getString('Invalid developer keys'));
       return;
     }
     // Stripe.publishableKey =
@@ -62,49 +63,10 @@ class StripePayment {
       await Stripe.instance.presentPaymentSheet().then((value) async {
         await Provider.of<ConfirmPaymentService>(context, listen: false)
             .confirmPayment(context);
-        // showDialog(
-        //     context: context,
-        //     builder: (_) => AlertDialog(
-        //           content: Column(
-        //             mainAxisSize: MainAxisSize.min,
-        //             children: [
-        //               Row(
-        //                 children: const [
-        //                   Icon(
-        //                     Icons.check_circle,
-        //                     color: Colors.green,
-        //                   ),
-        //                   Text("Payment Successfull"),
-        //                 ],
-        //               ),
-        //             ],
-        //           ),
-        //         ));
-        // ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("paid successfully")));
 
         paymentIntent = null;
       }).onError((error, stackTrace) async {
         print('Error is:--->$error $stackTrace');
-        // await showDialog(
-        //     barrierDismissible: false,
-        //     context: context,
-        //     builder: (ctx) {
-        //       return AlertDialog(
-        //         title: Text('Payment failed'),
-        //         actions: [
-        //           TextButton(
-        //             onPressed: () => Navigator.of(context).pushAndRemoveUntil(
-        //                 MaterialPageRoute(
-        //                     builder: (context) => PaymentStatusView(true)),
-        //                 (Route<dynamic> route) => false),
-        //             child: Text(
-        //               'Ubderstood',
-        //               style: TextStyle(color: cc.primaryColor),
-        //             ),
-        //           )
-        //         ],
-        //       );
-        //     });
         Navigator.of(context).pushAndRemoveUntil(
             MaterialPageRoute(builder: (context) => PaymentStatusView(true)),
             (Route<dynamic> route) => false);
@@ -115,7 +77,7 @@ class StripePayment {
           context: context,
           builder: (ctx) {
             return AlertDialog(
-              title: Text('Payment failed'),
+              title: Text(asProvider.getString('Payment failed')),
               actions: [
                 TextButton(
                   onPressed: () => Navigator.of(context).pushAndRemoveUntil(
@@ -123,7 +85,7 @@ class StripePayment {
                           builder: (context) => PaymentStatusView(true)),
                       (Route<dynamic> route) => false),
                   child: Text(
-                    'Ok',
+                    asProvider.getString('Ok'),
                     style: TextStyle(color: cc.primaryColor),
                   ),
                 )
@@ -136,7 +98,7 @@ class StripePayment {
           context: context,
           builder: (ctx) {
             return AlertDialog(
-              title: Text('Payment failed'),
+              title: Text(asProvider.getString('Payment failed')),
               actions: [
                 TextButton(
                   onPressed: () => Navigator.of(context).pushAndRemoveUntil(
@@ -144,7 +106,7 @@ class StripePayment {
                           builder: (context) => PaymentStatusView(true)),
                       (Route<dynamic> route) => false),
                   child: Text(
-                    'Ubderstood',
+                    asProvider.getString('Ok'),
                     style: TextStyle(color: cc.primaryColor),
                   ),
                 )

@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:gren_mart/view/utils/constant_name.dart';
 import 'package:provider/provider.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:http/http.dart' as http;
@@ -20,49 +21,11 @@ class PaystackPayment extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBars().appBarTitled(context, '', () async {
-        await showDialog(
-            context: context,
-            builder: (ctx) {
-              return AlertDialog(
-                title: Text('Are you sure?'),
-                content: Text('Your payment proccess will get terminated.'),
-                actions: [
-                  TextButton(
-                    onPressed: () => Navigator.of(context).pushAndRemoveUntil(
-                        MaterialPageRoute(
-                            builder: (context) => PaymentStatusView(true)),
-                        (Route<dynamic> route) => false),
-                    child: Text(
-                      'Yes',
-                      style: TextStyle(color: cc.primaryColor),
-                    ),
-                  )
-                ],
-              );
-            });
+        paymentFailedDialogue(context);
       }),
       body: WillPopScope(
         onWillPop: () async {
-          await showDialog(
-              context: context,
-              builder: (ctx) {
-                return AlertDialog(
-                  title: Text('Are you sure?'),
-                  content: Text('Your payment proccess will get terminated.'),
-                  actions: [
-                    TextButton(
-                      onPressed: () => Navigator.of(context).pushAndRemoveUntil(
-                          MaterialPageRoute(
-                              builder: (context) => PaymentStatusView(true)),
-                          (Route<dynamic> route) => false),
-                      child: Text(
-                        'Yes',
-                        style: TextStyle(color: cc.primaryColor),
-                      ),
-                    )
-                  ],
-                );
-              });
+          paymentFailedDialogue(context);
           return false;
         },
         child: FutureBuilder(
@@ -78,8 +41,8 @@ class PaystackPayment extends StatelessWidget {
               }
               if (snapshot.hasError) {
                 print(snapshot.error);
-                return const Center(
-                  child: Text('Loading failed.'),
+                return Center(
+                  child: Text(asProvider.getString('Loading failed.')),
                 );
               }
               return WebView(
@@ -90,10 +53,9 @@ class PaystackPayment extends StatelessWidget {
                     context: context,
                     builder: (ctx) {
                       return AlertDialog(
-                        title: Text('Loading failed!'),
+                        title: Text(asProvider.getString('Loading failed!')),
                         content: Text('Failed to load payment page.'),
                         actions: [
-                          Spacer(),
                           TextButton(
                             onPressed: () => Navigator.of(context)
                                 .pushAndRemoveUntil(
@@ -102,7 +64,7 @@ class PaystackPayment extends StatelessWidget {
                                             PaymentStatusView(true)),
                                     (Route<dynamic> route) => false),
                             child: Text(
-                              'Return',
+                              asProvider.getString('Return'),
                               style: TextStyle(color: cc.primaryColor),
                             ),
                           )
@@ -114,15 +76,10 @@ class PaystackPayment extends StatelessWidget {
                 onPageFinished: (value) async {
                   // final title = await _controller.currentUrl();
                   // print(title);
-                  print('on finished.........................$value');
                   final uri = Uri.parse(value);
                   final response = await http.get(uri);
                   // if (response.body.contains('PAYMENT ID')) {
                   ;
-                  print('closing payment......');
-                  print('closing payment.............');
-                  print('closing payment...................');
-                  print('closing payment..........................');
                   if (response.body.contains('Payment Successful')) {
                     Provider.of<ConfirmPaymentService>(context, listen: false)
                         .confirmPayment(context);
@@ -133,8 +90,10 @@ class PaystackPayment extends StatelessWidget {
                         context: context,
                         builder: (ctx) {
                           return AlertDialog(
-                            title: Text('Payment failed!'),
-                            content: Text('Payment has been cancelled.'),
+                            title:
+                                Text(asProvider.getString('Payment failed!')),
+                            content: Text(asProvider
+                                .getString('Payment has been cancelled.')),
                             actions: [
                               Spacer(),
                               TextButton(
@@ -145,7 +104,7 @@ class PaystackPayment extends StatelessWidget {
                                                 PaymentStatusView(true)),
                                         (Route<dynamic> route) => false),
                                 child: Text(
-                                  'Ok',
+                                  asProvider.getString('Ok'),
                                   style: TextStyle(color: cc.primaryColor),
                                 ),
                               )

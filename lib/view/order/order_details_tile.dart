@@ -96,13 +96,18 @@ class OrderDetailsTile extends StatelessWidget {
                 ),
                 // const Spacer(),
                 SizedBox(
-                  child: Text(
-                    '${Provider.of<LanguageService>(context, listen: false).currencySymbol}${price.toStringAsFixed(2)}',
-                    style: TextStyle(
-                        color: cc.primaryColor,
-                        fontWeight: FontWeight.w600,
-                        fontSize: 12),
-                  ),
+                  child: Consumer<LanguageService>(
+                      builder: (context, lService, child) {
+                    return Text(
+                      lService.currencyRTL
+                          ? '${price.toStringAsFixed(2)}${lService.currency}'
+                          : '${lService.currency}${price.toStringAsFixed(2)}',
+                      style: TextStyle(
+                          color: cc.primaryColor,
+                          fontWeight: FontWeight.w600,
+                          fontSize: 12),
+                    );
+                  }),
                 ),
               ],
             ),

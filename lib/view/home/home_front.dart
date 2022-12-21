@@ -1,6 +1,7 @@
 import 'package:badges/badges.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:gren_mart/view/utils/constant_name.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 
@@ -73,7 +74,7 @@ class HomeFront extends StatelessWidget {
               itemBuilder: (context) => [
                     PopupMenuItem(
                       child: Text(
-                        'Popularity',
+                        asProvider.getString('Popularity'),
                         style: TextStyle(
                             color: Provider.of<SearchResultDataService>(context,
                                             listen: false)
@@ -86,7 +87,7 @@ class HomeFront extends StatelessWidget {
                     ),
                     PopupMenuItem(
                       child: Text(
-                        'Letest',
+                        asProvider.getString('Latest'),
                         style: TextStyle(
                             color: Provider.of<SearchResultDataService>(context,
                                             listen: false)
@@ -99,7 +100,7 @@ class HomeFront extends StatelessWidget {
                     ),
                     PopupMenuItem(
                       child: Text(
-                        'Lower price',
+                        asProvider.getString('Lower price'),
                         style: TextStyle(
                             color: Provider.of<SearchResultDataService>(context,
                                             listen: false)
@@ -112,7 +113,7 @@ class HomeFront extends StatelessWidget {
                     ),
                     PopupMenuItem(
                       child: Text(
-                        'Higher price',
+                        asProvider.getString('Higher price'),
                         style: TextStyle(
                             color: Provider.of<SearchResultDataService>(context,
                                             listen: false)
@@ -135,7 +136,7 @@ class HomeFront extends StatelessWidget {
         elevation: 0,
         centerTitle: true,
         title: Text(
-          'My cart',
+          asProvider.getString('My cart'),
           style: TextStyle(
               color: cc.blackColor, fontSize: 19, fontWeight: FontWeight.w700),
         ),
@@ -146,7 +147,7 @@ class HomeFront extends StatelessWidget {
         elevation: 0,
         centerTitle: true,
         title: Text(
-          'My favorite',
+          asProvider.getString('My favorite'),
           style: TextStyle(
               color: cc.blackColor, fontSize: 19, fontWeight: FontWeight.w700),
         ),

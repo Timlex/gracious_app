@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:gren_mart/service/favorite_data_service.dart';
+import 'package:gren_mart/view/utils/constant_name.dart';
 import 'package:provider/provider.dart';
 
 import '../../service/cart_data_service.dart';
@@ -25,14 +25,15 @@ class FavoriteToCart extends StatelessWidget {
             .fetchProductDetails(id: id, nextProduct: fetchAttribute)
             .onError((error, stackTrace) {
           Navigator.of(context).pop();
-          snackBar(context, 'Connection failed.', backgroundColor: cc.orange);
+          snackBar(context, asProvider.getString('Connection failed.'),
+              backgroundColor: cc.orange);
         });
         fetchAttribute = false;
         return pdService.loadingFailed
             ? SizedBox(
                 height: 100,
                 child: Center(
-                  child: Text('Connection Failed.'),
+                  child: Text(asProvider.getString('Connection Failed.')),
                 ))
             : (SingleChildScrollView(
                 child: pdService.productDetails == null
@@ -93,7 +94,7 @@ class FavoriteToCart extends StatelessWidget {
                             Container(
                               margin: EdgeInsets.symmetric(vertical: 15),
                               child: Text(
-                                'Select attributes:',
+                                asProvider.getString('Select attributes:'),
                                 style: TextStyle(
                                     fontSize: 19, fontWeight: FontWeight.w600),
                               ),
@@ -134,40 +135,49 @@ class FavoriteToCart extends StatelessWidget {
                                       ))
                                   .toList(),
                             ),
-                            customContainerButton(
-                                pdService.cartAble
-                                    ? '${Provider.of<LanguageService>(context, listen: false).currencySymbol}${pdService.productSalePrice} Add to cart.'
-                                    : 'Select all attribute to proceed',
-                                double.infinity, () {
-                              if (!pdService.cartAble) {
-                                return;
-                              }
-                              final product = pdService.productDetails!.product;
-                              Provider.of<CartDataService>(context,
-                                      listen: false)
-                                  .addCartItem(
-                                context,
-                                product.id,
-                                product.title,
-                                pdService.productSalePrice,
-                                pdService.productSalePrice,
-                                0.0,
-                                pdService.quantity,
-                                pdService.additionalInfoImage ?? product.image,
-                                inventorySet:
-                                    pdService.selecteInventorySet == {}
-                                        ? null
-                                        : pdService.selecteInventorySet,
-                                hash: pdService.selectedInventoryHash,
-                              );
-                              Provider.of<FavoriteDataService>(context,
-                                      listen: false)
-                                  .deleteFavoriteItem(id, context);
-                              Navigator.of(context).pop();
-                            },
-                                color: pdService.cartAble
-                                    ? cc.primaryColor
-                                    : cc.greyBorder)
+                            Consumer<LanguageService>(
+                                builder: (context, lService, child) {
+                              return customContainerButton(
+                                  pdService.cartAble
+                                      ? (lService.currencyRTL
+                                              ? '${pdService.productSalePrice}${lService.currency}'
+                                              : '${lService.currency}${pdService.productSalePrice}') +
+                                          asProvider.getString('Add to cart.')
+                                      : asProvider.getString(
+                                          'Select all attribute to proceed'),
+                                  double.infinity, () {
+                                if (!pdService.cartAble) {
+                                  return;
+                                }
+                                final product =
+                                    pdService.productDetails!.product;
+                                Provider.of<CartDataService>(context,
+                                        listen: false)
+                                    .addCartItem(
+                                  context,
+                                  product.id,
+                                  product.title,
+                                  pdService.productSalePrice,
+                                  pdService.productSalePrice,
+                                  0.0,
+                                  pdService.quantity,
+                                  pdService.additionalInfoImage ??
+                                      product.image,
+                                  inventorySet:
+                                      pdService.selecteInventorySet == {}
+                                          ? null
+                                          : pdService.selecteInventorySet,
+                                  hash: pdService.selectedInventoryHash,
+                                );
+                                Provider.of<FavoriteDataService>(context,
+                                        listen: false)
+                                    .deleteFavoriteItem(id, context);
+                                Navigator.of(context).pop();
+                              },
+                                  color: pdService.cartAble
+                                      ? cc.primaryColor
+                                      : cc.greyBorder);
+                            })
                           ],
                         ),
                       )

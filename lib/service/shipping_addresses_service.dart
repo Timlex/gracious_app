@@ -198,7 +198,7 @@ class ShippingAddressesService with ChangeNotifier {
       return data['message'];
     }
 
-    return 'Someting went wrong';
+    return asProvider.getString('Something went wrong');
     // } catch (error) {
     //   print(error);
 
@@ -215,7 +215,7 @@ class ShippingAddressesService with ChangeNotifier {
       "Authorization": "Bearer $globalUserToken",
     };
     if (stateID == 1) {
-      return 'Please select a state.';
+      return asProvider.getString('Please select a state.');
     }
     try {
       final response = await http.post(url, headers: header, body: {
@@ -240,7 +240,7 @@ class ShippingAddressesService with ChangeNotifier {
         return data['message'];
       }
 
-      return 'Someting went wrong';
+      return asProvider.getString('Something went wrong');
     } catch (error) {
       print(error);
 
@@ -274,7 +274,7 @@ class ShippingAddressesService with ChangeNotifier {
       return data['message'];
     }
 
-    return 'Someting went wrong';
+    return asProvider.getString('Something went wrong');
     // } catch (error) {
     //   print(error);
 

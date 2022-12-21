@@ -1,12 +1,12 @@
+import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:gren_mart/view/cart/checkout.dart';
-import 'package:intl_phone_field/intl_phone_field.dart';
+import 'package:gren_mart/view/utils/constant_name.dart';
 import 'package:provider/provider.dart';
 
 import '../auth/custom_text_field.dart';
 import '../intro/custom_dropdown.dart';
 import '../utils/constant_styles.dart';
-import '../../view/utils/text_themes.dart';
 import '../../service/shipping_addresses_service.dart';
 import '../../view/utils/app_bars.dart';
 import '../../view/utils/constant_colors.dart';
@@ -32,7 +32,8 @@ class AddNewAddress extends StatelessWidget {
       BuildContext context, ShippingAddressesService saData) async {
     final validated = _formKey.currentState!.validate();
     if (!validated || saData.phone == null) {
-      snackBar(context, "Please give all the information properly",
+      snackBar(context,
+          asProvider.getString("Please give all the information properly"),
           backgroundColor: cc.orange);
       scrollController.animateTo(0.0,
           curve: Curves.easeIn, duration: const Duration(milliseconds: 300));
@@ -61,7 +62,8 @@ class AddNewAddress extends StatelessWidget {
     Provider.of<CountryDropdownService>(context, listen: false)
         .getContries(context);
     return Scaffold(
-      appBar: AppBars().appBarTitled(context, 'Add New Address', () {
+      appBar: AppBars()
+          .appBarTitled(context, asProvider.getString('Add New Address'), () {
         if (dontPop) {
           Navigator.of(context).pop();
           Navigator.of(context).pushNamed(Checkout.routeName);
@@ -96,16 +98,17 @@ class AddNewAddress extends StatelessWidget {
                   child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        textFieldTitle('Name'),
+                        textFieldTitle(asProvider.getString('Name')),
                         // const SizedBox(height: 8),
                         CustomTextField(
-                          'Enter name',
+                          asProvider.getString('Enter name'),
                           validator: (nameText) {
                             if (nameText!.isEmpty) {
-                              return 'Enter address name';
+                              return asProvider.getString('Enter address name');
                             }
                             if (nameText.length <= 3) {
-                              return 'Enter more then 3 charecter';
+                              return asProvider
+                                  .getString('Enter more then 3 character');
                             }
                             return null;
                           },
@@ -118,20 +121,18 @@ class AddNewAddress extends StatelessWidget {
                           // imagePath: 'assets/images/icons/mail.png',
                         ),
 
-                        textFieldTitle('Email'),
+                        textFieldTitle(asProvider.getString('Email')),
                         // const SizedBox(height: 8),
                         CustomTextField(
-                          'Enter email address',
+                          asProvider.getString('Enter email address'),
                           focusNode: _emailFN,
                           validator: (emailText) {
                             if (emailText!.isEmpty) {
-                              return 'Enter your email';
+                              return asProvider.getString('Enter your email');
                             }
-                            if (emailText.length <= 5) {
-                              return 'Enter a valid email';
-                            }
-                            if (!emailText.contains('@')) {
-                              return 'Enter a valid email';
+                            if (!EmailValidator.validate(emailText)) {
+                              return asProvider
+                                  .getString('Enter a valid email');
                             }
                             return null;
                           },
@@ -143,13 +144,13 @@ class AddNewAddress extends StatelessWidget {
                           },
                           // imagePath: 'assets/images/icons/mail.png',
                         ),
-                        textFieldTitle('Phone Number'),
+                        textFieldTitle(asProvider.getString('Phone Number')),
                         CustomTextField(
-                          'Enter Phone number with country code',
+                          asProvider.getString('Enter Phone number'),
                           keyboardType: TextInputType.number,
                           validator: (emailText) {
                             if (emailText!.isEmpty) {
-                              return 'Enter your number';
+                              return asProvider.getString('Enter your number');
                             }
 
                             return null;
@@ -202,13 +203,13 @@ class AddNewAddress extends StatelessWidget {
                         //   },
                         // ),
 
-                        textFieldTitle('Country'),
+                        textFieldTitle(asProvider.getString('Country')),
                         // const SizedBox(height: 8),
                         Consumer<CountryDropdownService>(
                           builder: (context, cProvider, child) => cProvider
                                   .countryDropdownList.isNotEmpty
                               ? CustomDropdown(
-                                  'Country',
+                                  asProvider.getString('Country'),
                                   cProvider.countryDropdownList,
                                   (newValue) {
                                     cProvider.setCountryIdAndValue(newValue);
@@ -238,7 +239,7 @@ class AddNewAddress extends StatelessWidget {
                                     ),
                                   )),
                         ),
-                        textFieldTitle('State'),
+                        textFieldTitle(asProvider.getString('State')),
                         Consumer<StateDropdownService>(
                             builder: ((context, sModel, child) => (sModel
                                     .isLoading
@@ -252,7 +253,7 @@ class AddNewAddress extends StatelessWidget {
                                       ),
                                     ))
                                 : CustomDropdown(
-                                    'State',
+                                    asProvider.getString('State'),
                                     sModel.stateDropdownList,
                                     (newValue) {
                                       sModel.setStateIdAndValue(newValue);
@@ -261,16 +262,16 @@ class AddNewAddress extends StatelessWidget {
                                     },
                                     value: sModel.selectedState,
                                   )))),
-                        textFieldTitle('City'),
+                        textFieldTitle(asProvider.getString('City')),
                         // const SizedBox(height: 8),
                         CustomTextField(
-                          'Enter your city',
+                          asProvider.getString('Enter your city'),
                           validator: (cityText) {
                             if (cityText!.isEmpty) {
-                              return 'Enter your city';
+                              return asProvider.getString('Enter your city');
                             }
                             if (cityText.length <= 2) {
-                              return 'Enter a valid city';
+                              return asProvider.getString('Enter a valid city');
                             }
                             return null;
                           },
@@ -283,18 +284,20 @@ class AddNewAddress extends StatelessWidget {
                           },
                           // imagePath: 'assets/images/icons/mail.png',
                         ),
-                        textFieldTitle('Zip code'),
+                        textFieldTitle(asProvider.getString('Zip code')),
                         // const SizedBox(height: 8),
                         CustomTextField(
-                          'Enter zip code',
+                          asProvider.getString('Enter zip code'),
                           focusNode: _zipCodeFN,
                           keyboardType: TextInputType.number,
                           validator: (zipCode) {
                             if (zipCode!.isEmpty) {
-                              return 'Enter your zip conde';
+                              return asProvider
+                                  .getString('Enter your zip code');
                             }
                             if (zipCode.length <= 3) {
-                              return 'Enter a valid zip code';
+                              return asProvider
+                                  .getString('Enter a valid zip code');
                             }
                             return null;
                           },
@@ -306,17 +309,19 @@ class AddNewAddress extends StatelessWidget {
                           },
                           // imagePath: 'assets/images/icons/mail.png',
                         ),
-                        textFieldTitle('Address'),
+                        textFieldTitle(asProvider.getString('Address')),
                         // const SizedBox(height: 8),
                         CustomTextField(
-                          'Enter your address',
+                          asProvider.getString('Enter your address'),
                           focusNode: _addressFN,
                           validator: (address) {
                             if (address == null) {
-                              return 'Enter your address.';
+                              return asProvider
+                                  .getString('Enter your address.');
                             }
                             if (address.length <= 5) {
-                              return 'Enter a valid address';
+                              return asProvider
+                                  .getString('Enter a valid address');
                             }
                             return null;
                           },
@@ -337,7 +342,9 @@ class AddNewAddress extends StatelessWidget {
                   child: Stack(
                     children: [
                       customContainerButton(
-                          saData.isLoading ? '' : 'Add Address',
+                          saData.isLoading
+                              ? ''
+                              : asProvider.getString('Add Address'),
                           double.infinity,
                           saData.isLoading
                               ? () {}

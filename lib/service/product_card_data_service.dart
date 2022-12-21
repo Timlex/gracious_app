@@ -30,10 +30,9 @@ class ProductCardDataService with ChangeNotifier {
       if (response.statusCode == 200) {
         var data = FeaturedCardProducts.fromJson(jsonDecode(response.body));
         featuredCardProductsList = data.data;
-
-        print(featuredCardProductsList[0].prdId);
+        print(response.body);
         // print(countryDropdownList);
-
+        featureNoData = featuredCardProductsList.isEmpty;
         notifyListeners();
       } else {
         //something went wrong

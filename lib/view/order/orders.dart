@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gren_mart/service/order_list_service.dart';
+import 'package:gren_mart/view/utils/constant_name.dart';
 import 'package:gren_mart/view/utils/constant_styles.dart';
 import '../../view/order/order_tile.dart';
 import '../../view/utils/app_bars.dart';
@@ -15,7 +16,8 @@ class MyOrders extends StatelessWidget {
   Widget build(BuildContext context) {
     controller.addListener((() => scrollListener(context)));
     return Scaffold(
-      appBar: AppBars().appBarTitled(context, 'My orders', () {
+      appBar: AppBars().appBarTitled(context, asProvider.getString('My orders'),
+          () {
         Navigator.of(context).pop();
       }),
       body: FutureBuilder(
@@ -26,16 +28,16 @@ class MyOrders extends StatelessWidget {
               return loadingProgressBar();
             }
             if (snapshot.hasError) {
-              return const Center(
-                child: Text('Failed to load data.'),
+              return Center(
+                child: Text(asProvider.getString('Failed to load data.')),
               );
             }
 
             return Consumer<OrderListService>(
                 builder: (context, oService, child) {
               if (oService.noOrder) {
-                return const Center(
-                  child: Text('No order found.'),
+                return Center(
+                  child: Text(asProvider.getString('No order found.')),
                 );
               }
               return Column(
@@ -82,7 +84,8 @@ class MyOrders extends StatelessWidget {
             .then((value) => oService.setLodingNextPage(false))
             .onError((error, stackTrace) => oService.setLodingNextPage(false));
       } else {
-        snackBar(context, 'No more order found', backgroundColor: cc.orange);
+        snackBar(context, asProvider.getString('No more order found'),
+            backgroundColor: cc.orange);
       }
     }
   }

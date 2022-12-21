@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gren_mart/view/utils/constant_name.dart';
 import '../../service/auth_text_controller_service.dart';
 import '../../view/auth/custom_text_field.dart';
 import 'package:provider/provider.dart';
@@ -20,7 +21,7 @@ class Login extends StatelessWidget {
     return Form(
       key: _formKey,
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        textFieldTitle('Username'),
+        textFieldTitle(asProvider.getString('Username')),
         const SizedBox(height: 3),
         CustomTextField(
           'Email',
@@ -28,8 +29,10 @@ class Login extends StatelessWidget {
           initialValue: initialemail,
           validator: (emailText) {
             if (emailText!.isEmpty) {
-              return 'Enter your email/username';
+              return asProvider.getString('Enter your email/username');
             }
+            Provider.of<AuthTextControllerService>(context, listen: false)
+                .setEmail(emailText);
             return null;
           },
           onFieldSubmitted: (emailText) {
@@ -42,9 +45,9 @@ class Login extends StatelessWidget {
                 .setEmail(emailText);
           },
         ),
-        textFieldTitle('Password'),
+        textFieldTitle(asProvider.getString('Password')),
         CustomTextField(
-          'Password',
+          asProvider.getString('Password'),
           focusNode: _passFN,
           leadingImage: 'assets/images/icons/password.png',
           trailing: true,
@@ -52,8 +55,10 @@ class Login extends StatelessWidget {
           initialValue: initialPass,
           validator: (pass) {
             if (pass == null || pass.length < 6) {
-              return 'Password must be at least 6 digit.';
+              return asProvider.getString('Password must be at least 6 digit.');
             }
+            Provider.of<AuthTextControllerService>(context, listen: false)
+                .setPass(pass);
             return null;
           },
           onChanged: (value) {

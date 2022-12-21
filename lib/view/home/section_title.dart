@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gren_mart/view/utils/constant_name.dart';
 
 import '../utils/constant_colors.dart';
 
@@ -38,7 +39,7 @@ class SectionTitle extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       Text(
-                        "See all",
+                        asProvider.getString("See all"),
                         style: TextStyle(
                           color: cc.primaryColor,
                           fontSize: 15,

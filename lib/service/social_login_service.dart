@@ -59,17 +59,11 @@ class SocialLoginService with ChangeNotifier {
     try {
       await GoogleSignIn().signOut();
       final response = await GoogleSignIn().signIn();
-      if (response!.id != null) {
-        print(response.email);
-        print(response.id);
-        print(response.displayName);
-        print('===========================================');
-        return socialLogin(
-            context, '1', response.email, response.displayName, response.id);
-      }
-      throw '';
+      return socialLogin(
+          context, '1', response!.email, response.displayName, response.id);
     } catch (e) {
-      snackBar(context, 'Loading failed', backgroundColor: cc.orange);
+      snackBar(context, asProvider.getString('Loading failed'),
+          backgroundColor: cc.orange);
       isLoading = false;
       notifyListeners();
     }

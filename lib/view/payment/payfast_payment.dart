@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:gren_mart/view/utils/constant_name.dart';
 import 'package:provider/provider.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:http/http.dart' as http;
@@ -11,7 +12,6 @@ import '../../service/payment_gateaway_service.dart';
 import '../../service/checkout_service.dart';
 import '../../service/confirm_payment_service.dart';
 import '../cart/payment_status.dart';
-import '../home/home_front.dart';
 
 class PayfastPayment extends StatelessWidget {
   PayfastPayment({Key? key}) : super(key: key);
@@ -21,49 +21,11 @@ class PayfastPayment extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBars().appBarTitled(context, '', () async {
-        await showDialog(
-            context: context,
-            builder: (ctx) {
-              return AlertDialog(
-                title: Text('Are you sure?'),
-                content: Text('Your payment proccess will get terminated.'),
-                actions: [
-                  TextButton(
-                    onPressed: () => Navigator.of(context).pushAndRemoveUntil(
-                        MaterialPageRoute(
-                            builder: (context) => PaymentStatusView(true)),
-                        (Route<dynamic> route) => false),
-                    child: Text(
-                      'Yes',
-                      style: TextStyle(color: cc.primaryColor),
-                    ),
-                  )
-                ],
-              );
-            });
+        paymentFailedDialogue(context);
       }),
       body: WillPopScope(
         onWillPop: () async {
-          await showDialog(
-              context: context,
-              builder: (ctx) {
-                return AlertDialog(
-                  title: Text('Are you sure?'),
-                  content: Text('Your payment proccess will get terminated.'),
-                  actions: [
-                    TextButton(
-                      onPressed: () => Navigator.of(context).pushAndRemoveUntil(
-                          MaterialPageRoute(
-                              builder: (context) => PaymentStatusView(true)),
-                          (Route<dynamic> route) => false),
-                      child: Text(
-                        'Yes',
-                        style: TextStyle(color: cc.primaryColor),
-                      ),
-                    )
-                  ],
-                );
-              });
+          paymentFailedDialogue(context);
           return false;
         },
         child: FutureBuilder(
@@ -73,14 +35,14 @@ class PayfastPayment extends StatelessWidget {
                 return loadingProgressBar();
               }
               if (snapshot.hasData) {
-                return const Center(
-                  child: Text('Loadingfailed.'),
+                return Center(
+                  child: Text(asProvider.getString('Loading failed.')),
                 );
               }
               if (snapshot.hasError) {
                 print(snapshot.error);
-                return const Center(
-                  child: Text('Loadingfailed.'),
+                return Center(
+                  child: Text(asProvider.getString('Loading failed.')),
                 );
               }
               return WebView(
@@ -88,10 +50,10 @@ class PayfastPayment extends StatelessWidget {
                     context: context,
                     builder: (ctx) {
                       return AlertDialog(
-                        title: Text('Loading failed!'),
-                        content: Text('Failed to load payment page.'),
+                        title: Text(asProvider.getString('Loading failed!')),
+                        content: Text(asProvider
+                            .getString('Failed to load payment page.')),
                         actions: [
-                          Spacer(),
                           TextButton(
                             onPressed: () => Navigator.of(context)
                                 .pushAndRemoveUntil(
@@ -100,7 +62,7 @@ class PayfastPayment extends StatelessWidget {
                                             PaymentStatusView(true)),
                                     (Route<dynamic> route) => false),
                             child: Text(
-                              'Return',
+                              asProvider.getString('Return'),
                               style: TextStyle(color: cc.primaryColor),
                             ),
                           )
@@ -110,13 +72,8 @@ class PayfastPayment extends StatelessWidget {
                 initialUrl: url,
                 javascriptMode: JavascriptMode.unrestricted,
                 onPageFinished: (value) async {
-                  print('on finished.........................$value');
                   if (value.contains('finish')) {
                     bool paySuccess = await verifyPayment(value);
-                    print('closing payment......');
-                    print('closing payment.............');
-                    print('closing payment...................');
-                    print('closing payment..........................');
                     if (paySuccess) {
                       await Provider.of<ConfirmPaymentService>(context,
                               listen: false)
