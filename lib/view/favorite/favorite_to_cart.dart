@@ -157,8 +157,8 @@ class FavoriteToCart extends StatelessWidget {
                                   context,
                                   product.id,
                                   product.title,
-                                  pdService.productSalePrice,
-                                  pdService.productSalePrice,
+                                  pdService.productSalePrice.toDouble(),
+                                  pdService.productSalePrice.toDouble(),
                                   0.0,
                                   pdService.quantity,
                                   pdService.additionalInfoImage ??

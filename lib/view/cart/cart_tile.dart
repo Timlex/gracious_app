@@ -15,7 +15,7 @@ class CartTile extends StatelessWidget {
   final String name;
   final String image;
   final int quantity;
-  final int price;
+  final double price;
   Map? inventorySet;
   CartTile(
     this.id,
@@ -126,8 +126,8 @@ class CartTile extends StatelessWidget {
                             fit: BoxFit.cover,
                             child: Text(
                               lService.currencyRTL
-                                  ? '$price${lService.currency} '
-                                  : '${lService.currency}$price ',
+                                  ? '${price.toStringAsFixed(2)}${lService.currency} '
+                                  : '${lService.currency}${price.toStringAsFixed(2)} ',
                               style: TextThemeConstrants.primary13,
                             ),
                           );

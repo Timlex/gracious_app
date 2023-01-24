@@ -179,8 +179,8 @@ class FilterBottomSheet extends StatelessWidget {
                         child: Consumer<LanguageService>(
                             builder: (context, lService, child) {
                           return Text((lService.currencyRTL
-                                  ? lService.currency
-                                  : '') +
+                                  ? ''
+                                  : lService.currency) +
                               (srService.minPrice.isNotEmpty
                                   ? MoneyFormatter(
                                           amount:
@@ -188,9 +188,9 @@ class FilterBottomSheet extends StatelessWidget {
                                       .output
                                       .withoutFractionDigits
                                   : startRange.output.withoutFractionDigits) +
-                              (lService.currencyRTL ? '' : lService.currency) +
-                              '-' +
                               (lService.currencyRTL ? lService.currency : '') +
+                              '-' +
+                              (lService.currencyRTL ? '' : lService.currency) +
                               (srService.maxPrice.isNotEmpty
                                   ? MoneyFormatter(
                                           amount:
@@ -198,7 +198,7 @@ class FilterBottomSheet extends StatelessWidget {
                                       .output
                                       .withoutFractionDigits
                                   : endRange.output.withoutFractionDigits) +
-                              (lService.currencyRTL ? '' : lService.currency));
+                              (lService.currencyRTL ? lService.currency : ''));
                         }),
                       );
                     })
@@ -235,7 +235,18 @@ class FilterBottomSheet extends StatelessWidget {
                     srData.rangevalue.end.round().toString(),
                   ),
                   onChanged: (RangeValues values) {
-                    srData.setRangeValues(values);
+                    if (values.start >
+                            Provider.of<CategoriesDataService>(context,
+                                    listen: false)
+                                .minPrice ||
+                        values.end <
+                            Provider.of<CategoriesDataService>(context,
+                                    listen: false)
+                                .maxPrice) {
+                      print(values.end);
+                      srData.setRangeValues(values);
+                      return;
+                    }
                   },
                 );
               }),

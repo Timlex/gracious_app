@@ -90,6 +90,11 @@ class _SplashScreenState extends State<SplashScreen> {
   initiateAutoSignIn(BuildContext context) async {
     // await Future.delayed(Duration(milliseconds: 900));
 
+    // try {
+    //   await Provider.of<AppStringService>(context, listen: false)
+    //       .fetchTranslatedStrings();
+    // } catch (e) {}
+
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
       snackBar(

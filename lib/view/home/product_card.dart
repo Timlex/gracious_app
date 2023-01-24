@@ -13,10 +13,10 @@ import '../../view/utils/constant_styles.dart';
 class ProductCard extends StatelessWidget {
   final int _id;
   final String title;
-  final int price;
+  final num price;
   final double campaignPercentage;
   final String imgUrl;
-  final int discountPrice;
+  final num discountPrice;
   final bool isCartable;
   bool popFirst;
   bool popProductList;
@@ -215,7 +215,7 @@ class ProductCard extends StatelessWidget {
                                     context,
                                     _id,
                                     title,
-                                    discountPrice,
+                                    discountPrice.toDouble(),
                                     imgUrl,
                                     isCartable,
                                   )));
@@ -238,8 +238,8 @@ class ProductCard extends StatelessWidget {
                   const SizedBox(height: 10),
                   discAmountRow(
                       context,
-                      discountPrice,
-                      price,
+                      discountPrice.toInt(),
+                      price.toInt(),
                       Provider.of<LanguageService>(context, listen: false)
                           .currency),
                   const SizedBox(height: 10),
@@ -256,8 +256,8 @@ class ProductCard extends StatelessWidget {
                                       context,
                                       _id,
                                       title,
-                                      discountPrice,
-                                      discountPrice,
+                                      discountPrice.toDouble(),
+                                      discountPrice.toDouble(),
                                       campaignPercentage,
                                       1,
                                       imgUrl);

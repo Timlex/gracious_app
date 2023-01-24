@@ -17,6 +17,8 @@ class OrderDetails extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Provider.of<OrderDetailsService>(context, listen: false)
+        .fetchOrderDetails(tracker);
     // final tracker =
     // (ModalRoute.of(context)!.settings.arguments! as List)[0] as String;
     return Scaffold(

@@ -48,7 +48,7 @@ class ProductDetailsModel {
                 title: x['title'],
                 price: x['price'],
                 imgUrl: x['img_url'],
-                discountPrice: x['discount_price'],
+                discountPrice: x['discount_price'] ?? 0,
                 campaignPercentage: x['campaign_percentage'],
                 isCartAble: x['is_cart_able'],
               ))),
@@ -194,8 +194,8 @@ class Product {
   dynamic subCategoryId;
   String image;
   String productImageGallery;
-  int price;
-  int salePrice;
+  num price;
+  num salePrice;
   dynamic taxPercentage;
   String uom;
   int unit;
@@ -457,8 +457,8 @@ class InventoryDetail {
   int soldCount;
   DateTime createdAt;
   DateTime updatedAt;
-  ProductColorElement productColor;
-  ProductColorElement productSize;
+  ProductColorElement? productColor;
+  ProductColorElement? productSize;
   List<IncludedAttribute> includedAttributes;
 
   factory InventoryDetail.fromJson(Map<String, dynamic> json) =>
@@ -477,8 +477,12 @@ class InventoryDetail {
         soldCount: json["sold_count"],
         createdAt: DateTime.parse(json["created_at"]),
         updatedAt: DateTime.parse(json["updated_at"]),
-        productColor: ProductColorElement.fromJson(json["product_color"]),
-        productSize: ProductColorElement.fromJson(json["product_size"]),
+        productColor: json["product_color"] == null
+            ? null
+            : ProductColorElement.fromJson(json["product_color"]),
+        productSize: json["product_size"] == null
+            ? null
+            : ProductColorElement.fromJson(json["product_size"]),
         includedAttributes: List<IncludedAttribute>.from(
             json["included_attributes"]
                 .map((x) => IncludedAttribute.fromJson(x))),
@@ -497,8 +501,8 @@ class InventoryDetail {
         "sold_count": soldCount,
         "created_at": createdAt.toIso8601String(),
         "updated_at": updatedAt.toIso8601String(),
-        "product_color": productColor.toJson(),
-        "product_size": productSize.toJson(),
+        "product_color": productColor!.toJson(),
+        "product_size": productSize!.toJson(),
         "included_attributes":
             List<dynamic>.from(includedAttributes.map((x) => x.toJson())),
       };
@@ -703,8 +707,8 @@ class RelatedProduct {
   int prdId;
   String title;
   String imgUrl;
-  int price;
-  int? discountPrice;
+  num price;
+  num? discountPrice;
   dynamic campaignPercentage;
   bool? isCartAble;
   String? badge;

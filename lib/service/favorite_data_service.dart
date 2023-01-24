@@ -18,7 +18,7 @@ class FavoriteDataService with ChangeNotifier {
     return _favoriteItems.containsKey(id);
   }
 
-  void toggleFavorite(BuildContext context, int id, String title, int price,
+  void toggleFavorite(BuildContext context, int id, String title, double price,
       String imgUrl, bool isCartable) async {
     if (_favoriteItems.containsKey(id.toString())) {
       deleteFavoriteItem(id, context);

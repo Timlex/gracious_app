@@ -123,8 +123,8 @@ class PlusMinusCart extends StatelessWidget {
                       builder: (context, lService, child) {
                     return Text(
                       lService.currencyRTL
-                          ? '${Provider.of<ProductDetailsService>(context).productSalePrice * Provider.of<ProductDetailsService>(context).quantity}${lService.currency}'
-                          : '${lService.currency}${Provider.of<ProductDetailsService>(context).productSalePrice * Provider.of<ProductDetailsService>(context).quantity}',
+                          ? '${(Provider.of<ProductDetailsService>(context).productSalePrice * Provider.of<ProductDetailsService>(context).quantity).toStringAsFixed(2)}${lService.currency}'
+                          : '${lService.currency}${(Provider.of<ProductDetailsService>(context).productSalePrice * Provider.of<ProductDetailsService>(context).quantity).toStringAsFixed(2)}',
                       style: TextStyle(
                         fontSize: 13,
                         color: cc.pureWhite,

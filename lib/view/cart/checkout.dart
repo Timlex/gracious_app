@@ -771,8 +771,8 @@ class Checkout extends StatelessWidget {
               Consumer<LanguageService>(builder: (context, lService, child) {
                 return Text(
                   lService.currencyRTL
-                      ? '${(e['price'] as int) * (e['quantity'] as int)}${lService.currency}'
-                      : '${lService.currency}${(e['price'] as int) * (e['quantity'] as int)}',
+                      ? '${(e['price'] as double) * (e['quantity'] as int)}${lService.currency}'
+                      : '${lService.currency}${(e['price'] as double) * (e['quantity'] as int)}',
                   style: TextThemeConstrants.greyHint13Eclipse,
                 );
               })

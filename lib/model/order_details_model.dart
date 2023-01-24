@@ -272,8 +272,8 @@ class Product {
   int id;
   String title;
   String image;
-  int price;
-  String salePrice;
+  num price;
+  num salePrice;
   String badge;
   String slug;
   String attributes;
@@ -286,9 +286,9 @@ class Product {
         title: json["title"],
         image: json["image"],
         price: json["price"],
-        salePrice: (json["sale_price"] is int)
-            ? (json["sale_price"].toString())
-            : json["sale_price"],
+        salePrice: (json["sale_price"] is num)
+            ? (json["sale_price"])
+            : num.parse(json["sale_price"]),
         badge: json["badge"],
         slug: json["slug"],
         attributes: json["attributes"],

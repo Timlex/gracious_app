@@ -280,7 +280,8 @@ class ProductDetails extends StatelessWidget {
                                               context,
                                               product.id,
                                               product.title,
-                                              pService.productSalePrice,
+                                              pService.productSalePrice
+                                                  .toDouble(),
                                               product.image,
                                               pService.productDetails!
                                                   .productInventorySet.isEmpty);
@@ -326,15 +327,16 @@ class ProductDetails extends StatelessWidget {
                                                 const SizedBox(height: 17),
                                                 discountAmountRow(
                                                     context,
-                                                    pService.productSalePrice,
-                                                    product.price,
+                                                    pService.productSalePrice
+                                                        .toDouble(),
+                                                    product.price.toDouble(),
                                                     campDisc: product
                                                         .campaignPercentage),
                                               ],
                                             ),
                                           ),
                                           SizedBox(
-                                            width: screenWidth / 3,
+                                            width: screenWidth / 3.2,
                                             height: 60,
                                             child: Column(
                                               mainAxisAlignment:
@@ -521,7 +523,7 @@ class ProductDetails extends StatelessWidget {
                                                 products.prdId,
                                                 products.title,
                                                 products.price,
-                                                products.discountPrice as int,
+                                                products.discountPrice ?? 0,
                                                 (products.campaignPercentage)
                                                     .toDouble(),
                                                 products.imgUrl,
@@ -565,8 +567,8 @@ class ProductDetails extends StatelessWidget {
                                         context,
                                         product.id,
                                         product.title,
-                                        pService.productSalePrice,
-                                        pService.productSalePrice,
+                                        pService.productSalePrice.toDouble(),
+                                        pService.productSalePrice.toDouble(),
                                         0.0,
                                         pService.quantity,
                                         pService.additionalInfoImage ??
@@ -789,7 +791,8 @@ class ProductDetails extends StatelessWidget {
     );
   }
 
-  Widget discountAmountRow(BuildContext context, int discountAmount, int amount,
+  Widget discountAmountRow(
+      BuildContext context, double discountAmount, double amount,
       {campDisc}) {
     return Row(
       children: [

@@ -32,10 +32,12 @@ class LanguageService with ChangeNotifier {
     final url = Uri.parse('$baseApiUrl/site_currency_symbol');
     // try {
     final response = await http.get(url);
-    print(response.body);
     if (response.statusCode == 200) {
       currency = jsonDecode(response.body)['symbol'];
-      currencyRTL = jsonDecode(response.body)['direction'] == 'rtl';
+
+      currencyRTL = jsonDecode(response.body)['direction'] != null
+          ? jsonDecode(response.body)['direction'] == 'rtl'
+          : false;
       notifyListeners();
     } else {
       // print('something went wrong');

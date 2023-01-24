@@ -6,6 +6,8 @@ import '../../model/sub_category_model.dart';
 import '../../service/common_service.dart';
 import 'package:http/http.dart' as http;
 
+import '../model/product_details_model.dart';
+
 class CategoriesDataService with ChangeNotifier {
   List<Category> categorydataList = [];
   String selectedCategorieId = '';
@@ -17,7 +19,20 @@ class CategoriesDataService with ChangeNotifier {
   double minPrice = 0;
   double maxPrice = 0;
 
+  get globalUserToken => null;
+
   setSelectedCategory(value) async {
+    var header = {
+      //if header type is application/json then the data should be in jsonEncode method
+      "Accept": "application/json",
+      'Content-Type': 'application/json',
+      "Authorization": "Bearer $globalUserToken",
+    };
+    final url = Uri.parse('$baseApiUrl/product/208');
+
+    // try {
+    final response = await http.get(url, headers: header);
+    var data = ProductDetailsModel.fromJson(jsonDecode(response.body));
     selectedCategorieId = value;
     subCategorydataList = null;
     loading = true;
@@ -89,6 +104,7 @@ class CategoriesDataService with ChangeNotifier {
       url,
     );
     if (response.statusCode == 200) {
+      print(response.body);
       final data = jsonDecode(response.body);
       minPrice = data['min_price'].toDouble();
       maxPrice = data['max_price'].toDouble();

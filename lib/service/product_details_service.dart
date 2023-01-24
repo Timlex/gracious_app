@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'package:crypto/crypto.dart';
 
 import 'package:flutter/cupertino.dart';
 import '../../model/product_details_model.dart';
@@ -16,7 +15,7 @@ class ProductDetailsService with ChangeNotifier {
   bool reviewExpand = false;
   bool cartAble = false;
   bool reviewing = false;
-  int productSalePrice = 0;
+  num productSalePrice = 0;
   int quantity = 1;
   String? additionalInfoImage;
   String? selectedInventoryHash;

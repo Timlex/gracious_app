@@ -16,11 +16,11 @@ class CartDataService with ChangeNotifier {
     return clist;
   }
 
-  int calculateSubtotal() {
-    int sum = 0;
+  double calculateSubtotal() {
+    double sum = 0;
     _cartItems!.forEach((key, value) {
       value.forEach((element) {
-        sum += (element['price'] as int) * (element['quantity'] as int);
+        sum += (element['price'] as double) * (element['quantity'] as int);
       });
     });
     return sum;
@@ -124,9 +124,17 @@ class CartDataService with ChangeNotifier {
     notifyListeners();
   }
 
-  void addCartItem(BuildContext context, int id, String title, int price,
-      int discountPrice, double campaignPercentage, int quantity, String imgUrl,
-      {String? hash, inventorySet}) async {
+  void addCartItem(
+      BuildContext context,
+      int id,
+      String title,
+      double price,
+      double discountPrice,
+      double campaignPercentage,
+      int quantity,
+      String imgUrl,
+      {String? hash,
+      inventorySet}) async {
     // print(inventorySet);
     Map<String, List<Map<String, Object?>>>? map = {
       id.toString(): [

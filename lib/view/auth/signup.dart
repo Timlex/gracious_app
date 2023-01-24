@@ -77,7 +77,8 @@ class SignUp extends StatelessWidget {
               if (emaiText!.isEmpty) {
                 return asProvider.getString('Enter your email');
               }
-              if (EmailValidator.validate(emaiText)) {
+              print(EmailValidator.validate(emaiText.trim()));
+              if (!EmailValidator.validate(emaiText.trim())) {
                 return asProvider.getString('Enter a valid email');
               }
               return null;

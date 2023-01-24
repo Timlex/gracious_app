@@ -2,9 +2,7 @@
 <resources>
    
 <string name="facebook_app_id">1121768181758307</string>
-<!-- <string name="fb_login_protocol_scheme">fb1121768181758307</string> -->
 <string name="facebook_client_token">a6a1ddc770d8fe4808f7b075e73e2c21</string>
-<!-- <string name= "app_name">Grenmart</string> -->
 
 
 </resources>

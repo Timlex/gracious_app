@@ -55,8 +55,8 @@ class Datum {
   String title;
   String imgUrl;
   double campaignPercentage;
-  int price;
-  int discountPrice;
+  num price;
+  num discountPrice;
   // List<dynamic> attributes;
   String? badge;
   bool campaignProduct;

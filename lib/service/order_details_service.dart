@@ -14,7 +14,7 @@ class OrderDetailsService with ChangeNotifier {
         Uri.parse('$baseApiUrl/user/order-list/${id.replaceAll('#', '')}');
     final header = {'Authorization': 'Bearer $globalUserToken'};
     final response = await http.get(url, headers: header);
-
+    orderDetailsModel = OrderDetailsModel.fromJson(jsonDecode(response.body));
     if (response.statusCode == 200) {
       print(response.body);
       orderDetailsModel = OrderDetailsModel.fromJson(jsonDecode(response.body));

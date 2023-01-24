@@ -167,6 +167,7 @@ Widget customIconButton(String iconTitle, String iconName,
 }
 
 PreferredSizeWidget helloAppBar(BuildContext context) {
+  print(asProvider.getString('Hello'));
   return AppBar(
     elevation: 0,
     backgroundColor: ConstantColors().pureWhite,
