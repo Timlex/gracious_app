@@ -9,8 +9,8 @@ class DbHelper {
     return sql.openDatabase(path.join(dbpath, '$dbName.db'), version: 1,
         onCreate: (db, version) {
       db.execute(dbName == 'cart'
-          ? 'CREATE TABLE $dbName(id INTEGER PRIMARY KEY, productId INTEGER, data TEXT NOT NULL)'
-          : 'CREATE TABLE $dbName(id INTEGER PRIMARY KEY, productId INTEGER, title TEXT NOT NULL, price FLOAT, imgUrl TEXT, isCartable INTEGER)');
+          ? 'CREATE TABLE $dbName(id INTEGER PRIMARY KEY, productId String, data TEXT NOT NULL)'
+          : 'CREATE TABLE $dbName(id INTEGER PRIMARY KEY, productId String, title TEXT NOT NULL, price FLOAT, imgUrl TEXT, isCartable INTEGER)');
     });
   }
 
@@ -30,7 +30,7 @@ class DbHelper {
   }
 
   static Future<void> updateQuantity(
-      String table, int productId, Map<String, dynamic> data) async {
+      String table, productId, Map<String, dynamic> data) async {
     final db = await DbHelper.database(table);
     db.update(
       table,
@@ -45,7 +45,7 @@ class DbHelper {
     db.delete(table);
   }
 
-  static Future<void> deleteDbSI(String table, int id) async {
+  static Future<void> deleteDbSI(String table, id) async {
     final db = await DbHelper.database(table);
 
     db.delete(

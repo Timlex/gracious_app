@@ -35,9 +35,11 @@ class ProductCardDataService with ChangeNotifier {
         featureNoData = featuredCardProductsList.isEmpty;
         notifyListeners();
       } else {
+        featureNoData = true;
         //something went wrong
       }
     } catch (error) {
+      featureNoData = true;
       print(error);
 
       rethrow;
@@ -51,48 +53,53 @@ class ProductCardDataService with ChangeNotifier {
     print('get featured products ran');
     final url = Uri.parse('$baseApiUrl/campaign/product');
 
-    // try {
     final response = await http.get(url);
 
-    if (response.statusCode == 200) {
-      var data = CampaignProductModel.fromJson(jsonDecode(response.body));
-      campaignCardProductList = data.products;
-      campaignInfo = data.campaignInfo;
+    try {
+      if (response.statusCode == 200) {
+        var data = CampaignProductModel.fromJson(jsonDecode(response.body));
+        campaignCardProductList = data.products;
+        campaignInfo = data.campaignInfo;
 
-      // print(featuredCardProductsList[0].prdId);
-      // print(countryDropdownList);
+        // print(featuredCardProductsList[0].prdId);
+        // print(countryDropdownList);
 
-      featureNoData = false;
+        campaignNoData = campaignCardProductList.isEmpty;
+        notifyListeners();
+      }
+      campaignNoData = true;
+      notifyListeners();
+    } catch (e) {
+      campaignNoData = true;
       notifyListeners();
     }
-    featureNoData = true;
-    notifyListeners();
   }
 
   Future fetchCapmaignPageProductData({id}) async {
     print('get featured products ran-------------$id');
     final url = Uri.parse('$baseApiUrl/campaign/product/${id ?? ''}');
 
-    // try {print
-    final response = await http.get(url);
+    try {
+      final response = await http.get(url);
+      if (response.statusCode == 200) {
+        var data = CampaignProductModel.fromJson(jsonDecode(response.body));
+        campaignPageProductList = data.products;
+        campaignPageInfo = data.campaignInfo;
 
-    if (response.statusCode == 200) {
-      var data = CampaignProductModel.fromJson(jsonDecode(response.body));
-      campaignPageProductList = data.products;
-      campaignPageInfo = data.campaignInfo;
+        // print(featuredCardProductsList[0].prdId);
+        // print(countryDropdownList);
+        campaignNoData = campaignPageProductList.isEmpty;
 
-      // print(featuredCardProductsList[0].prdId);
-      // print(countryDropdownList);
-      campaignNoData = false;
-
+        notifyListeners();
+      }
+      campaignNoData = true;
       notifyListeners();
-    }
-    campaignNoData = true;
-    notifyListeners();
-    // } catch (error) {
-    //   print(error);
+    } catch (error) {
+      print(error);
+      campaignNoData = true;
+      notifyListeners();
 
-    //   rethrow;
-    // }
+      // rethrow;
+    }
   }
 }

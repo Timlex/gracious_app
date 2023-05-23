@@ -1,8 +1,9 @@
-import 'package:badges/badges.dart';
+import 'package:badges/badges.dart' as badge;
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gren_mart/view/utils/constant_name.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+// import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 
 import '../../service/cart_data_service.dart';
@@ -36,16 +37,17 @@ class HomeFront extends StatelessWidget {
     }
     if (_navigationIndex == 1) {
       return AppBar(
+        systemOverlayStyle: SystemUiOverlayStyle.dark,
         elevation: 0,
         leading: Consumer<SearchResultDataService>(
             builder: (context, srService, child) {
           return IconButton(
               onPressed: () {
                 FocusScope.of(context).unfocus();
-                showMaterialModalBottomSheet(
+                showModalBottomSheet(
                   context: context,
                   builder: (context) => SingleChildScrollView(
-                    controller: ModalScrollController.of(context),
+                    // controller: ModalScrollController.of(context),
                     child: const FilterBottomSheet(),
                   ),
                 );
@@ -133,6 +135,7 @@ class HomeFront extends StatelessWidget {
     }
     if (_navigationIndex == 2) {
       return AppBar(
+        systemOverlayStyle: SystemUiOverlayStyle.dark,
         elevation: 0,
         centerTitle: true,
         title: Text(
@@ -144,6 +147,7 @@ class HomeFront extends StatelessWidget {
     }
     if (_navigationIndex == 3) {
       return AppBar(
+        systemOverlayStyle: SystemUiOverlayStyle.dark,
         elevation: 0,
         centerTitle: true,
         title: Text(
@@ -286,7 +290,7 @@ class HomeFront extends StatelessWidget {
             ),
             icon:
                 Consumer<CartDataService>(builder: (context, cartData, child) {
-              return Badge(
+              return badge.Badge(
                 showBadge: cartData.cartList!.isEmpty ? false : true,
                 badgeContent: Text(
                   cartData.totalQuantity().toString(),
@@ -308,7 +312,7 @@ class HomeFront extends StatelessWidget {
             ),
             icon: Consumer<FavoriteDataService>(
                 builder: (context, favoriteData, child) {
-              return Badge(
+              return badge.Badge(
                 showBadge: favoriteData.favoriteItems.isEmpty ? false : true,
                 badgeContent: Text(
                   favoriteData.favoriteItems.length.toString(),

@@ -161,7 +161,7 @@ class Datum {
     required this.status,
   });
 
-  int id;
+  dynamic id;
   String name;
   String status;
 

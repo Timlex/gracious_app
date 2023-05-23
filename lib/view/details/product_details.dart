@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:card_swiper/card_swiper.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
@@ -75,6 +76,7 @@ class ProductDetails extends StatelessWidget {
                                 elevation: 1,
                                 foregroundColor: cc.greyHint,
                                 expandedHeight: screenWidth / 1.37,
+                                systemOverlayStyle: SystemUiOverlayStyle.dark,
                                 pinned: true,
                                 flexibleSpace: FlexibleSpaceBar(
                                   background: pService.additionalInfoImage !=
@@ -82,7 +84,10 @@ class ProductDetails extends StatelessWidget {
                                           product.productGalleryImage.isEmpty
                                       ? Container(
                                           width: double.infinity,
-                                          margin: EdgeInsets.only(top: 40),
+                                          margin: EdgeInsets.only(
+                                              top: MediaQuery.of(context)
+                                                  .padding
+                                                  .top),
                                           child: GestureDetector(
                                             onTap: () {
                                               Navigator.of(context).push(
@@ -138,8 +143,10 @@ class ProductDetails extends StatelessWidget {
                                             return Hero(
                                               tag: id,
                                               child: Container(
-                                                margin:
-                                                    EdgeInsets.only(top: 40),
+                                                margin: EdgeInsets.only(
+                                                    top: MediaQuery.of(context)
+                                                        .padding
+                                                        .top),
                                                 child: GestureDetector(
                                                   onTap: () {
                                                     Navigator.of(context).push(
@@ -431,7 +438,7 @@ class ProductDetails extends StatelessWidget {
                                                                             Text('${e.replaceFirst('_', ' ')}:',
                                                                                 style: attributeTitleTheme),
                                                                             const SizedBox(width: 10),
-                                                                            Expanded(child: SingleChildScrollView(scrollDirection: Axis.horizontal, child: Row(children: generateDynamicAttrribute(context, pdService, pdService.allAtrributes[e])))),
+                                                                            Expanded(child: SingleChildScrollView(scrollDirection: Axis.horizontal, child: Row(children: generateDynamicAttrribute(context, pdService, e, pdService.allAttributes[e])))),
                                                                           ],
                                                                         ),
                                                                       ))
@@ -574,9 +581,9 @@ class ProductDetails extends StatelessWidget {
                                         pService.additionalInfoImage ??
                                             product.image,
                                         inventorySet:
-                                            pService.selecteInventorySet == {}
+                                            pService.selectedInventorySet == {}
                                                 ? null
-                                                : pService.selecteInventorySet,
+                                                : pService.selectedInventorySet,
                                         hash: pService.selectedInventoryHash,
                                       );
                                     }
@@ -602,7 +609,7 @@ class ProductDetails extends StatelessWidget {
     selectedValue,
   ) {
     final selectedInventorySetIndex = pdService.selectedInventorySetIndex;
-    final allAtrributes = pdService.allAtrributes;
+    final allAtrributes = pdService.allAttributes;
     setProductInventorySet(List<String>? value) {
       // print(
       //     selectedInventorySetIndex.toString() + 'inven........................');
@@ -634,8 +641,8 @@ class ProductDetails extends StatelessWidget {
     }
   }
 
-  List<Widget> generateDynamicAttrribute(
-      BuildContext context, ProductDetailsService pdService, mapdata) {
+  List<Widget> generateDynamicAttrribute(BuildContext context,
+      ProductDetailsService pdService, fieldName, mapdata) {
     RegExp hex = RegExp(
         r'^#([\da-f]{3}){1,2}$|^#([\da-f]{4}){1,2}$|(rgb|hsl)a?\((\s*-?\d+%?\s*,){2}(\s*-?\d+%?\s*,?\s*\)?)(,\s*(0?\.\d+)?|1)?\)');
 
@@ -649,7 +656,7 @@ class ProductDetails extends StatelessWidget {
             if (pdService.selectedAttributes.contains(elemnt)) {
               return;
             }
-            if (!pdService.isInSet(mapdata[elemnt])) {
+            if (!pdService.isInSet(fieldName, elemnt, mapdata[elemnt])) {
               pdService.clearSelection();
             }
             pdService.setProductInventorySet(mapdata[elemnt]);
@@ -659,7 +666,7 @@ class ProductDetails extends StatelessWidget {
             pdService.addAdditionalPrice();
           },
           child: hex.hasMatch(elemnt)
-              ? colorBox(context, pdService, elemnt, mapdata)
+              ? colorBox(context, pdService, fieldName, elemnt, mapdata)
               : Stack(
                   children: [
                     Container(
@@ -702,7 +709,7 @@ class ProductDetails extends StatelessWidget {
                           ),
                         ),
                       ),
-                    if (!pdService.isInSet(mapdata[elemnt]))
+                    if (!pdService.isInSet(fieldName, elemnt, mapdata[elemnt]))
                       Container(
                         margin: EdgeInsets.only(
                             top: 3,
@@ -731,8 +738,8 @@ class ProductDetails extends StatelessWidget {
     return list;
   }
 
-  Widget colorBox(
-      BuildContext context, ProductDetailsService pdService, value, mapdata) {
+  Widget colorBox(BuildContext context, ProductDetailsService pdService,
+      fieldName, value, mapdata) {
     final color = value.replaceAll('#', '0xff');
     return Stack(
       children: [
@@ -768,7 +775,7 @@ class ProductDetails extends StatelessWidget {
               ),
             ),
           ),
-        if (!pdService.isInSet(mapdata[value]))
+        if (!pdService.isInSet(fieldName, value, mapdata[value]))
           Container(
             height: 40,
             width: 40,

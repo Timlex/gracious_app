@@ -1,6 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import '../../service/country_dropdown_service.dart';
 import '../../service/state_dropdown_service.dart';
@@ -49,7 +48,7 @@ class SettingScreenAppBar extends StatelessWidget {
                       Provider.of<CountryDropdownService>(context,
                               listen: false)
                           .setCountryIdAndValue(
-                              userData.userProfileData!.country!.name);
+                              userData.userProfileData!.country!.name, context);
                     }
                     if (userData.userProfileData!.state != null) {
                       Provider.of<StateDropdownService>(context, listen: false)

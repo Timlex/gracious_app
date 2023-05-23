@@ -53,7 +53,7 @@ class Datum {
     required this.endDate,
   });
 
-  int id;
+  dynamic id;
   String title;
   String subtitle;
   String image;

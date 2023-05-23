@@ -12,7 +12,7 @@ class OrderDetailsTile extends StatelessWidget {
   final String image;
   final double price;
   final int quantity;
-  final int id;
+  final dynamic id;
 
   OrderDetailsTile(
       this.title, this.price, this.quantity, this.image, this.subTitle, this.id,

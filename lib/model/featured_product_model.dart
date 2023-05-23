@@ -43,7 +43,7 @@ class Datum {
     required this.isCartAble,
   });
 
-  int prdId;
+  dynamic prdId;
   String title;
   String imgUrl;
   int campaignPercentage;
@@ -61,8 +61,11 @@ class Datum {
         title: json["title"],
         imgUrl: json["img_url"],
         campaignPercentage: json["campaign_percentage"],
-        price: json["price"],
-        discountPrice: json["discount_price"],
+        price:
+            json["price"] is String ? num.parse(json["price"]) : json["price"],
+        discountPrice: json["discount_price"] is String
+            ? num.parse(json["discount_price"])
+            : json["discount_price"],
         attributes: json["attributes"],
         badge: json["badge"],
         campaignProduct: json["campaign_product"],

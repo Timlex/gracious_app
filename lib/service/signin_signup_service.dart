@@ -127,10 +127,9 @@ class SignInSignUpService with ChangeNotifier {
       String termsAndCondition) async {
     toggleLaodingSpinner(value: true);
     toggleRememberPass(true);
-    if (0 != 1) {
-      print(
-          '$email + $password $name + $username + $phoneNumber + $countryCode + $countryId, $stateId + $termsAndCondition');
-    }
+    print(
+        '$email + $password $name + $username + $phoneNumber + $countryCode + $countryId, $stateId + $termsAndCondition');
+
     final url = Uri.parse('$baseApiUrl/register');
 
     try {

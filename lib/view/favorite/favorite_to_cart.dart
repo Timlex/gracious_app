@@ -9,7 +9,7 @@ import '../../service/product_details_service.dart';
 import '../utils/constant_styles.dart';
 
 class FavoriteToCart extends StatelessWidget {
-  final int id;
+  final dynamic id;
   bool fetchAttribute = true;
 
   FavoriteToCart(this.id, {Key? key}) : super(key: key);
@@ -126,8 +126,9 @@ class FavoriteToCart extends StatelessWidget {
                                                           generateDynamicAttrribute(
                                                               context,
                                                               pdService,
+                                                              e,
                                                               pdService
-                                                                      .allAtrributes[
+                                                                      .allAttributes[
                                                                   e]))),
                                             ),
                                           ],
@@ -164,9 +165,9 @@ class FavoriteToCart extends StatelessWidget {
                                   pdService.additionalInfoImage ??
                                       product.image,
                                   inventorySet:
-                                      pdService.selecteInventorySet == {}
+                                      pdService.selectedInventorySet == {}
                                           ? null
-                                          : pdService.selecteInventorySet,
+                                          : pdService.selectedInventorySet,
                                   hash: pdService.selectedInventoryHash,
                                 );
                                 Provider.of<FavoriteDataService>(context,
@@ -188,8 +189,8 @@ class FavoriteToCart extends StatelessWidget {
     );
   }
 
-  List<Widget> generateDynamicAttrribute(
-      BuildContext context, ProductDetailsService pdService, mapdata) {
+  List<Widget> generateDynamicAttrribute(BuildContext context,
+      ProductDetailsService pdService, fieldName, mapdata) {
     RegExp hex = RegExp(
         r'^#([\da-f]{3}){1,2}$|^#([\da-f]{4}){1,2}$|(rgb|hsl)a?\((\s*-?\d+%?\s*,){2}(\s*-?\d+%?\s*,?\s*\)?)(,\s*(0?\.\d+)?|1)?\)');
 
@@ -203,7 +204,7 @@ class FavoriteToCart extends StatelessWidget {
             if (pdService.selectedAttributes.contains(elemnt)) {
               return;
             }
-            if (!pdService.isInSet(mapdata[elemnt])) {
+            if (!pdService.isInSet(fieldName, elemnt, mapdata[elemnt])) {
               pdService.clearSelection();
             }
             pdService.setProductInventorySet(mapdata[elemnt]);
@@ -213,7 +214,7 @@ class FavoriteToCart extends StatelessWidget {
             pdService.addAdditionalPrice();
           },
           child: hex.hasMatch(elemnt)
-              ? colorBox(context, pdService, elemnt, mapdata)
+              ? colorBox(context, pdService, fieldName, elemnt, mapdata)
               : Stack(
                   children: [
                     Container(
@@ -256,7 +257,7 @@ class FavoriteToCart extends StatelessWidget {
                           ),
                         ),
                       ),
-                    if (!pdService.isInSet(mapdata[elemnt]))
+                    if (!pdService.isInSet(fieldName, elemnt, mapdata[elemnt]))
                       Container(
                         margin: EdgeInsets.only(
                             top: 3,
@@ -290,7 +291,7 @@ class FavoriteToCart extends StatelessWidget {
     selectedValue,
   ) {
     final selectedInventorySetIndex = pdService.selectedInventorySetIndex;
-    final allAtrributes = pdService.allAtrributes;
+    final allAtrributes = pdService.allAttributes;
     setProductInventorySet(List<String>? value) {
       // print(
       //     selectedInventorySetIndex.toString() + 'inven........................');
@@ -322,8 +323,8 @@ class FavoriteToCart extends StatelessWidget {
     }
   }
 
-  Widget colorBox(
-      BuildContext context, ProductDetailsService pdService, value, mapdata) {
+  Widget colorBox(BuildContext context, ProductDetailsService pdService,
+      fieldName, value, mapdata) {
     final color = value.replaceAll('#', '0xff');
     return Stack(
       children: [
@@ -359,7 +360,7 @@ class FavoriteToCart extends StatelessWidget {
               ),
             ),
           ),
-        if (!pdService.isInSet(mapdata[value]))
+        if (!pdService.isInSet(fieldName, value, mapdata[value]))
           Container(
             height: 40,
             width: 40,

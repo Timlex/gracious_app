@@ -50,7 +50,7 @@ class Users {
   String state;
   DateTime updatedAt;
   DateTime createdAt;
-  int id;
+  dynamic id;
 
   factory Users.fromJson(Map<String, dynamic> json) => Users(
         name: json["name"],

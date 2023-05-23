@@ -1,3 +1,4 @@
+import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:gren_mart/service/campaign_card_list_service.dart';
 import 'package:gren_mart/service/language_service.dart';
@@ -6,9 +7,10 @@ import 'package:gren_mart/view/utils/constant_styles.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:connectivity_plus/connectivity_plus.dart';
+// import 'package:connectivity_plus/connectivity_plus.dart';
 
 import '../../db/database_helper.dart';
+import '../../service/app_string_service.dart';
 import '../../service/cart_data_service.dart';
 import '../../service/favorite_data_service.dart';
 import '../../service/poster_campaign_slider_service.dart';
@@ -90,10 +92,10 @@ class _SplashScreenState extends State<SplashScreen> {
   initiateAutoSignIn(BuildContext context) async {
     // await Future.delayed(Duration(milliseconds: 900));
 
-    // try {
-    //   await Provider.of<AppStringService>(context, listen: false)
-    //       .fetchTranslatedStrings();
-    // } catch (e) {}
+    try {
+      await Provider.of<AppStringService>(context, listen: false)
+          .fetchTranslatedStrings();
+    } catch (e) {}
 
     var connection = await Connectivity().checkConnectivity();
     if (connection == ConnectivityResult.none) {
@@ -121,7 +123,7 @@ class _SplashScreenState extends State<SplashScreen> {
     }
 
     await Provider.of<LanguageService>(context, listen: false)
-        .setLanguage()
+        .setLanguage(context)
         .onError((error, stackTrace) {
       return;
     });

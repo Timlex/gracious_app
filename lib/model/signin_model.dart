@@ -35,7 +35,7 @@ class Users {
     required this.username,
   });
 
-  int id;
+  dynamic id;
   String? username;
 
   factory Users.fromJson(Map<String, dynamic> json) => Users(

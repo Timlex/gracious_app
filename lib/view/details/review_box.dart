@@ -13,7 +13,7 @@ import '../utils/text_themes.dart';
 class ReviewBox extends StatelessWidget {
   bool expanded;
   void Function()? onPressed;
-  int id;
+  dynamic id;
   ReviewBox(this.expanded, this.id, {this.onPressed, Key? key})
       : super(key: key);
 

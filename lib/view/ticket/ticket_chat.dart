@@ -3,6 +3,7 @@ import 'dart:math';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import '../../service/language_service.dart';
 import '../../service/ticket_chat_service.dart';
@@ -46,6 +47,7 @@ class TicketChat extends StatelessWidget {
         },
         child: Scaffold(
           appBar: AppBar(
+            systemOverlayStyle: SystemUiOverlayStyle.dark,
             elevation: 1,
             foregroundColor: cc.blackColor,
             centerTitle: true,

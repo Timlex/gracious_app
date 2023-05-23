@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import '../../service/language_service.dart';
@@ -16,6 +17,7 @@ class AppBars {
       bool? centerTitle = true,
       List<Widget>? actions}) {
     return AppBar(
+        systemOverlayStyle: SystemUiOverlayStyle.dark,
         elevation: hasElevation ? 1 : 0,
         foregroundColor: cc.blackColor,
         centerTitle: centerTitle,

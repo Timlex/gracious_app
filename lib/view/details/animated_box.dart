@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_html/flutter_html.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 import '../utils/constant_styles.dart';
 import '../../view/utils/constant_name.dart';
@@ -45,13 +43,13 @@ class AnimatedBox extends StatelessWidget {
       descriptionList = [
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 28),
-          child: Html(
-              data: data!.values.first,
-              onLinkTap: (url, _, map, e) {
-                if (url != null) {
-                  launchUrl(Uri.parse(url));
-                }
-              }),
+          // child: Html(
+          //     data: data!.values.first,
+          //     onLinkTap: (url, _, map, e) {
+          //       if (url != null) {
+          //         launchUrl(Uri.parse(url));
+          //       }
+          //     }),
         ),
       ];
       return descriptionList;

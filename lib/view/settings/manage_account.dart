@@ -14,9 +14,10 @@ import 'package:provider/provider.dart';
 import '../../service/country_dropdown_service.dart';
 import '../../service/state_dropdown_service.dart';
 import '../auth/custom_text_field.dart';
-import '../intro/custom_dropdown.dart';
 import '../utils/constant_styles.dart';
+import '../utils/country_dropdown.dart';
 import '../utils/image_view.dart';
+import '../utils/state_dropdown.dart';
 
 class ManageAccount extends StatelessWidget {
   static const routeName = 'manage account';
@@ -227,7 +228,7 @@ class ManageAccount extends StatelessWidget {
                           if (emailText!.isEmpty) {
                             return asProvider.getString('Enter your email');
                           }
-                          if (EmailValidator.validate(emailText)) {
+                          if (!EmailValidator.validate(emailText)) {
                             return asProvider.getString('Enter a valid email');
                           }
                           return null;
@@ -295,62 +296,113 @@ class ManageAccount extends StatelessWidget {
                       // ),
 
                       textFieldTitle(asProvider.getString('Country')),
-                      // const SizedBox(height: 8),
                       Consumer<CountryDropdownService>(
-                        builder: (context, cProvider, child) => cProvider
-                                .countryDropdownList.isNotEmpty
-                            ? CustomDropdown(
-                                asProvider.getString('Country'),
-                                cProvider.countryDropdownList,
-                                (newValue) async {
-                                  cProvider.setCountryIdAndValue(newValue);
-                                  maData.setCountryID(
-                                      cProvider.selectedCountryId.toString());
-                                  await Provider.of<StateDropdownService>(
-                                          context,
-                                          listen: false)
-                                      .getStates(cProvider.selectedCountryId);
-                                  maData.setStateId(
-                                      Provider.of<StateDropdownService>(context,
-                                              listen: false)
-                                          .selectedStateId
-                                          .toString());
-                                },
-                                value: cProvider.selectedCountry,
-                              )
-                            : SizedBox(
-                                height: 10,
-                                child: Center(
-                                  child: FittedBox(
-                                    child: CircularProgressIndicator(
-                                      color: cc.greyHint,
-                                    ),
-                                  ),
-                                )),
+                        builder: (context, cProvider, child) => CountryDropdown(
+                          hintText: "Select Country",
+                          textStyle: TextStyle(color: cc.greyHint),
+                          iconColor: cc.greyHint,
+                          selectedValue: cProvider.selectedCountry,
+                          onChanged: (newValue) async {
+                            cProvider.setCountryIdAndValue(newValue, context);
+                            maData.setCountryID(
+                                cProvider.selectedCountryId.toString());
+                            // await Provider.of<StateDropdownService>(context,
+                            //         listen: false)
+                            //     .getStates(cProvider.selectedCountryId);
+                            // maData.setStateId(Provider.of<StateDropdownService>(
+                            //         context,
+                            //         listen: false)
+                            //     .selectedStateId
+                            //     .toString());
+                          },
+                          textFieldHint: "Search Country",
+                        ),
                       ),
-                      textFieldTitle(asProvider.getString('State')),
-                      Consumer<StateDropdownService>(
-                          builder: ((context, sModel, child) =>
-                              (sModel.isLoading
-                                  ? SizedBox(
-                                      height: 10,
-                                      child: Center(
-                                        child: FittedBox(
-                                          child: CircularProgressIndicator(
-                                            color: cc.greyHint,
-                                          ),
-                                        ),
-                                      ))
-                                  : CustomDropdown(
-                                      asProvider.getString('State'),
-                                      sModel.stateDropdownList,
-                                      (newValue) {
-                                        sModel.setStateIdAndValue(newValue);
-                                        maData.setStateId(
-                                            sModel.selectedStateId.toString());
-                                      },
-                                      value: sModel.selectedState,
-                                    )))),
+                      // const SizedBox(height: 8),
+                      // Consumer<CountryDropdownService>(
+                      //   builder: (context, cProvider, child) => cProvider
+                      //           .countryDropdownList.isNotEmpty
+                      //       ? CustomDropdown(
+                      //           asProvider.getString('Country'),
+                      //           cProvider.countryDropdownList,
+                      //           (newValue) async {
+                      //             cProvider.setCountryIdAndValue(newValue);
+                      //             maData.setCountryID(
+                      //                 cProvider.selectedCountryId.toString());
+                      //             await Provider.of<StateDropdownService>(
+                      //                     context,
+                      //                     listen: false)
+                      //                 .getStates(cProvider.selectedCountryId);
+                      //             maData.setStateId(
+                      //                 Provider.of<StateDropdownService>(context,
+                      //                         listen: false)
+                      //                     .selectedStateId
+                      //                     .toString());
+                      //           },
+                      //           value: cProvider.selectedCountry,
+                      //         )
+                      //       : SizedBox(
+                      //           height: 10,
+                      //           child: Center(
+                      //             child: FittedBox(
+                      //               child: CircularProgressIndicator(
+                      //                 color: cc.greyHint,
+                      //               ),
+                      //             ),
+                      //           )),
+                      // ),
+                      Consumer<CountryDropdownService>(
+                          builder: (context, cProvider, child) => cProvider
+                                      .selectedCountry !=
+                                  null
+                              ? textFieldTitle(asProvider.getString('State'))
+                              : SizedBox()),
+                      Consumer<CountryDropdownService>(
+                          builder: (context, cProvider, child) =>
+                              cProvider.selectedCountry != null
+                                  ? Consumer<StateDropdownService>(
+                                      builder: ((context, sProvider, child) =>
+                                          StateDropdown(
+                                            hintText: "Select State",
+                                            textStyle:
+                                                TextStyle(color: cc.greyHint),
+                                            iconColor: cc.greyHint,
+                                            selectedValue:
+                                                sProvider.selectedState,
+                                            onChanged: (newValue) {
+                                              sProvider
+                                                  .setStateIdAndValue(newValue);
+                                              maData.setStateId(sProvider
+                                                  .selectedStateId
+                                                  .toString());
+                                            },
+                                            textFieldHint: "Search State",
+                                          )))
+                                  : SizedBox()),
+
+                      // textFieldTitle(asProvider.getString('State')),
+                      // Consumer<StateDropdownService>(
+                      //     builder: ((context, sModel, child) =>
+                      //         (sModel.isLoading
+                      //             ? SizedBox(
+                      //                 height: 10,
+                      //                 child: Center(
+                      //                   child: FittedBox(
+                      //                     child: CircularProgressIndicator(
+                      //                       color: cc.greyHint,
+                      //                     ),
+                      //                   ),
+                      //                 ))
+                      //             : CustomDropdown(
+                      //                 asProvider.getString('State'),
+                      //                 sModel.stateDropdownList,
+                      //                 (newValue) {
+                      //                   sModel.setStateIdAndValue(newValue);
+                      //                   maData.setStateId(
+                      //                       sModel.selectedStateId.toString());
+                      //                 },
+                      //                 value: sModel.selectedState,
+                      //               )))),
                       textFieldTitle(asProvider.getString('City')),
                       // const SizedBox(height: 8),
                       CustomTextField(

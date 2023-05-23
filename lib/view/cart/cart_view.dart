@@ -128,7 +128,7 @@ class CartView extends StatelessWidget {
     cService.cartList!.forEach((key, value) {
       value.forEach((e) {
         list.add(CartTile(
-          e['id'] as int,
+          e['id'],
           e['title'] as String,
           e['imgUrl'] as String,
           e['quantity'] as int,

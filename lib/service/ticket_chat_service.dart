@@ -198,7 +198,7 @@ class OnlyMessagesModel {
     required this.updatedAt,
   });
 
-  int id;
+  dynamic id;
   String message;
   Notify? notify;
   String? attachment;

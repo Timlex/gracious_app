@@ -13,7 +13,6 @@ import '../../view/auth/remember.dart';
 import '../../view/auth/enter_email_reset_pass.dart';
 import '../../view/auth/signup.dart';
 import '../../view/utils/constant_colors.dart';
-import '../../service/country_dropdown_service.dart';
 import '../utils/constant_styles.dart';
 
 class Auth extends StatefulWidget {
@@ -104,6 +103,20 @@ class _AuthState extends State<Auth> {
 
       return;
     }
+    if (authTextControllers.country == null) {
+      snackBar(context, asProvider.getString('Please select your country'),
+          backgroundColor: cc.orange);
+      ssService.toggleLaodingSpinner(value: false);
+
+      return;
+    }
+    if (authTextControllers.state == null) {
+      snackBar(context, asProvider.getString('Please select your state'),
+          backgroundColor: cc.orange);
+      ssService.toggleLaodingSpinner(value: false);
+
+      return;
+    }
     ssService.toggleLaodingSpinner(value: true);
     await ssService
         .signUpOption(
@@ -151,7 +164,7 @@ class _AuthState extends State<Auth> {
 
   @override
   Widget build(BuildContext context) {
-    countryStateInitiate(context);
+    // countryStateInitiate(context);
     return WillPopScope(
       onWillPop: () async {
         // DateTime now = DateTime.now();
@@ -501,8 +514,8 @@ class _AuthState extends State<Auth> {
     );
   }
 
-  countryStateInitiate(BuildContext context) {
-    Provider.of<CountryDropdownService>(context, listen: false)
-        .getContries(context, notFromAuth: false);
-  }
+  // countryStateInitiate(BuildContext context) {
+  //   Provider.of<CountryDropdownService>(context, listen: false)
+  //       .getContries(context, notFromAuth: false);
+  // }
 }

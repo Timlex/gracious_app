@@ -17,8 +17,7 @@ class ALLCampProductFromLink extends StatelessWidget {
   Widget build(BuildContext context) {
     initiateDeviceSize(context);
     controller.addListener((() => scrollListener(context)));
-    final routeData =
-        ModalRoute.of(context)!.settings.arguments as List<String>;
+    final routeData = ModalRoute.of(context)!.settings.arguments as List;
     final id = routeData[0];
     final title = routeData[1];
     double cardWidth = screenWidth / 3.3;

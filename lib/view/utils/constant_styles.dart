@@ -1,21 +1,18 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:gren_mart/service/navigation_bar_helper_service.dart';
 import 'package:gren_mart/service/user_profile_service.dart';
-import '../../service/auth_text_controller_service.dart';
-import '../../service/cart_data_service.dart';
 import '../../service/country_dropdown_service.dart';
 import '../../service/language_service.dart';
 import '../../service/shipping_addresses_service.dart';
-import '../../service/signin_signup_service.dart';
 import '../../service/state_dropdown_service.dart';
 import '../../view/utils/constant_colors.dart';
 import '../../view/utils/constant_name.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:provider/provider.dart';
 
-import '../auth/auth.dart';
 import '../cart/payment_status.dart';
 import '../order/orders.dart';
 import '../settings/change_password.dart';
@@ -169,6 +166,7 @@ Widget customIconButton(String iconTitle, String iconName,
 PreferredSizeWidget helloAppBar(BuildContext context) {
   print(asProvider.getString('Hello'));
   return AppBar(
+    systemOverlayStyle: SystemUiOverlayStyle.dark,
     elevation: 0,
     backgroundColor: ConstantColors().pureWhite,
     title: Padding(
@@ -413,39 +411,16 @@ void showTopSlider(BuildContext context, UserProfileService uService) {
             width: MediaQuery.of(context).size.width,
             padding: EdgeInsets.all(20),
             decoration: BoxDecoration(
-                color: Colors.white, borderRadius: BorderRadius.circular(15)),
+                color: Colors.white,
+                borderRadius: BorderRadius.only(
+                    bottomLeft: Radius.circular(20),
+                    bottomRight: Radius.circular(20))),
             child: Card(
                 elevation: 0,
                 child: ListView(
                   physics: NeverScrollableScrollPhysics(),
                   shrinkWrap: true,
                   children: <Widget>[
-                    // Row(
-                    //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    //   children: [
-                    //     Column(
-                    //       crossAxisAlignment: CrossAxisAlignment.start,
-                    //       children: [
-
-                    //         SizedBox(
-                    //           height: 3,
-                    //         ),
-                    //         Text(uService.userProfileData.username,
-                    //             style: TextThemeConstrants.greyHint13),
-                    //         SizedBox(
-                    //           height: 3,
-                    //         ),
-                    //         Text(uService.userProfileData.email,
-                    //             style: TextThemeConstrants.greyHint13),
-                    //         SizedBox(
-                    //           height: 3,
-                    //         ),
-                    //         Text(uService.userProfileData.phone,
-                    //             style: TextThemeConstrants.greyHint13)
-                    //       ],
-                    //     ),
-                    //     Column(
-                    //       children: [
                     Row(
                       children: [
                         GestureDetector(
@@ -461,8 +436,9 @@ void showTopSlider(BuildContext context, UserProfileService uService) {
                               if (userData.userProfileData!.country != null) {
                                 Provider.of<CountryDropdownService>(context,
                                         listen: false)
-                                    .setCountryIdAndValue(userData
-                                        .userProfileData!.country!.name);
+                                    .setCountryIdAndValue(
+                                        userData.userProfileData!.country!.name,
+                                        context);
                               }
                               if (userData.userProfileData!.state != null) {
                                 Provider.of<StateDropdownService>(context,
@@ -564,7 +540,8 @@ void showTopSlider(BuildContext context, UserProfileService uService) {
                           Provider.of<CountryDropdownService>(context,
                                   listen: false)
                               .setCountryIdAndValue(
-                                  userData.userProfileData!.country!.name);
+                                  userData.userProfileData!.country!.name,
+                                  context);
                         }
                         if (userData.userProfileData!.state != null) {
                           Provider.of<StateDropdownService>(context,
@@ -583,8 +560,8 @@ void showTopSlider(BuildContext context, UserProfileService uService) {
                     }),
                     topSlidrOption(context,
                         optionText: asProvider.getString('Change Password'),
-                        svgpath: 'assets/images/icons/change_pass.svg',
-                        onTap: () {
+                        // svgpath: 'assets/images/icons/change_pass.svg',
+                        imagePath: 'assets/images/change_pass.png', onTap: () {
                       Navigator.of(context).pushNamed(ChangePassword.routeName);
                     }),
                     const SizedBox(height: 15),
@@ -593,48 +570,16 @@ void showTopSlider(BuildContext context, UserProfileService uService) {
                       child: customBorderButton(
                         asProvider.getString('Log Out'),
                         () {
-                          Provider.of<NavigationBarHelperService>(context,
+                          Provider.of<UserProfileService>(context,
                                   listen: false)
-                              .setNavigationIndex(0);
-                          Provider.of<SignInSignUpService>(context,
-                                  listen: false)
-                              .signOut();
-                          Provider.of<AuthTextControllerService>(context,
-                                      listen: false)
-                                  .setEmail(Provider.of<SignInSignUpService>(
-                                          context,
-                                          listen: false)
-                                      .email) ??
-                              '';
-                          Provider.of<AuthTextControllerService>(context,
-                                  listen: false)
-                              .setPass(Provider.of<SignInSignUpService>(context,
-                                          listen: false)
-                                      .password ??
-                                  '');
-                          Provider.of<SignInSignUpService>(context,
-                                  listen: false)
-                              .toggleLaodingSpinner(value: false);
-                          Provider.of<SignInSignUpService>(context,
-                                  listen: false)
-                              .getUserData();
-                          Provider.of<CartDataService>(context, listen: false)
-                              .emptyCart();
-                          globalUserToken = null;
-                          Navigator.of(context).pushAndRemoveUntil(
-                              MaterialPageRoute(builder: (context) => Auth()),
-                              (Route<dynamic> route) => false);
+                              .userLogout();
+                          Navigator.pop(context);
                         },
                         width: double.infinity,
                       ),
                     ),
                   ],
-                )
-                //             ],
-                //           )
-                //         ],
-                //       ),
-                ),
+                )),
           ),
         ],
       );
@@ -666,7 +611,7 @@ Widget topSlidrOption(
     onTap: onTap,
     child: Container(
       width: screenWidth / 2.3,
-      height: 40,
+      height: 48,
       padding: EdgeInsets.all(10),
       margin: EdgeInsets.symmetric(vertical: 3),
       decoration: BoxDecoration(

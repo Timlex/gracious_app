@@ -27,7 +27,7 @@ class AllProducts extends StatelessWidget {
     doPop = routeData.length == 3;
     double cardWidth = screenWidth / 3.3;
     double cardHeight = screenHight / 5.4 < 144 ? 130 : screenHight / 5.4;
-    controller.addListener((() => scrollListener(context)));
+    // controller.addListener((() => scrollListener(context)));
     return Scaffold(
       appBar: AppBars().appBarTitled(
           context, title ?? asProvider.getString('All Products'), () {

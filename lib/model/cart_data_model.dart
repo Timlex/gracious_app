@@ -1,8 +1,8 @@
 class Cart {
-  final int id;
+  final dynamic id;
   String title;
-  int price;
-  int discountPrice;
+  double price;
+  double discountPrice;
   double campaignPercentage;
   int quantity;
   String imgUrl;

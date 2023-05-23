@@ -11,7 +11,7 @@ import '../../view/utils/constant_name.dart';
 import '../../view/utils/constant_styles.dart';
 
 class ProductCard extends StatelessWidget {
-  final int _id;
+  final dynamic _id;
   final String title;
   final num price;
   final double campaignPercentage;

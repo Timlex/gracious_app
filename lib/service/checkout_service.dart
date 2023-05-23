@@ -15,13 +15,11 @@ import 'package:http/http.dart' as http;
 
 import '../view/utils/text_themes.dart';
 import 'cart_data_service.dart';
-import 'country_dropdown_service.dart';
 import 'cupon_discount_service.dart';
 import 'payment_gateaway_service.dart';
 import 'shipping_addresses_service.dart';
 import 'shipping_zone_service.dart';
 import '../view/order/order_details.dart' as order;
-import 'state_dropdown_service.dart';
 
 class CheckoutService with ChangeNotifier {
   CheckoutModel? checkoutModel;
@@ -40,9 +38,7 @@ class CheckoutService with ChangeNotifier {
     termsAcondi = false;
   }
 
-  Future<void> imageSelector(
-    BuildContext context,
-  ) async {
+  Future<void> imageSelector() async {
     try {
       final pickedFile =
           await ImagePicker.platform.pickImage(source: ImageSource.gallery);
@@ -108,26 +104,6 @@ class CheckoutService with ChangeNotifier {
                       Navigator.of(context)
                           .pushNamed(ManageAccount.routeName)
                           .then((value) {
-                        Provider.of<CountryDropdownService>(context,
-                                listen: false)
-                            .getContries(context)
-                            .then((value) {
-                          final userData = Provider.of<UserProfileService>(
-                              context,
-                              listen: false);
-                          if (userData.userProfileData!.country != null) {
-                            Provider.of<CountryDropdownService>(context,
-                                    listen: false)
-                                .setCountryIdAndValue(
-                                    userData.userProfileData!.country!.name);
-                          }
-                          if (userData.userProfileData!.state != null) {
-                            Provider.of<StateDropdownService>(context,
-                                    listen: false)
-                                .setStateIdAndValue(
-                                    userData.userProfileData!.state!.name);
-                          }
-                        });
                         Provider.of<ShippingAddressesService>(context,
                                 listen: false)
                             .fetchUsersShippingAddress(context,
@@ -142,6 +118,16 @@ class CheckoutService with ChangeNotifier {
               ],
             );
           });
+      throw '';
+    }
+    if (cartData.calculateSubtotal() <
+        (shippingZone.selectedOption?.options.minimumOrderAmount ?? 0)) {
+      snackBar(
+          context,
+          asProvider.getString("Order total does not meet minimum for") +
+                  ' ${shippingZone.selectedOption?.name}' ??
+              "",
+          backgroundColor: cc.orange);
       throw '';
     }
     if (selectedGateway.name == 'paytm') {
@@ -174,7 +160,8 @@ class CheckoutService with ChangeNotifier {
           : userData.phone ?? '',
       'shipping_address_id':
           notCurrent ? shippingAddress.selectedAddress!.id.toString() : '',
-      'selected_shipping_option': shippingZone.selectedOption!.id.toString(),
+      'selected_shipping_option':
+          shippingZone.selectedOption?.id.toString() ?? "",
       'tax_amount': taxAmount.toString(),
       'coupon': couponData.couponText ?? '',
       'agree': 'on',

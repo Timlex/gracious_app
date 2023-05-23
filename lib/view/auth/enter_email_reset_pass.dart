@@ -23,6 +23,7 @@ class ResetPassEmail extends StatelessWidget {
     await resetData.getOtp(value).then((value) {
       resetData.toggleLoadingSpinner(value: true);
       if (value) {
+        Navigator.pop(context);
         Navigator.of(context).pushNamed(EnterOTP.routeName);
         return;
       }

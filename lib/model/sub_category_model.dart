@@ -32,10 +32,10 @@ class Subcategory {
     this.imageUrl,
   });
 
-  int id;
+  dynamic id;
   String title;
   String? image;
-  int categoryId;
+  dynamic categoryId;
   String? imageUrl;
 
   factory Subcategory.fromJson(Map<String, dynamic> json) => Subcategory(

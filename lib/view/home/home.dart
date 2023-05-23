@@ -505,7 +505,7 @@ class Home extends StatelessWidget {
                           products.campaignCardProductList[index].badge,
                         ),
                       )
-                    : (products.campaignNoData
+                    : (products.campaignCardProductList.isEmpty
                         ? SizedBox()
                         : loadingProgressBar());
               }),

@@ -1,4 +1,4 @@
-import 'package:badges/badges.dart';
+import 'package:badges/badges.dart' as badge;
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:gren_mart/view/utils/constant_colors.dart';
@@ -76,7 +76,7 @@ class CustomNavigationBar extends StatelessWidget {
             ),
             icon:
                 Consumer<CartDataService>(builder: (context, cartData, child) {
-              return Badge(
+              return badge.Badge(
                 showBadge: cartData.cartList!.isEmpty ? false : true,
                 badgeContent: Text(
                   cartData.totalQuantity().toString(),
@@ -98,7 +98,7 @@ class CustomNavigationBar extends StatelessWidget {
             ),
             icon: Consumer<FavoriteDataService>(
                 builder: (context, favoriteData, child) {
-              return Badge(
+              return badge.Badge(
                 showBadge: favoriteData.favoriteItems.isEmpty ? false : true,
                 badgeContent: Text(
                   favoriteData.favoriteItems.length.toString(),

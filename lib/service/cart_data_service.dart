@@ -60,7 +60,7 @@ class CartDataService with ChangeNotifier {
     return map;
   }
 
-  void addItem(BuildContext context, int id,
+  void addItem(BuildContext context, id,
       {int? extraQuantity, inventorySet}) async {
     _cartItems![id.toString()]!.forEach((element) {
       if (element['id'] == id &&
@@ -78,7 +78,7 @@ class CartDataService with ChangeNotifier {
 
     DbHelper.updateQuantity(
       'cart',
-      id,
+      id.toString(),
       {
         'data': jsonEncode({
           id.toString(): cartList![id.toString()],
@@ -89,7 +89,7 @@ class CartDataService with ChangeNotifier {
     notifyListeners();
   }
 
-  void minusItem(int id, BuildContext context, {inventorySet}) {
+  void minusItem(id, BuildContext context, {inventorySet}) {
     _cartItems![id.toString()]!.forEach((element) {
       if (element['id'] == id &&
           (element.containsValue(inventorySet) ||
@@ -113,7 +113,7 @@ class CartDataService with ChangeNotifier {
 
     DbHelper.updateQuantity(
       'cart',
-      id,
+      id.toString(),
       {
         'data': jsonEncode({
           id.toString(): cartList![id.toString()],
@@ -126,7 +126,7 @@ class CartDataService with ChangeNotifier {
 
   void addCartItem(
       BuildContext context,
-      int id,
+      dynamic id,
       String title,
       double price,
       double discountPrice,
@@ -139,7 +139,7 @@ class CartDataService with ChangeNotifier {
     Map<String, List<Map<String, Object?>>>? map = {
       id.toString(): [
         {
-          'id': id,
+          'id': id.toString(),
           'title': title,
           'price': price,
           'imgUrl': imgUrl,
@@ -151,12 +151,12 @@ class CartDataService with ChangeNotifier {
     };
     if (!_cartItems!.containsKey(id.toString())) {
       await DbHelper.insert('cart', {
-        'productId': id,
+        'productId': id.toString(),
         'data': jsonEncode(map),
       });
       _cartItems![id.toString()] = [
         {
-          'id': id,
+          'id': id.toString(),
           'title': title,
           'price': price,
           'imgUrl': imgUrl,
@@ -181,7 +181,8 @@ class CartDataService with ChangeNotifier {
     print(inventorySet);
     print('have data on cart--$haveData');
     if (_cartItems!.containsKey(id.toString()) && haveData) {
-      addItem(context, id, extraQuantity: quantity, inventorySet: inventorySet);
+      addItem(context, id.toString(),
+          extraQuantity: quantity, inventorySet: inventorySet);
       notifyListeners();
       return;
     }
@@ -189,7 +190,7 @@ class CartDataService with ChangeNotifier {
     // try {
     if (_cartItems!.containsKey(id.toString()) && !haveData) {
       _cartItems![id.toString()]!.add({
-        'id': id,
+        'id': id.toString(),
         'title': title,
         'price': price,
         'imgUrl': imgUrl,
@@ -199,7 +200,7 @@ class CartDataService with ChangeNotifier {
       });
       DbHelper.updateQuantity(
         'cart',
-        id,
+        id.toString(),
         {
           'data': jsonEncode({
             id.toString(): cartList![id.toString()],
@@ -237,7 +238,7 @@ class CartDataService with ChangeNotifier {
     // _cartList = dataList;
   }
 
-  void deleteCartItem(int id, {inventorySet}) async {
+  void deleteCartItem(id, {inventorySet}) async {
     print(inventorySet);
     if (!cartList!.containsKey(id.toString())) {
       return;
@@ -258,7 +259,7 @@ class CartDataService with ChangeNotifier {
       }
     });
     _cartItems![id.toString()]!.remove(targetedElement);
-    DbHelper.updateQuantity('cart', id, {
+    DbHelper.updateQuantity('cart', id.toString(), {
       'data': jsonEncode({id.toString(): cartList![id.toString()]})
     });
 
@@ -280,7 +281,6 @@ class CartDataService with ChangeNotifier {
       cartList!.forEach((key, value) async {
         final url = Uri.parse('$baseApiUrl/product/$key');
 
-        // try {
         final response = await http.get(url);
         if (response.statusCode != 200) {
           deleteCartItem(int.parse(key));

@@ -34,7 +34,7 @@ class Category {
     this.imageUrl,
   });
 
-  int id;
+  dynamic id;
   String title;
   String? image;
   String? imageUrl;

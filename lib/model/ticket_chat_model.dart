@@ -44,7 +44,7 @@ class AllMessage {
     required this.updatedAt,
   });
 
-  int id;
+  dynamic id;
   String message;
   String notify;
   dynamic attachment;
@@ -94,7 +94,7 @@ class TicketDetails {
     required this.updatedAt,
   });
 
-  int id;
+  dynamic id;
   String title;
   String? via;
   dynamic operatingSystem;

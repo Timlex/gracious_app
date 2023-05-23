@@ -47,9 +47,9 @@ class _ResetPasswordState extends State<ResetPassword> {
                   .newPassword)
           .then((value) {
         if (value == null) {
-          Navigator.of(context).pushAndRemoveUntil(
-              MaterialPageRoute(builder: (context) => Auth()),
-              (Route<dynamic> route) => false);
+          snackBar(context, asProvider.getString("Password reset succeeded"),
+              backgroundColor: cc.primaryColor);
+          Navigator.pop(context);
           return;
         }
         snackBar(context, value, backgroundColor: cc.orange);

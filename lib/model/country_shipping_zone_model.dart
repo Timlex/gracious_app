@@ -20,22 +20,24 @@ class CountryShippingZoneModel {
     required this.defaultShippingCost,
   });
 
-  int tax;
+  num tax;
   int? taxPercentage;
   List<State> states;
   List<DefaultShipping> shippingOptions;
   DefaultShipping defaultShipping;
-  int defaultShippingCost;
+  num defaultShippingCost;
 
   factory CountryShippingZoneModel.fromJson(Map<String, dynamic> json) =>
       CountryShippingZoneModel(
-        tax: json["tax"],
+        tax: json["tax"] is String ? num.parse(json["tax"]) : json["tax"],
         taxPercentage: json["tax_percentage"],
         states: List<State>.from(json["states"].map((x) => State.fromJson(x))),
         shippingOptions: List<DefaultShipping>.from(
             json["shipping_options"].map((x) => DefaultShipping.fromJson(x))),
         defaultShipping: DefaultShipping.fromJson(json["default_shipping"]),
-        defaultShippingCost: json["default_shipping_cost"],
+        defaultShippingCost: json["default_shipping_cost"] is String
+            ? num.tryParse(json["default_shipping_cost"]) ?? 0.0
+            : json["default_shipping_cost"] ?? 0.0,
       );
 
   Map<String, dynamic> toJson() => {
@@ -61,10 +63,10 @@ class DefaultShipping {
     required this.availableOptions,
   });
 
-  int id;
+  dynamic id;
   String name;
-  int zoneId;
-  int isDefault;
+  dynamic zoneId;
+  dynamic isDefault;
   DateTime createdAt;
   DateTime updatedAt;
   Options options;
@@ -105,21 +107,17 @@ class Options {
     required this.cost,
     required this.minimumOrderAmount,
     this.coupon,
-    required this.createdAt,
-    required this.updatedAt,
   });
 
-  int id;
+  dynamic id;
   String title;
-  int shippingMethodId;
-  int status;
-  int taxStatus;
+  dynamic shippingMethodId;
+  dynamic status;
+  dynamic taxStatus;
   String settingPreset;
-  int cost;
-  int minimumOrderAmount;
+  num cost;
+  num minimumOrderAmount;
   String? coupon;
-  DateTime createdAt;
-  DateTime updatedAt;
 
   factory Options.fromJson(Map<String, dynamic> json) => Options(
         id: json["id"],
@@ -128,11 +126,12 @@ class Options {
         status: json["status"],
         taxStatus: json["tax_status"],
         settingPreset: json["setting_preset"],
-        cost: json["cost"],
-        minimumOrderAmount: json["minimum_order_amount"],
+        cost:
+            json["cost"] is String ? num.tryParse(json["cost"]) : json["cost"],
+        minimumOrderAmount: json["minimum_order_amount"] is String
+            ? num.tryParse(json["minimum_order_amount"])
+            : json["minimum_order_amount"],
         coupon: json["coupon"],
-        createdAt: DateTime.parse(json["created_at"]),
-        updatedAt: DateTime.parse(json["updated_at"]),
       );
 
   Map<String, dynamic> toJson() => {
@@ -145,8 +144,6 @@ class Options {
         "cost": cost,
         "minimum_order_amount": minimumOrderAmount,
         "coupon": coupon,
-        "created_at": createdAt.toIso8601String(),
-        "updated_at": updatedAt.toIso8601String(),
       };
 }
 
@@ -156,7 +153,7 @@ class State {
     required this.name,
   });
 
-  int id;
+  dynamic id;
   String name;
 
   factory State.fromJson(Map<String, dynamic> json) => State(

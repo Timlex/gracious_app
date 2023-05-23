@@ -43,7 +43,7 @@ class Datum {
     required this.updatedAt,
   });
 
-  int id;
+  dynamic id;
   String name;
   String email;
   String phone;

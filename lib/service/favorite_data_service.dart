@@ -18,24 +18,24 @@ class FavoriteDataService with ChangeNotifier {
     return _favoriteItems.containsKey(id);
   }
 
-  void toggleFavorite(BuildContext context, int id, String title, double price,
+  void toggleFavorite(BuildContext context, id, String title, double price,
       String imgUrl, bool isCartable) async {
     if (_favoriteItems.containsKey(id.toString())) {
-      deleteFavoriteItem(id, context);
+      deleteFavoriteItem(id.toString(), context);
       _favoriteItems.remove(id);
       notifyListeners();
       return;
     }
 
     await DbHelper.insert('favorite', {
-      'productId': id,
+      'productId': id.toString(),
       'title': title,
       'price': price,
       'imgUrl': imgUrl,
       'isCartable': isCartable ? 0 : 1
     });
-    _favoriteItems.putIfAbsent(
-        id.toString(), () => Favorites(id, title, price, imgUrl, isCartable));
+    _favoriteItems.putIfAbsent(id.toString(),
+        () => Favorites(id.toString(), title, price, imgUrl, isCartable));
     snackBar(context, asProvider.getString('Item added to favorite.'));
     notifyListeners();
   }
@@ -55,7 +55,7 @@ class FavoriteDataService with ChangeNotifier {
     print('fetching favorite');
   }
 
-  void deleteFavoriteItem(int id, BuildContext context) async {
+  void deleteFavoriteItem(id, BuildContext context) async {
     await DbHelper.deleteDbSI('favorite', id);
     _favoriteItems.removeWhere((key, value) => value.id == id);
     snackBar(context, asProvider.getString('Item removed from favorite.'),

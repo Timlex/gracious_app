@@ -11,7 +11,7 @@ import '../../view/utils/constant_name.dart';
 import '../../service/cart_data_service.dart';
 
 class CartTile extends StatelessWidget {
-  final int id;
+  final dynamic id;
   final String name;
   final String image;
   final int quantity;

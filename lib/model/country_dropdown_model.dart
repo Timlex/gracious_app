@@ -11,33 +11,58 @@ String countryDropdownModelToJson(CountryDropdownModel data) =>
     json.encode(data.toJson());
 
 class CountryDropdownModel {
-  CountryDropdownModel({
-    required this.countries,
-  });
+  final Countries? countries;
 
-  List<Country> countries;
+  CountryDropdownModel({
+    this.countries,
+  });
 
   factory CountryDropdownModel.fromJson(Map<String, dynamic> json) =>
       CountryDropdownModel(
-        countries: List<Country>.from(
-            json["countries"].map((x) => Country.fromJson(x))),
+        countries: json["countries"] == null
+            ? null
+            : Countries.fromJson(json["countries"]),
       );
 
   Map<String, dynamic> toJson() => {
-        "countries": List<dynamic>.from(countries.map((x) => x.toJson())),
+        "countries": countries?.toJson(),
       };
 }
 
-class Country {
-  Country({
+class Countries {
+  final List<Datum>? data;
+  final String? nextPageUrl;
+
+  Countries({
+    this.data,
+    this.nextPageUrl,
+  });
+
+  factory Countries.fromJson(Map<String, dynamic> json) => Countries(
+        data: json["data"] == null
+            ? []
+            : List<Datum>.from(json["data"]!.map((x) => Datum.fromJson(x))),
+        nextPageUrl: json["next_page_url"],
+      );
+
+  Map<String, dynamic> toJson() => {
+        "data": data == null
+            ? []
+            : List<dynamic>.from(data!.map((x) => x.toJson())),
+        "next_page_url": nextPageUrl,
+      };
+}
+
+class Datum {
+  final int? id;
+  final String? name;
+
+  Datum({
     this.id,
     this.name,
   });
 
-  int? id;
-  String? name;
-
-  factory Country.fromJson(Map<String, dynamic> json) => Country(
+  factory Datum.fromJson(Map<String, dynamic> json) => Datum(
         id: json["id"],
         name: json["name"],
       );

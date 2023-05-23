@@ -12,8 +12,8 @@ import 'package:http/http.dart' as http;
 class ShippingZoneService with ChangeNotifier {
   CountryShippingZoneModel? countryShippingZoneData;
   StateShippingZoneModel? stateShippingZoneData;
-  int shippingCost = 0;
-  double taxParcentage = 0;
+  num shippingCost = 0;
+  num taxPercentage = 0;
   bool isLoading = true;
   bool noData = true;
   bool fetchStates = true;
@@ -23,6 +23,8 @@ class ShippingZoneService with ChangeNotifier {
   setSelectedOption(DefaultShipping value) {
     selectedOption = value;
     shippingCost = selectedOption!.availableOptions.cost;
+    print('Minimum order amount');
+    print(selectedOption?.availableOptions.minimumOrderAmount);
     notifyListeners();
   }
 
@@ -33,7 +35,7 @@ class ShippingZoneService with ChangeNotifier {
 
   resetChecout({backingout}) {
     shippingCost = 0;
-    taxParcentage = 0;
+    taxPercentage = 0;
     isLoading = true;
     shippingOptionsList = null;
     selectedOption = null;
@@ -49,11 +51,11 @@ class ShippingZoneService with ChangeNotifier {
   setTaxPercentage() {
     if (stateShippingZoneData!.taxPercentage == null) {
       print(countryShippingZoneData!.taxPercentage);
-      taxParcentage = (countryShippingZoneData!.taxPercentage ?? 0) / 100;
+      taxPercentage = (countryShippingZoneData!.taxPercentage ?? 0) / 100;
       return;
     }
     print(stateShippingZoneData!.taxPercentage);
-    taxParcentage = (stateShippingZoneData!.taxPercentage as double) / 100;
+    taxPercentage = (stateShippingZoneData?.taxPercentage ?? 0) / 100;
   }
 
   setShippingOptionList() {
@@ -82,22 +84,22 @@ class ShippingZoneService with ChangeNotifier {
     final subTotal = Provider.of<CartDataService>(context, listen: false)
         .calculateSubtotal();
     final discount = Provider.of<CuponDiscountService>(context).couponDiscount;
-    final taxMoney = taxParcentage * (subTotal + shippingCost);
+    final taxMoney = taxPercentage * (subTotal + shippingCost);
     return (subTotal - discount) + taxMoney + shippingCost;
   }
 
-  cuponTotal(BuildContext context) {
+  couponTotal(BuildContext context) {
     final subTotal = Provider.of<CartDataService>(context, listen: false)
         .calculateSubtotal();
     final discount = Provider.of<CuponDiscountService>(context).couponDiscount;
-    final taxMoney = taxParcentage * (subTotal + shippingCost);
+    final taxMoney = taxPercentage * (subTotal + shippingCost);
     return subTotal + taxMoney + shippingCost;
   }
 
   double taxMoney(BuildContext context) {
     final subTotal = Provider.of<CartDataService>(context, listen: false)
         .calculateSubtotal();
-    return taxParcentage * (subTotal + shippingCost);
+    return taxPercentage * (subTotal + shippingCost);
   }
 
   Future fetchContriesZone(id, stateId) async {
@@ -126,35 +128,39 @@ class ShippingZoneService with ChangeNotifier {
   Future fetchStatesZone(id) async {
     fetchStates = false;
     final url = Uri.parse('$baseApiUrl/state-info?id=$id');
-    // try {
-    print(url);
-    final response = await http.get(url);
-    if (response.statusCode == 200) {
-      var data = StateShippingZoneModel.fromJson(jsonDecode(response.body));
-      stateShippingZoneData = data;
-      if (stateShippingZoneData!.defaultShippingCost != 0) {
-        shippingCost = stateShippingZoneData!.defaultShippingCost;
+    try {
+      print(url);
+      final response = await http.get(url);
+      if (response.statusCode == 200) {
+        var data = StateShippingZoneModel.fromJson(jsonDecode(response.body));
+        stateShippingZoneData = data;
+        if (stateShippingZoneData!.defaultShippingCost != 0) {
+          shippingCost = stateShippingZoneData!.defaultShippingCost;
+          setShippingOptionList();
+          setTaxPercentage();
+          isLoading = false;
+          notifyListeners();
+          print('Minimum order amount');
+          print(selectedOption?.availableOptions.minimumOrderAmount);
+          return;
+        }
+        shippingCost = countryShippingZoneData!.defaultShippingCost;
         setShippingOptionList();
+        print('Minimum order amount');
+        print(selectedOption?.availableOptions.minimumOrderAmount);
+
         setTaxPercentage();
         isLoading = false;
         notifyListeners();
         return;
+      } else {
+        isLoading = false;
+        //something went wrong
       }
-      shippingCost = countryShippingZoneData!.defaultShippingCost;
-      setShippingOptionList();
+    } catch (error) {
+      print(error);
 
-      setTaxPercentage();
-      isLoading = false;
-      notifyListeners();
-      return;
-    } else {
-      isLoading = false;
-      //something went wrong
+      // rethrow;
     }
-    // } catch (error) {
-    //   print(error);
-
-    //   rethrow;
-    // }
   }
 }

@@ -21,17 +21,16 @@ class ProductDetailsService with ChangeNotifier {
   String? selectedInventoryHash;
   List<String> selectedInventorySetIndex = [];
   List<String> inventoryKeys = [];
-  Map<String, Map<String, List<String>>> allAtrributes = {};
+  Map<String, Map<String, List<String>>> allAttributes = {};
   List selectedAttributes = [];
   Map<String, List<Map<String, dynamic>>> inventorySet = {};
-  Map<String, dynamic> selecteInventorySet = {};
+  Map<String, dynamic> selectedInventorySet = {};
   bool refreshpage = false;
   int? selectedIndex;
   List<String> inventoryHash = [];
   bool loadingFailed = false;
 
   setProductInventorySet(List<String>? value) {
-    if (selectedInventorySetIndex != value) {}
     if (selectedInventorySetIndex.isEmpty) {
       selectedInventorySetIndex = value ?? [];
       notifyListeners();
@@ -42,6 +41,15 @@ class ProductDetailsService with ChangeNotifier {
       selectedInventorySetIndex = value;
       notifyListeners();
       return;
+    }
+    List<String> tempList = [];
+    if (selectedInventorySetIndex != value) {
+      tempList = selectedInventorySetIndex.where((v) {
+        return value!.contains(v);
+      }).toList();
+      if (tempList.isNotEmpty) {
+        selectedInventorySetIndex = tempList;
+      }
     }
   }
 
@@ -72,35 +80,41 @@ class ProductDetailsService with ChangeNotifier {
     print(selectedInventorySetIndex);
 
     bool setMatched = true;
-    for (int i = 0; i < selectedInventorySetIndex.length; i++) {
-      setMatched = true;
-      selecteInventorySet = productDetails!
-          .productInventorySet[int.parse(selectedInventorySetIndex[i])];
-      selecteInventorySet.values.forEach((e) {
-        print(i);
-        List<dynamic> confirmingSelectedDeta = selectedAttributes;
-        // confirmingSelectedDeta.add(selecteInventorySet['hash']);
-        // confirmingSelectedDeta.add(selecteInventorySet['Color_name']);
-        if (!confirmingSelectedDeta.contains(e)) {
-          setMatched = false;
+    if (selectedInventorySetIndex.length != 1) {
+      for (int i = 0; i < selectedInventorySetIndex.length; i++) {
+        setMatched = true;
+        selectedInventorySet = productDetails!
+            .productInventorySet[int.parse(selectedInventorySetIndex[i])];
+        for (var e in selectedInventorySet.values) {
+          List<dynamic> confirmingSelectedData = selectedAttributes;
+          if (!confirmingSelectedData.contains(e)) {
+            setMatched = false;
+          }
         }
-      });
-      final mapData = {};
+        final mapData = {};
 
-      if (setMatched) {
-        print('Inventory..............');
-        selectedIndex = i;
-        print(productDetails!
-            .productInventorySet[int.parse(selectedInventorySetIndex[i])]);
+        if (setMatched) {
+          print('Inventory..............');
+          selectedIndex = int.parse(selectedInventorySetIndex[i]);
 
-        break;
+          break;
+        }
       }
+    } else {
+      selectedInventorySet = selectedInventorySet = productDetails!
+          .productInventorySet[int.parse(selectedInventorySetIndex[0])];
+      List selectedInventorySetValues = selectedInventorySet.values.toList();
+      if (selectedAttributes.length != selectedInventorySetValues.length) {
+        for (var element in selectedInventorySetValues) {
+          if (!selectedAttributes.contains(element)) {
+            selectedAttributes.add(element);
+          }
+        }
+      }
+      selectedIndex = int.parse(selectedInventorySetIndex[0]);
     }
     if (setMatched) {
       selectedInventoryHash = inventoryHash[selectedIndex!];
-      // print('hash..............');
-      // print(selectedInventoryHash);
-      // print(productDetails!.productInventorySet[selectedIndex!]);
       productSalePrice +=
           productDetails!.additionalInfoStore![selectedInventoryHash] == null
               ? 0
@@ -114,8 +128,7 @@ class ProductDetailsService with ChangeNotifier {
       additionalInfoImage =
           additionalInfoImage == '' ? null : additionalInfoImage;
       cartAble = true;
-      selecteInventorySet.remove('hash');
-      // print(selecteInventorySet);
+      selectedInventorySet.remove('hash');
       notifyListeners();
       return;
     }
@@ -125,9 +138,12 @@ class ProductDetailsService with ChangeNotifier {
     }
     print('outside..............');
     cartAble = false;
-    productSalePrice = productDetails!.product.salePrice;
+    productDetails?.product.campaignProduct?.campaignPrice ??
+        productDetails?.product.salePrice ??
+        productDetails?.product.price ??
+        0.0;
     additionalInfoImage = null;
-    selecteInventorySet = {};
+    selectedInventorySet = {};
     selectedInventoryHash = null;
     notifyListeners();
   }
@@ -145,10 +161,20 @@ class ProductDetailsService with ChangeNotifier {
     notifyListeners();
   }
 
-  bool isInSet(List<String>? list) {
+  bool isInSet(fieldName, value, List<String>? list) {
     bool result = false;
     if (selectedInventorySetIndex.isEmpty) {
       result = true;
+    }
+    for (var element in allAttributes[fieldName]!.keys.toList()) {
+      if (selectedAttributes.contains(element) && value == element) {
+        result == true;
+        return true;
+      }
+      if (selectedAttributes.contains(element) && value != element) {
+        result == false;
+        return false;
+      }
     }
     for (var element in list ?? ['0']) {
       if (selectedInventorySetIndex.contains(element)) {
@@ -162,7 +188,10 @@ class ProductDetailsService with ChangeNotifier {
     selectedAttributes = [];
     additionalInfoImage = null;
     cartAble = false;
-    productSalePrice = productDetails!.product.salePrice;
+    productDetails?.product.campaignProduct?.campaignPrice ??
+        productDetails?.product.salePrice ??
+        productDetails?.product.price ??
+        0.0;
     selectedInventorySetIndex = [];
     selectedAttributes = [];
     notifyListeners();
@@ -219,7 +248,7 @@ class ProductDetailsService with ChangeNotifier {
     selectedInventorySetIndex = [];
     cartAble = false;
     // inventoryKeys = [];
-    allAtrributes = {};
+    allAttributes = {};
     selectedAttributes = [];
     reviewing = false;
     refreshpage = false;
@@ -258,6 +287,7 @@ class ProductDetailsService with ChangeNotifier {
       "Authorization": "Bearer $globalUserToken",
     };
     final url = Uri.parse('$baseApiUrl/product/$id');
+    print('$baseApiUrl/product/$id');
 
     // try {
     final response = await http.get(url, headers: header);
@@ -265,11 +295,15 @@ class ProductDetailsService with ChangeNotifier {
       reviewing = true;
       var data = ProductDetailsModel.fromJson(jsonDecode(response.body));
       productDetails = data;
-      productSalePrice = productDetails!.product.salePrice;
+      productSalePrice =
+          productDetails?.product.campaignProduct?.campaignPrice ??
+              productDetails?.product.salePrice ??
+              productDetails?.product.price ??
+              0.0;
       final productInvenSet = productDetails!.productInventorySet;
       productInvenSet.forEach((element) {
         inventoryHash.add(element['hash']);
-        element.remove('Color_name');
+        element.remove('Color');
         element.remove('hash');
         final keys = element.keys;
         for (var e in keys) {
@@ -289,11 +323,11 @@ class ProductDetailsService with ChangeNotifier {
             if (element.containsKey(e)) {
               map.putIfAbsent(element[e], () => []);
               // print(map);
-              if (allAtrributes.containsKey(e)) {
-                allAtrributes.update(
+              if (allAttributes.containsKey(e)) {
+                allAttributes.update(
                     e, (value) => addToMap(element[e], index, value));
               }
-              allAtrributes.putIfAbsent(e, () {
+              allAttributes.putIfAbsent(e, () {
                 return addToMap(element[e], index, map);
               });
             }

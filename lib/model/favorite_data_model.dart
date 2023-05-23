@@ -1,5 +1,5 @@
 class Favorites {
-  final int id;
+  final dynamic id;
   final String title;
   final double price;
   final String imgUrl;

@@ -62,7 +62,7 @@ class CheckoutModel {
   String? checkoutImagePath;
   DateTime updatedAt;
   DateTime createdAt;
-  int id;
+  dynamic id;
 
   factory CheckoutModel.fromJson(Map<String, dynamic> json) => CheckoutModel(
         name: json["name"],
@@ -145,7 +145,7 @@ class Elements {
     this.attributes,
   });
 
-  int id;
+  dynamic id;
   int quantity;
   Attributes? attributes;
 
@@ -179,7 +179,8 @@ class Attributes {
         mayo: json["Mayo"],
         cheese: json["Cheese"],
         sauce: json["Sauce"],
-        price: json["price"],
+        price:
+            json["price"] is String ? num.parse(json["price"]) : json["price"],
       );
 
   Map<String, dynamic> toJson() => {

@@ -186,11 +186,11 @@ class Product {
     required this.campaignPercentage,
   });
 
-  int id;
+  dynamic id;
   String title;
   String summary;
   String description;
-  int categoryId;
+  dynamic categoryId;
   dynamic subCategoryId;
   String image;
   String productImageGallery;
@@ -229,7 +229,9 @@ class Product {
         productImageGallery: json["product_image_gallery"],
         price: json["price"] is String
             ? double.parse(json["price"]).toInt()
-            : json["price"],
+            : json["price"] is String
+                ? num.parse(json["price"])
+                : json["price"],
         salePrice: json["sale_price"] is String
             ? double.parse(json["sale_price"]).toInt()
             : json["sale_price"],
@@ -312,7 +314,7 @@ class AdditionalInfo {
     this.updatedAt,
   });
 
-  int id;
+  dynamic id;
   int productId;
   String title;
   String text;
@@ -351,10 +353,10 @@ class Campaign {
     this.updatedAt,
   });
 
-  int id;
+  dynamic id;
   int productId;
   int campaignId;
-  String campaignPrice;
+  num? campaignPrice;
   int unitsForSale;
   DateTime startDate;
   DateTime endDate;
@@ -365,7 +367,9 @@ class Campaign {
         id: json["id"],
         productId: json["product_id"],
         campaignId: json["campaign_id"],
-        campaignPrice: json["campaign_price"],
+        campaignPrice: json["campaign_price"] is String
+            ? num.tryParse(json["campaign_price"])
+            : json["campaign_price"],
         unitsForSale: json["units_for_sale"],
         startDate: DateTime.parse(json["start_date"]),
         endDate: DateTime.parse(json["end_date"]),
@@ -397,7 +401,7 @@ class Inventory {
     required this.updatedAt,
   });
 
-  int id;
+  dynamic id;
   int productId;
   String sku;
   int stockCount;
@@ -445,7 +449,7 @@ class InventoryDetail {
     required this.includedAttributes,
   });
 
-  int id;
+  dynamic id;
   int inventoryId;
   int productId;
   String color;
@@ -519,7 +523,7 @@ class IncludedAttribute {
     this.updatedAt,
   });
 
-  int id;
+  dynamic id;
   int productId;
   int inventoryDetailsId;
   String attributeName;
@@ -564,7 +568,7 @@ class ProductColorElement {
     this.sizeCode,
   });
 
-  int id;
+  dynamic id;
   String name;
   String? colorCode;
   String slug;
@@ -603,7 +607,7 @@ class Tag {
     required this.updatedAt,
   });
 
-  int id;
+  dynamic id;
   int productId;
   String tag;
   DateTime createdAt;
@@ -704,7 +708,7 @@ class SettingText {
 }
 
 class RelatedProduct {
-  int prdId;
+  dynamic prdId;
   String title;
   String imgUrl;
   num price;
@@ -737,7 +741,7 @@ class Rating {
     required this.user,
   });
 
-  int id;
+  dynamic id;
   int productId;
   int userId;
   int status;
@@ -778,7 +782,7 @@ class User {
     required this.name,
   });
 
-  int id;
+  dynamic id;
   String name;
 
   factory User.fromJson(Map<String, dynamic> json) => User(

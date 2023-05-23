@@ -251,54 +251,55 @@ class Checkout extends StatelessWidget {
                                 : (sService.isLoading
                                     ? loadingProgressBar()
                                     : Column(
-                                        children: sService.shippingOptionsList!
-                                            .map((element) {
-                                              return Row(
-                                                children: [
-                                                  Transform.scale(
-                                                    scale: 1.3,
-                                                    child: Checkbox(
-                                                        // splashRadius: 30,
-                                                        materialTapTargetSize:
-                                                            MaterialTapTargetSize
-                                                                .shrinkWrap,
-                                                        activeColor:
-                                                            ConstantColors()
-                                                                .primaryColor,
-                                                        value: sService
-                                                                .selectedOption!
-                                                                .id ==
-                                                            element.id,
-                                                        shape:
-                                                            const CircleBorder(),
-                                                        side: BorderSide(
-                                                          width: 1.5,
-                                                          color:
-                                                              ConstantColors()
-                                                                  .greyBorder,
-                                                        ),
-                                                        onChanged: (v) {
-                                                          sService
-                                                              .setSelectedOption(
-                                                                  element);
-                                                        }),
-                                                  ),
-                                                  Text(element.name),
-                                                  const Spacer(),
-                                                  Consumer<LanguageService>(
-                                                      builder: (context,
-                                                          lService, child) {
-                                                    return Text(lService
-                                                            .currencyRTL
-                                                        ? '${element.availableOptions.cost}${lService.currency}'
-                                                        : '${lService.currency}${element.availableOptions.cost}');
-                                                  })
-                                                ],
-                                              );
-                                            })
-                                            .toList()
-                                            .reversed
-                                            .toList(),
+                                        children: sService.shippingOptionsList
+                                                ?.map((element) {
+                                                  return Row(
+                                                    children: [
+                                                      Transform.scale(
+                                                        scale: 1.3,
+                                                        child: Checkbox(
+                                                            // splashRadius: 30,
+                                                            materialTapTargetSize:
+                                                                MaterialTapTargetSize
+                                                                    .shrinkWrap,
+                                                            activeColor:
+                                                                ConstantColors()
+                                                                    .primaryColor,
+                                                            value: sService
+                                                                    .selectedOption!
+                                                                    .id ==
+                                                                element.id,
+                                                            shape:
+                                                                const CircleBorder(),
+                                                            side: BorderSide(
+                                                              width: 1.5,
+                                                              color:
+                                                                  ConstantColors()
+                                                                      .greyBorder,
+                                                            ),
+                                                            onChanged: (v) {
+                                                              sService
+                                                                  .setSelectedOption(
+                                                                      element);
+                                                            }),
+                                                      ),
+                                                      Text(element.name),
+                                                      const Spacer(),
+                                                      Consumer<LanguageService>(
+                                                          builder: (context,
+                                                              lService, child) {
+                                                        return Text(lService
+                                                                .currencyRTL
+                                                            ? '${element.availableOptions.cost}${lService.currency}'
+                                                            : '${lService.currency}${element.availableOptions.cost}');
+                                                      })
+                                                    ],
+                                                  );
+                                                })
+                                                .toList()
+                                                .reversed
+                                                .toList() ??
+                                            [],
                                       ));
                           },
                         ),
@@ -635,14 +636,8 @@ class Checkout extends StatelessWidget {
                                               listen: false);
                                       print(shippingService.currentAddress);
                                       if ((shippingService.selectedAddress ==
-                                                  null &&
-                                              !shippingService
-                                                  .currentAddress) ||
-                                          Provider.of<ShippingZoneService>(
-                                                      context,
-                                                      listen: false)
-                                                  .selectedOption ==
-                                              null) {
+                                              null &&
+                                          !shippingService.currentAddress)) {
                                         showDialog(
                                             context: context,
                                             builder: (context) => AlertDialog(
@@ -821,7 +816,7 @@ class Checkout extends StatelessWidget {
             return AlertDialog(
               content: GestureDetector(
                 onTap: (() {
-                  cService.imageSelector(context);
+                  cService.imageSelector();
                 }),
                 child: Padding(
                     padding: const EdgeInsets.all(10),

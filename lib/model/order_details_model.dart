@@ -71,7 +71,7 @@ class OrderInfo {
     required this.updatedAt,
   });
 
-  int id;
+  dynamic id;
   String name;
   String? email;
   int? userId;
@@ -172,7 +172,7 @@ class OrderDetail {
     this.attributes,
   });
 
-  int id;
+  dynamic id;
   int quantity;
   String? hash;
   dynamic attributes;
@@ -202,7 +202,7 @@ class Productdetail {
     required this.attributes,
   });
 
-  int id;
+  dynamic id;
   int quantity;
   String hash;
   dynamic attributes;
@@ -269,7 +269,7 @@ class Product {
     // this.campaignProduct,
   });
 
-  int id;
+  dynamic id;
   String title;
   String image;
   num price;
@@ -285,7 +285,8 @@ class Product {
         id: json["id"],
         title: json["title"],
         image: json["image"],
-        price: json["price"],
+        price:
+            json["price"] is String ? num.parse(json["price"]) : json["price"],
         salePrice: (json["sale_price"] is num)
             ? (json["sale_price"])
             : num.parse(json["sale_price"]),

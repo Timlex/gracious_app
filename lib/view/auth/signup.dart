@@ -1,17 +1,18 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:gren_mart/view/utils/state_dropdown.dart';
 import 'package:gren_mart/view/utils/web_view.dart';
 import '../../service/auth_text_controller_service.dart';
 import '../../service/common_service.dart';
 import '../../service/country_dropdown_service.dart';
 import '../../service/signin_signup_service.dart';
-import '../../view/intro/custom_dropdown.dart';
 import '../../view/utils/constant_name.dart';
 import 'package:provider/provider.dart';
 import 'package:email_validator/email_validator.dart';
 
 import '../../service/state_dropdown_service.dart';
 import '../utils/constant_styles.dart';
+import '../utils/country_dropdown.dart';
 import 'custom_text_field.dart';
 
 class SignUp extends StatelessWidget {
@@ -21,7 +22,6 @@ class SignUp extends StatelessWidget {
     this._formkey, {
     Key? key,
   }) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
     return Consumer<AuthTextControllerService>(
@@ -102,95 +102,44 @@ class SignUp extends StatelessWidget {
               authController.setPhoneNumber(value);
             },
           ),
-          // IntlPhoneField(
-          //   style: TextStyle(color: cc.blackColor, fontSize: 15),
-          //   initialCountryCode: 'BD',
-          //   decoration: InputDecoration(
-          //     hintText: 'Enter your number',
-          //     hintStyle: TextStyle(color: cc.greyTextFieldLebel, fontSize: 13),
-          //     contentPadding:
-          //         const EdgeInsets.symmetric(horizontal: 8, vertical: 17),
-          //     border: OutlineInputBorder(
-          //       borderRadius: BorderRadius.circular(10),
-          //       borderSide: BorderSide(color: cc.greyHint, width: 2),
-          //     ),
-          //     focusedBorder: OutlineInputBorder(
-          //       borderRadius: BorderRadius.circular(10),
-          //       borderSide: BorderSide(color: cc.primaryColor, width: 2),
-          //     ),
-          //     enabledBorder: OutlineInputBorder(
-          //       borderRadius: BorderRadius.circular(10),
-          //       borderSide: BorderSide(color: cc.greyBorder, width: 1),
-          //     ),
-          //     errorBorder: OutlineInputBorder(
-          //       borderRadius: BorderRadius.circular(10),
-          //       borderSide: BorderSide(color: cc.orange, width: 1),
-          //     ),
-          //   ),
-          //   onChanged: (phone) {
-          //     authController.setPhoneNumber(phone.completeNumber);
-          //     print(authController.phoneNumber);
-          //   },
-          //   onCountryChanged: (country) {
-          //     authController.setCountryCode(country.code);
-          //     print('Country changed to: ' + country.code);
-          //   },
-          // ),
           textFieldTitle(asProvider.getString('Country')),
           // const SizedBox(height: 8),
           Consumer<CountryDropdownService>(
-            builder: (context, cProvider, child) => cProvider
-                    .countryDropdownList.isNotEmpty
-                ? CustomDropdown(
-                    asProvider.getString('Country'),
-                    cProvider.countryDropdownList,
-                    (newValue) {
-                      cProvider.setCountryIdAndValue(newValue);
-                      Provider.of<StateDropdownService>(context, listen: false)
-                          .getStates(cProvider.selectedCountryId);
-                      authController.setCountry(cProvider.selectedCountryId);
-                    },
-                    value: cProvider.selectedCountry,
-                  )
-                : SizedBox(
-                    height: 10,
-                    child: Center(
-                      child: FittedBox(
-                        child: CircularProgressIndicator(
-                          color: cc.greyHint,
-                        ),
-                      ),
-                    )),
+            builder: (context, cProvider, child) => CountryDropdown(
+              hintText: "Select Country",
+              textStyle: TextStyle(color: cc.greyHint),
+              iconColor: cc.greyHint,
+              selectedValue: cProvider.selectedCountry,
+              onChanged: (newValue) {
+                cProvider.setCountryIdAndValue(newValue, context);
+                authController.setCountry(cProvider.selectedCountryId);
+                authController.setState(null);
+              },
+              textFieldHint: "Search Country",
+            ),
           ),
-          textFieldTitle(asProvider.getString('State')),
-          Consumer<StateDropdownService>(
-              builder: ((context, sModel, child) =>
-                  // sModel.stateDropdownList.isEmpty
-                  //     ? SizedBox(
-                  //         child: Center(
-                  //             child: CircularProgressIndicator(
-                  //         color: cc.greyHint,
-                  //       )))
-                  //     :
-                  (sModel.isLoading
-                      ? SizedBox(
-                          height: 10,
-                          child: Center(
-                            child: FittedBox(
-                              child: CircularProgressIndicator(
-                                color: cc.greyHint,
-                              ),
-                            ),
-                          ))
-                      : CustomDropdown(
-                          asProvider.getString('State'),
-                          sModel.stateDropdownList,
-                          (newValue) {
-                            sModel.setStateIdAndValue(newValue);
-                            authController.setState(sModel.selectedStateId);
-                          },
-                          value: sModel.selectedState,
-                        )))),
+          Consumer<CountryDropdownService>(
+              builder: (context, cProvider, child) =>
+                  cProvider.selectedCountry != null
+                      ? textFieldTitle(asProvider.getString('State'))
+                      : SizedBox()),
+          Consumer<CountryDropdownService>(
+              builder: (context, cProvider, child) => cProvider
+                          .selectedCountry !=
+                      null
+                  ? Consumer<StateDropdownService>(
+                      builder: ((context, sProvider, child) => StateDropdown(
+                            hintText: "Select State",
+                            textStyle: TextStyle(color: cc.greyHint),
+                            iconColor: cc.greyHint,
+                            selectedValue: sProvider.selectedState,
+                            onChanged: (newValue) {
+                              sProvider.setStateIdAndValue(newValue);
+                              authController.setState(sProvider.selectedState);
+                            },
+                            textFieldHint: "Search State",
+                          )))
+                  : SizedBox()),
           // textFieldTitle('City'),
           // // const SizedBox(height: 8),
           // CustomTextField(
@@ -214,6 +163,8 @@ class SignUp extends StatelessWidget {
           textFieldTitle(asProvider.getString('Password')),
           CustomTextField(
             asProvider.getString('Enter password'),
+            trailing: true,
+            obscureText: true,
             validator: (password) {
               if (password!.isEmpty) {
                 return asProvider.getString('Enter at least 6 characters');
@@ -237,6 +188,8 @@ class SignUp extends StatelessWidget {
           // const SizedBox(height: 8),
           CustomTextField(
             asProvider.getString('Re enter password'),
+            trailing: true,
+            obscureText: true,
             validator: (password) {
               if (password != authController.newPassword) {
                 return asProvider.getString('Enter the same password');

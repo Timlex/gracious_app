@@ -144,7 +144,8 @@ class SettingView extends StatelessWidget {
                         Provider.of<CountryDropdownService>(context,
                                 listen: false)
                             .setCountryIdAndValue(
-                                userData.userProfileData!.country!.name);
+                                userData.userProfileData!.country!.name,
+                                context);
                       }
                       if (userData.userProfileData!.state != null) {
                         Provider.of<StateDropdownService>(context,

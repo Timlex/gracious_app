@@ -11,34 +11,62 @@ String stateDropdownModelToJson(StateDropdownModel data) =>
     json.encode(data.toJson());
 
 class StateDropdownModel {
-  StateDropdownModel({
-    required this.state,
-  });
+  final State? state;
 
-  List<States> state;
+  StateDropdownModel({
+    this.state,
+  });
 
   factory StateDropdownModel.fromJson(Map<String, dynamic> json) =>
       StateDropdownModel(
-        state: List<States>.from(json["state"].map((x) => States.fromJson(x))),
+        state: json["state"] == null ? null : State.fromJson(json["state"]),
       );
 
   Map<String, dynamic> toJson() => {
-        "state": List<dynamic>.from(state.map((x) => x.toJson())),
+        "state": state?.toJson(),
       };
 }
 
-class States {
-  States({
-    required this.id,
-    required this.name,
-    required this.countryId,
+class State {
+  final int? currentPage;
+  final List<Datum>? data;
+  final dynamic nextPageUrl;
+
+  State({
+    this.currentPage,
+    this.data,
+    this.nextPageUrl,
   });
 
-  int id;
-  String name;
-  int countryId;
+  factory State.fromJson(Map<String, dynamic> json) => State(
+        currentPage: json["current_page"],
+        data: json["data"] == null
+            ? []
+            : List<Datum>.from(json["data"]!.map((x) => Datum.fromJson(x))),
+        nextPageUrl: json["next_page_url"],
+      );
 
-  factory States.fromJson(Map<String, dynamic> json) => States(
+  Map<String, dynamic> toJson() => {
+        "current_page": currentPage,
+        "data": data == null
+            ? []
+            : List<dynamic>.from(data!.map((x) => x.toJson())),
+        "next_page_url": nextPageUrl,
+      };
+}
+
+class Datum {
+  final int? id;
+  final String? name;
+  final int? countryId;
+
+  Datum({
+    this.id,
+    this.name,
+    this.countryId,
+  });
+
+  factory Datum.fromJson(Map<String, dynamic> json) => Datum(
         id: json["id"],
         name: json["name"],
         countryId: json["country_id"],

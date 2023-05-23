@@ -62,6 +62,7 @@ class SocialLoginService with ChangeNotifier {
       return socialLogin(
           context, '1', response!.email, response.displayName, response.id);
     } catch (e) {
+      print(e);
       snackBar(context, asProvider.getString('Loading failed'),
           backgroundColor: cc.orange);
       isLoading = false;

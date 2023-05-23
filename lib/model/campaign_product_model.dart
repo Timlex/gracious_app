@@ -45,7 +45,7 @@ class CampaignInfo {
     this.updatedAt,
   });
 
-  int id;
+  dynamic id;
   String title;
   String subtitle;
   int image;
@@ -101,12 +101,12 @@ class Product {
     required this.isCartAble,
   });
 
-  int prdId;
+  dynamic prdId;
   String title;
   String imgUrl;
   double campaignPercentage;
-  int price;
-  int discountPrice;
+  num price;
+  num discountPrice;
   List<dynamic> attributes;
   String badge;
   bool campaignProduct;
@@ -119,8 +119,11 @@ class Product {
         title: json["title"],
         imgUrl: json["img_url"],
         campaignPercentage: json["campaign_percentage"].toDouble(),
-        price: json["price"],
-        discountPrice: json["discount_price"],
+        price:
+            json["price"] is String ? num.parse(json["price"]) : json["price"],
+        discountPrice: json["discount_price"] is String
+            ? num.parse(json["discount_price"])
+            : json["discount_price"],
         attributes: List<dynamic>.from(json["attributes"].map((x) => x)),
         badge: json["badge"],
         campaignProduct: json["campaign_product"],

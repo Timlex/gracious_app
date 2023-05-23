@@ -50,7 +50,7 @@ class UserDetails {
     required this.shipping,
   });
 
-  int id;
+  dynamic id;
   String name;
   String email;
   String username;

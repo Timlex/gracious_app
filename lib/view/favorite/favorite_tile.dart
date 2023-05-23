@@ -7,7 +7,7 @@ import 'package:gren_mart/service/product_details_service.dart';
 import 'package:gren_mart/view/details/product_details.dart';
 import 'package:gren_mart/view/favorite/favorite_to_cart.dart';
 import 'package:gren_mart/view/utils/constant_name.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+// import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import '../../service/favorite_data_service.dart';
 import '../../service/language_service.dart';
 import '../../view/utils/constant_colors.dart';
@@ -16,7 +16,7 @@ import 'package:provider/provider.dart';
 import '../utils/text_themes.dart';
 
 class FavoriteTile extends StatelessWidget {
-  final int id;
+  final dynamic id;
 
   FavoriteTile(this.id, {Key? key}) : super(key: key);
 
@@ -139,7 +139,7 @@ class FavoriteTile extends StatelessWidget {
                                   listen: false)
                               .resetDetails();
                           print(favoriteItem.attribute);
-                          await showMaterialModalBottomSheet(
+                          await showModalBottomSheet(
                               context: context,
                               enableDrag: true,
                               builder: (context) {

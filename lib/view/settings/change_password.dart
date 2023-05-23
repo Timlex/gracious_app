@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gren_mart/service/user_profile_service.dart';
 import 'package:gren_mart/view/utils/constant_name.dart';
 import '../../service/change_password_service.dart';
 import '../../service/signin_signup_service.dart';
@@ -26,6 +27,11 @@ class _ChangePasswordState extends State<ChangePassword> {
   final _reFN = FocusNode();
 
   Future _onSubmit(BuildContext context, ChangePasswordService cpData) async {
+    final uProvider = Provider.of<UserProfileService>(context, listen: false);
+    if (uProvider.userProfileData?.googleId != null ||
+        uProvider.userProfileData?.facebookId != null) {
+      return;
+    }
     final valide = _formKey.currentState!.validate();
     if (!valide) {
       return;
@@ -67,9 +73,23 @@ class _ChangePasswordState extends State<ChangePassword> {
                   builder: (context, cpData, child) {
                 return Column(
                   children: [
-                    const SizedBox(
-                      height: 10,
-                    ),
+                    const SizedBox(height: 10),
+                    Consumer<UserProfileService>(
+                        builder: (context, uService, child) {
+                      return uService.userProfileData?.googleId != null ||
+                              uService.userProfileData?.facebookId != null
+                          ? Padding(
+                              padding: EdgeInsets.all(30),
+                              child: Text(
+                                  asProvider.getString(
+                                      "Password Change Unavailable. We're sorry, but users who have signed up or logged in using their Google or Facebook accounts do not have the option to change their password directly on this platform. "),
+                                  // textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    color: cc.orange,
+                                  )))
+                          : SizedBox();
+                    }),
                     Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 25),
                         child: Form(
@@ -145,30 +165,44 @@ class _ChangePasswordState extends State<ChangePassword> {
                               ]),
                         )),
                     const Spacer(),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                      child: Stack(
-                        children: [
-                          customContainerButton(
-                              cpData.changePassLoading
-                                  ? ''
-                                  : asProvider.getString('Save Changes'),
-                              double.infinity,
-                              cpData.changePassLoading
-                                  ? () {}
-                                  : () async {
-                                      await _onSubmit(context, cpData);
-                                    }),
-                          if (cpData.changePassLoading)
-                            SizedBox(
-                                height: 50,
-                                width: double.infinity,
-                                child: Center(
-                                    child: loadingProgressBar(
-                                        size: 30, color: cc.pureWhite)))
-                        ],
-                      ),
-                    ),
+                    Consumer<UserProfileService>(
+                        builder: (context, uService, child) {
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 25.0),
+                        child: Stack(
+                          children: [
+                            customContainerButton(
+                                cpData.changePassLoading
+                                    ? ''
+                                    : asProvider.getString('Save Changes'),
+                                double.infinity,
+                                cpData.changePassLoading ||
+                                        (uService.userProfileData?.googleId !=
+                                                null ||
+                                            uService.userProfileData
+                                                    ?.facebookId !=
+                                                null)
+                                    ? () {}
+                                    : () async {
+                                        await _onSubmit(context, cpData);
+                                      },
+                                color: uService.userProfileData?.googleId !=
+                                            null ||
+                                        uService.userProfileData?.facebookId !=
+                                            null
+                                    ? cc.greyHint
+                                    : null),
+                            if (cpData.changePassLoading)
+                              SizedBox(
+                                  height: 50,
+                                  width: double.infinity,
+                                  child: Center(
+                                      child: loadingProgressBar(
+                                          size: 30, color: cc.pureWhite)))
+                          ],
+                        ),
+                      );
+                    }),
                     const SizedBox(height: 45)
                   ],
                 );

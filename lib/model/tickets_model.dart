@@ -91,7 +91,7 @@ class Datum {
     required this.updatedAt,
   });
 
-  int id;
+  dynamic id;
   String title;
   String? via;
   dynamic operatingSystem;

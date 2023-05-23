@@ -21,20 +21,24 @@ class StateShippingZoneModel {
     required this.defaultShippingCost,
   });
 
-  int tax;
-  int? taxPercentage;
+  num tax;
+  num? taxPercentage;
   List<DefaultShipping> shippingOptions;
   DefaultShipping defaultShipping;
-  int defaultShippingCost;
+  num defaultShippingCost;
 
   factory StateShippingZoneModel.fromJson(Map<String, dynamic> json) =>
       StateShippingZoneModel(
-        tax: json["tax"],
+        tax: json["tax"] is String
+            ? num.tryParse(json["tax"])
+            : json["tax"] ?? 0.0,
         taxPercentage: json["tax_percentage"],
         shippingOptions: List<DefaultShipping>.from(
             json["shipping_options"].map((x) => DefaultShipping.fromJson(x))),
         defaultShipping: DefaultShipping.fromJson(json["default_shipping"]),
-        defaultShippingCost: json["default_shipping_cost"],
+        defaultShippingCost: json["default_shipping_cost"] is String
+            ? num.tryParse(json["default_shipping_cost"]) ?? 0.0
+            : json["default_shipping_cost"] ?? 0.0,
       );
 
   Map<String, dynamic> toJson() => {
@@ -59,7 +63,7 @@ class StateShippingZoneModel {
 //     required this.availableOptions,
 //   });
 
-//   int id;
+//   dynamic id;
 //   String name;
 //   int zoneId;
 //   int isDefault;
@@ -107,7 +111,7 @@ class Options {
     required this.updatedAt,
   });
 
-  int id;
+  dynamic id;
   String title;
   int shippingMethodId;
   int status;
