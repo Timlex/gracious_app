@@ -274,7 +274,8 @@ var appStrings = {
   'Select State': "",
   'Search State': "",
   'No result found': "",
-  'See All': "",
+  "Password Change Unavailable. We're sorry, but users who have signed up or logged in using their Google or Facebook accounts do not have the option to change their password directly on this platform. ":
+      "",
   'See All': "",
   'See All': "",
   'See All': "",
