@@ -28,7 +28,9 @@ class WebViewScreen extends StatelessWidget {
             if (snapshot.hasData) {}
             return Consumer<TermsAndCondition>(
               builder: (context, tService, child) {
-                return SingleChildScrollView(child: Html(data: tService.html));
+                return SingleChildScrollView(
+                    padding: EdgeInsets.symmetric(horizontal: 20),
+                    child: Html(data: tService.html));
               },
             );
           },

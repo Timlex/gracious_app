@@ -568,7 +568,8 @@ class Checkout extends StatelessWidget {
                                 child: RichText(
                                   softWrap: true,
                                   text: TextSpan(
-                                      text: asProvider.getString('Accept all'),
+                                      text: asProvider.getString('Accept all') +
+                                          ' ',
                                       style: TextStyle(
                                         color: cc.greyHint,
                                         fontWeight: FontWeight.w600,

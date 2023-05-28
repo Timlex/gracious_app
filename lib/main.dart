@@ -120,7 +120,7 @@ class _MyAppState extends State<MyApp> {
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
-        title: 'GrenMart',
+        title: 'Grenmart',
         builder: (context, rtlchild) {
           return Directionality(
             textDirection: Provider.of<LanguageService>(context).rtl

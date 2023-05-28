@@ -220,8 +220,7 @@ class TicketChat extends StatelessWidget {
                                   ? ''
                                   : asProvider.getString('Send'),
                               double.infinity,
-                              tcService.message == '' &&
-                                      tcService.pickedImage == null
+                              tcService.message == ''
                                   ? () {}
                                   : () async {
                                       tcService.setIsLoading(true);
@@ -244,8 +243,7 @@ class TicketChat extends StatelessWidget {
                                                   backgroundColor: cc.orange));
                                       tcService.setIsLoading(false);
                                     },
-                              color: tcService.message == '' &&
-                                      tcService.pickedImage == null
+                              color: tcService.message == ''
                                   ? cc.greyDots
                                   : cc.primaryColor,
                             ),

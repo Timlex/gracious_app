@@ -102,7 +102,10 @@ class _CustomTextFieldState extends State<CustomTextField> {
                               'assets/images/icons/pass_hide.png',
                               fit: BoxFit.fitHeight,
                             )
-                          : const Icon(Icons.remove_red_eye_rounded),
+                          : Icon(
+                              Icons.remove_red_eye_rounded,
+                              color: ConstantColors().primaryColor,
+                            ),
                     ),
                   ),
                 ],

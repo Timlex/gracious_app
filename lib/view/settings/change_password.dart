@@ -47,6 +47,8 @@ class _ChangePasswordState extends State<ChangePassword> {
         cpData.toggPassleLaodingSpinner(value: false);
         return;
       }
+      snackBar(context, asProvider.getString("Password changed successfully"),
+          backgroundColor: cc.primaryColor);
       cpData.toggPassleLaodingSpinner(value: false);
       Navigator.of(context).pop();
     }).onError((error, stackTrace) {
@@ -120,6 +122,8 @@ class _ChangePasswordState extends State<ChangePassword> {
                                   onFieldSubmitted: (_) {
                                     FocusScope.of(context).requestFocus(_nPFN);
                                   },
+                                  trailing: true,
+                                  obscureText: true,
                                 ),
                                 textFieldTitle(
                                     asProvider.getString('New password')),
@@ -144,6 +148,8 @@ class _ChangePasswordState extends State<ChangePassword> {
                                   onFieldSubmitted: (_) {
                                     FocusScope.of(context).requestFocus(_reFN);
                                   },
+                                  trailing: true,
+                                  obscureText: true,
                                 ),
                                 textFieldTitle(asProvider
                                     .getString('Re enter new password')),
@@ -161,6 +167,8 @@ class _ChangePasswordState extends State<ChangePassword> {
                                   onFieldSubmitted: (_) {
                                     _onSubmit(context, cpData);
                                   },
+                                  trailing: true,
+                                  obscureText: true,
                                 ),
                               ]),
                         )),

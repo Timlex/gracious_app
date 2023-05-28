@@ -41,8 +41,8 @@ class StateDropdown extends StatelessWidget {
           showModalBottomSheet(
             context: context,
             backgroundColor: Colors.transparent,
+            isScrollControlled: true,
             builder: (context) {
-              print(5 * 8 > screenHight - 100 ? null : 5 * 8);
               return Container(
                 // height: 5 * 30 > screenHight / 2 ? screenHight / 2 : 5 * 30,
                 // margin: EdgeInsets.all(20),
@@ -66,11 +66,9 @@ class StateDropdown extends StatelessWidget {
                           sProvider.setStateSearchValue(value);
                           print("change in textField");
                           sProvider.getStates(
-                            Provider.of<CountryDropdownService>(context,
-                                    listen: false)
-                                .selectedCountryId,
-                            context: context,
-                          );
+                              Provider.of<CountryDropdownService>(context,
+                                      listen: false)
+                                  .selectedCountryId);
                         }),
                       ),
                       Expanded(
@@ -78,15 +76,7 @@ class StateDropdown extends StatelessWidget {
                             shrinkWrap: true,
                             controller: controller,
                             padding: EdgeInsets.only(
-                                right: 20,
-                                left: 20,
-                                top: 20,
-                                bottom: MediaQuery.of(context)
-                                            .viewInsets
-                                            .bottom <
-                                        20
-                                    ? 20
-                                    : MediaQuery.of(context).viewInsets.bottom),
+                                right: 20, left: 20, bottom: 20),
                             itemBuilder: (context, index) {
                               if (sProvider.isLoading ||
                                   sProvider.stateDropdownList.length == index &&

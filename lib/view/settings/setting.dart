@@ -137,7 +137,7 @@ class SettingView extends StatelessWidget {
                     // setData(context);
                     Provider.of<CountryDropdownService>(context, listen: false)
                         .getContries(context)
-                        .then((value) {
+                        .then((value) async {
                       final userData = Provider.of<UserProfileService>(context,
                           listen: false);
                       if (userData.userProfileData!.country != null) {
@@ -146,6 +146,10 @@ class SettingView extends StatelessWidget {
                             .setCountryIdAndValue(
                                 userData.userProfileData!.country!.name,
                                 context);
+                        await Provider.of<StateDropdownService>(context,
+                                listen: false)
+                            .getStates(userData.userProfileData!.country!.id,
+                                context: context);
                       }
                       if (userData.userProfileData!.state != null) {
                         Provider.of<StateDropdownService>(context,

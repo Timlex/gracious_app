@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:gren_mart/view/utils/constant_name.dart';
 import '../../service/auth_text_controller_service.dart';
 import '../../service/reset_pass_otp_service.dart';
-import '../../view/auth/auth.dart';
 import '../../view/utils/app_bars.dart';
 import '../../view/utils/constant_colors.dart';
 import 'package:provider/provider.dart';
@@ -63,9 +62,7 @@ class _ResetPasswordState extends State<ResetPassword> {
     return Scaffold(
       appBar: AppBars()
           .appBarTitled(context, asProvider.getString('Reset Password'), () {
-        Navigator.of(context).pushAndRemoveUntil(
-            MaterialPageRoute(builder: (context) => Auth()),
-            (Route<dynamic> route) => false);
+        Navigator.of(context).pop();
       }, hasButton: true),
       body: Consumer<ResetPassOTPService>(builder: (context, resetData, child) {
         return Column(
@@ -104,6 +101,8 @@ class _ResetPasswordState extends State<ResetPassword> {
                         onFieldSubmitted: (_) {
                           FocusScope.of(context).requestFocus(_reFN);
                         },
+                        trailing: true,
+                        obscureText: true,
                       ),
                       textFieldTitle(
                           asProvider.getString('Re enter new password')),
@@ -127,6 +126,8 @@ class _ResetPasswordState extends State<ResetPassword> {
                                   listen: false)
                               .togglePassLoadingSpinner(value: false);
                         },
+                        trailing: true,
+                        obscureText: true,
                       ),
                     ]),
               ),
