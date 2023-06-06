@@ -935,6 +935,7 @@ class Checkout extends StatelessWidget {
       return;
     }
     if (selectedGateaway.name.toLowerCase().contains('cashfree')) {
+      print('Paying using cashfree');
       await CashFreePayment()
           .doPayment(context)
           .onError((error, stackTrace) => null);
