@@ -1,1 +1,1 @@
-var baseApiUrl = "https://grenmart.xgenious.com/api/v1";
+var baseApiUrl = "https://graciousstore.co.uk/";

@@ -90,12 +90,12 @@ BEGIN
         BLOCK "040904e4"
         BEGIN
             VALUE "CompanyName", "com.example" "\0"
-            VALUE "FileDescription", "gren_mart" "\0"
+            VALUE "FileDescription", "Gracious App Store" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
-            VALUE "InternalName", "gren_mart" "\0"
+            VALUE "InternalName", "Gracious App Store" "\0"
             VALUE "LegalCopyright", "Copyright (C) 2022 com.example. All rights reserved." "\0"
             VALUE "OriginalFilename", "gren_mart.exe" "\0"
-            VALUE "ProductName", "gren_mart" "\0"
+            VALUE "ProductName", "Gracious App Store" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END
     END
